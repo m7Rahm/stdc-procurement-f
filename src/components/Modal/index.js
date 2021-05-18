@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-const Modal = ({ children, show, setShow,minimizeHandler }) => {
+const Modal = ({ children, show, setShow,minimizeHandler,closeHandler }) => {
   return (
     <div className={show ? "modal" : "modal hidden"}
           style={{transform : show ? "translateY(0)" : "translateY(-100vh)"}}>
@@ -8,7 +8,7 @@ const Modal = ({ children, show, setShow,minimizeHandler }) => {
           <div className="minimize-btn" onClick={minimizeHandler}>
             -
           </div>
-          <div className="close-btn" onClick={() => setShow(false)}>
+          <div className="close-btn" onClick={closeHandler}>
             x
           </div>
           <div className="modal-container">{children}</div>

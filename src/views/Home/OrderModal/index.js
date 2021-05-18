@@ -160,7 +160,9 @@ const OrderModal = (props) => {
 
     return (
         <Modal show={props.show} setShow={props.setShow}
-                minimizeHandler={props.minimizeHandler}>
+                minimizeHandler={props.minimizeHandler}
+                closeHandler={props.closeHandler}
+        >
             {page}
         </Modal>
     )

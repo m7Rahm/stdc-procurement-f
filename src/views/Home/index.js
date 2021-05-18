@@ -5,29 +5,51 @@ import Taskbar from './Taskbar';
 const Home = () => {
 
     const [showModal, setShowModal] = useState(false);
-
     const [serviceType, setServiceType] = useState("")
     const [lastDate, setLastDate] = useState(new Date());
     const [selectedData, setSelectedData] = useState(null);
     const [receivers, setReceivers] = useState([{'id':'asd','full_name':'jkasda'},{'id':'aaasd','full_name':'asdasjkasda'},{'id':'fsasd','full_name':'jdsfdskasda'}]);
     const [modalList, setModalList] = useState([])
+    const [currentModal,setCurrentModal] = useState(null)
 
-    const minimizeHandler = () => {
+    const openModal = () => {
         const newList = [...modalList]
         const lastIndex = newList.length==0 ?  0 : newList[newList.length-1].id + 1
         newList.push({'id': lastIndex,'value':[serviceType,lastDate,selectedData,receivers]})
         setModalList(newList)
-        setShowModal(false)
+        setShowModal(true)
+        if(currentModal === null) setCurrentModal(newList[newList.length-1])
     }
+
+    const minimizeHandler = () => {
+        setShowModal(false)
+        if(!modalList.find(emp => emp.id === currentModal.id)){
+            const newList = [...modalList]
+            const lastIndex = newList.length==0 ?  0 : newList[newList.length-1].id + 1
+            newList.push({'id': lastIndex,'value':[serviceType,lastDate,selectedData,receivers]})
+            setModalList(newList)
+        }
+    }
+
+    const closeHandler = () => {
+        setShowModal(false)
+        const res = modalList.find(emp => emp.id === currentModal.id);
+        const newModals = !res ? [...modalList, currentModal] : modalList.filter(emp => emp.id !== currentModal.id);
+        setModalList(newModals);
+    }
+
 
     const handleOrderSelect = (orderId) => {
         const properties = modalList.find(emp => emp.id === orderId)
+        setCurrentModal(properties)
         setShowModal(true)
         setServiceType(properties.value[0])
         setLastDate(properties.value[1])
         setSelectedData(properties.value[2])
         setReceivers(properties.value[3])
     }
+
+    console.log(currentModal)
 
     return (
         <div>
@@ -43,8 +65,12 @@ const Home = () => {
                 receivers={receivers}
                 setReceivers={setReceivers}
                 minimizeHandler={minimizeHandler}
+                closeHandler={closeHandler}
+                modalId={currentModal}
+                modalList={modalList}
+                setModalList={setModalList}
             />
-            <div className="md-header full-center px-8 py-8 bg-light-gray" onClick={() => setShowModal(true)}>
+            <div className="md-header full-center px-8 py-8 bg-light-gray" onClick={openModal}>
                 Home
             </div>
 
