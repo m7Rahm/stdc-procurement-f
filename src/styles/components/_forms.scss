@@ -1,0 +1,68 @@
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+  color: #bdbdbd;
+}
+
+.form-input {
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+
+.form-w-50 {
+  min-width: 160px;
+}
+.form-w-100 {
+  min-width: 320px;
+}
+//Checkbox
+.custom-checkbox-label {
+  position: relative;
+  cursor: pointer;
+  .custom-checkbox {
+    position: relative;
+    border-radius: 50%;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #c5c7cd;
+  }
+  input[type="checkbox"] {
+    display: none;
+    &:checked {
+      & + .custom-checkbox {
+        background: $blue;
+        &::after {
+          content: "✔";
+          color: white;
+          position: absolute;
+          left: 0px;
+          right: 0;
+          top: 0px;
+          bottom: 0;
+          width: 10px;
+          height: 7px;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
+//Selector
+select {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.2px;
+  color: #22345e;
+}

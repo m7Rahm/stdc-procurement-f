@@ -1,0 +1,71 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.border {
+  border: 1px solid #dfe0eb;
+}
+.border-bottom {
+  border-bottom: 1px solid #e0e0e0;
+}
+.rounded {
+  border-radius: 2px;
+  overflow: hidden;
+}
+.full-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.bg-white {
+  background: white !important;
+}
+.bg-light-gray {
+  background: $light-gray !important;
+}
+.bg-mid-blue {
+  background: $mid-blue !important;
+}
+.bg-blue {
+  background: $blue !important;
+}
+
+.bg-green {
+  background: #27ae60 !important;
+}
+
+.bg-red {
+  background: #eb5757 !important;
+}
+
+.bg-yellow {
+  background: #f2c94c !important;
+}
+.bg-purple {
+  background: #bb6bd9 !important;
+}
