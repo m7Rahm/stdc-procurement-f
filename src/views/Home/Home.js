@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
-import OrderModal from './OrderModal';
-import Taskbar from './Taskbar';
+import React, { useState } from 'react'
+import OrderModal from './OrderModal/OrderModal';
+import Taskbar from './Taskbar/Taskbar';
 
 const Home = () => {
 
@@ -8,25 +8,25 @@ const Home = () => {
     const [serviceType, setServiceType] = useState("")
     const [lastDate, setLastDate] = useState(new Date());
     const [selectedData, setSelectedData] = useState(null);
-    const [receivers, setReceivers] = useState([{'id':'asd','full_name':'jkasda'},{'id':'aaasd','full_name':'asdasjkasda'},{'id':'fsasd','full_name':'jdsfdskasda'}]);
+    const [receivers, setReceivers] = useState([{ 'id': 'asd', 'full_name': 'jkasda' }, { 'id': 'aaasd', 'full_name': 'asdasjkasda' }, { 'id': 'fsasd', 'full_name': 'jdsfdskasda' }]);
     const [modalList, setModalList] = useState([])
-    const [currentModal,setCurrentModal] = useState(null)
+    const [currentModal, setCurrentModal] = useState(null)
 
     const openModal = () => {
         const newList = [...modalList]
-        const lastIndex = newList.length==0 ?  0 : newList[newList.length-1].id + 1
-        newList.push({'id': lastIndex,'value':[serviceType,lastDate,selectedData,receivers]})
+        const lastIndex = newList.length == 0 ? 0 : newList[newList.length - 1].id + 1
+        newList.push({ 'id': lastIndex, 'value': [serviceType, lastDate, selectedData, receivers] })
         setModalList(newList)
         setShowModal(true)
-        if(currentModal === null) setCurrentModal(newList[newList.length-1])
+        if (currentModal === null) setCurrentModal(newList[newList.length - 1])
     }
 
     const minimizeHandler = () => {
         setShowModal(false)
-        if(!modalList.find(emp => emp.id === currentModal.id)){
+        if (!modalList.find(emp => emp.id === currentModal.id)) {
             const newList = [...modalList]
-            const lastIndex = newList.length==0 ?  0 : newList[newList.length-1].id + 1
-            newList.push({'id': lastIndex,'value':[serviceType,lastDate,selectedData,receivers]})
+            const lastIndex = newList.length == 0 ? 0 : newList[newList.length - 1].id + 1
+            newList.push({ 'id': lastIndex, 'value': [serviceType, lastDate, selectedData, receivers] })
             setModalList(newList)
         }
     }
@@ -49,7 +49,8 @@ const Home = () => {
         setReceivers(properties.value[3])
     }
 
-    console.log(currentModal)
+    // console.log(currentModal)
+    console.log(serviceType)
 
     return (
         <div>
@@ -79,7 +80,7 @@ const Home = () => {
                 when selected change properties (here) to selected object's properties
                 open order modal
              */}
-            <Taskbar 
+            <Taskbar
                 modalList={modalList}
                 setModalList={setModalList}
                 handleOrderSelect={handleOrderSelect}

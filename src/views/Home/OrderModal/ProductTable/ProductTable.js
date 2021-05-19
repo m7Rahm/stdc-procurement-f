@@ -84,7 +84,7 @@ const ProductTable = (props) => {
         skipPageReset={skipPageReset}
         setRowId={setRowId}
       />
-        <div className="flex gap-3 "
+        {/* <div className="flex gap-3 "
             style={{'float':'right'}}>
             <button
             className="btn btn-primary btn-modal bg-red py-4 mt-8"
@@ -103,7 +103,7 @@ const ProductTable = (props) => {
             >
             Davam
             </button>
-        </div>
+        </div> */}
     </div>
   )
 }
