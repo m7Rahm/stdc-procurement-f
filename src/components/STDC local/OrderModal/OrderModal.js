@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import Modal from "../../../components/Modal/Modal";
 import "./OrderModal.scss";
-import ForwardDocAdvanced from "../../../ForwardDocLayout/ForwardDocAdvanced.js";
+import ForwardDocAdvanced from "../ForwardDocLayout/ForwardDocAdvanced.js";
 import FirstPage from "./FirstPage";
 
 const OrderModal = (props) => {

@@ -1,0 +1,91 @@
+.overall{
+    /* display: flex;
+    flex-direction: row;
+    justify-content: space-between; */
+    margin:80px;
+}
+
+#procurement-edit-section{
+    display: flex;
+    height: 100px;
+    flex-flow: wrap row;
+    margin-bottom: 10px;
+}
+
+#procurement-edit-section>textarea{
+    width: 100%;
+    min-height: 100px;
+    display: block;
+    flex: 1;
+    margin-right: 20px;
+}
+
+#procurement-edit-section>select{
+    height: 40px;
+    min-width: 238px;
+    padding: 0px 10px;
+    padding-right: 10px;
+    border-radius: 3px;
+    margin-right: 5px;
+    border: 1px solid #3f3f3f;
+    float: right;
+}
+
+input.search-with-query {
+    color: #545454;
+    max-width: 100%;
+    margin: 5px 0px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px 1px rgb(255, 174, 0);
+    outline: none;
+    height: 38px;
+    width: 100%;
+  }
+
+ul.employees-list::-webkit-scrollbar {
+width: 5px;
+}
+
+
+ul.employees-list {
+    margin-top: 40px;
+    list-style-type: none;
+    background-image: linear-gradient(to bottom, white, #f3f3f3);
+    padding: 0px;
+    margin: 0px;
+    max-height: 192px;
+    position: relative;
+    overflow: auto;
+    border-radius: 3px;
+    border: 2px solid rgb(255, 174, 0);
+}
+
+ul.employees-list>li>span {
+color: rgb(158, 158, 158);
+font-weight: 600;
+}
+
+ul.employees-list::-webkit-scrollbar-track {
+background-color: transparent
+}
+
+ul.employees-list::-webkit-scrollbar-thumb {
+background-color: rgb(24, 139, 192);
+}
+
+ul.employees-list>li {
+padding-left: 20px;
+font-size: 16px;
+height: 50px;
+padding: 5px;
+border: 1px white solid;
+}
+
+ul.employees-list>li:hover {
+background-color: rgb(24, 139, 192);
+color: white;
+}
+ul.employees-list>li:hover>span {
+color: white;
+}
