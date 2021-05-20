@@ -3,7 +3,9 @@ import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 const NewOrderTableBody = (props) => {
   const modelsListRef = useRef(null);
-  const { orderInfo, glCategories, handleSendClick } = props;
+  const { orderInfo, glCategories,
+    //  handleSendClick 
+  } = props;
   const { orderType, structure } = orderInfo;
   const [materials, setMaterials] = useState([
     {
@@ -18,9 +20,9 @@ const NewOrderTableBody = (props) => {
       isService: 0
     }
   ]);
-  const onSendClick = () => {
-    handleSendClick(materials)
-  }
+  // const onSendClick = () => {
+  //   handleSendClick(materials)
+  // }
   useEffect(() => {
     setMaterials(prev => prev.filter(material => material.isService === orderType))
   }, [orderType])
@@ -63,9 +65,9 @@ const NewOrderTableBody = (props) => {
         }
         <NewOrderTableRowAdd setMaterials={setMaterials} />
       </ul>
-      <div className="send-order" style={{ cursor: props.active ? 'pointer' : 'not-allowed' }} onClick={onSendClick}>
+      {/* <div className="send-order" style={{ cursor: props.active ? 'pointer' : 'not-allowed' }} onClick={onSendClick}>
         Göndər
-      </div>
+      </div> */}
     </>
   )
 }

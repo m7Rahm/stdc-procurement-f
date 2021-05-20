@@ -1,18 +1,18 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
-import useFetch from './useFetch';
+import React, { useState, useRef, } from 'react'
+// import useFetch from './useFetch';
 import VisaForwardPerson from './VisaForwardPerson'
 import "./ForwardDocAdvanced.css"
 const ForwardDocAdvanced = (props) => {
-    const { handleSendClick, textareaVisible = true } = props;
+    // const { handleSendClick, textareaVisible = true } = props;
     const [empList, setEmpList] = useState(['asd']);
-    const [departments, setDepartments] = useState([{'id':'asd','name':'asd'},{'id':'asfasfd','name':'asfa'}]);
+    // const [departments, setDepartments] = useState([{'id':'asd','name':'asd'},{'id':'asfasfd','name':'asfa'}]);
     const searchInputRef = useRef(null);
-    const allGroupsRef = useRef([]);
-    const [checked, setChecked] = useState(false);
-    const selectRef = useRef(null);
-    const empListRef = useRef(null);
-    const textareaRef = useRef(null);
-    const fetchGet = useFetch("GET");
+    // const allGroupsRef = useRef([]);
+    // const [checked, setChecked] = useState(false);
+    // const selectRef = useRef(null);
+    // const empListRef = useRef(null);
+    // const textareaRef = useRef(null);
+    // const fetchGet = useFetch("GET");
 
     // useLayoutEffect(() => {
     //     let mounted = true;
@@ -71,25 +71,25 @@ const ForwardDocAdvanced = (props) => {
 
 
     const handleSearchChange = (e) => {
-        const str = e.target.value.toLowerCase();
+        // const str = e.target.value.toLowerCase();
         let searchResult
-        if (!checked) {
-            searchResult = empListRef.current.filter(emp => {
-                if (selectRef.current && selectRef.current.value !== "-1")
-                    return emp.full_name.toLowerCase().includes(str) && emp.structure_dependency_id === Number(selectRef.current.value);
-                else
-                    return emp.full_name.toLowerCase().includes(str)
-            });
-        } else {
-            searchResult = allGroupsRef.current.filter(group => group.full_name.toLowerCase().includes(str))
-        }
+        // if (!checked) {
+        //     searchResult = empListRef.current.filter(emp => {
+        //         if (selectRef.current && selectRef.current.value !== "-1")
+        //             return emp.full_name.toLowerCase().includes(str) && emp.structure_dependency_id === Number(selectRef.current.value);
+        //         else
+        //             return emp.full_name.toLowerCase().includes(str)
+        //     });
+        // } else {
+        //     searchResult = allGroupsRef.current.filter(group => group.full_name.toLowerCase().includes(str))
+        // }
         setEmpList(searchResult);
     }
 
-    const handleStructureChange = (e) => {
-        const value = Number(e.target.value);
-        setEmpList(value !== -1 ? empListRef.current.filter(employee => employee.structure_dependency_id === value) : empListRef.current);
-    }
+    // const handleStructureChange = (e) => {
+    //     const value = Number(e.target.value);
+    //     setEmpList(value !== -1 ? empListRef.current.filter(employee => employee.structure_dependency_id === value) : empListRef.current);
+    // }
 
     const handleSelectChange = (employee) => {
         const res = props.receivers.find(emp => emp.id === employee.id);
@@ -98,17 +98,17 @@ const ForwardDocAdvanced = (props) => {
         searchInputRef.current.value = ""
     }
 
-    const handleCheckChange = () => {
-        searchInputRef.current.value = "";
-        setChecked(prev => {
-            if (!prev) {
-                setEmpList(allGroupsRef.current)
-            } else {
-                setEmpList(empListRef.current)
-            }
-            return !prev
-        });
-    }
+    // const handleCheckChange = () => {
+    //     searchInputRef.current.value = "";
+    //     setChecked(prev => {
+    //         if (!prev) {
+    //             setEmpList(allGroupsRef.current)
+    //         } else {
+    //             setEmpList(empListRef.current)
+    //         }
+    //         return !prev
+    //     });
+    // }
 
     return (
         <div style={{ padding: '10px 20px'}} className="flex flex-jc-c">
@@ -123,15 +123,15 @@ const ForwardDocAdvanced = (props) => {
 
                 <div style={{ minHeight: '100px', minWidth: "250px" }}>
                     {
-                        !checked &&
-                        <select ref={selectRef} style={{ height: '30px' }} onChange={handleStructureChange}>
-                            <option value="-1">-</option>
-                            {
-                                departments.map(structure =>
-                                    <option key={structure.id} value={structure.id}>{structure.name}</option>
-                                )
-                            }
-                        </select>
+                        // !checked &&
+                        // <select ref={selectRef} style={{ height: '30px' }} onChange={handleStructureChange}>
+                        //     <option value="-1">-</option>
+                        //     {
+                        //         // departments.map(structure =>
+                        //         //     <option key={structure.id} value={structure.id}>{structure.name}</option>
+                        //         // )
+                        //     }
+                        // </select>
                     }
                     <div>
                         <input
@@ -161,7 +161,6 @@ const ForwardDocAdvanced = (props) => {
     )
 }
 export default React.memo(ForwardDocAdvanced)
-
 export const ForwardedPeople = (props) => {
     const draggedElement = useRef(null);
     return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import NewOrderTableBody from '../Orders/NewOrder/NewOrderTableBody'
-import NewOrderHeader from '../Orders/NewOrder/NewOrderHeader'
+// import NewOrderHeader from '../Orders/NewOrder/NewOrderHeader'
 import OperationResult from '../../components/Misc/OperationResult'
 import { IoIosCloseCircle } from 'react-icons/io'
 import useFetch from '../../hooks/useFetch'
@@ -105,10 +105,10 @@ const NewOrderContent = (props) => {
           icon={IoIosCloseCircle}
         />
       }
-      <NewOrderHeader
+      {/* <NewOrderHeader
         orderInfo={orderInfo}
         setOrderInfo={setOrderInfo}
-      />
+      /> */}
       <NewOrderTableBody
         orderInfo={orderInfo}
         active={active}

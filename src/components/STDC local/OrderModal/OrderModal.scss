@@ -19,22 +19,14 @@
   }
 }
 .page-container {
-  position: absolute;
-  top: 15rem;
-  left: 11rem;
-
-  bottom: auto;
-  width: 27rem;
-  height: 10rem;
-
+  // width: 50%;
+  margin: auto;
+  padding-top: 7.5rem;
   animation: slide_davam_next 200ms ease-in-out both;
 }
-
-.form-group {
-  width: 10rem;
-  position: absolute;
-  left: 8rem;
-  top: 4rem;
+.new-order-content {
+  height: 100%;
+  background-color: white;
 }
 @keyframes slide_geri_next {
   from {

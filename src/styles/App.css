@@ -1335,7 +1335,9 @@ div.forwarded-person>div {
   text-align: left;
   border-radius: 3px;
 }
-
+ul.stdc-employees-list {
+  float: left;
+}
 ul.employees-list {
   margin-top: 40px;
   list-style-type: none;

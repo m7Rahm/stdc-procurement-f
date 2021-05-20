@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { MdAdd } from 'react-icons/md'
 import { WebSocketContext } from '../../../pages/SelectModule'
 import Modal from '../../Misc/Modal'
+import "../../../styles/styles.scss"
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
   const webSocket = useContext(WebSocketContext)
@@ -29,7 +30,7 @@ const NewOrder = (props) => {
       {
         isModalVisible &&
         <Suspense fallback="">
-          <Modal title="Yeni Sifariş" changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
+          <Modal style={{ width: "40rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
             {(props) => <OrderModal handleModalClose={handleClose} {...props} />}
           </Modal>
         </Suspense>

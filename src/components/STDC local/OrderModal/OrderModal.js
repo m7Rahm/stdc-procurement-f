@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import "./OrderModal.scss";
-import ForwardDocAdvanced from "../ForwardDocLayout/ForwardDocAdvanced.js";
+import ForwardDocLayout from "../ForwardDocLayout/ForwardDocLayout";
 import FirstPage from "./FirstPage";
-
+import NewOrderContent from "../../modal content/NewOrder"
 const OrderModal = (props) => {
   const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
   const actPageRef = useRef(null);
@@ -24,10 +24,13 @@ const OrderModal = (props) => {
         animationendEventListener,
         false
       );
-      setWhichPage((prevState) => ({
-        page: prevState.page - 1,
-        animationName: "slide_geri_next",
-      }));
+      setWhichPage((prevState) => {
+        props.modalWrapperRef.current.style.width = prevState.page === 3 ? "90%" : "40rem";
+        return prevState.page > 1 ? {
+          page: prevState.page - 1,
+          animationName: "slide_geri_next",
+        } : prevState;
+      });
     };
     actPageRef.current.addEventListener(
       "animationend",
@@ -44,11 +47,14 @@ const OrderModal = (props) => {
         animationendEventListener,
         false
       );
-      setWhichPage((prevState) => prevState.page < 3 ? {
-        page: prevState.page + 1,
-        animationName: "slide_davam_next",
-      } : prevState);
-    };
+      setWhichPage(prevState => {
+        props.modalWrapperRef.current.style.minWidth = prevState.page === 1 ? "90%" : "40rem";
+        return prevState.page < 3 ? {
+          page: prevState.page + 1,
+          animationName: "slide_davam_next",
+        } : prevState;
+      });
+    }
     actPageRef.current.addEventListener(
       "animationend",
       animationendEventListener,
@@ -92,7 +98,7 @@ const OrderModal = (props) => {
 
   return (
     <>
-      <h1 className="md-header">Sifariş</h1>
+      {/* <h1 className="md-header">Sifariş</h1> */}
       {whichPage.page === 1 ? (
         <FirstPage
           ref={actPageRef}
@@ -102,7 +108,7 @@ const OrderModal = (props) => {
           serviceType={props.serviceType}
           setLastDate={props.setLastDate}
           animName={whichPage.animationName}
-          handleDateChange={props.setHandleChange}
+          setHandleDateChange={props.setHandleChange}
         />
       ) : whichPage.page === 2 ? (
         <div
@@ -110,22 +116,16 @@ const OrderModal = (props) => {
           style={{ animationName: whichPage.animationName }}
           ref={actPageRef}
         >
-          <form>
-            {/*get back selected data*/}
-            {/* <ProductTable
-                                setSelectedData={props.setSelectedData}
-                            /> */}
-          </form>
+          <NewOrderContent />
         </div>
       ) : whichPage.page === 3 ? (
         <div className="page-container" ref={actPageRef}>
-          <form>
-            <ForwardDocAdvanced
-              handleSendClick={handleSendClick}
-              receivers={props.receivers}
-              setReceivers={props.setReceivers}
-            />
-          </form>
+          <ForwardDocLayout
+            handleSendClick={handleSendClick}
+            receivers={props.receivers}
+            textareaVisible={false}
+            setReceivers={props.setReceivers}
+          />
         </div>
       ) : (
         <div></div>
@@ -156,7 +156,7 @@ const OrderModal = (props) => {
           onMouseUp={mouseUpHandlerDavam}
           onMouseOver={mouseOverHandlerDavam}
           onMouseLeave={mouseLeaveHandlerDavam}
-        > 
+        >
           {davamText}
         </button>
       </div>

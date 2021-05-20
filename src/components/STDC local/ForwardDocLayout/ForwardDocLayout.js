@@ -1,8 +1,8 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
-import useFetch from './useFetch';
+import useFetch from '../../../hooks/useFetch';
 import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
-    const { handleSendClick, textareaVisible = true } = props;
+    const { textareaVisible = true } = props;
     const [empList, setEmpList] = useState([]);
     const [receivers, setReceivers] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -11,7 +11,6 @@ const ForwardDocLayout = (props) => {
     const empListRef = useRef(null);
     const textareaRef = useRef(null);
     const fetchGet = useFetch("GET");
-    
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted)
@@ -88,11 +87,6 @@ const ForwardDocLayout = (props) => {
                             )
                         }
                     </ul>
-                </div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div className="send-order" onClick={() => handleSendClick(receivers, textareaRef.current.value)}>
-                    Göndər
                 </div>
             </div>
             <ForwardedPeople
