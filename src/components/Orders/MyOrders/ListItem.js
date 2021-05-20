@@ -27,11 +27,11 @@ const OrderContentWithChat = (props) => {
   const fetchGet = useFetch("GET");
   const fetchPost = useFetch("POST")
   const fetchMessages = useCallback((from = 0) =>
-    fetchGet(`http://192.168.0.182:54321/api/messages/${props.id}?from=${from}&replyto=0&doctype=${10}`)
+    fetchGet(`/api/messages/${props.id}?from=${from}&replyto=0&doctype=${10}`)
     , [props.id, fetchGet]);
   const sendMessage = useCallback((data) => {
     const apiData = { ...data, docType: 10 };
-    return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
+    return fetchPost(`/api/send-message`, apiData)
   }, [fetchPost]);
   return (
     <>
@@ -76,7 +76,7 @@ const ListItem = (props) => {
   const onInfoClick = () => {
     const onSendClick = (data, setOperationResult) => {
       const reqData = data;
-      fetchPost("http://192.168.0.182:54321/api/new-order", reqData)
+      fetchPost("/api/new-order", reqData)
         .then(respJ => {
           if (respJ[0].result === "success") {
             const message = {

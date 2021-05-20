@@ -14,7 +14,7 @@ const ContractRelatedDocs = (props) => {
     useEffect(() => {
         let mounted = true;
         if (props.id !== 0 && mounted)
-            fetchGet(`http://192.168.0.182:54321/api/contract-related-docs/${props.id}`)
+            fetchGet(`/api/contract-related-docs/${props.id}`)
                 .then(respJ => {
                     if (mounted) {
                         props.stateRef.current.relatedDocs = respJ;
@@ -60,7 +60,7 @@ const ContractsList = (props) => {
     useEffect(() => {
         let mounted = true
         const controller = new AbortController();
-        fetchGet('http://192.168.0.182:54321/api/contract-agreements')
+        fetchGet('/api/contract-agreements')
             .then(respJ => {
                 if (mounted)
                     setAgreements({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 })

@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import Modal from "../../../components/Modal/Modal";
 import "./OrderModal.scss";
 import ForwardDocAdvanced from "../ForwardDocLayout/ForwardDocAdvanced.js";
 import FirstPage from "./FirstPage";
@@ -8,8 +7,7 @@ const OrderModal = (props) => {
   const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
   const actPageRef = useRef(null);
 
-  let davamText = "Davam";
-  whichPage.page === 3 ? (davamText = "Sifariş et") : (davamText = "Davam");
+  const davamText = whichPage.page === 3 ? "Sifariş et" : "Davam";
 
   const handleDateChange = (date) => {
     props.setLastDate(date);
@@ -39,28 +37,24 @@ const OrderModal = (props) => {
   };
 
   const forwardClickHandler = () => {
-    if (davamText === "Davam") {
-      actPageRef.current.style.animationName = "slide_davam_current";
-      const animationendEventListener = () => {
-        actPageRef.current.removeEventListener(
-          "animationend",
-          animationendEventListener,
-          false
-        );
-        setWhichPage((prevState) => ({
-          page: prevState.page + 1,
-          animationName: "slide_davam_next",
-        }));
-      };
-      actPageRef.current.addEventListener(
+    actPageRef.current.style.animationName = "slide_davam_current";
+    const animationendEventListener = () => {
+      actPageRef.current.removeEventListener(
         "animationend",
         animationendEventListener,
         false
       );
-    }
+      setWhichPage((prevState) => prevState.page < 3 ? {
+        page: prevState.page + 1,
+        animationName: "slide_davam_next",
+      } : prevState);
+    };
+    actPageRef.current.addEventListener(
+      "animationend",
+      animationendEventListener,
+      false
+    );
   };
-  // if (actPageRef.current)
-  //     console.log(actPageRef.current.style.animationName)
 
   const mouseDownHandlerGeri = (e) => {
     const target = e.target;
@@ -97,12 +91,7 @@ const OrderModal = (props) => {
   };
 
   return (
-    <Modal
-      show={props.show}
-      setShow={props.setShow}
-      minimizeHandler={props.minimizeHandler}
-      closeHandler={props.closeHandler}
-    >
+    <>
       <h1 className="md-header">Sifariş</h1>
       {whichPage.page === 1 ? (
         <FirstPage
@@ -167,11 +156,11 @@ const OrderModal = (props) => {
           onMouseUp={mouseUpHandlerDavam}
           onMouseOver={mouseOverHandlerDavam}
           onMouseLeave={mouseLeaveHandlerDavam}
-        >
+        > 
           {davamText}
         </button>
       </div>
-    </Modal>
+    </>
   );
 };
 

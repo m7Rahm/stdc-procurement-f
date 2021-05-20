@@ -36,7 +36,7 @@ const ExpressVendors = () => {
             risk_zone: 0,
             is_closed: 0
         };
-        fetchPost('http://192.168.0.182:54321/api/get-express-vendors', data)
+        fetchPost('/api/get-express-vendors', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setExpressVendors({ count: totalCount, vendors: respJ });
@@ -68,7 +68,7 @@ const ExpressVendors = () => {
             is_closed: searchDataRef.current.is_closed.value,
             from: from
         };
-        fetchPost('http://192.168.0.182:54321/api/get-express-vendors', data)
+        fetchPost('/api/get-express-vendors', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setExpressVendors({ count: totalCount, vendors: respJ });
@@ -88,7 +88,7 @@ const ExpressVendors = () => {
                 is_closed: searchDataRef.current.is_closed.value,
                 from: 0
             };
-            fetchPost('http://192.168.0.182:54321/api/get-express-vendors', data)
+            fetchPost('/api/get-express-vendors', data)
                 .then(respJ => {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                     closeModal();

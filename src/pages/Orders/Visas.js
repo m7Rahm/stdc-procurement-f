@@ -19,7 +19,7 @@ const Visas = () => {
   const initid = rIndex ? rIndex[1] : undefined
   const [active, setActive] = useState({ orderid: orderid, initid: initid });
   const fetchPost = useFetch("POST");
-  const updateList = useCallback((data) => fetchPost('http://192.168.0.182:54321/api/visas', data), [fetchPost]);
+  const updateList = useCallback((data) => fetchPost('/api/visas', data), [fetchPost]);
   return (
     <div style={{ display: 'flex', position: 'relative' }}>
       <SideBar

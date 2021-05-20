@@ -51,7 +51,7 @@ const Search = (props) => {
 	}
 	const fetchGet = useFetch("GET");
 	useEffect(() => {
-		fetchGet("http://192.168.0.182:54321/api/departments")
+		fetchGet("/api/departments")
 			.then(resp => {
 				departmentRef.current = resp;
 				setDepartments(resp)

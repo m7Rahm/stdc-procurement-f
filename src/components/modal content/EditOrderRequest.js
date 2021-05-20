@@ -18,7 +18,7 @@ const EditOrderRequest = (props) => {
     const glCatid = orderState.length !== 0 ? orderState[0].gl_category_id : ''
     const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/gl-categories')
+        fetchGet('/api/gl-categories')
             .then(respJ => {
                 const main = respJ.filter(glCategory => glCategory.dependent_id === null)
                 setGlCategories({ all: respJ, main: main });
@@ -26,7 +26,7 @@ const EditOrderRequest = (props) => {
             .catch(err => console.log(err))
     }, [fetchGet, view]);
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${ordNumb}&vers=${version}`)
+        fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
             .then(respJ => {
                 const orderRows = respJ.map(row => ({ ...row, models: [], className: '' }));
                 initialValuesRef.current = respJ;

@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {
-	MdAdd,
-	MdEdit
-} from 'react-icons/md'
+import { MdAdd, MdEdit } from 'react-icons/md'
 import Pagination from '../../components/Misc/Pagination'
 import Modal from '../../components/Misc/Modal'
-import EditUser from '../../components/Admin/EditUser'
+import EditUser from '../../components/admin/EditUser'
 import StatusButton from '../../components/Misc/StatusButton';
 import useFetch from '../../hooks/useFetch'
 const Users = () => {
@@ -14,7 +11,7 @@ const Users = () => {
 	const [modal, setModal] = useState({ visible: false, content: undefined });
 	const fetchGet = useFetch("GET");
 	const updateList = (from) => {
-		fetchGet(`http://192.168.0.182:54321/api/get-users?from=${from}&next=20`)
+		fetchGet(`/api/get-users?from=${from}&next=20`)
 			.then(respJ => {
 				const totalCount = respJ[0] ? respJ[0].total_count : 0;
 				setUsers({ count: totalCount, users: respJ })
@@ -22,7 +19,7 @@ const Users = () => {
 			.catch(ex => console.log(ex))
 	}
 	useEffect(() => {
-		fetchGet(`http://192.168.0.182:54321/api/get-users?from=0&next=20`)
+		fetchGet(`/api/get-users?from=0&next=20`)
 			.then(respJ => {
 				const totalCount = respJ[0] ? respJ[0].total_count : 0;
 				setUsers({ count: totalCount, users: respJ })
@@ -36,7 +33,7 @@ const Users = () => {
 		const editUser = (props) => <EditUser updateList={updateList} closeModal={closeModal} id={user.id} {...props} />
 		setModal({ visible: true, content: editUser, title: user.full_name })
 	}
-	const updateFunc = (id, state) => fetchGet(`http://192.168.0.182:54321/api/change-user-status?userid=${id}&status=${state}`)
+	const updateFunc = (id, state) => fetchGet(`/api/change-user-status?userid=${id}&status=${state}`)
 		.catch(ex => console.log(ex))
 	return (
 		<div style={{ paddingTop: '56px' }}>

@@ -33,7 +33,7 @@ const ContractsHOC = (Content) => function Payments(props) {
             setActive({ active: docid })
     }, [docid])
     const [active, setActive] = useState({ active: Number(docid) });
-    const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=${props.docType}&docid=${active.active}` : ""
+    const apiString = active.active ? `/api/doc-content?doctype=${props.docType}&docid=${active.active}` : ""
     const closeModal = () => {
         setModalState({ visible: false, content: null })
     }

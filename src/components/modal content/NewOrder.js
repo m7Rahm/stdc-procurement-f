@@ -20,7 +20,7 @@ const NewOrderContent = (props) => {
   const fetchGet = useFetch("GET");
   const fetchPost = useFetch("POST");
   useEffect(() => {
-    fetchGet('http://192.168.0.182:54321/api/gl-categories')
+    fetchGet('/api/gl-categories')
       .then(respJ => {
         const parent = respJ.filter(glCategory => glCategory.dependent_id === 0);
         const sub = respJ.filter(glCategory => glCategory.dependent_id !== 0);
@@ -82,14 +82,14 @@ const NewOrderContent = (props) => {
           ordNumb: ''
         };
         //todo: create socket and connect
-        fetchPost('http://192.168.0.182:54321/api/orders', apiData)
+        fetchPost('/api/orders', apiData)
           .then(respJ => {
             closeModal(respJ, recs);
           })
           .catch(err => console.log(err))
       }
       if (active)
-        createApproveNewOrder(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
+        createApproveNewOrder(materials, '/api/new-order', onSuccess)
     }
   }
   const handleSendClickCallback = useCallback(handleSendClick, [orderInfo]);

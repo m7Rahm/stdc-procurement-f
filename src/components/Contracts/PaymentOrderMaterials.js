@@ -138,7 +138,7 @@ const ContractsList = React.memo((props) => {
         let mounted = true;
         const controller = new AbortController();
         if (props.vendorid)
-            fetchGet("http://192.168.0.182:54321/api/vendor-contracts/" + props.vendorid, controller)
+            fetchGet("/api/vendor-contracts/" + props.vendorid, controller)
                 .then(respJ => {
                     if (mounted)
                         setDocuments({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 })

@@ -21,7 +21,7 @@ const OrderMaterials = () => {
             from: from,
             next: 20
         }
-        fetchPost('http://192.168.0.182:54321/api/get-models', data)
+        fetchPost('/api/get-models', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setTableData({ count: totalCount, content: respJ });
@@ -29,17 +29,17 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/gl-categories')
+        fetchGet('/api/gl-categories')
             .then(respJ => {
                 glCategoriesRef.current = respJ;
                 const glCategories = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories(glCategories);
             })
             .catch(ex => console.log(ex))
-        fetchGet('http://192.168.0.182:54321/api/cluster-names')
+        fetchGet('/api/cluster-names')
             .then(respJ => setUnits(respJ))
             .catch(ex => console.log(ex))
-        fetchGet('http://192.168.0.182:54321/api/departments')
+        fetchGet('/api/departments')
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
     }, [fetchGet])
@@ -50,7 +50,7 @@ const OrderMaterials = () => {
             from: 0,
             next: 20
         }
-        fetchPost('http://192.168.0.182:54321/api/get-models', data)
+        fetchPost('/api/get-models', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setTableData({ count: totalCount, content: respJ });
@@ -144,7 +144,7 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
             isEsasVesait: esasVesaitRef.current.checked,
             optimal_quantity: optimalQuantity.current.value
         };
-        fetchPost('http://192.168.0.182:54321/api/update-material', data)
+        fetchPost('/api/update-material', data)
             .then(() => setDisabled(true))
             .catch(ex => console.log(ex))
     }
@@ -264,7 +264,7 @@ const NewMaterial = React.memo((props) => {
             optimal_quantity: optimalQuantity.current.value
         };
         if (data.title !== "" && gl_category_id !== "-1" && data.sub_gl_category_id !== "-1")
-            fetchPost('http://192.168.0.182:54321/api/add-new-cat', data)
+            fetchPost('/api/add-new-cat', data)
                 .then(respJ => {
                     if (respJ[0].result === 'success') {
                         const { row_id: id, product_id } = respJ[0];

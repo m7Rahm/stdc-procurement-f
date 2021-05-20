@@ -10,7 +10,7 @@ const NewOrderHeader = (props) => {
     const dependents = structures.filter(structure => structure.parent_id === structureid);
     const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/departments')
+        fetchGet('/api/departments')
             .then(respJ => setStructures(respJ))
             .catch(ex => console.log(ex))
     }, [fetchGet])

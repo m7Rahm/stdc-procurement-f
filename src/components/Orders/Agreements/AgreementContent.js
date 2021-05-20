@@ -19,7 +19,7 @@ const AgreementContent = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if (docid && mounted)
-            fetchGet(`http://192.168.0.182:54321/api/agreement-content?docid=${docid}`)
+            fetchGet(`/api/agreement-content?docid=${docid}`)
                 .then(respJ => {
                     if (mounted && respJ.length !== 0)
                         setDocState(prev => ({ ...prev,
@@ -33,11 +33,11 @@ const AgreementContent = (props) => {
                 .catch(ex => console.log(ex));
         return () => mounted = false
     }, [docid, fetchGet]);
-    const fetchMaterials = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/agreement-materials/${docid}`), [docid, fetchGet]);
-    const fetchMessages = useCallback((from = 0) => fetchGet(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`), [docid, fetchGet, documentType]);
+    const fetchMaterials = useCallback(() => fetchGet(`/api/agreement-materials/${docid}`), [docid, fetchGet]);
+    const fetchMessages = useCallback((from = 0) => fetchGet(`/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`), [docid, fetchGet, documentType]);
     const sendMessage = useCallback((data) => {
         const apiData = { ...data, docType: documentType };
-        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
+        return fetchPost(`/api/send-message`, apiData)
     }, [fetchPost, documentType]);
     return (
         <div className="visa-content-container" style={{ padding: '68px 20px 20px 20px', maxWidth: '1256px', margin: 'auto' }}>

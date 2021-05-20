@@ -30,12 +30,12 @@ const Budget = () => {
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/departments')
+        fetchGet('/api/departments')
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
     }, [fetchGet]);
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/gl-categories')
+        fetchGet('/api/gl-categories')
             .then(respJ => {
                 categories.current = respJ;
                 const glCategories = respJ.filter(category => category.dependent_id === 0);
@@ -51,7 +51,7 @@ const Budget = () => {
             from: page,
             next: 20
         };
-        fetchPost('http://192.168.0.182:54321/api/get-budgets', data)
+        fetchPost('/api/get-budgets', data)
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 setBudgets({ count: totalCount, budgets: respJ });

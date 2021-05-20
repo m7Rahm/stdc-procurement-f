@@ -18,7 +18,7 @@ const AgreementsList = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted) {
-            fetchGet(`http://192.168.0.182:54321/api/agreements-per-ord-mat-id/${props.id}`)
+            fetchGet(`/api/agreements-per-ord-mat-id/${props.id}`)
                 .then(respJ => {
                     if (mounted) {
                         setAgreements(respJ)

@@ -18,7 +18,7 @@ const ExpressContracts = () => {
             from: activePageRef.current,
             number: numberRef.current.value
         };
-        fetchPost('http://192.168.0.182:54321/api/get-express-contracts', data)
+        fetchPost('/api/get-express-contracts', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setContracts({ count: totalCount, content: respJ });
@@ -37,7 +37,7 @@ const ExpressContracts = () => {
         const idStartIndex = window.location.search.indexOf("i=")
         const defaultid = idStartIndex !== -1 ? window.location.search.substring(idStartIndex + 2) : 0
         const apiData = defaultid ? { id: defaultid } : {}
-        fetchPost('http://192.168.0.182:54321/api/get-express-contracts', apiData)
+        fetchPost('/api/get-express-contracts', apiData)
             .then(respJ => {
                 if (respJ) {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;

@@ -17,7 +17,7 @@ const GlCategories = () => {
     const fetchUpdateList = useFetch("GET");
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        fetchUpdateList(`http://192.168.0.182:54321/api/budget-gl-categories?from=0&all=true`)
+        fetchUpdateList(`/api/budget-gl-categories?from=0&all=true`)
             .then(respJ => {
                 const totalCount = respJ[0].total_count;
                 const parents = respJ.filter(category => category.dependent_id === 0);
@@ -25,7 +25,7 @@ const GlCategories = () => {
                 setLoading(false)
             })
             .catch(ex => console.log(ex));
-        fetchUpdateList("http://192.168.0.182:54321/api/departments")
+        fetchUpdateList("/api/departments")
             .then(respJ => {
                 const warehouse = respJ.filter(department => department.type === 2)
                 const procurement = respJ.filter(department => department.type === 3);
@@ -38,7 +38,7 @@ const GlCategories = () => {
             query += `&code=${codeRef.current.value}`
         if (glCategoryRef.current.value !== "0")
             query += `&parentid=${glCategoryRef.current.value}`
-        fetchUpdateList(`http://192.168.0.182:54321/api/budget-gl-categories?from=${from}${query}`)
+        fetchUpdateList(`/api/budget-gl-categories?from=${from}${query}`)
             .then(respJ => {
                 const totalCount = respJ[0].total_count;
                 setGlCategories(prev => ({ ...prev, content: respJ, count: totalCount }))
@@ -168,7 +168,7 @@ const GlCategoryRow = (props) => {
     const updateGlCategory = useFetch("POST")
     const handleSave = () => {
         const data = { ...rowData, id: props.id };
-        updateGlCategory("http://192.168.0.182:54321/api/update-gl-category", data)
+        updateGlCategory("/api/update-gl-category", data)
             .then(_ => {
                 setDisabled(true)
                 if (rowData.name !== props.name || rowData.code !== props.code)
@@ -253,7 +253,7 @@ const NewGlCategory = (props) => {
             isAmortisized: capexRef.current.checked,
             perc: percentageRef.current.value
         }
-        fetchAddCategory("http://192.168.0.182:54321/api/new-gl-category", data)
+        fetchAddCategory("/api/new-gl-category", data)
             .then(respJ => {
                 props.setGlCategories(prev => {
                     const all = [...prev.all, { ...data, id: respJ[0].id }];

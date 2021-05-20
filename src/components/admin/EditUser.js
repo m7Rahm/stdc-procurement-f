@@ -40,7 +40,7 @@ const EditUser = (props) => {
             position_id: statusRef.current.value,
             vezifeN: positionRef.current.value
         };
-        fetchPost("http://192.168.0.182:54321/api/update-user-data", data)
+        fetchPost(`/api/update-user-data`, data)
             .then(respJ => {
                 if (respJ[0].result === "success")
                     closeModal()
@@ -49,7 +49,7 @@ const EditUser = (props) => {
     }
     const addNewUser = () => {
         const data = { ...userData, vezifeN: positionRef.current.value, position_id: statusRef.current.value };
-        fetchPost('http://192.168.0.182:54321/api/add-new-user', data)
+        fetchPost(`/api/add-new-user`, data)
             .then(respJ => {
                 if (respJ[0].result === 'success') {
                     props.updateList(0);
@@ -61,7 +61,7 @@ const EditUser = (props) => {
         let mounted = true;
         const abortController = new AbortController();
         if (id !== undefined)
-            fetchGet(`http://192.168.0.182:54321/api/user/${id}`)
+            fetchGet(`/api/user/${id}`)
                 .then(respJ => {
                     if (respJ.length && mounted) {
                         setUserData(respJ[0]);
@@ -99,7 +99,7 @@ const EditUser = (props) => {
                 password: password,
                 id: id
             }
-            fetchPost("http://192.168.0.182:54321/api/reset-password", data)
+            fetchPost(`/api/reset-password`, data)
                 .then(respJ => {
                     if (respJ[0].result === "success")
                         setResetPasswordVisibility(false);
@@ -237,7 +237,7 @@ const Roles = (props) => {
     useEffect(() => {
         let mounted = true;
         const abortController = new AbortController();
-        fetchGet(`http://192.168.0.182:54321/api/roles`, abortController)
+        fetchGet(`/api/roles`, abortController)
             .then(respJ => {
                 if (mounted)
                     setRoles(respJ)
@@ -285,7 +285,7 @@ const StructureInfo = (props) => {
     const { isProtected, userData, handleChange, fetchGet } = props;
     const [departments, setStructures] = useState([]);
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/departments`)
+        fetchGet(`/api/departments`)
             .then(respJ => {
                 setStructures(respJ)
             })

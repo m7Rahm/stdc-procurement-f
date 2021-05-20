@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import StatusButton from '../../components/Misc/StatusButton'
 import { MdEdit, MdAdd } from 'react-icons/md'
 import Modal from '../../components/Misc/Modal'
-import UpdateRole from '../../components/Admin/UpdateRole'
+import UpdateRole from '../../components/admin/UpdateRole'
 import useFetch from '../../hooks/useFetch'
 const Roles = () => {
     const [modal, setModal] = useState({ content: null, state: false })
@@ -17,13 +17,13 @@ const Roles = () => {
         setModal({ content: updateRole, state: true, title: role.name })
     }
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/roles')
+        fetchGet('/api/roles')
             .then(respJ => setRoles(respJ))
             .catch(ex => console.log(ex));
     }, [fetchGet]);
     const updateFunc = (id, state) => {
         const data = { ...roles.find(role => role.id === id), active_passive: state }
-        fetchPost('http://192.168.0.182:54321/api/update-role', data)
+        fetchPost('/api/update-role', data)
             .catch(ex => console.log(ex))
     }
     const changeModalState = () => setModal({ content: null, state: false })

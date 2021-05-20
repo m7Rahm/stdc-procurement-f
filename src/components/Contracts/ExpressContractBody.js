@@ -30,7 +30,7 @@ const ExpressContractBody = (props) => {
         formData.append("relatedDocs", relatedDocs);
         for (let i = 0; i < stateRef.current.files.new.length; i++)
             formData.append("files", stateRef.current.files.new[i]);
-        fetch("http://192.168.0.182:54321/api/new-express-contract", {
+        fetch("/api/new-express-contract", {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + token
@@ -59,7 +59,7 @@ const ExpressContractBody = (props) => {
         formData.append("activeFiles", activeFiles)
         for (let i = 0; i < stateRef.current.files.new.length; i++)
             formData.append("files", stateRef.current.files.new[i]);
-        fetch("http://192.168.0.182:54321/api/update-express-contract", {
+        fetch("/api/update-express-contract", {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + token
@@ -94,7 +94,7 @@ const ExpressContractBody = (props) => {
     const action = props.id === 0 ? createContract : updateContract
     useEffect(() => {
         if (props.id !== 0) {
-            fetchGet(`http://192.168.0.182:54321/api/express-contract/${props.id}`)
+            fetchGet(`/api/express-contract/${props.id}`)
                 .then(respJ => {
                     setContractState(respJ)
                 })

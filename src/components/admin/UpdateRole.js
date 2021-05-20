@@ -13,7 +13,7 @@ const UpdateRole = (props) => {
     const selectMenusRef = useRef(null);
     const fetchPost = useFetch("POST");
     const saveChanges = () => {
-        fetchPost('http://192.168.0.182:54321/api/update-role', roleData)
+        fetchPost(`/api/update-role`, roleData)
             .then(respJ => {
                 if (respJ[0].result === 'success') {
                     if (roleData.id !== -1)

@@ -28,7 +28,7 @@ const Login = (props) => {
             }, false)
     }, [isPasswordCorrect])
     const handleLoginCheck = () => {
-        loginFunc('http://192.168.0.182:54321/api/login', userCreds)
+        loginFunc('/api/login', userCreds)
             .then(respJ => {
                 if (!respJ.token)
                     setIsPasswordCorrect(false);
@@ -73,8 +73,8 @@ const Login = (props) => {
         <div className="login-container">
             <div className="login">
                 <img
-                    src='/Expresss.svg'
-                    alt="express logo"
+                    src='/STDC.svg'
+                    alt="stdc logo"
                     height="50"
                     style={{ margin: "auto", display: "block" }} />
                 <div>

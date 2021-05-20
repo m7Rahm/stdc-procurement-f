@@ -27,7 +27,7 @@ const StructureBudget = (props) => {
                 structureid,
                 glCategoryid: 0
             };
-            fetchPost(`http://192.168.0.182:54321/api/structure-budget-per-gl-category`, data)
+            fetchPost(`/api/structure-budget-per-gl-category`, data)
                 .then(respJ => {
                     const totalCount = respJ[0] ? respJ[0].total_count : 0;
                     setStructureBudget({ count: totalCount, budgets: respJ });

@@ -18,7 +18,7 @@ const AgreementVendors = (props) => {
     useEffect(() => {
         let mounted = true;
         if (props.active) {
-            fetchGet(`http://192.168.0.182:54321/api/agreement-vendors/${props.active}`)
+            fetchGet(`/api/agreement-vendors/${props.active}`)
                 .then(respJ => {
                     if (mounted)
                         setAgreementVendors(respJ)
@@ -41,7 +41,7 @@ const AgreementVendors = (props) => {
                 action: -1,
                 tranid: props.tranid
             }
-            fetchPost('http://192.168.0.182:54321/api/accept-decline-agreement', data)
+            fetchPost('/api/accept-decline-agreement', data)
                 .then(respJ => {
                     if (respJ.length === 0) {
                         closeModal();
@@ -69,7 +69,7 @@ const AgreementVendors = (props) => {
                 action: 1,
                 tranid: props.tranid
             };
-            fetchPost('http://192.168.0.182:54321/api/accept-decline-agreement', data)
+            fetchPost('/api/accept-decline-agreement', data)
                 .then(respJ => {
                     if (respJ.length !== 0) {
                         props.setDocState(prev => ({ ...prev, userResult: 1, actionDate: 'İndicə' }))
@@ -93,7 +93,7 @@ const AgreementVendors = (props) => {
                 agreementid: props.active,
                 comment: comment
             }
-            fetchPost('http://192.168.0.182:54321/api/cancel-agreement', data)
+            fetchPost('/api/cancel-agreement', data)
                 .then(respJ => {
                     if (respJ.length === 0) {
                         closeModal();

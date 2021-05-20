@@ -6,11 +6,14 @@ import SelectModule from './pages/SelectModule'
 import './styles/App.css';
 import { modules } from './data/data';
 import Loading from './components/Misc/Loading';
+import { serverAddress, serverPort } from "./data/data"
+
 const Login = React.lazy(() => import('./pages/Login'));
 
 const getUserData = () => {
-  if (localStorage.getItem('token')) {
-    const decoded = jwt.decode(localStorage.getItem('token'));
+  const token = localStorage.getItem('token')
+  if (token) {
+    const decoded = jwt.decode(token);
     const id = decoded.data.id;
     const userModules = decoded.data.modules.split(',');
     const previliges = decoded.data.previliges.split(',');
@@ -35,14 +38,14 @@ const App = () => {
   const logout = () => {
     setToken({ token: '', userData: {} })
     localStorage.removeItem('token');
-    window.location.replace('http://192.168.0.182:62447/?from=procurement&action=logout')
+    window.location.replace(`${serverAddress}:${serverPort}/?from=procurement&action=logout`)
   }
   // localStorage.removeItem("token")
   useEffect(() => {
     if (/from=(.*)/.test(location.search)) {
       if (location.search.match(/from=(.*)&/)[1] === 'warehouse' && location.search.match(/action=(.*)/)[1] === 'login') {
         if (token.token)
-          window.location.replace("http://192.168.0.182:62447/login?token=" + token.token)
+          window.location.replace(`${serverAddress}:${serverPort}/login?token=${token.token}`)
         else
           history.replace('/login')
       }

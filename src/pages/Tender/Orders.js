@@ -36,7 +36,7 @@ const Orders = () => {
     const searchStateRef = useRef({ result: 0 });
     const [initData, setInitData] = useState(init);
     const fetchPost = useFetch("POST");
-    const updateListContent = useCallback((data) => fetchPost('http://192.168.0.182:54321/api/get-ready-orders', data), [fetchPost])
+    const updateListContent = useCallback((data) => fetchPost('/api/get-ready-orders', data), [fetchPost])
     return (
         <div className="agreements-container">
             <SideBar

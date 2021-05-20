@@ -27,7 +27,7 @@ const VisaContentFooter = (props) => {
             receivers: receivers.map(receiver => [receiver.id]),
             comment: comment
         }
-        fetchPost(`http://192.168.0.182:54321/api/forward-order/${current.order_id}`, data)
+        fetchPost(`/api/forward-order/${current.order_id}`, data)
             .then(respJ => {
                 if (respJ.length === 0)
                     forwardDoc(receivers)

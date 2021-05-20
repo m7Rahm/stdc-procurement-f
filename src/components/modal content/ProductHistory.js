@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react"
 import CalendarUniversal from "../Misc/CalendarUniversal"
 import useFetch from "../../hooks/useFetch"
 import { FaArrowRight } from "react-icons/fa";
+import { serverAddress, serverPort } from "../../data/data"
 const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth();
@@ -23,19 +24,19 @@ const ProductHistory = (props) => {
         const year = prevYear ? date.getFullYear() - 1 : date.getFullYear();
         const dateFrom = `${year}-${month < 10 ? "0" + month : month}-01`
         const data = { productid: productid, subGlCategoryid: subGlCategory, dateFrom, dateTo: "" }
-        fetchPost("http://192.168.0.182:54321/api/get-product-history", data)
+        fetchPost("/api/get-product-history", data)
             .then(resp => setHistory(resp))
             .catch(ex => console.log(ex))
     }, [fetchPost, productid, subGlCategory]);
     const navigateToContract = (id) => {
-        window.location.href = "/contracts/express-contracts?i=" + id
+        window.location.href = `${serverAddress}:${serverPort}/contracts/express-contracts?i=${id}`
     }
     const handleSearch = () => {
         if ((/^\d{4}([-])\d{2}\1\d{2}$/gi.test(searchStateRef.current.dateTo) || searchStateRef.current.dateTo === "")
             &&
             (/^\d{4}([-])\d{2}\1\d{2}$/gi.test(searchStateRef.current.dateFrom) || searchStateRef.current.dateFrom === "")) {
             const data = { productid: productid, subGlCategoryid: subGlCategory, ...searchStateRef.current }
-            fetchPost("http://192.168.0.182:54321/api/get-product-history", data)
+            fetchPost("/api/get-product-history", data)
                 .then(resp => setHistory(resp))
                 .catch(ex => console.log(ex))
         }

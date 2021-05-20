@@ -12,7 +12,7 @@ const Structure = () => {
     const fetchPost = useFetch("POST");
     const [activeDepartments, setActiveDepartments] = useState([]);
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/departments?active=0&from=0')
+        fetchGet('/api/departments?active=0&from=0')
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 setDepartments({ content: respJ, count: totalCount })
@@ -20,12 +20,12 @@ const Structure = () => {
             .catch(ex => console.log(ex))
     }, [fetchGet]);
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/departments')
+        fetchGet('/api/departments')
             .then(respJ => setActiveDepartments(respJ))
             .catch(ex => console.log(ex));
     }, [fetchGet])
     const updateList = (page) => {
-        fetchGet('http://192.168.0.182:54321/api/departments?active=0&from=' + page)
+        fetchGet('/api/departments?active=0&from=' + page)
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 setDepartments({ content: respJ, count: totalCount })
@@ -92,7 +92,7 @@ const NewStructureRow = (props) => {
     }
     const addStructure = () => {
         const data = newStructureData;
-        fetchPost('http://192.168.0.182:54321/api/new-structure', data)
+        fetchPost('/api/new-structure', data)
             .then(respJ => {
                 const id = respJ[0].id;
                 setNewStructureData({ name: '', parent_id: -1 });
@@ -187,7 +187,7 @@ const TableRow = (props) => {
     }
     const handleDone = () => {
         const data = { ...structureData, id: structure.id }
-        fetchPost('http://192.168.0.182:54321/api/update-structure', data)
+        fetchPost('/api/update-structure', data)
             .then(_ => {
                 setActiveDepartments(prev => prev.map(dep => dep.id === id ? structureData : dep))
                 setDisabled(true);
@@ -196,7 +196,7 @@ const TableRow = (props) => {
     }
     const updateFunc = (id, stat) => {
         const data = { ...structureData, id, active_passive: stat === 1 };
-        fetchPost('http://192.168.0.182:54321/api/update-structure', data)
+        fetchPost('/api/update-structure', data)
             .then(_ => {
                 setActiveDepartments(prev =>
                     stat === 0

@@ -29,7 +29,7 @@ const VisaContentHeader = (props) => {
 		}, receivers, respJ[1].origin_emp_id)
 	};
 	const editOrderAndApprove = (data, receivers, setOperationResult) => {
-		fetchPost(`http://192.168.0.182:54321/api/edit-accept-order-req/${tranid}`, data)
+		fetchPost(`/api/edit-accept-order-req/${tranid}`, data)
 			.then(respJ => {
 				if (respJ[0].result === 'success')
 					closeModal(respJ, receivers.map(receiver => receiver.id))

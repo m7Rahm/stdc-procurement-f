@@ -11,7 +11,7 @@ const Returned = () => {
   const activePageRef = useRef(0);
   const fetchGet = useFetch("GET");
   const updateList = (from) => {
-    fetchGet(`http://192.168.0.182:54321/api/returned-orders?from=${from}&until=20`)
+    fetchGet(`/api/returned-orders?from=${from}&until=20`)
       .then(respJ => {
         const totalCount = respJ[0] ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });
@@ -19,7 +19,7 @@ const Returned = () => {
       .catch(err => console.log(err))
   }
   useEffect(() => {
-    fetchGet(`http://192.168.0.182:54321/api/returned-orders?from=0&until=20`)
+    fetchGet(`/api/returned-orders?from=0&until=20`)
       .then(respJ => {
         const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });

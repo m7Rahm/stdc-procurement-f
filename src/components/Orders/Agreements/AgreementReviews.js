@@ -13,7 +13,7 @@ const AgreementReviews = (props) => {
     const [reviews, setReviews] = useState([]);
     const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/agreement-reviews/${props.agreementid}`)
+        fetchGet(`/api/agreement-reviews/${props.agreementid}`)
             .then(respJ => setReviews(respJ))
             .catch(ex => console.log(ex))
     }, [props.agreementid, fetchGet])

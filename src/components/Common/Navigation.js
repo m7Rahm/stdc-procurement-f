@@ -32,7 +32,7 @@ const Navigation = (props, ref) => {
                         return ({ ...prev, count: Number(prev.count + 1) })
                     })
                 else {
-                    fetchNotifications(`http://192.168.0.182:54321/api/notifications?from=0&active=1`)
+                    fetchNotifications(`/api/notifications?from=0&active=1`)
                         .then(respJ => {
                             if (respJ.length !== 0 && mounted) {
                                 setNotifications(prev => {
@@ -56,7 +56,7 @@ const Navigation = (props, ref) => {
     }, [props.webSocket, fetchNotifications]);
     useEffect(() => {
         let mounted = true;
-        fetchNotifications('http://192.168.0.182:54321/api/notifications?from=0')
+        fetchNotifications('/api/notifications?from=0')
             .then(respJ => {
                 if (mounted)
                     setNotifications(prev => ({ ...prev, count: respJ[0].total_count === 0 ? "" : respJ[0].total_count }))
@@ -65,7 +65,7 @@ const Navigation = (props, ref) => {
         const intersectionCallback = (entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    fetchNotifications(`http://192.168.0.182:54321/api/notifications?from=${from.current * 14}&active=1`)
+                    fetchNotifications(`/api/notifications?from=${from.current * 14}&active=1`)
                         .then(respJ => {
                             update.current = false;
                             if (respJ.length && mounted) {
@@ -114,7 +114,7 @@ const Navigation = (props, ref) => {
     }
     const handleNotificationsClick = () => {
         if (update.current) {
-            fetchNotifications(`http://192.168.0.182:54321/api/notifications?from=0&active=1`)
+            fetchNotifications(`/api/notifications?from=0&active=1`)
                 .then(respJ => {
                     if (respJ.length !== 0) {
                         setNotifications(prev => {
@@ -181,7 +181,7 @@ const Navigation = (props, ref) => {
     }
     const onNotificationClick = (notif) => {
         if (!notif.is_read)
-            fetchNotifications(`http://192.168.0.182:54321/api/update-notifcation-state/${notif.id}`)
+            fetchNotifications(`/api/update-notifcation-state/${notif.id}`)
                 .then(respJ => {
                     if (respJ.length === 0)
                         setNotifications(prev => {

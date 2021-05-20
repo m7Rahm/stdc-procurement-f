@@ -9,7 +9,7 @@ const DecomInventoryNumbers = (props) => {
         let mounted = true;
         const abortController = new AbortController();
         if (mounted && docid)
-            fetchInvenNums("http://192.168.0.182:54321/api/decomission-inven-nums?d=" + docid, abortController)
+            fetchInvenNums("/api/decomission-inven-nums?d=" + docid, abortController)
                 .then(respJ => {
                     if (mounted)
                         setInvenNums(respJ)

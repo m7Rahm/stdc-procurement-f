@@ -7,7 +7,7 @@ const PaymentMaterials = (props) => {
         let mounted = true;
         const abortController = new AbortController();
         if (mounted && props.pid) {
-            fetchGet(`http://192.168.0.182:54321/api/payment-materials?pid=${props.pid}`)
+            fetchGet(`/api/payment-materials?pid=${props.pid}`)
                 .then(respJ => {
                     if (mounted){
                         props.materialsRef.current = respJ

@@ -24,7 +24,7 @@ const BudgetIncRequestContent = (props) => {
     useEffect(() => {
         const abortController = new AbortController();
         if (docid) {
-            fetchDocContent(`http://192.168.0.182:54321/api/misc-doc-content?docid=${docid}&docType=${docType}`, abortController)
+            fetchDocContent(`/api/misc-doc-content?docid=${docid}&docType=${docType}`, abortController)
                 .then(respJ => {
                     if (respJ.length !== 0) {
                         setDocState({ content: respJ, active: respJ[0].doc_result === 0 && !respJ[0].user_result })
@@ -54,7 +54,7 @@ const BudgetIncRequestContent = (props) => {
             docid: docid,
             comment: textareaRef.current.value
         }
-        fetchAcceptDecline("http://192.168.0.182:54321/api/accept-budget-inc-req", data, abortController)
+        fetchAcceptDecline("/api/accept-budget-inc-req", data, abortController)
             .then(_ => {
                 setDocState(prev => ({ content: prev.content.map(row => ({ ...row, user_result: action })), active: false }))
                 props.setInitData(prev => ({ ...prev }))

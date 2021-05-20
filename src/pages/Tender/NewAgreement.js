@@ -6,7 +6,7 @@ const NewAgreement = () => {
     const [isEmpty, setIsEmpty] = useState(true);
     const fetchGet = useFetch("GET")
     const fetchFunction = useCallback(() =>
-        fetchGet('http://192.168.0.182:54321/api/get-agreement-in-staging-area'), [fetchGet])
+        fetchGet('/api/get-agreement-in-staging-area'), [fetchGet])
     useEffect(() => {
         fetchFunction()
             .then(respJ => {

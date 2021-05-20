@@ -43,7 +43,7 @@ const AgreementVendors = (props) => {
             const sentName = `${name}:0.${commonFiles[i].ext}`;
             formData.append("files", commonFiles[i], sentName);
         }
-        fetch('http://192.168.0.182:54321/api/new-agreement', {
+        fetch('/api/new-agreement', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -188,7 +188,7 @@ export const VendorsList = React.memo((props) => {
     const fetchGet = useFetch("GET");
     useEffect(() => {
         const controller = new AbortController();
-        fetchGet('http://192.168.0.182:54321/api/get-vendors', controller)
+        fetchGet('/api/get-vendors', controller)
             .then(respJ => setVendors({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 }))
             .catch(ex => console.log(ex))
         return () => controller.abort();

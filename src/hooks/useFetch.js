@@ -1,6 +1,6 @@
 import { useCallback, useContext } from "react"
 import { TokenContext } from "../App"
-
+import { serverAddress, serverPort } from "../data/data"
 const useFetch = (method) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -9,7 +9,7 @@ const useFetch = (method) => {
     const func = method === "GET"
         ? (url, abortController) => {
             const aController = abortController || new AbortController()
-            return fetch(url, {
+            return fetch(`${serverAddress}:${serverPort}${url}`, {
                 signal: aController.signal,
                 headers: {
                     "Authorization": "Bearer " + token
@@ -25,7 +25,7 @@ const useFetch = (method) => {
         : (url, data, abortController) => {
             const apiData = JSON.stringify(data);
             const aController = abortController || new AbortController()
-            return fetch(url, {
+            return fetch(`${serverAddress}:${serverPort}${url}`, {
                 method: "POST",
                 signal: aController.signal,
                 headers: {

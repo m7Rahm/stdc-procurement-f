@@ -14,7 +14,7 @@ const ForwardDocLayout = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted)
-            fetchGet('http://192.168.0.182:54321/api/emplist')
+            fetchGet('/api/emplist')
                 .then(respJ => {
                     if (mounted) {
                         empListRef.current = respJ;
@@ -27,7 +27,7 @@ const ForwardDocLayout = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted)
-            fetchGet('http://192.168.0.182:54321/api/departments')
+            fetchGet('/api/departments')
                 .then(respJ => {
                     if (mounted) {
                         setDepartments(respJ)

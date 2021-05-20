@@ -5,7 +5,7 @@ const BudgetIncRequestContent = lazy(() => import("../MiscDocs/BudgetIncRequestC
 const MiscDocContainer = (props) => {
     const { docid, docType } = props;
     const fetchParticipantsFunc = useFetch("GET")
-    const fetchParticipants = () => fetchParticipantsFunc(`http://192.168.0.182:54321/api/misc-doc-participants?docid=${docid}&docType=${docType}`)
+    const fetchParticipants = () => fetchParticipantsFunc(`/api/misc-doc-participants?docid=${docid}&docType=${docType}`)
 
     return (
         <>

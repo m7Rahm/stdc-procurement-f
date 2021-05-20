@@ -14,10 +14,10 @@ const NewPayment = (props) => {
     const token = tokenContext[0].token
     const fetchGet = useFetch("GET");
     const webSocket = useContext(WebSocketContext);
-    const fetchAgreements = useCallback((controller) => fetchGet("http://192.168.0.182:54321/api/payment-ready-orders", controller), [fetchGet])
+    const fetchAgreements = useCallback((controller) => fetchGet("/api/payment-ready-orders", controller), [fetchGet])
     const getOrderMaterials = useCallback((order) => {
         const { number, id } = order;
-        fetchGet(`http://192.168.0.182:54321/api/order-materials?orderid=${id}`)
+        fetchGet(`/api/order-materials?orderid=${id}`)
             .then(respJ => {
                 setOrderState(prev => {
                     if (!prev.numbers.find(order => order.number === number)) {
@@ -59,7 +59,7 @@ const NewPayment = (props) => {
             formData.append("type", 3);
             for (let i = 0; i < files.length; i++)
                 formData.append("files", files[i])
-            fetch("http://192.168.0.182:54321/api/contract-agreement", {
+            fetch("/api/contract-agreement", {
                 method: "POST",
                 headers: {
                     "Authorization": "Bearer " + token

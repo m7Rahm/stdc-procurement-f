@@ -56,7 +56,7 @@ const AgreementMaterialsSum = (props) => {
         const data = {
             materialid: props.material.id
         };
-        fetchPost("http://192.168.0.182:54321/api/remove-material-from-staging-area", data)
+        fetchPost("/api/remove-material-from-staging-area", data)
             .then(respJ => {
                 if (respJ[0].operation_result === "success") {
                     rowRef.current.classList.add("delete-row");

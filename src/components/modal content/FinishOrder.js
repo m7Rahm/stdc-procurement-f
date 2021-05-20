@@ -11,7 +11,7 @@ const FinishOrder = (props) => {
     const tokenContext = useContext(TokenContext);
     const userid = tokenContext[0].userData.userInfo.id;
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}&confirmed=1`)
+        fetchGet(`/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}&confirmed=1`)
             .then(respJ => setMaterials(respJ))
             .catch(ex => console.log(ex))
     }, [fetchGet, props.ordNumb, props.version]);
@@ -24,7 +24,7 @@ const FinishOrder = (props) => {
             orderid: props.id,
             materials: materials
         };
-        fetchPost('http://192.168.0.182:54321/api/confirm-accepted', data)
+        fetchPost('/api/confirm-accepted', data)
             .then(respJ => {
                 if (respJ[0].status !== props.status)
                     props.setOrders(prev => ({ ...prev, orders: prev.orders.map(order => order.id === props.id ? ({ ...order, status: respJ[0].status }) : order) }))

@@ -17,7 +17,7 @@ const ForwardDocAdvanced = (props) => {
         let mounted = true;
         const abortController = new AbortController();
         if (mounted)
-            fetchGet('http://192.168.0.182:54321/api/emplist', abortController)
+            fetchGet('/api/emplist', abortController)
                 .then(respJ => {
                     if (mounted) {
                         empListRef.current = respJ;
@@ -34,7 +34,7 @@ const ForwardDocAdvanced = (props) => {
         let mounted = true;
         const abortController = new AbortController()
         if (mounted)
-            fetchGet('http://192.168.0.182:54321/api/departments', abortController)
+            fetchGet('/api/departments', abortController)
                 .then(respJ => {
                     if (mounted) {
                         setDepartments(respJ)
@@ -50,7 +50,7 @@ const ForwardDocAdvanced = (props) => {
         let mounted = true;
         const abortController = new AbortController();
         if (checked && allGroupsRef.current.length === 0 && mounted) {
-            fetchGet("http://192.168.0.182:54321/api/roles", abortController)
+            fetchGet("/api/roles", abortController)
                 .then(respJ => {
                     const groups = respJ
                         .filter(group => group.active_passive === 1)

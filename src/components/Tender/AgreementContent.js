@@ -25,7 +25,7 @@ const AgreementContent = (props) => {
     const fetchGet = useFetch("GET")
     useEffect(() => {
         if (active) {
-            fetchGet(`http://192.168.0.182:54321/api/get-tender-order-content/${active}`)
+            fetchGet(`/api/get-tender-order-content/${active}`)
                 .then(respJ => {
                     if (respJ)
                         setOrderContent(respJ)
@@ -139,7 +139,7 @@ const AgreementMaterial = (props) => {
         const data = {
             id: materialState.id
         };
-        fetchPost("http://192.168.0.182:54321/api/send-to-staging-area", data)
+        fetchPost("/api/send-to-staging-area", data)
             .then(respJ => {
                 if (!respJ.length || !respJ[0].error) {
                     setMaterialState(prev => ({ ...prev, result: 30 }))

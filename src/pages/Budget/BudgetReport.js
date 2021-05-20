@@ -16,7 +16,7 @@ const BudgetReport = () => {
         const abortController = new AbortController();
         const data = { period: `${year}${month.value}`, structureid }
         if (mounted)
-            fetchPost("http://192.168.0.182:54321/api/budget-report", data, abortController)
+            fetchPost("/api/budget-report", data, abortController)
                 .then(resp => {
                     setRows(resp)
                 })
@@ -145,14 +145,14 @@ const ReportSearch = (props) => {
     const [searchSate, setSearchState] = useState({ period: `${year}${month.value}`, month: month.value, year, structureid })
     const [departments, setDepartments] = useState([]);
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/departments')
+        fetchGet('/api/departments')
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
     }, [fetchGet])
     const handleMonthSelect = (value) => {
         setSearchState(prev => {
             const data = { period: `${prev.year}${value}`, structureid: prev.structureid }
-            fetchPost("http://192.168.0.182:54321/api/budget-report", data)
+            fetchPost("/api/budget-report", data)
                 .then(resp => {
                     setRows(resp)
                 })
@@ -166,7 +166,7 @@ const ReportSearch = (props) => {
         setSearchState(prev => {
             const newState = name === "year" ? { ...prev, period: `${value}${prev.month}`, year: value } : { ...prev, structureid: value }
             const data = { period: newState.period, structureid: newState.structureid }
-            fetchPost("http://192.168.0.182:54321/api/budget-report", data)
+            fetchPost("/api/budget-report", data)
                 .then(resp => {
                     setRows(resp)
                 })

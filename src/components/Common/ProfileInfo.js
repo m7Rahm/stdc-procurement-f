@@ -20,7 +20,7 @@ const Profile = (props) => {
     useEffect(() => {
         let mounted = true;
         const abortController = new AbortController();
-        fetchUserData("http://192.168.0.182:54321/api/user/", abortController)
+        fetchUserData("/api/user/", abortController)
             .then(resp => {
                 if (resp.length && mounted) {
                     usernameRef.current.value = resp[0].username;
@@ -65,7 +65,7 @@ const Profile = (props) => {
             }
             if (passRef.current)
                 data.newPass = passRef.current.value;
-            fetchUpdateUserData("http://192.168.0.182:54321/api/user-update-creds", data, abortController)
+            fetchUpdateUserData("/api/user-update-creds", data, abortController)
                 .then(resp => {
                     if (resp.length === 0 && mounted) {
                         if (!passRef.current) {

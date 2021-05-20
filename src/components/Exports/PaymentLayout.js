@@ -80,7 +80,7 @@ const PaymentLayout = () => {
     const [participants, setParticipants] = useState([])
     const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=${docType}`)
+        fetchGet(`/api/doc-participants?id=${docid}&doctype=${docType}`)
             .then(respJ => setParticipants(respJ))
             .catch(ex => console.log(ex))
     }, [docid, docType, fetchGet])

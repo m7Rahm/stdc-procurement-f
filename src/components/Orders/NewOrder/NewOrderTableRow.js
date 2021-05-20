@@ -25,7 +25,7 @@ const NewOrderTableRow = (props) => {
   }
   useEffect(() => {
     const data = { subGlCategoryId: subGlCategory, structureid: structure, orderType: orderType };
-    fetchPost('http://192.168.0.182:54321/api/strucutre-budget-info', data)
+    fetchPost('/api/strucutre-budget-info', data)
       .then(respJ => {
         modelsRef.current = respJ;
         const budget = respJ.length !== 0 ? respJ[0].budget : 0;
@@ -67,7 +67,7 @@ const NewOrderTableRow = (props) => {
     rowRef.current.addEventListener('animationend', () => setMaterials(prev => prev.filter(material => material.id !== materialid)))
   }
   const setModel = (model) => {
-    fetchGet(`http://192.168.0.182:54321/api/material-quantity/${structure}?pid=` + model.product_id)
+    fetchGet(`/api/material-quantity/${structure}?pid=` + model.product_id)
       .then(resp => {
         setQuantity(resp[0].quantity)
       })
@@ -100,7 +100,7 @@ const NewOrderTableRow = (props) => {
       const searchResult = modelsRef.current.filter(model => regExp.test(model.title))
       setModels(searchResult);
     } else {
-      fetchGet(`http://192.168.0.182:54321/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
+      fetchGet(`/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
         .then(respJ => {
           setModels(respJ)
         })
@@ -114,7 +114,7 @@ const NewOrderTableRow = (props) => {
       timeoutRef.current = null;
     }
     timeoutRef.current = setTimeout(() => {
-      fetchPost('http://192.168.0.182:54321/api/get-by-product-code', data)
+      fetchPost('/api/get-by-product-code', data)
         .then(respJ => {
           timeoutRef.current = null;
           if (respJ.length === 1) {
@@ -157,7 +157,7 @@ const NewOrderTableRow = (props) => {
         ? { ...material, [name]: value, materialId: '', department: "", isService: orderType }
         : material
     ))
-    fetchPost('http://192.168.0.182:54321/api/strucutre-budget-info', data)
+    fetchPost('/api/strucutre-budget-info', data)
       .then(respJ => {
         modelsRef.current = respJ;
         const budget = respJ.length !== 0 ? respJ[0].budget : 0;

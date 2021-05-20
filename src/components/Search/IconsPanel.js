@@ -22,7 +22,7 @@ const IconsPanel = (props) => {
                 [id, 0, priority]),
             update: 1
         }
-        fetchPost(`http://192.168.0.182:54321/api/change-visa-state`, data)
+        fetchPost(`/api/change-visa-state`, data)
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 setVisas({ count: totalCount, visas: respJ });

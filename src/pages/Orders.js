@@ -29,7 +29,7 @@ const routes = [
                 departments: []
             },
             method: "POST",
-            link: "http://192.168.0.182:54321/api/orders",
+            link: "/api/orders",
             referer: "protected"
         }
     },
@@ -47,9 +47,9 @@ const routes = [
                 ordNumb: ""
             },
             method: "GET",
-            link: "http://192.168.0.182:54321/api/returned-orders?from=0&until=20",
+            link: "/api/returned-orders?from=0&until=20",
             referer: "returned",
-            inLink: (from) => `http://192.168.0.182:54321/api/returned-orders?from=${from}&until=20`
+            inLink: (from) => `/api/returned-orders?from=${from}&until=20`
         }
     },
     {
@@ -64,7 +64,7 @@ const routes = [
         icon: IoMdCart,
         component: Agreements,
         props: {
-            link: "http://192.168.0.182:54321/api/get-user-agreements",
+            link: "/api/get-user-agreements",
             params: {
                 active: "message_id",
                 number: "number",
@@ -79,7 +79,7 @@ const routes = [
         icon: FaHandshake,
         component: Contracts,
         props: {
-            link: "http://192.168.0.182:54321/api/get-user-contracts",
+            link: "/api/get-user-contracts",
             method: "POST",
             inData: {
                 number: "",
@@ -102,7 +102,7 @@ const routes = [
         icon: MdPayment,
         component: Payments,
         props: {
-            link: "http://192.168.0.182:54321/api/get-user-payments",
+            link: "/api/get-user-payments",
             method: "POST",
             inData: {
                 number: "",

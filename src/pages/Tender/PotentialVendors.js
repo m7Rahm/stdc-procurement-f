@@ -19,7 +19,7 @@ const PotentialVendors = (props) => {
     const fetchGet = useFetch("GET");
     const makeExpressVendor = useCallback((id, name) => {
         const onFinish = () => {
-            fetchGet('http://192.168.0.182:54321/api/potential-vendors?from=0')
+            fetchGet('/api/potential-vendors?from=0')
                 .then(respJ => {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                     setPotentialVendors({ count: totalCount, content: respJ });
@@ -47,14 +47,14 @@ const PotentialVendors = (props) => {
         setModalState({ visible: false, content: null })
     }
     const updateList = (from) => {
-        fetchGet(`http://192.168.0.182:54321/api/potential-vendors?from=${from}&name=${searchStateRef.current.name}&voen=${searchStateRef.current.voen}&sphere=${searchStateRef.current.sphere}`)
+        fetchGet(`/api/potential-vendors?from=${from}&name=${searchStateRef.current.name}&voen=${searchStateRef.current.voen}&sphere=${searchStateRef.current.sphere}`)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setPotentialVendors({ count: totalCount, content: respJ });
             })
     }
     useLayoutEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/potential-vendors?from=0')
+        fetchGet('/api/potential-vendors?from=0')
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setPotentialVendors({ count: totalCount, content: respJ });
@@ -186,7 +186,7 @@ const NewVendor = (props) => {
             voen: voenRef.current.value,
             sphere: sphereRef.current.value
         }
-        fetchPost('http://192.168.0.182:54321/api/new-potential-vendor', data)
+        fetchPost('/api/new-potential-vendor', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 props.setPotentialVendors({ count: totalCount, content: respJ });

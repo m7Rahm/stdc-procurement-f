@@ -18,7 +18,7 @@ const AgreementGeneralInfo = (props) => {
     const gotoDoc = () => {
         history.push('/tender/agreements', { agreement: { ...props } })
     }
-    const fetchMaterials = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/agreement-materials/${props.id}`)
+    const fetchMaterials = useCallback(() => fetchGet(`/api/agreement-materials/${props.id}`)
         , [fetchGet, props.id])
     return (
         <div style={{ paddingTop: '76px' }}>
@@ -47,7 +47,7 @@ const AgreementReviews = (props) => {
     const { fetchGet } = props;
     const [reviews, setReviews] = useState([]);
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/agreement-reviews/${props.id}`)
+        fetchGet(`/api/agreement-reviews/${props.id}`)
             .then(respJ => setReviews(respJ))
             .catch(ex => console.log(ex))
     }, [props.id, fetchGet])

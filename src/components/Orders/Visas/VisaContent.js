@@ -22,17 +22,17 @@ const VisaContent = (props) => {
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST")
     const fetchMessages = useCallback((from = 0) =>
-        fetchGet(`http://192.168.0.182:54321/api/messages/${tranid}?from=${from}&replyto=0&doctype=${documentType}`)
+        fetchGet(`/api/messages/${tranid}?from=${from}&replyto=0&doctype=${documentType}`)
         , [tranid, fetchGet, documentType]);
     const sendMessage = useCallback((data) => {
         const apiData = { ...data, docType: documentType };
-        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
+        return fetchPost(`/api/send-message`, apiData)
     }, [fetchPost, documentType]);
     useEffect(() => {
         const abortController = new AbortController();
         let mounted = true;
         if (tranid && mounted && initid) {
-            fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}&init=${initid}`, abortController)
+            fetchGet(`/api/tran-info?tranid=${tranid}&init=${initid}`, abortController)
                 .then(respJ => {
                     if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
@@ -50,7 +50,7 @@ const VisaContent = (props) => {
         const abortController = new AbortController();
         let mounted = true;
         if (locationTranid && mounted) {
-            fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${locationTranid}&init=${inid}`, abortController)
+            fetchGet(`/api/tran-info?tranid=${locationTranid}&init=${inid}`, abortController)
                 .then(respJ => {
                     if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})

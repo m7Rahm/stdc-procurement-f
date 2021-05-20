@@ -25,7 +25,7 @@ const SearchExpressContracts = (props) => {
             from: from,
             number: props.numberRef.current.value
         };
-        fetchPost('http://192.168.0.182:54321/api/get-express-contracts', data)
+        fetchPost('/api/get-express-contracts', data)
             .then(respJ => {
                 if (respJ) {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;

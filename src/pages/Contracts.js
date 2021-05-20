@@ -22,7 +22,7 @@ const routes = [
                 let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
                 return query = query.substring(0, query.length - 1);
             },
-            link: "http://192.168.0.182:54321/api/tender-docs?doctype=2&",
+            link: "/api/tender-docs?doctype=2&",
             inData: {
                 number: "",
                 result: 0,
@@ -53,7 +53,7 @@ const routes = [
                 let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
                 return query = query.substring(0, query.length - 1);
             },
-            link: "http://192.168.0.182:54321/api/tender-docs?doctype=3&",
+            link: "/api/tender-docs?doctype=3&",
             inData: {
                 number: "",
                 result: 0,

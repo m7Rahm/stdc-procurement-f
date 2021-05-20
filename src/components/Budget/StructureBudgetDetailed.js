@@ -25,7 +25,7 @@ const StructureBudgetDetailed = () => {
         if (searchStateRef.current) {
             const structureid = searchStateRef.current.structureid;
             const data = searchStateRef.current
-            fetchPost(`http://192.168.0.182:54321/api/structure-budget/${structureid}`, data)
+            fetchPost(`/api/structure-budget/${structureid}`, data)
                 .then(respJ => {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                     setBudgets({ count: totalCount, content: respJ });
@@ -36,7 +36,7 @@ const StructureBudgetDetailed = () => {
     const updateList = (from) => {
         const structureid = searchStateRef.current.structureid;
         const data = { ...searchStateRef.current, from };
-        fetchPost(`http://192.168.0.182:54321/api/structure-budget/${structureid}`, data)
+        fetchPost(`/api/structure-budget/${structureid}`, data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setBudgets({ count: totalCount, content: respJ });
@@ -97,7 +97,7 @@ const TableRow = ({ budget, index, fetchPost }) => {
             budget: budgetData.budget,
             active: 1
         }
-        fetchPost(`http://192.168.0.182:54321/api/update-budget/${id}`, data)
+        fetchPost(`/api/update-budget/${id}`, data)
             .then(respJ => {
                 if (respJ[0].operation_result === 'success')
                     setDisabled(true)

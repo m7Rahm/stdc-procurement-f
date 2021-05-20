@@ -44,7 +44,7 @@ const routes = [
                 number: "number",
             },
             method: "GET",
-            link: "http://192.168.0.182:54321/api/tender-docs?doctype=1&",
+            link: "/api/tender-docs?doctype=1&",
             referer: "procurement"
         }
     },

@@ -82,7 +82,7 @@ const TableRow = (props) => {
 			materialid: order_material_id,
 			price: servicePriceRef.current.value
 		}
-		fetchPost('http://192.168.0.182:54321/api/update-service-price', data)
+		fetchPost('/api/update-service-price', data)
 			.then(respJ => {
 				if (respJ[0].operation_result === 'success')
 					setDisabled(prev => {

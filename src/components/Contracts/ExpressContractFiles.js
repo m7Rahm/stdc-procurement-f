@@ -59,7 +59,7 @@ const ExpressContractFiles = (props) => {
     useEffect(() => {
         let mounted = true;
         if (props.id !== 0)
-            fetchGet(`http://192.168.0.182:54321/api/express_contract_files/${props.id}`)
+            fetchGet(`/api/express_contract_files/${props.id}`)
                 .then(respJ => {
                     if (mounted)
                         setFiles(prev => {
@@ -92,7 +92,7 @@ const FetchedFiles = React.memo(({ files = [], removeFile }) => {
             {
                 files.map(file => {
                     const ext = file.ext;
-                    const url = "http://192.168.0.182:54321/original/" + file.name
+                    const url = "/original/" + file.name
                     switch (true) {
                         case /pdf/.test(ext):
                             return (

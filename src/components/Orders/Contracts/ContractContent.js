@@ -22,7 +22,7 @@ const ContractContent = (props) => {
     const documentType = 2;
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
-    const fetchParticipants = () => fetchGet(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=${documentType}`);
+    const fetchParticipants = () => fetchGet(`/api/doc-participants?id=${docid}&doctype=${documentType}`);
     useEffect(() => {
         let mounted = true;
         if (props.apiString && mounted)
@@ -40,14 +40,14 @@ const ContractContent = (props) => {
     }, [props.apiString, fetchGet]);
     const sendMessage = useCallback((data) => {
         const apiData = { ...data, docType: documentType };
-        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
+        return fetchPost(`/api/send-message`, apiData)
     }, [fetchPost, documentType]);
     const fetchMessages = useCallback((from = 0) =>
-        fetchGet(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`)
+        fetchGet(`/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`)
         , [docid, fetchGet, documentType]);
     const cancel = () => {
         const cancelContract = () => {
-            fetchGet(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=${documentType}`)
+            fetchGet(`/api/cancel-doc/${docid}?type=${documentType}`)
                 .then(respJ => {
                     if (respJ.length === 0)
                         setContractDetails(prev => ({ content: prev.content.map(detail => ({ ...detail, doc_result: -1 })), active: false }))
@@ -75,7 +75,7 @@ const ContractContent = (props) => {
             action: action,
             comment: textareaRef.current.value
         }
-        fetchPost('http://192.168.0.182:54321/api/accept-decline-doc', data)
+        fetchPost('/api/accept-decline-doc', data)
             .then(respJ => {
                 if (respJ.length !== 0) {
                     const message = {
@@ -96,7 +96,7 @@ const ContractContent = (props) => {
     const closeModal = () => {
         setModalState({ visible: false })
     }
-    const fetchFiles = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/contract-files/${docid}?type=${documentType}`), [docid, fetchGet, documentType]);
+    const fetchFiles = useCallback(() => fetchGet(`/api/contract-files/${docid}?type=${documentType}`), [docid, fetchGet, documentType]);
     return (
         <div className="visa-content-container" style={{ maxWidth: '1256px', margin: 'auto', padding: '20px', paddingTop: '76px' }}>
             {
@@ -215,7 +215,7 @@ export const ContractFiles = React.memo((props) => {
             {
                 files.map(file => {
                     const ext = file.ext;
-                    const src = `http://192.168.0.182:54321/original/${file.name}`
+                    const src = `/original/${file.name}`
                     switch (true) {
                         case /pdf/.test(ext):
                             return (

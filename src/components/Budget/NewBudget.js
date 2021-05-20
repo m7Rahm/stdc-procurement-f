@@ -37,7 +37,7 @@ const NewBudget = (props) => {
             comment: commentRef.current.value,
             subGlCategoryid: subGlCategoryidRef.current.value,
         }
-        fetchPost('http://192.168.0.182:54321/api/insert-new-budget', data)
+        fetchPost(`/api/insert-new-budget`, data)
             .then(respJ => {
                 if (respJ[0].result === 'success')
                     props.closeModal()

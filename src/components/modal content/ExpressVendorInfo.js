@@ -69,7 +69,7 @@ const ExpressVendorInfo = (props) => {
             formData.append('filesMetaData', oldFiles.substring(0, oldFiles.length - 1))
             for (let i = 0; i < newFiles.length; i++)
                 formData.append('files', newFiles[i].val);
-            fetch(`http://192.168.0.182:54321/api${url}`, {
+            fetch(`/api${url}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -88,7 +88,7 @@ const ExpressVendorInfo = (props) => {
     const fetchGet = useFetch("GET");
     useEffect(() => {
         if (vendorid) {
-            fetchGet(`http://192.168.0.182:54321/api/get-express-vendor/${vendorid}`)
+            fetchGet(`/api/get-express-vendor/${vendorid}`)
                 .then(respJ => {
                     const emails = respJ[0].emails ? respJ[0].emails.split(',').map(email => ({ key: Math.random(), val: email })) : [];
                     const phone_numbers = respJ[0].phone_numbers ? respJ[0].phone_numbers.split(',').map(phoneNumb => ({ key: Math.random(), val: phoneNumb })) : [];

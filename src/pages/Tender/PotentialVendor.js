@@ -25,7 +25,7 @@ const PotentialVendor = (props) => {
             voen: voenRef.current.value,
             sphere: sphereRef.current.value
         };
-        fetchPost('http://192.168.0.182:54321/api/update-potential-vendor', data)
+        fetchPost('/api/update-potential-vendor', data)
             .then(respJ => {
                 if (respJ[0].operation_result === 'success') {
                     props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck })

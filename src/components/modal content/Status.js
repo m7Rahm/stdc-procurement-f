@@ -24,7 +24,7 @@ const Status = (props) => {
   const [stage, setStage] = useState(1)
   const fetchGet = useFetch("GET")
   useEffect(() => {
-    fetchGet("http://192.168.0.182:54321/api/order-state/" + props.id)
+    fetchGet("/api/order-state/" + props.id)
       .then(resp => {
         let stage = 1
         if (resp) {

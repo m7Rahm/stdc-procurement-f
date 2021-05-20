@@ -16,7 +16,7 @@ const CardContent = ({ budget, category, period }) => {
             structureid: budget.structure_id,
             glCategoryid: category
         };
-        fetchPost('http://192.168.0.182:54321/api/structure-budget-per-gl-category', data)
+        fetchPost(`/api/structure-budget-per-gl-category`, data)
             .then(respJ => setSubGlBudgets(respJ))
             .catch(ex => console.log(ex))
     }, [fetchPost, category, budget, period]);

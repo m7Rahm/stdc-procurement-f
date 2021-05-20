@@ -1,11 +1,9 @@
 import React, { useContext, useState } from 'react'
 import { Suspense } from 'react'
-import {
-  MdAdd
-} from 'react-icons/md'
+import { MdAdd } from 'react-icons/md'
 import { WebSocketContext } from '../../../pages/SelectModule'
 import Modal from '../../Misc/Modal'
-const NewOrderContent = React.lazy(() => import('../../modal content/NewOrder'))
+const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
   const webSocket = useContext(WebSocketContext)
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -32,7 +30,7 @@ const NewOrder = (props) => {
         isModalVisible &&
         <Suspense fallback="">
           <Modal title="Yeni Sifariş" changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
-            {(props) => <NewOrderContent handleModalClose={handleClose} {...props} />}
+            {(props) => <OrderModal handleModalClose={handleClose} {...props} />}
           </Modal>
         </Suspense>
       }

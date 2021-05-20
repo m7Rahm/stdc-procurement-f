@@ -25,12 +25,12 @@ const NewBudgetRequest = (props) => {
     })
     const subGlCategories = glCategories.all.filter(category => category.dependent_id === newBudgetData.glCategoryid);
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/departments')
+        fetchGet('/api/departments')
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
     }, [fetchGet]);
     useEffect(() => {
-        fetchGet('http://192.168.0.182:54321/api/gl-categories')
+        fetchGet('/api/gl-categories')
             .then(respJ => {
                 const glCategories = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories({ parent: glCategories, all: respJ, sub: [] });
@@ -50,7 +50,7 @@ const NewBudgetRequest = (props) => {
                 amount: newBudgetData.budget,
                 recs
             }
-            fetchPost("http://192.168.0.182:54321/api/new-budget-inc-req", data)
+            fetchPost("/api/new-budget-inc-req", data)
                 .then(respJ => {
                     if (!respJ[0].error) {
                         props.closeModal();

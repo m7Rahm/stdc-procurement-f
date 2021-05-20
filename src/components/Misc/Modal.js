@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useMemo } from 'react'
-import {
-  IoMdClose,
-} from 'react-icons/io'
+import { IoMdClose } from 'react-icons/io'
 
 const modalContent = (Content) => ({ ...props }) =>
   <Content {...props} />

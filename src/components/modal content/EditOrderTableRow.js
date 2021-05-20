@@ -18,7 +18,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 	useEffect(() => {
 		if (view === "returned" || view === "procurement") {
 			const data = { categoryid: subCategoryid, ordNumb, empVersion: version }
-			fetchPost("http://192.168.0.182:54321/api/get-budget-per-order", data)
+			fetchPost("/api/get-budget-per-order", data)
 				.then(respJ => {
 					modelsRef.current = respJ;
 					const budget = respJ.length !== 0 ? respJ[0].budget : 0;
@@ -30,7 +30,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 	useEffect(() => {
 		if (view === "returned") {
 			const data = { subGlCategoryId: subCategoryid, structureid: structure, orderType: orderType };
-			fetchPost('http://192.168.0.182:54321/api/strucutre-budget-info', data)
+			fetchPost('/api/strucutre-budget-info', data)
 				.then(respJ => {
 					modelsRef.current = respJ;
 					const budget = respJ.length !== 0 ? respJ[0].budget : 0;
@@ -59,7 +59,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 	const handleSubCategoryChange = (e) => {
 		const value = e.target.value;
 		const data = { categoryid: value, ordNumb, empVersion: version }
-		fetchPost("http://192.168.0.182:54321/api/get-budget-per-order", data)
+		fetchPost("/api/get-budget-per-order", data)
 			.then(respJ => {
 				modelsRef.current = respJ;
 				const budget = respJ.length !== 0 ? respJ[0].budget : 0;
@@ -77,7 +77,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 			timeoutRef.current = null;
 		}
 		timeoutRef.current = setTimeout(() => {
-			fetchPost("http://192.168.0.182:54321/api/get-by-product-code", data)
+			fetchPost("/api/get-by-product-code", data)
 				.then(respJ => {
 					timeoutRef.current = null;
 					if (respJ.length !== 0) {

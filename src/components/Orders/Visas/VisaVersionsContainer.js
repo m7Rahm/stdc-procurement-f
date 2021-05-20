@@ -15,7 +15,7 @@ const VisaVersionsContainer = (props) => {
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/get-order-versions/${orderNumb}`)
+        fetchGet(`/api/get-order-versions/${orderNumb}`)
             .then(respJ => {
                 for (let i = 0; i < respJ.length; i++)
                     if (respJ[i].is_confirmed || respJ[i].result !== 0) {
@@ -62,7 +62,7 @@ const VisaVersion = (props) => {
             action: action,
             comment: '',
         }
-        fetchPost(`http://192.168.0.182:54321/api/accept-decline/${tranid}`, data)
+        fetchPost(`/api/accept-decline/${tranid}`, data)
             .then(respJ => {
                 if (respJ[0].operation_result === 'success') {
                     closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)
@@ -71,7 +71,7 @@ const VisaVersion = (props) => {
             .catch(err => console.log(err))
     }
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${ord_numb}&vers=${emp_id}`)
+        fetchGet(`/api/order-req-data?numb=${ord_numb}&vers=${emp_id}`)
             .then(respJ => setVisaContent(respJ))
             .catch(ex => console.log(ex))
     }, [ord_numb, emp_id, fetchGet]);
@@ -81,7 +81,7 @@ const VisaVersion = (props) => {
             const data = {
                 orderid: id
             }
-            fetchPost('http://192.168.0.182:54321/api/accept-edited-version', data)
+            fetchPost('/api/accept-edited-version', data)
                 .then(respJ => {
                     if (respJ[0].operation_result === 'success') {
                         closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)

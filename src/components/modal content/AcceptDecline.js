@@ -13,7 +13,7 @@ const AcceptDecline = (props) => {
                 action: action,
                 comment: commentRef.current.value,
             }
-            fetchPost(`http://192.168.0.182:54321/api/accept-decline/${tranid}`, data)
+            fetchPost(`/api/accept-decline/${tranid}`, data)
                 .then(respJ => {
                     if (respJ.length !== 0 && respJ[0].operation_result === 'success') {
                         const [{ origin_emp_id: originid }, ...rest] = respJ

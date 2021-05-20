@@ -75,7 +75,7 @@ const Budget = (props) => {
         props.leftNavRef.current.style.display = "block";
     }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef]);
     const fetchSenderMiscDocs = useFetch("POST");
-    const updateListContent = (data) => fetchSenderMiscDocs('http://192.168.0.182:54321/api/get-sender-misc-docs', data)
+    const updateListContent = (data) => fetchSenderMiscDocs('/api/get-sender-misc-docs', data)
     return (
         <div className="dashboard">
             <Switch>
