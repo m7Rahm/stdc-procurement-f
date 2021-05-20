@@ -1,0 +1,70 @@
+.checkbox-label {
+  position: relative;
+  cursor: pointer;
+  .custom-checkbox {
+    position: relative;
+    border-radius: 50%;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #c5c7cd;
+  }
+  input[type="radio"] {
+    display: none;
+    &:checked {
+      & + .custom-checkbox {
+        background: #22345e;
+      }
+    }
+  }
+}
+.page-container {
+  position: absolute;
+  top: 15rem;
+  left: 11rem;
+
+  bottom: auto;
+  width: 27rem;
+  height: 10rem;
+
+  animation: slide_davam_next 200ms ease-in-out both;
+}
+
+.form-group {
+  width: 10rem;
+  position: absolute;
+  left: 8rem;
+  top: 4rem;
+}
+@keyframes slide_geri_next {
+  from {
+    transform: translateX(-30rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes slide_davam_next {
+  from {
+    transform: translateX(30rem);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+@keyframes slide_geri_current {
+  from {
+    transform: translateX(0px);
+  }
+  to {
+    transform: translateX(30rem);
+  }
+}
+@keyframes slide_davam_current {
+  from {
+    transform: translateX(0px);
+  }
+  to {
+    transform: translateX(-30rem);
+  }
+}

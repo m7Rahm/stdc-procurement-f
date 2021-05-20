@@ -1,0 +1,35 @@
+div.forwarded-person-card {
+ 
+  background-color: dodgerblue;
+  border-radius: 2px;
+  color: white;
+  position: relative;
+  margin: 1px 2px;
+  transition: all 0.5s;
+  height: 28px;
+}
+
+div.forwarded-person-card>div {
+  padding: 5px;
+  float: left;
+}
+
+div.forwarded-person-card>div>svg {
+  display: block;
+  margin: auto;
+}
+
+div.forwarded-person-card>div:first-of-type {
+  height: 100%;
+  cursor: pointer;
+}
+
+div.forwarded-person-card>div:first-of-type:hover {
+  background-color: gray;
+} 
+
+div.forwarded-person-card>div:last-of-type {
+  border-left: 1px white solid;
+  padding-right: 10px;
+}
+
