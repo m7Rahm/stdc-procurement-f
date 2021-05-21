@@ -156,6 +156,7 @@ $xl-breakpoint: 1200px;
 }
 .gap-3{
   position: absolute;
-  top:5rem;
-  right:2rem;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
 }
