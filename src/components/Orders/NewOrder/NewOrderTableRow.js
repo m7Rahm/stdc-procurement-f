@@ -272,15 +272,6 @@ const NewOrderTableRow = (props) => {
           </ul>
         }
       </div>
-      <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
-        <input
-          onChange={searchByCode}
-          type="text"
-          placeholder="Nömrə"
-          ref={codeRef}
-          name="code"
-        />
-      </div>
 
 
       <div style={{ position: 'relative',width: '170px', maxWidth:'200px' }}>

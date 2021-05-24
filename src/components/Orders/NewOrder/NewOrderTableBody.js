@@ -33,7 +33,6 @@ const NewOrderTableBody = (props) => {
           <div>#</div>
           {/* <div>Sub-Gl Kateqoriya</div> */}
           <div>Məhsul</div>
-          <div style={{ maxWidth: " 60px" }}>Nömrə</div>
           <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
           <div style={{ maxWidth: '140px' }}>Say</div>
           <div style={{ width: '170px', maxWidth: '200px' }}>Ölçü vahidi</div>
