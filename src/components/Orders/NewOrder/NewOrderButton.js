@@ -30,7 +30,7 @@ const NewOrder = (props) => {
       {
         isModalVisible &&
         <Suspense fallback="">
-          <Modal style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
+          <Modal minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
             {(props) => <OrderModal handleModalClose={handleClose} {...props} />}
           </Modal>
         </Suspense>

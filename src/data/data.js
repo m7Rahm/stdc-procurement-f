@@ -162,6 +162,16 @@ export const expressVendorInit = {
     vendor_type: '1',
     files: []
 }
+export const structureTypes = [
+    {
+        val: "0",
+        text: "Struktur vahidi"
+    },
+    {
+        val: "1",
+        text: "Anbar"
+    }
+]
 export const vendorTypes = [
     {
         val: 1,
