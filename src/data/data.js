@@ -246,3 +246,14 @@ export const riskZones = [
         text: 'Qara siyahı'
     }
 ];
+
+export const productUnit = [
+    {
+        val : 1,
+        text: 'Kg'
+    },
+    {
+        val: 2,
+        text: 'Ədəd'
+    }
+]

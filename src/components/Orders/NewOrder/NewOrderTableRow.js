@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import useFetch from '../../../hooks/useFetch';
+import {productUnit} from '../../../data/data'
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
@@ -324,9 +325,16 @@ const NewOrderTableRow = (props) => {
       </div>
 
       <div style={{ maxWidth: '140px' }}>
-        <select value={unit} onChange={(e)=> setUnit(e.target.value)}>
-          <option value="l">L</option>
-          <option value="kg">Kg</option>
+        <select
+            name="product_unit"
+            value={unit} 
+            onChange={(e)=> setUnit(e.target.value)}
+        >
+            {
+                productUnit.map(unit =>
+                    <option value={unit.val} key={unit.val}>{unit.text}</option>
+                )
+            }
         </select>
       </div>
 
