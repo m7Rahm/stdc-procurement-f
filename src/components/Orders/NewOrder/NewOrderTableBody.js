@@ -31,14 +31,14 @@ const NewOrderTableBody = (props) => {
       <ul className="new-order-table">
         <li>
           <div>#</div>
-          <div>Sub-Gl Kateqoriya</div>
+          {/* <div>Sub-Gl Kateqoriya</div> */}
           <div>Məhsul</div>
-          <div style={{ maxWidth: " 60px" }}>Qalıq</div>
+          <div style={{ maxWidth: " 60px" }}>Nömrə</div>
           <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
           <div style={{ maxWidth: '140px' }}>Say</div>
-          <div>Kurasiya</div>
-          <div>Büdcə</div>
-          <div>Əlavə məlumat</div>
+          <div style={{ width: '170px', maxWidth: '200px' }}>Ölçü vahidi</div>
+          <div>İstifadə yeri</div>
+          {/* <div>Büdcə</div> */}
           <div></div>
         </li>
         {
