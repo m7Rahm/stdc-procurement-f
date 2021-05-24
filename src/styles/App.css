@@ -984,7 +984,8 @@ div.icons-panel-hide {
   animation: modal-show 0.5s ease-in-out both;
 }
 .wrapper{
-  min-width: 45rem;
+  min-width: 60%;
+  
 }
 @keyframes modal-show {
   from {

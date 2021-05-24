@@ -25,7 +25,7 @@ const OrderModal = (props) => {
         false
       );
       setWhichPage((prevState) => {
-        props.modalWrapperRef.current.style.width = prevState.page === 3 ? "90%" : "40rem";
+        props.modalWrapperRef.current.style.width = prevState.page === 3 ? "60rem" : "40rem";
         return prevState.page > 1 ? {
           page: prevState.page - 1,
           animationName: "slide_geri_next",
@@ -48,7 +48,7 @@ const OrderModal = (props) => {
         false
       );
       setWhichPage(prevState => {
-        props.modalWrapperRef.current.style.minWidth = prevState.page === 1 ? "90%" : "40rem";
+        props.modalWrapperRef.current.style.minWidth = prevState.page === 1 ? "60rem" : "40rem";
         return prevState.page < 3 ? {
           page: prevState.page + 1,
           animationName: "slide_davam_next",
