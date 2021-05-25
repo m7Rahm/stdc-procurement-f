@@ -1,13 +1,18 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useRef } from 'react'
 import { Suspense } from 'react'
 import { MdAdd } from 'react-icons/md'
 import { WebSocketContext } from '../../../pages/SelectModule'
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
+
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
+
   const webSocket = useContext(WebSocketContext)
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalList, setModalList] = useState(null)
+  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
+
   const handleClick = (action) => {
     setIsModalVisible(_ => action);
     setModalList(prevState => {
@@ -17,31 +22,13 @@ const NewOrder = (props) => {
       return newList;
     })
 
-    setServiceType("")
-    setLastDate(new Date())
-    setSelectedData(null)
-    setReceivers([])
-  };
+    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
+  const sidebarRef = useRef(null);
 
-  const handleCloseModal = () => {
-    setIsModalVisible(_ => false);
-
-    if (modalList.current !== null) {
-      setModalList(prevState => {
-        const res = prevState.all.find(emp => emp.id === prevState.current.id);
-        const newModals = !res ?
-          { all: [...prevState.all, prevState.current], current: prevState.current }
-          : { all: prevState.all.filter(emp => emp.id !== prevState.current.id), current: null };
-        return newModals;
-      });
-    }
-
-  }
 
   const handleClose = (data, receivers) => {
     // todo: send notif on new order to receivers
     setIsModalVisible(_ => false);
-
     const message = {
       message: "notification",
       receivers: receivers.map(receiver => ({ id: receiver, notif: "newOrder" })),
@@ -52,28 +39,18 @@ const NewOrder = (props) => {
   };
 
 
-  const [showModal, setShowModal] = useState(false);
-  const [serviceType, setServiceType] = useState("")
-  const [lastDate, setLastDate] = useState(new Date());
-  const [selectedData, setSelectedData] = useState(null);
-  const [receivers, setReceivers] = useState([]);
-  const [modalList, setModalList] = useState(null)
-
   const handleOrderSelect = (orderId) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
-    setModalList({ ...modalList, current: properties })
-    setShowModal(true)
-    setServiceType(properties.value[0])
-    setLastDate(properties.value[1])
-    setSelectedData(properties.value[2])
-    setReceivers(properties.value[3])
+    setModalList(prevState => ({ ...prevState, current: properties }))
+    setIsModalVisible(_ => true);
+    setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
   }
 
   const minimizeHandler = () => {
 
     setIsModalVisible(_ => false);
-    
-    const current = { 'id': Date.now(), 'value': [serviceType, lastDate, selectedData, receivers] }
+
+    const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
 
     if (modalList.all.length === 0) {
       setModalList({ all: [current], current: current })
@@ -84,7 +61,7 @@ const NewOrder = (props) => {
       ({
         all: prevState.all.map(order =>
           order.id === modalList.current.id ?
-            { ...order, 'value': [serviceType, lastDate, selectedData, receivers] }
+            { ...order, 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
             : order
         ), current: null
       })
@@ -94,27 +71,36 @@ const NewOrder = (props) => {
   }
 
 
+  const mouseOverHandlerSlide = (e) => {
+  
+    sidebarRef.current.style.transform = "translateX(0px)";
+  };
+  const mouseOverHandlerSlideBack = (e) => {
+  
+    sidebarRef.current.style.transform = "translateX(200px)";
+  };
+  
   return (
+    
     <>
       <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
         <MdAdd color="white" size="30" />
       </div>
-      <div 
-          className="" 
-          style={{position:'fixed',right:'0',top:'0',bottom:'0',backgroundColor:'red'}}>Sidebar</div>
+      <div className="sidebar" ref={sidebarRef} 
+      onMouseLeave={mouseOverHandlerSlideBack}>
+        <div className="sidebar-button"
+        onMouseOver={mouseOverHandlerSlide}
+        
+        ></div>
+        <div className="sidebar2"></div>
+      </div>
       {
         isModalVisible &&
         <Suspense fallback="">
           <Modal minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" minimizeHandler={minimizeHandler} changeModalState={handleCloseModal} wrapperRef={props.wrapperRef}>
             {(props) => <OrderModal
-              serviceType={serviceType}
-              setServiceType={setServiceType}
-              lastDate={lastDate}
-              setLastDate={setLastDate}
-              selectedData={selectedData}
-              setSelectedData={setSelectedData}
-              receivers={receivers}
-              setReceivers={setReceivers}
+              choices={choices}
+              setChoices={setChoices}
               {...props} />}
           </Modal>
         </Suspense>

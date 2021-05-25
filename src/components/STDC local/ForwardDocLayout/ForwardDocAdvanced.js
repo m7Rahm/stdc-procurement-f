@@ -167,14 +167,14 @@ export const ForwardedPeople = (props) => {
         <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
             <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px',width:'15em'}}>
                 {
-                    props.receivers.map((emp, index) =>
+                    props.choices.receivers.map((emp, index) =>
                         <VisaForwardPerson
                             key={emp.id}
                             id={emp.id}
                             emp={emp}
                             index={index}
                             draggedElement={draggedElement}
-                            setReceivers={props.setReceivers}
+                            setChoices={props.setChoices}
                             handleSelectChange={props.handleSelectChange}
                         />
                     )
