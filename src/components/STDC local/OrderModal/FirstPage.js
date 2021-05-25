@@ -57,14 +57,6 @@ const FirstPage = React.forwardRef((props, ref) => {
                         />
                     </MuiPickersUtilsProvider>
                 </div>
-                {/* <button
-                className="btn btn-primary btn-modal bg-green py-4 mt-8"
-                style={{'float':'right'}}
-                type="button"
-                onClick={()=>props.setWhichPage(2)}
-                >
-                Davam
-                </button> */}
             </div>
         </>
     )
