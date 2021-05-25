@@ -7,8 +7,12 @@ import "../../../styles/styles.scss"
 import "./NewOrderButton.scss"
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
+
   const webSocket = useContext(WebSocketContext)
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalList, setModalList] = useState(null)
+  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
+
   const handleClick = (action) => {
     setIsModalVisible(_ => action);
     setModalList(prevState => {
@@ -18,10 +22,7 @@ const NewOrder = (props) => {
       return newList;
     })
 
-    setServiceType("")
-    setLastDate(new Date())
-    setSelectedData(null)
-    setReceivers([])
+    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
   };
 
   const handleCloseModal = () => {
@@ -53,28 +54,18 @@ const NewOrder = (props) => {
   };
 
 
-  const [showModal, setShowModal] = useState(false);
-  const [serviceType, setServiceType] = useState("")
-  const [lastDate, setLastDate] = useState(new Date());
-  const [selectedData, setSelectedData] = useState(null);
-  const [receivers, setReceivers] = useState([]);
-  const [modalList, setModalList] = useState(null)
-
   const handleOrderSelect = (orderId) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
-    setModalList({ ...modalList, current: properties })
-    setShowModal(true)
-    setServiceType(properties.value[0])
-    setLastDate(properties.value[1])
-    setSelectedData(properties.value[2])
-    setReceivers(properties.value[3])
+    setModalList(prevState => ({ ...prevState, current: properties }))
+    setIsModalVisible(_ => true);
+    setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
   }
 
   const minimizeHandler = () => {
 
     setIsModalVisible(_ => false);
-    
-    const current = { 'id': Date.now(), 'value': [serviceType, lastDate, selectedData, receivers] }
+
+    const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
 
     if (modalList.all.length === 0) {
       setModalList({ all: [current], current: current })
@@ -85,7 +76,7 @@ const NewOrder = (props) => {
       ({
         all: prevState.all.map(order =>
           order.id === modalList.current.id ?
-            { ...order, 'value': [serviceType, lastDate, selectedData, receivers] }
+            { ...order, 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
             : order
         ), current: null
       })
@@ -100,12 +91,12 @@ const NewOrder = (props) => {
       <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
         <MdAdd color="white" size="30" />
       </div>
-      <div  className="sidebar">
-      <div  className="sidebar2"></div>
+      <div className="sidebar">
+        <div className="sidebar2"></div>
         <div className="sidebar-button"></div>
-       
 
-       
+
+
         Sidebar
       </div>
       {
@@ -113,14 +104,8 @@ const NewOrder = (props) => {
         <Suspense fallback="">
           <Modal minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" minimizeHandler={minimizeHandler} changeModalState={handleCloseModal} wrapperRef={props.wrapperRef}>
             {(props) => <OrderModal
-              serviceType={serviceType}
-              setServiceType={setServiceType}
-              lastDate={lastDate}
-              setLastDate={setLastDate}
-              selectedData={selectedData}
-              setSelectedData={setSelectedData}
-              receivers={receivers}
-              setReceivers={setReceivers}
+              choices={choices}
+              setChoices={setChoices}
               {...props} />}
           </Modal>
         </Suspense>

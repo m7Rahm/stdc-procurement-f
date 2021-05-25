@@ -19,11 +19,11 @@ const VisaForwardPerson = (props) => {
         const parent = e.target.parentElement;
         const draggedElement = props.draggedElement.current.props.emp;
         if ((e.target.classList.contains("forwarded-person-card") || parent.classList.contains("forwarded-person-card")) && props.id !== draggedElement.id)
-            props.setReceivers(prev => {
-                const draggedIndex = prev.findIndex(card => card.id === draggedElement.id);
-                const elementsBeforeIndex = prev.slice(0, draggedIndex > props.index ? props.index : props.index + 1);
+            props.setChoices(prev => {
+                const draggedIndex = prev.receivers.findIndex(card => card.id === draggedElement.id);
+                const elementsBeforeIndex = prev.receivers.slice(0, draggedIndex > props.index ? props.index : props.index + 1);
                 const before = elementsBeforeIndex.filter(card => card.id !== draggedElement.id)
-                const elementsAfterIndex = prev.slice(draggedIndex > props.index ? props.index : props.index + 1);
+                const elementsAfterIndex = prev.receivers.slice(draggedIndex > props.index ? props.index : props.index + 1);
                 const after = elementsAfterIndex.filter(card => card.id !== draggedElement.id)
                 return [...before, draggedElement, ...after]
             })
