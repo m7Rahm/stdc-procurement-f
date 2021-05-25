@@ -4,6 +4,7 @@ import { MdAdd } from 'react-icons/md'
 import { WebSocketContext } from '../../../pages/SelectModule'
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
+import "./NewOrderButton.scss"
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
   const webSocket = useContext(WebSocketContext)
@@ -27,9 +28,14 @@ const NewOrder = (props) => {
       <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
         <MdAdd color="white" size="30" />
       </div>
-      <div 
-          className="" 
-          style={{position:'fixed',right:'0',top:'0',bottom:'0',backgroundColor:'red'}}>Sidebar</div>
+      <div  className="sidebar">
+      <div  className="sidebar2"></div>
+        <div className="sidebar-button"></div>
+       
+
+       
+        Sidebar
+      </div>
       {
         isModalVisible &&
         <Suspense fallback="">
