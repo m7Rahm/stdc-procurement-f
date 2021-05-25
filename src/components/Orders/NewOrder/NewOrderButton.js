@@ -65,8 +65,8 @@ const NewOrder = (props) => {
 
   const minimizeHandler = () => {
 
-    // setShowModal(false)
-
+    setIsModalVisible(_ => false);
+    
     const current = { 'id': Date.now(), 'value': [serviceType, lastDate, selectedData, receivers] }
 
     if (modalList.all.length === 0) {
@@ -99,7 +99,7 @@ const NewOrder = (props) => {
       {
         isModalVisible &&
         <Suspense fallback="">
-          <Modal minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
+          <Modal minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" minimizeHandler={minimizeHandler} changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
             {(props) => <OrderModal
               serviceType={serviceType}
               setServiceType={setServiceType}
