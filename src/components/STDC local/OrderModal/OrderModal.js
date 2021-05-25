@@ -10,7 +10,7 @@ const OrderModal = (props) => {
   const davamText = whichPage.page === 3 ? "Sifariş et" : "Davam";
 
   const handleDateChange = (date) => {
-    props.setLastDate(date);
+    props.setChoices({...props.choices,lastDate:date});
   };
 
   const handleSendClick = () => {
@@ -95,7 +95,7 @@ const OrderModal = (props) => {
     const target = e.target;
     target.style.backgroundColor = "#27ae60";
   };
-
+console.log(whichPage)
   return (
     <>
       {/* <h1 className="md-header">Sifariş</h1> */}
@@ -104,11 +104,10 @@ const OrderModal = (props) => {
           ref={actPageRef}
           setWhichPage={setWhichPage}
           handleDateChange={handleDateChange}
-          setServiceType={props.setServiceType}
-          serviceType={props.serviceType}
-          setLastDate={props.setLastDate}
-          animName={whichPage.animationName}
+          choices={props.choices}
+          setChoices={props.setChoices}
           setHandleDateChange={props.setHandleChange}
+          animName={whichPage.animationName}
         />
       ) : whichPage.page === 2 ? (
         <div
@@ -122,9 +121,9 @@ const OrderModal = (props) => {
         <div className="page-container" ref={actPageRef}>
           <ForwardDocLayout
             handleSendClick={handleSendClick}
-            receivers={props.receivers}
             textareaVisible={false}
-            setReceivers={props.setReceivers}
+            choices={props.choices}
+            setChoices={props.setChoices}
           />
         </div>
       ) : (

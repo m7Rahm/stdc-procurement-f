@@ -14,8 +14,8 @@ const FirstPage = React.forwardRef((props, ref) => {
                                 type="radio"
                                 name="servis"
                                 value="xidmet"
-                                checked={props.serviceType === "xidmet"}
-                                onChange={(e) => props.setServiceType(e.target.value)}
+                                checked={props.choices.serviceType === "xidmet"}
+                                onChange={(e) => props.setChoices(prevState=>({...prevState ,serviceType:e.target.value}))}
                             />
                             <span className="custom-checkbox"></span>
                         </label>
@@ -28,8 +28,8 @@ const FirstPage = React.forwardRef((props, ref) => {
                                 type="radio"
                                 name="servis"
                                 value="mal-material"
-                                checked={props.serviceType === "mal-material"}
-                                onChange={(e) => props.setServiceType(e.target.value)}
+                                checked={props.choices.serviceType === "mal-material"}
+                                onChange={(e) => props.setChoices(prevState=>({...prevState ,serviceType:e.target.value}))}
                             />
                             <span className="custom-checkbox"></span>
                         </label>
@@ -49,7 +49,7 @@ const FirstPage = React.forwardRef((props, ref) => {
                             margin="normal"
                             id="date-picker-inline"
                             style={{ 'maxWidth': "150px" }}
-                            value={props.lastDate}
+                            value={props.choices.lastDate}
                             onChange={props.handleDateChange}
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',

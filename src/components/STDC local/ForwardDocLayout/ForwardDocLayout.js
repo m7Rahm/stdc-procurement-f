@@ -4,7 +4,7 @@ import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
     const { textareaVisible = true } = props;
     const [empList, setEmpList] = useState([]);
-    const [receivers, setReceivers] = useState([]);
+    // const [props.choices.receivers, props.setChoices] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const selectRef = useRef(null);
@@ -52,9 +52,12 @@ const ForwardDocLayout = (props) => {
         setEmpList(value !== -1 ? empListRef.current.filter(employee => employee.structure_dependency_id === value) : empListRef.current);
     }
     const handleSelectChange = (employee) => {
-        const res = receivers.find(emp => emp.id === employee.id);
-        const newReceivers = !res ? [...receivers, employee] : receivers.filter(emp => emp.id !== employee.id);
-        setReceivers(newReceivers);
+        const res = props.choices.receivers.find(emp => emp.id === employee.id);
+        const newReceivers = !res ? [...props.choices.receivers, employee] : props.choices.receivers.filter(emp => emp.id !== employee.id);
+        props.setChoices(prevState=>({
+            ...prevState,
+            receivers:newReceivers
+        }))
         setSearchQuery('');
     }
     return (
@@ -90,8 +93,8 @@ const ForwardDocLayout = (props) => {
                 </div>
             </div>
             <ForwardedPeople
-                receivers={receivers}
-                setReceivers={setReceivers}
+                choices={props.choices}
+                setChoices={props.setChoices}
                 handleSelectChange={handleSelectChange}
             />
         </div>
