@@ -27,6 +27,9 @@ const NewOrder = (props) => {
       <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
         <MdAdd color="white" size="30" />
       </div>
+      <div 
+          className="" 
+          style={{position:'fixed',right:'0',top:'0',bottom:'0',backgroundColor:'red'}}>Sidebar</div>
       {
         isModalVisible &&
         <Suspense fallback="">

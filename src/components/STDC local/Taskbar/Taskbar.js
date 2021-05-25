@@ -38,24 +38,24 @@ export const ModalArray = (props) => {
 
     return (
         <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
-            <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px'}}>
+            <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px' }}>
                 {
                     props.modalList !== null ?
-                    props.modalList.all.map((modal, index) => 
-                        <UnfinishedModal
-                            key={modal.id}
-                            id={modal.id}
-                            emp={modal}
-                            index={index}
-                            draggedElement={draggedElement}
-                            setReceivers={props.setModalList}
-                            handleSelectChange={props.handleSelectChange}
-                            handleOrderSelect={props.handleOrderSelect}
-                            modalList={props.modalList}
-                        />
-                    )
-                    :
-                    <div></div>
+                        props.modalList.all.map((modal, index) =>
+                            <UnfinishedModal
+                                key={modal.id}
+                                id={modal.id}
+                                emp={modal}
+                                index={index}
+                                draggedElement={draggedElement}
+                                setReceivers={props.setModalList}
+                                handleSelectChange={props.handleSelectChange}
+                                handleOrderSelect={props.handleOrderSelect}
+                                modalList={props.modalList}
+                            />
+                        )
+                        :
+                        <div></div>
                 }
             </div>
         </div>

@@ -55,7 +55,7 @@ const Home = () => {
 
         setShowModal(false)
 
-        if(modalList.current !== null){
+        if (modalList.current !== null) {
             setModalList(prevState => {
                 const res = prevState.all.find(emp => emp.id === prevState.current.id);
                 const newModals = !res ?
