@@ -17,6 +17,43 @@ i{
     font-weight: bold;
   font-size: inherit;
 }
+.sidebar{
+    position:fixed;
+    right:0;
+    top:58px;
+    bottom:60px;
+    width:200px;
+    transform: translateX(200px);
+    transition:all 500ms;
+    
+}
+.sidebar2{
+    background-color:black;
+   top:0;
+   bottom:0;
+
+    position: fixed;
+
+    width:200px;
+
+  
+    z-index: 200;
+}
+.sidebar-button{
+    position: absolute;
+    background-color:red;
+    clip-path: circle(50% at 100% 50%);
+    width:70px;
+    height:70px;
+    top: 50%;
+    transform: translate(0, -50%);
+    padding: 10px;
+    left:-60px;
+    z-index: 1;
+   
+}
+
+
 div.sel-dep-list{
     float: left;
     margin-left: 10px;
