@@ -1356,6 +1356,7 @@ ul.employees-list {
 ul.employees-list>li>span {
   color: rgb(158, 158, 158);
   font-weight: 600;
+  font-size: 0.8rem;
 }
 div.forwarded-person>div>div {
   height: 100%;

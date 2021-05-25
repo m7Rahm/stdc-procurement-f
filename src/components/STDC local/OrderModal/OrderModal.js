@@ -48,7 +48,7 @@ const OrderModal = (props) => {
         false
       );
       setWhichPage(prevState => {
-        props.modalWrapperRef.current.style.minWidth = prevState.page === 1 ? "60rem" : "40rem";
+        props.modalWrapperRef.current.style.width = prevState.page === 1 ? "60rem" : "40rem";
         return prevState.page < 3 ? {
           page: prevState.page + 1,
           animationName: "slide_davam_next",
@@ -98,7 +98,6 @@ const OrderModal = (props) => {
 
   return (
     <>
-      {/* <h1 className="md-header">Sifariş</h1> */}
       {whichPage.page === 1 ? (
         <FirstPage
           ref={actPageRef}
