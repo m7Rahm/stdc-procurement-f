@@ -2,8 +2,10 @@ import React, { useContext, useState, useRef } from 'react'
 import { Suspense } from 'react'
 import { MdAdd } from 'react-icons/md'
 import { WebSocketContext } from '../../../pages/SelectModule'
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
+
 
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
@@ -26,7 +28,7 @@ const NewOrder = (props) => {
   const sidebarRef = useRef(null);
 
   const handleCloseModal = () => {
-    
+
   }
 
 
@@ -74,16 +76,20 @@ const NewOrder = (props) => {
 
   }
 
+  const [fachevron ,setFachevron] = useState(false)
 
   const mouseOverHandlerSlide = (e) => {
   
     sidebarRef.current.style.transform = "translateX(0px)";
+    setFachevron(true)
   };
-  const mouseOverHandlerSlideBack = (e) => {
+  const mouseOverHandlerSlideBack = (option) => {
   
     sidebarRef.current.style.transform = "translateX(200px)";
+    setFachevron(false)
   };
-  
+
+
   return (
     
     <>
@@ -91,18 +97,24 @@ const NewOrder = (props) => {
         <MdAdd color="white" size="30" />
       </div>
       <div className="sidebar" ref={sidebarRef} 
-      onMouseLeave={mouseOverHandlerSlideBack}>
+      onMouseLeave={()=>mouseOverHandlerSlideBack(true)}>
         <div className="sidebar-button-wrap">
         <div className="sidebar-button"
         onMouseOver={mouseOverHandlerSlide}
         
-        ></div></div>
+        >
+          { fachevron===false ?
+            <FaChevronLeft  className="greater-than-icon" />
+            :
+            <FaChevronRight  className="greater-than-icon"  />
+          }
+          </div></div>
         <div className="sidebar2"></div>
       </div>
       {
         isModalVisible &&
         <Suspense fallback="">
-          <Modal minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" minimizeHandler={minimizeHandler} changeModalState={handleCloseModal} wrapperRef={props.wrapperRef}>
+          <Modal  minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" minimizeHandler={minimizeHandler} changeModalState={handleCloseModal} wrapperRef={props.wrapperRef}>
             {(props) => <OrderModal
               choices={choices}
               setChoices={setChoices}
