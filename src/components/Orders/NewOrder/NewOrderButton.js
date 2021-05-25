@@ -22,8 +22,8 @@ const NewOrder = (props) => {
     setSelectedData(null)
     setReceivers([])
   };
-  const handleClose = (data, receivers) => {
-    // todo: send notif on new order to receivers
+
+  const handleCloseModal = () => {
     setIsModalVisible(_ => false);
 
     if (modalList.current !== null) {
@@ -35,6 +35,12 @@ const NewOrder = (props) => {
         return newModals;
       });
     }
+
+  }
+
+  const handleClose = (data, receivers) => {
+    // todo: send notif on new order to receivers
+    setIsModalVisible(_ => false);
 
     const message = {
       message: "notification",
@@ -99,7 +105,7 @@ const NewOrder = (props) => {
       {
         isModalVisible &&
         <Suspense fallback="">
-          <Modal minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" minimizeHandler={minimizeHandler} changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
+          <Modal minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }} title="Yeni Sifariş" minimizeHandler={minimizeHandler} changeModalState={handleCloseModal} wrapperRef={props.wrapperRef}>
             {(props) => <OrderModal
               serviceType={serviceType}
               setServiceType={setServiceType}
