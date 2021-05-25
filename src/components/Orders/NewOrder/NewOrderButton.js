@@ -42,10 +42,11 @@ const NewOrder = (props) => {
       </div>
       <div className="sidebar" ref={sidebarRef} 
       onMouseLeave={mouseOverHandlerSlideBack}>
+        <div className="sidebar-button-wrap">
         <div className="sidebar-button"
         onMouseOver={mouseOverHandlerSlide}
         
-        ></div>
+        ></div></div>
         <div className="sidebar2"></div>
       </div>
       {
