@@ -4,6 +4,12 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import "./OrderModal.scss"
 
 const FirstPage = React.forwardRef((props, ref) => {
+
+    const updateServiceType = (e) => {
+        const value = e.target.value
+        props.setChoices(prevState=>({...prevState ,serviceType:value}))
+    }
+
     return (
         <>
             <div className="page-container" style={{ animationName: props.animName }} ref={ref}>
@@ -15,7 +21,7 @@ const FirstPage = React.forwardRef((props, ref) => {
                                 name="servis"
                                 value="xidmet"
                                 checked={props.choices.serviceType === "xidmet"}
-                                onChange={(e) => props.setChoices(prevState=>({...prevState ,serviceType:e.target.value}))}
+                                onChange={(e) => updateServiceType(e)}
                             />
                             <span className="custom-checkbox"></span>
                         </label>
@@ -29,7 +35,7 @@ const FirstPage = React.forwardRef((props, ref) => {
                                 name="servis"
                                 value="mal-material"
                                 checked={props.choices.serviceType === "mal-material"}
-                                onChange={(e) => props.setChoices(prevState=>({...prevState ,serviceType:e.target.value}))}
+                                onChange={(e) => updateServiceType(e)}
                             />
                             <span className="custom-checkbox"></span>
                         </label>

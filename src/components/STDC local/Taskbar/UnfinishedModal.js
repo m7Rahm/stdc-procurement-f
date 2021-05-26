@@ -43,17 +43,12 @@ const UnfinishedModal = (props) => {
             }
         }
         return -1;
-    }
-    
-    const element = props.modalList.all.find(emp => emp.id === props.emp.id);
-    const elementIndex = findWithAttr(props.modalList.all,'id', element.id)
-    
+    }    
 
     return (
         
         <div
             ref={elem}
-            // className="forwarded-person-card"
             className="order-card"
             draggable="true"
             onDragEnter={onDragEnter}
