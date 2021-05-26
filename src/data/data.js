@@ -162,6 +162,16 @@ export const expressVendorInit = {
     vendor_type: '1',
     files: []
 }
+export const structureTypes = [
+    {
+        val: "0",
+        text: "Struktur vahidi"
+    },
+    {
+        val: "1",
+        text: "Anbar"
+    }
+]
 export const vendorTypes = [
     {
         val: 1,
@@ -246,3 +256,14 @@ export const riskZones = [
         text: 'Qara siyahı'
     }
 ];
+
+export const productUnit = [
+    {
+        val : 1,
+        text: 'Kg'
+    },
+    {
+        val: 2,
+        text: 'Ədəd'
+    }
+]

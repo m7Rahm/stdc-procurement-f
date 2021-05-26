@@ -1,6 +1,10 @@
 .form-group {
   display: flex;
   flex-direction: column;
+  width:10rem;
+  position: absolute;
+  left:15rem;
+  margin-top:2rem;
 }
 
 .form-label {

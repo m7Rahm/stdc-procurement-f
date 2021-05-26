@@ -6,10 +6,12 @@
 }
 
 #procurement-edit-section{
+    position: absolute;
     display: flex;
     height: 100px;
     flex-flow: wrap row;
     margin-bottom: 10px;
+    left:25rem;
 }
 
 #procurement-edit-section>textarea{

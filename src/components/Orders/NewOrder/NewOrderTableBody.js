@@ -3,7 +3,7 @@ import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 const NewOrderTableBody = (props) => {
   const modelsListRef = useRef(null);
-  const { orderInfo, glCategories,
+  const { orderInfo,
     //  handleSendClick 
   } = props;
   const { orderType, structure } = orderInfo;
@@ -15,7 +15,6 @@ const NewOrderTableBody = (props) => {
       approx_price: 0,
       additionalInfo: '',
       class: '',
-      subGlCategory: '-1',
       count: 1,
       isService: 0
     }
@@ -31,14 +30,13 @@ const NewOrderTableBody = (props) => {
       <ul className="new-order-table">
         <li>
           <div>#</div>
-          <div>Sub-Gl Kateqoriya</div>
+          {/* <div>Sub-Gl Kateqoriya</div> */}
           <div>Məhsul</div>
-          <div style={{ maxWidth: " 60px" }}>Qalıq</div>
-          <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
-          <div style={{ maxWidth: '140px' }}>Say</div>
-          <div>Kurasiya</div>
-          <div>Büdcə</div>
-          <div>Əlavə məlumat</div>
+          <div style={{ width: '170px', maxWidth: '235px' }}>Kod</div>
+          <div style={{ maxWidth: '120px' }}>Say</div>
+          <div style={{ width: '170px', maxWidth: '150px' }}>Ölçü vahidi</div>
+          <div>İstifadə yeri</div>
+          {/* <div>Büdcə</div> */}
           <div></div>
         </li>
         {
@@ -52,10 +50,8 @@ const NewOrderTableBody = (props) => {
                 key={material.id}
                 materialid={material.id}
                 className={material.class}
-                subGlCategory={material.subGlCategory}
                 structure={structure}
                 count={material.count}
-                subGlCategories={glCategories.sub}
                 modelsListRef={modelsListRef}
                 additionalInfo={material.additionalInfo}
                 department={material.department}

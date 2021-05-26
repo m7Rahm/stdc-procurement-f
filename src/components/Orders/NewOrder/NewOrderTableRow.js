@@ -1,17 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import useFetch from '../../../hooks/useFetch';
+import {productUnit} from '../../../data/data'
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, structure, subGlCategories, setMaterials } = props;
+  const { orderType, structure, setMaterials } = props;
   const modelListRef = useRef(null);
+  const codeListRef = useRef(null);
+  const placeListRef = useRef(null);
   const [models, setModels] = useState([]);
+  const [codes, setCodes] = useState([]);
+  const [places,setPlaces] = useState([]);
+  const [unit,setUnit] = useState([]);
   const modelsRef = useRef([]);
+  const placesRef = useRef([]);
+  const codesRef = useRef([]);
   const modelInputRef = useRef(null);
-  const { materialid, subGlCategory, className, count, department, additionalInfo } = props
-  const [budget, setBudget] = useState(0);
-  const [quantity, setQuantity] = useState(0)
+  const codeInputRef = useRef(null);
+  const placeInputRef = useRef(null);
+  const { materialid, subGlCategory, className, count } = props
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
   const fetchGet = useFetch("GET");
@@ -28,48 +36,59 @@ const NewOrderTableRow = (props) => {
     fetchPost('/api/strucutre-budget-info', data)
       .then(respJ => {
         modelsRef.current = respJ;
-        const budget = respJ.length !== 0 ? respJ[0].budget : 0;
         if (modelInputRef.current) {
           const modelInput = modelInputRef.current.value.toLowerCase();
           setModels(respJ.filter(model => model.title.toLowerCase().includes(modelInput)));
-          setBudget(budget);
         }
       })
       .catch(ex => console.log(ex))
   }, [subGlCategory, fetchPost, orderType, structure])
+
+
   const handleAmountFocusLose = (e) => {
     const value = e.target.value;
     const name = e.target.name
     if (value === '')
       setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
   }
+
+
   const handleAmountChangeButtons = (action) => {
     setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? Number(material.count) + 1 : material.count - 1 } : material))
   }
+
+
   const handleFocus = () => {
     if (props.modelsListRef.current)
       props.modelsListRef.current.style.display = 'none';
     modelListRef.current.style.display = 'block'
     props.modelsListRef.current = modelListRef.current;
   }
+  // eslint-disable-next-line
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
     setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
   }
+
+
   const handleBlur = (e) => {
     const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
     if (relatedTargetid === null || relatedTargetid !== 'modelListRef')
       modelListRef.current.style.display = 'none'
   }
+
+
   const handleRowDelete = () => {
     rowRef.current.classList.add("delete-row");
     rowRef.current.addEventListener('animationend', () => setMaterials(prev => prev.filter(material => material.id !== materialid)))
   }
+
+
   const setModel = (model) => {
     fetchGet(`/api/material-quantity/${structure}?pid=` + model.product_id)
       .then(resp => {
-        setQuantity(resp[0].quantity)
+        // setQuantity(resp[0].quantity)
       })
       .catch(ex => console.log(ex))
     setMaterials(prev => prev.map(material => material.id === materialid
@@ -86,11 +105,13 @@ const NewOrderTableRow = (props) => {
       }
       : material
     ));
-    setBudget(model.budget)
+    // setBudget(model.budget)
     codeRef.current.value = model.product_id;
     modelInputRef.current.value = model.title;
     modelListRef.current.style.display = "none";
   }
+
+
   const handleInputSearch = (e) => {
     const value = e.target.value;
     if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
@@ -107,6 +128,41 @@ const NewOrderTableRow = (props) => {
         .catch(ex => console.log(ex))
     }
   }
+
+  const handlePlaceSearch = (e) => {
+    const value = e.target.value;
+    // if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
+      const charArray = value.split("")
+      const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
+      const regExp = new RegExp(`${reg}`, "i");
+      const searchResult = placesRef.current.filter(model => regExp.test(model.title))
+      setPlaces(searchResult);
+    // } else {
+    //   fetchGet(`/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
+    //     .then(respJ => {
+    //       setPlaces(respJ)
+    //     })
+    //     .catch(ex => console.log(ex))
+    // }
+  }
+
+  const handleCodeSearch = (e) => {
+    const value = e.target.value;
+    // if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
+      const charArray = value.split("")
+      const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
+      const regExp = new RegExp(`${reg}`, "i");
+      const searchResult = codesRef.current.filter(model => regExp.test(model.title))
+      setCodes(searchResult);
+    // } else {
+    //   fetchGet(`/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
+    //     .then(respJ => {
+    //       setCodes(respJ)
+    //     })
+    //     .catch(ex => console.log(ex))
+    // }
+  }
+  // eslint-disable-next-line
   const searchByCode = (e) => {
     const data = { product_id: e.target.value, orderType: orderType, structure: structure };
     if (timeoutRef.current) {
@@ -134,8 +190,8 @@ const NewOrderTableRow = (props) => {
               }
               : prevMaterial
             ));
-            setQuantity(material.quantity)
-            setBudget(material.budget || 0);
+            // setQuantity(material.quantity)
+            // setBudget(material.budget || 0);
             modelListRef.current.style.display = "none";
           } else {
             modelListRef.current.style.display = "block";
@@ -148,40 +204,9 @@ const NewOrderTableRow = (props) => {
         })
     }, 500)
   }
-  const handleSubCategoryChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    const data = { subGlCategoryId: value, structureid: structure, orderType: orderType };
-    setMaterials(prev => prev.map(material =>
-      material.id === materialid
-        ? { ...material, [name]: value, materialId: '', department: "", isService: orderType }
-        : material
-    ))
-    fetchPost('/api/strucutre-budget-info', data)
-      .then(respJ => {
-        modelsRef.current = respJ;
-        const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-        setModels(respJ);
-        setBudget(budget);
-        modelInputRef.current.value = "";
-        codeRef.current.value = ""
-
-      })
-      .catch(ex => console.log(ex))
-  }
   return (
     <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
-      <div>
-        <select onChange={handleSubCategoryChange} name="subGlCategory" value={subGlCategory}>
-          <option value="-1">-</option>
-          {
-            subGlCategories.map(category =>
-              <option key={category.id} value={category.id}>{`${category.code} ${category.name}`}</option>
-            )
-          }
-        </select>
-      </div>
       <div style={{ position: 'relative' }}>
         <input
           onBlur={handleBlur}
@@ -194,7 +219,7 @@ const NewOrderTableRow = (props) => {
           onChange={handleInputSearch}
         />
         {
-          <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
+          <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ width:'150px', maxWidth: ' 200px',outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
             {
               models.map(model => {
                 const titleArr = model.title.split("");
@@ -214,16 +239,42 @@ const NewOrderTableRow = (props) => {
           </ul>
         }
       </div>
-      <div style={{ maxWidth: " 60px" }}>{quantity}</div>
-      <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
+
+
+      <div style={{ position: 'relative',width: '170px', maxWidth:'200px' }}>
         <input
-          onChange={searchByCode}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
           type="text"
           placeholder="Kod"
-          ref={codeRef}
-          name="code"
+          ref={codeInputRef}
+          name="model"
+          autoComplete="off"
+          onChange={handleCodeSearch}
         />
+        {
+          <ul id="codeListRef" tabIndex="0" ref={codeListRef} style={{ outline: codes.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
+            {
+              codes.map(model => {
+                const titleArr2 = model.title.split("");
+                const inputVal = codeInputRef.current.value;
+                const title = <>{titleArr2.map((char, index) => {
+                  const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+                  if (strRegExp.test(char)) {
+                    return <i key={index}>{char}</i>
+                  } else {
+                    return char
+                  }
+                })
+                }</>
+                return <li key={model.id} onClick={() => setCodes(model)}>{title}</li>
+              })
+            }
+          </ul>
+        }
       </div>
+
+
       <div style={{ maxWidth: '140px' }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
           <FaMinus cursor="pointer" onClick={() => { if (count > 1) handleAmountChangeButtons('dec') }} color="#ffae00" style={{ margin: '0px 3px' }} />
@@ -238,21 +289,54 @@ const NewOrderTableRow = (props) => {
           <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ margin: '0px 3px' }} />
         </div>
       </div>
-      <div>
-        <div>{department}</div>
+
+      <div style={{ maxWidth: '140px' }}>
+        <select
+            name="product_unit"
+            value={unit} 
+            onChange={(e)=> setUnit(e.target.value)}
+        >
+            {
+                productUnit.map(unit =>
+                    <option value={unit.val} key={unit.val}>{unit.text}</option>
+                )
+            }
+        </select>
       </div>
-      <div>
-        <div style={{ height: '100%' }}>{budget}</div>
-      </div>
-      <div>
+
+      {/*Istifade yeri */}
+
+      <div style={{ position: 'relative' }}>
         <input
-          style={{ width: '100%' }}
-          placeholder="Link və ya əlavə məlumat"
-          name="additionalInfo"
-          value={additionalInfo}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
           type="text"
-          onChange={handleChange}
+          placeholder="Istifadə yeri"
+          ref={placeInputRef}
+          name="model"
+          autoComplete="off"
+          onChange={handlePlaceSearch}
         />
+        {
+          <ul id="placeListRef" tabIndex="0" ref={placeListRef} style={{ outline: codes.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
+            {
+              places.map(model => {
+                const titleArr3 = model.title.split("");
+                const inputVal = placeInputRef.current.value;
+                const title = <>{titleArr3.map((char, index) => {
+                  const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+                  if (strRegExp.test(char)) {
+                    return <i key={index}>{char}</i>
+                  } else {
+                    return char
+                  }
+                })
+                }</>
+                return <li key={model.id} onClick={() => setPlaces(model)}>{title}</li>
+              })
+            }
+          </ul>
+        }
       </div>
       <div>
         <FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />

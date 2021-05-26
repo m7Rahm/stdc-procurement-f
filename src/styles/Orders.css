@@ -17,6 +17,67 @@ i{
     font-weight: bold;
   font-size: inherit;
 }
+.sidebar{
+    position:fixed;
+    right:0;
+    top:58px;
+    bottom:60px;
+    width:200px;
+    transform: translateX(200px);
+    transition:all 700ms;
+    box-shadow: 0px 0px 5px 3px rgb(32 32 32 / 20%);
+    background-color:rgba(248, 244, 244, 50%);
+    backdrop-filter: blur(6px);
+    
+    
+}
+.sidebar2{
+   
+   top:0;
+   bottom:0;
+    position: fixed;
+    width:200px;
+    
+    z-index: 3;
+}
+.sidebar-button-wrap{
+    position: absolute;
+    top: 50%;
+    left:-30px;
+    transform: translate(0, -50%);
+    filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.3))
+   
+}
+
+.sidebar-button{
+   
+    background-color: rgb(255, 174, 0);
+  border-top-left-radius:50%;
+  border-bottom-left-radius:50%;
+
+    width:70px;
+    height:70px;
+   
+  
+    padding: 10px;
+  
+    z-index: 1;
+
+   clip-path: polygon(42% 0, 42% 100%, 0 100%, 0 0);
+  
+   
+}
+.siderbar-button::before{
+   
+        content: ' \003C';
+ 
+}
+.greater-than-icon{
+    position:absolute;
+    top:38%;
+   fill:white;
+}
+
 div.sel-dep-list{
     float: left;
     margin-left: 10px;

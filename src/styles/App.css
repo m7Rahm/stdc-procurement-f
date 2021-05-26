@@ -983,7 +983,10 @@ div.icons-panel-hide {
   z-index: 2;
   animation: modal-show 0.5s ease-in-out both;
 }
-
+.wrapper{
+  min-width: 60%;
+  
+}
 @keyframes modal-show {
   from {
     transform: none;
@@ -1353,6 +1356,7 @@ ul.employees-list {
 ul.employees-list>li>span {
   color: rgb(158, 158, 158);
   font-weight: 600;
+  font-size: 0.8rem;
 }
 div.forwarded-person>div>div {
   height: 100%;

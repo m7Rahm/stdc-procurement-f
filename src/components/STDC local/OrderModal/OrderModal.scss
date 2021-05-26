@@ -20,6 +20,8 @@
 }
 .page-container {
   // width: 50%;
+  position: relative;
+  
   margin: auto;
   padding-top: 7.5rem;
   animation: slide_davam_next 200ms ease-in-out both;
@@ -59,4 +61,17 @@
   to {
     transform: translateX(-30rem);
   }
+}
+.cont1{
+  position: absolute;
+  left: 50%;
+  top:150%;
+  transform: translate(-50%, -50%);
+  width:30rem;
+}
+.form-group{
+  position: absolute;
+  left: 50%;
+  top: 200%;
+  transform: translate(-50%, -50%);
 }

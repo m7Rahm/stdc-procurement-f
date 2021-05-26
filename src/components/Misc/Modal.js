@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useMemo } from 'react'
 import { IoMdClose } from 'react-icons/io'
+import { VscChromeMinimize } from "react-icons/vsc"
 
 const modalContent = (Content) => ({ ...props }) =>
   <Content {...props} />
 
 const Modal = (props) => {
-  const { style, canBeClosed = true, number, title, changeModalState } = props;
+  const { style, canBeClosed = true, number, title, changeModalState, minimizable, minimizeHandler } = props;
   const modalWrapperRef = useRef(null)
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
   const stateRef = useRef({});
@@ -30,6 +31,10 @@ const Modal = (props) => {
         <div style={{ marginBottom: '20px' }}>
           {title || ""} {number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
+          {
+            minimizable &&
+            <VscChromeMinimize className="modal-close-button" onClick={minimizeHandler} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
+          }
         </div>
         <ModalContent
           closeModal={changeModalState}

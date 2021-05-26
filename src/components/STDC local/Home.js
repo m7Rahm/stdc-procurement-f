@@ -24,7 +24,7 @@ const Home = () => {
         setServiceType("")
         setLastDate(new Date())
         setSelectedData(null)
-        // setReceivers()
+        setReceivers([])
     }
 
     const minimizeHandler = () => {
@@ -55,7 +55,7 @@ const Home = () => {
 
         setShowModal(false)
 
-        if(modalList.current !== null){
+        if (modalList.current !== null) {
             setModalList(prevState => {
                 const res = prevState.all.find(emp => emp.id === prevState.current.id);
                 const newModals = !res ?
@@ -91,19 +91,11 @@ const Home = () => {
                 setReceivers={setReceivers}
                 minimizeHandler={minimizeHandler}
                 closeHandler={closeHandler}
-            // modalId={modalList.current}
-            // modalList={modalList}
-            // setModalList={setModalList}
             />
             <div className="md-header full-center px-8 py-8 bg-light-gray" onClick={openModal}>
                 Home
             </div>
 
-            {/* create array of objects with all the properties
-                in taskbar only save objects (not states)
-                when selected change properties (here) to selected object's properties
-                open order modal
-             */}
             <Taskbar
                 modalList={modalList}
                 setModalList={setModalList}
