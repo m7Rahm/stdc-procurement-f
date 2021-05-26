@@ -22,6 +22,9 @@ const NewOrderTableRow = (props) => {
   const { materialid, subGlCategory, className, count } = props
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
+
+  const [infoValue, setInfoValue] = useState("");
+
   const fetchGet = useFetch("GET");
   const fetchPost = useFetch("POST")
   const handleAmountChange = (e) => {
@@ -207,6 +210,9 @@ const NewOrderTableRow = (props) => {
   return (
     <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
+
+      {/* Məhsul */}
+
       <div style={{ position: 'relative' }}>
         <input
           onBlur={handleBlur}
@@ -240,6 +246,7 @@ const NewOrderTableRow = (props) => {
         }
       </div>
 
+      {/* Kod */}
 
       <div style={{ position: 'relative',width: '170px', maxWidth:'200px' }}>
         <input
@@ -274,6 +281,7 @@ const NewOrderTableRow = (props) => {
         }
       </div>
 
+      {/* Say */}
 
       <div style={{ maxWidth: '140px' }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
@@ -290,6 +298,8 @@ const NewOrderTableRow = (props) => {
         </div>
       </div>
 
+      {/* Ölçü vahidi */}
+
       <div style={{ maxWidth: '140px' }}>
         <select
             name="product_unit"
@@ -304,7 +314,7 @@ const NewOrderTableRow = (props) => {
         </select>
       </div>
 
-      {/*Istifade yeri */}
+      {/* Istifade yeri */}
 
       <div style={{ position: 'relative' }}>
         <input
@@ -337,6 +347,19 @@ const NewOrderTableRow = (props) => {
             }
           </ul>
         }
+      </div>
+
+      {/* Əlavə məlumat */}
+
+      <div>
+        <input
+          style={{ width: '100%' }}
+          placeholder="Link və ya əlavə məlumat"
+          name="additionalInfo"
+          value={infoValue}
+          type="text"
+          onChange={(e)=>setInfoValue(e.target.value)}
+        />
       </div>
       <div>
         <FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />

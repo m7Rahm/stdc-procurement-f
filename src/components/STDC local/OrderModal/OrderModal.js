@@ -103,7 +103,10 @@ const OrderModal = (props) => {
           style={{ animationName: whichPage.animationName }}
           ref={actPageRef}
         >
-          <NewOrderContent />
+          <NewOrderContent 
+              choices={props.choices}
+              setChoices={props.setChoices}
+            />
         </div>
       ) : whichPage.page === 3 ? (
         <div className="page-container" ref={actPageRef}>

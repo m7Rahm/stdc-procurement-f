@@ -36,7 +36,7 @@ const NewOrderTableBody = (props) => {
           <div style={{ maxWidth: '120px' }}>Say</div>
           <div style={{ width: '170px', maxWidth: '150px' }}>Ölçü vahidi</div>
           <div>İstifadə yeri</div>
-          {/* <div>Büdcə</div> */}
+          <div>Əlavə məlumat</div>
           <div></div>
         </li>
         {
@@ -55,6 +55,8 @@ const NewOrderTableBody = (props) => {
                 modelsListRef={modelsListRef}
                 additionalInfo={material.additionalInfo}
                 department={material.department}
+                choices={props.choices}
+                setChoices={props.setChoices}
               />
             )
           })
