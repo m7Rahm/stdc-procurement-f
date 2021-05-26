@@ -68,7 +68,7 @@ const UnfinishedModal = (props) => {
                 style={{ cursor: "pointer" }}
                 onClick={() => handleOrderClick(props.emp.id)}
             >
-                {"Order "+(elementIndex+1)}
+                {"Order "+(props.emp.name+1)}
                 {props.emp.value[0]}
                 {String(props.emp.value[1])}
             </div>
