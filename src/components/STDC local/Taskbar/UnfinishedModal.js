@@ -72,7 +72,6 @@ const UnfinishedModal = (props) => {
             >
                 <div>{"Sifariş "+(props.emp.name+1)}</div>
                 <div>{props.emp.value[0]}</div>
-                {/* <div>{String(props.emp.value[1]).split('GMT')[0]}</div> */}
                 <div>{props.emp.value[1].toISOString().split('T')[0]}</div>
             </div>
         </div>

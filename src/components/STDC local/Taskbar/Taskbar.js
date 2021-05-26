@@ -30,13 +30,11 @@ export default Taskbar
 
 export const ModalArray = (props) => {
     const draggedElement = useRef(null);
-    // console.log(props.modalList)
 
     return (
-        <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
-            <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px' }}>
+        <div >
                 {
-                    props.modalList !== null ?
+                    props.modalList !== null &&
                         props.modalList.all.map((modal, index) =>
                             <UnfinishedModal
                                 key={modal.id}
@@ -47,13 +45,9 @@ export const ModalArray = (props) => {
                                 setReceivers={props.setModalList}
                                 handleSelectChange={props.handleSelectChange}
                                 handleOrderSelect={props.handleOrderSelect}
-                                modalList={props.modalList}
                             />
                         )
-                        :
-                        <div></div>
-                }
-            </div>
+                                        }
         </div>
     )
 }

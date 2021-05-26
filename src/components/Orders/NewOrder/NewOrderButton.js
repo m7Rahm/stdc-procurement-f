@@ -5,8 +5,9 @@ import { WebSocketContext } from '../../../pages/SelectModule'
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
+import Taskbar from '../../STDC local/Taskbar/Taskbar'
+
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
-const Taskbar = React.lazy(() => import('../../STDC local/Taskbar/Taskbar'))
 const NewOrder = (props) => {
   // eslint-disable-next-line
   const webSocket = useContext(WebSocketContext)
@@ -111,13 +112,15 @@ const NewOrder = (props) => {
             }
           </div>
         </div>
+        <div className="sidebar2">
         <Taskbar
-          className="sidebar2"
+          style={{overflow:'scroll'}}
           modalList={modalList}
           setModalList={setModalList}
           choices={choices}
           handleOrderSelect={handleOrderSelect}
         />
+        </div>
       </div>
       {
         isModalVisible &&
