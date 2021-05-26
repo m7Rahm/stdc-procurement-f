@@ -5,7 +5,7 @@ import {productUnit} from '../../../data/data'
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, structure, subGlCategories, setMaterials } = props;
+  const { orderType, structure, setMaterials } = props;
   const modelListRef = useRef(null);
   const codeListRef = useRef(null);
   const placeListRef = useRef(null);
@@ -19,9 +19,7 @@ const NewOrderTableRow = (props) => {
   const modelInputRef = useRef(null);
   const codeInputRef = useRef(null);
   const placeInputRef = useRef(null);
-  const { materialid, subGlCategory, className, count, department, additionalInfo } = props
-  // const [budget, setBudget] = useState(0);
-  // const [quantity, setQuantity] = useState(0)
+  const { materialid, subGlCategory, className, count } = props
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
   const fetchGet = useFetch("GET");
@@ -66,8 +64,7 @@ const NewOrderTableRow = (props) => {
     modelListRef.current.style.display = 'block'
     props.modelsListRef.current = modelListRef.current;
   }
-
-
+  // eslint-disable-next-line
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -165,7 +162,7 @@ const NewOrderTableRow = (props) => {
     //     .catch(ex => console.log(ex))
     // }
   }
-
+  // eslint-disable-next-line
   const searchByCode = (e) => {
     const data = { product_id: e.target.value, orderType: orderType, structure: structure };
     if (timeoutRef.current) {
@@ -207,40 +204,9 @@ const NewOrderTableRow = (props) => {
         })
     }, 500)
   }
-  const handleSubCategoryChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    const data = { subGlCategoryId: value, structureid: structure, orderType: orderType };
-    setMaterials(prev => prev.map(material =>
-      material.id === materialid
-        ? { ...material, [name]: value, materialId: '', department: "", isService: orderType }
-        : material
-    ))
-    fetchPost('/api/strucutre-budget-info', data)
-      .then(respJ => {
-        modelsRef.current = respJ;
-        const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-        setModels(respJ);
-        // setBudget(budget);
-        modelInputRef.current.value = "";
-        codeRef.current.value = ""
-
-      })
-      .catch(ex => console.log(ex))
-  }
   return (
     <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
-      {/* <div>
-        <select onChange={handleSubCategoryChange} name="subGlCategory" value={subGlCategory}>
-          <option value="-1">-</option>
-          {
-            subGlCategories.map(category =>
-              <option key={category.id} value={category.id}>{`${category.code} ${category.name}`}</option>
-            )
-          }
-        </select>
-      </div> */}
       <div style={{ position: 'relative' }}>
         <input
           onBlur={handleBlur}
@@ -338,7 +304,6 @@ const NewOrderTableRow = (props) => {
         </select>
       </div>
 
-
       {/*Istifade yeri */}
 
       <div style={{ position: 'relative' }}>
@@ -373,20 +338,6 @@ const NewOrderTableRow = (props) => {
           </ul>
         }
       </div>
-
-      {/* <div>
-        <div style={{ height: '100%' }}>{budget}</div>
-      </div> */}
-      {/* <div>
-        <input
-          style={{ width: '100%' }}
-          placeholder="Link və ya əlavə məlumat"
-          name="additionalInfo"
-          value={additionalInfo}
-          type="text"
-          onChange={handleChange}
-        />
-      </div> */}
       <div>
         <FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />
       </div>

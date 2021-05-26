@@ -1,12 +1,11 @@
-import { useCallback, useContext } from "react"
+import { useContext, useMemo } from "react"
 import { TokenContext } from "../App"
 import { serverAddress, serverPort } from "../data/data"
 const useFetch = (method) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const logout = tokenContext[2];
-
-    const func = method === "GET"
+    const func = useMemo(() => method === "GET"
         ? (url, abortController) => {
             const aController = abortController || new AbortController()
             return fetch(`${serverAddress}:${serverPort}${url}`, {
@@ -46,8 +45,8 @@ const useFetch = (method) => {
                     else
                         throw new Error(500)
                 })
-        }
-    return useCallback(func, [token])
+        }, [token, method, logout])
+    return func
 }
 
 export default useFetch
