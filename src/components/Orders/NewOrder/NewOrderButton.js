@@ -21,8 +21,8 @@ const NewOrder = (props) => {
         { all: [], current: null }
         : { ...prevState, current: null }
       return newList;
-      setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
     })
+    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
   }
 
   // const handleClose = (data, receivers) => {
@@ -54,7 +54,7 @@ const NewOrder = (props) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
     setModalList(prevState => ({ ...prevState, current: properties }))
     setIsModalVisible(_ => true);
-    // setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
+    setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
   }
   const minimizeHandler = (state) => {
     setIsModalVisible(_ => false);
@@ -76,14 +76,13 @@ const NewOrder = (props) => {
     }
   }
 
-  const [fachevron ,setFachevron] = useState(false)
+  const [fachevron, setFachevron] = useState(false)
 
-  const mouseOverHandlerSlide = (e) => {
+  const mouseOverHandlerSlide = () => {
     sidebarRef.current.style.transform = "translateX(0px)";
     setFachevron(true)
   };
-  const mouseOverHandlerSlideBack = (option) => {
-  
+  const mouseOverHandlerSlideBack = () => {
     sidebarRef.current.style.transform = "translateX(200px)";
     setFachevron(false)
   };
@@ -92,20 +91,24 @@ const NewOrder = (props) => {
       <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
         <MdAdd color="white" size="30" />
       </div>
-      <div className="sidebar" ref={sidebarRef} 
-      onMouseLeave={()=>mouseOverHandlerSlideBack(true)}>
+      <div className="sidebar" ref={sidebarRef}
+        onMouseLeave={mouseOverHandlerSlideBack}>
         <div className="sidebar-button-wrap">
-        <div className="sidebar-button"
-        onMouseOver={mouseOverHandlerSlide}
-        
-        >
-          { fachevron===false ?
-            <FaChevronLeft  className="greater-than-icon" />
-            :
-            <FaChevronRight  className="greater-than-icon"  />
-          }
+          <div className="sidebar-button" onMouseEnter={mouseOverHandlerSlide}>
+            {fachevron === false ?
+              <FaChevronLeft className="greater-than-icon" />
+              :
+              <FaChevronRight className="greater-than-icon" />
+            }
           </div></div>
-        <div className="sidebar2"></div>
+        <div className="sidebar2">
+          <div className="order-card"></div>
+          <div className="order-card"></div>
+          <div className="order-card"></div>
+          <div className="order-card"></div>
+          <div className="order-card"></div>
+          <div className="order-card"></div>
+        </div>
       </div>
       {
         isModalVisible &&
