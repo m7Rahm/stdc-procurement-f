@@ -6,6 +6,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
+const Taskbar = React.lazy(() => import('../../STDC local/Taskbar/Taskbar'))
 const NewOrder = (props) => {
   // eslint-disable-next-line
   const webSocket = useContext(WebSocketContext)
@@ -13,6 +14,7 @@ const NewOrder = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalList, setModalList] = useState(null)
   const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
+  const [fachevron, setFachevron] = useState(false)
 
   const handleClick = (action) => {
     setIsModalVisible(_ => action);
@@ -56,29 +58,32 @@ const NewOrder = (props) => {
     setIsModalVisible(_ => true);
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
   }
-  const minimizeHandler = (state) => {
+
+  const minimizeHandler = () => {
     setIsModalVisible(_ => false);
-    const current = { 'id': Date.now(), 'value': [state.serviceType, state.lastDate, state.selectedData, state.receivers] }
+
+    // const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
+    
     if (modalList.all.length === 0) {
+      const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:0}
       setModalList({ all: [current], current: current })
     } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-      setModalList(prevState => ({ all: [...prevState.all, current], current: current }))
+      setModalList(prevState => ({ all: [...prevState.all, 
+        { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:prevState.all[prevState.all.length-1].name+1}],
+        current: { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:prevState.all[prevState.all.length-1].name+1} }))
     } else {
       setModalList(prevState =>
       ({
         all: prevState.all.map(order =>
           order.id === modalList.current.id ?
-            { ...order, 'value': [state.serviceType, state.lastDate, state.selectedData, state.receivers] }
+            { ...order, 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
             : order
         ), current: null
       })
       )
     }
   }
-
-  const [fachevron, setFachevron] = useState(false)
-
-  const mouseOverHandlerSlide = () => {
+  const mouseOverHandlerSlide = (e) => {
     sidebarRef.current.style.transform = "translateX(0px)";
     setFachevron(true)
   };
@@ -94,21 +99,24 @@ const NewOrder = (props) => {
       <div className="sidebar" ref={sidebarRef}
         onMouseLeave={mouseOverHandlerSlideBack}>
         <div className="sidebar-button-wrap">
-          <div className="sidebar-button" onMouseEnter={mouseOverHandlerSlide}>
+          <div className="sidebar-button"
+            onMouseOver={mouseOverHandlerSlide}
+          >
             {fachevron === false ?
               <FaChevronLeft className="greater-than-icon" />
               :
               <FaChevronRight className="greater-than-icon" />
             }
-          </div></div>
-        <div className="sidebar2">
-          <div className="order-card"></div>
-          <div className="order-card"></div>
-          <div className="order-card"></div>
-          <div className="order-card"></div>
-          <div className="order-card"></div>
-          <div className="order-card"></div>
+          </div>
         </div>
+        {/* <div className="sidebar2"></div> */}
+        <Taskbar
+          className="sidebar2"
+          modalList={modalList}
+          setModalList={setModalList}
+          choices={choices}
+          handleOrderSelect={handleOrderSelect}
+        />
       </div>
       {
         isModalVisible &&
