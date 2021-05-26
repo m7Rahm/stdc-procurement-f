@@ -63,14 +63,16 @@ const NewOrder = (props) => {
     setIsModalVisible(_ => false);
 
     // const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
-    
+
     if (modalList.all.length === 0) {
-      const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:0}
+      const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: 0 }
       setModalList({ all: [current], current: current })
     } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-      setModalList(prevState => ({ all: [...prevState.all, 
-        { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:prevState.all[prevState.all.length-1].name+1}],
-        current: { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:prevState.all[prevState.all.length-1].name+1} }))
+      setModalList(prevState => ({
+        all: [...prevState.all,
+        { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: prevState.all[prevState.all.length - 1].name + 1 }],
+        current: { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: prevState.all[prevState.all.length - 1].name + 1 }
+      }))
     } else {
       setModalList(prevState =>
       ({
@@ -109,7 +111,6 @@ const NewOrder = (props) => {
             }
           </div>
         </div>
-        {/* <div className="sidebar2"></div> */}
         <Taskbar
           className="sidebar2"
           modalList={modalList}

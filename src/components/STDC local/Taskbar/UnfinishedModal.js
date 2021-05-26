@@ -70,9 +70,10 @@ const UnfinishedModal = (props) => {
                 style={{ cursor: "pointer" ,display:'flex',flexDirection:'column'}}
                 onClick={() => handleOrderClick(props.emp.id)}
             >
-                <div>{"Order "+(props.emp.name+1)}</div>
+                <div>{"Sifariş "+(props.emp.name+1)}</div>
                 <div>{props.emp.value[0]}</div>
-                <div>{String(props.emp.value[1]).split('GMT')[0]}</div>
+                {/* <div>{String(props.emp.value[1]).split('GMT')[0]}</div> */}
+                <div>{props.emp.value[1].toISOString().split('T')[0]}</div>
             </div>
         </div>
     )
