@@ -6,6 +6,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
+const Taskbar = React.lazy(() => import('../../STDC local/Taskbar/Taskbar'))
 const NewOrder = (props) => {
   // eslint-disable-next-line
   const webSocket = useContext(WebSocketContext)
@@ -55,11 +56,11 @@ const NewOrder = (props) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
     setModalList(prevState => ({ ...prevState, current: properties }))
     setIsModalVisible(_ => true);
-    // setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
+    setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
   }
-  const minimizeHandler = (state) => {
+  const minimizeHandler = () => {
     setIsModalVisible(_ => false);
-    const current = { 'id': Date.now(), 'value': [state.serviceType, state.lastDate, state.selectedData, state.receivers] }
+    const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
     if (modalList.all.length === 0) {
       setModalList({ all: [current], current: current })
     } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
@@ -69,7 +70,7 @@ const NewOrder = (props) => {
       ({
         all: prevState.all.map(order =>
           order.id === modalList.current.id ?
-            { ...order, 'value': [state.serviceType, state.lastDate, state.selectedData, state.receivers] }
+            { ...order, 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
             : order
         ), current: null
       })
@@ -100,8 +101,16 @@ const NewOrder = (props) => {
               :
               <FaChevronRight className="greater-than-icon" />
             }
-          </div></div>
-        <div className="sidebar2"></div>
+          </div>
+        </div>
+        {/* <div className="sidebar2"></div> */}
+        <Taskbar
+                className="sidebar2"
+                modalList={modalList}
+                setModalList={setModalList}
+                choices={choices}
+                handleOrderSelect={handleOrderSelect}
+        />
       </div>
       {
         isModalVisible &&

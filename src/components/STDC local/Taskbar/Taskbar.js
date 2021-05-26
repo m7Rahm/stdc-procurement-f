@@ -1,14 +1,10 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
-import './Taskbar.scss'
 import UnfinishedModal from "./UnfinishedModal.js"
 
 
 function Taskbar(props) {
 
     const handleSelectChange = (employee) => {
-        // const res = props.modalList.all.find(emp => emp.id === employee.id);
-        // const newModals = !res ? { all: [...props.modalList.all, employee], current: employee } : props.modalList.all.filter(emp => emp.id !== employee.id);        
-        // props.setModalList(newModals);
         props.setModalList(prevState => {
             const res = prevState.all.find(emp => emp.id === employee.id);
             const newModals = !res ?
@@ -19,7 +15,7 @@ function Taskbar(props) {
     }
 
     return (
-        <div className="taskbar">
+        <div> {/*className="taskbar"*/}
             <ModalArray
                 modalList={props.modalList}
                 setModalList={props.setModalList}
@@ -34,7 +30,7 @@ export default Taskbar
 
 export const ModalArray = (props) => {
     const draggedElement = useRef(null);
-    console.log(props.modalList)
+    // console.log(props.modalList)
 
     return (
         <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
