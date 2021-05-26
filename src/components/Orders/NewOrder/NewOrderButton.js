@@ -13,6 +13,7 @@ const NewOrder = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalList, setModalList] = useState(null)
   const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
+  const [fachevron, setFachevron] = useState(false)
 
   const handleClick = (action) => {
     setIsModalVisible(_ => action);
@@ -22,6 +23,7 @@ const NewOrder = (props) => {
         : { ...prevState, current: null }
       return newList;
     })
+    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: null, receivers: [] })
   }
 
   // const handleClose = (data, receivers) => {
@@ -74,15 +76,11 @@ const NewOrder = (props) => {
       )
     }
   }
-
-  const [fachevron ,setFachevron] = useState(false)
-
   const mouseOverHandlerSlide = (e) => {
     sidebarRef.current.style.transform = "translateX(0px)";
     setFachevron(true)
   };
-  const mouseOverHandlerSlideBack = (option) => {
-  
+  const mouseOverHandlerSlideBack = () => {
     sidebarRef.current.style.transform = "translateX(200px)";
     setFachevron(false)
   };
@@ -91,18 +89,17 @@ const NewOrder = (props) => {
       <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
         <MdAdd color="white" size="30" />
       </div>
-      <div className="sidebar" ref={sidebarRef} 
-      onMouseLeave={()=>mouseOverHandlerSlideBack(true)}>
+      <div className="sidebar" ref={sidebarRef}
+        onMouseLeave={mouseOverHandlerSlideBack}>
         <div className="sidebar-button-wrap">
-        <div className="sidebar-button"
-        onMouseOver={mouseOverHandlerSlide}
-        
-        >
-          { fachevron===false ?
-            <FaChevronLeft  className="greater-than-icon" />
-            :
-            <FaChevronRight  className="greater-than-icon"  />
-          }
+          <div className="sidebar-button"
+            onMouseOver={mouseOverHandlerSlide}
+          >
+            {fachevron === false ?
+              <FaChevronLeft className="greater-than-icon" />
+              :
+              <FaChevronRight className="greater-than-icon" />
+            }
           </div></div>
         <div className="sidebar2"></div>
       </div>
