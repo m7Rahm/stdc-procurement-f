@@ -24,9 +24,10 @@ const Modal = (props) => {
     document.addEventListener('keyup', onEscPress, false);
     return () => document.removeEventListener('keyup', onEscPress, false)
   }, [changeModalState, canBeClosed]);
+  const onOuterClickHandler = minimizeHandler ? minimizeHandler : closeModal
   return (
     <>
-      <div className="modal" onClick={closeModal}></div>
+      <div className="modal" onClick={onOuterClickHandler}></div>
       <div ref={modalWrapperRef} className='modal-content wrapper' style={style}>
         <div style={{ marginBottom: '20px' }}>
           {title || ""} {number}
