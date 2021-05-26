@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import './UnfinishedModal.css'
+import '../../../styles/Orders.css'
 import {
     IoIosClose
 } from 'react-icons/io'
@@ -52,7 +53,8 @@ const UnfinishedModal = (props) => {
         
         <div
             ref={elem}
-            className="forwarded-person-card"
+            // className="forwarded-person-card"
+            className="order-card"
             draggable="true"
             onDragEnter={onDragEnter}
             onDragEnd={onDragEnd}
@@ -65,12 +67,12 @@ const UnfinishedModal = (props) => {
                 <IoIosClose size="18" />
             </div>
             <div
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer" ,display:'flex',flexDirection:'column'}}
                 onClick={() => handleOrderClick(props.emp.id)}
             >
-                {"Order "+(props.emp.name+1)}
-                {props.emp.value[0]}
-                {String(props.emp.value[1])}
+                <div>{"Order "+(props.emp.name+1)}</div>
+                <div>{props.emp.value[0]}</div>
+                <div>{String(props.emp.value[1]).split('GMT')[0]}</div>
             </div>
         </div>
     )
