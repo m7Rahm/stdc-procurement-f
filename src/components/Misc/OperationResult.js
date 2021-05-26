@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
 const OperationResult = (props) => {
     const {
@@ -9,7 +9,6 @@ const OperationResult = (props) => {
         backgroundColor = 'transparent'
     } = props;
     const count = useRef(0);
-    const setOperationResultCallback = useCallback(setOperationResult, []);
     const operationResultRef = useRef(null);
     useEffect(() => {
         if (operationResultRef.current)
@@ -17,10 +16,10 @@ const OperationResult = (props) => {
                 count.current += 1;
                 if (count.current === 2) {
                     count.current = 0;
-                    setOperationResultCallback(prev => ({ ...prev, visible: false, desc: '' }))
+                    setOperationResult(prev => ({ ...prev, visible: false, desc: '' }))
                 }
             }, false)
-    }, [setOperationResultCallback])
+    }, [setOperationResult])
     return (
         <div ref={operationResultRef} style={{ backgroundColor: backgroundColor }} className="operation-result">
             <div>

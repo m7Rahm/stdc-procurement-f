@@ -67,7 +67,16 @@ i{
   
    
 }
-
+.siderbar-button::before{
+   
+        content: ' \003C';
+ 
+}
+.greater-than-icon{
+    position:absolute;
+    top:38%;
+   fill:white;
+}
 
 div.sel-dep-list{
     float: left;

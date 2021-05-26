@@ -8,11 +8,9 @@ const OrderModal = (props) => {
   const actPageRef = useRef(null);
 
   const davamText = whichPage.page === 3 ? "Sifariş et" : "Davam";
-
   const handleDateChange = (date) => {
-    props.setChoices({...props.choices,lastDate:date});
+    props.setChoices({ ...props.choices, lastDate: date });
   };
-
   const handleSendClick = () => {
     console.log("Send Clicked");
   };
@@ -48,7 +46,7 @@ const OrderModal = (props) => {
         false
       );
       setWhichPage(prevState => {
-        props.modalWrapperRef.current.style.minWidth = prevState.page === 1 ? "60rem" : "40rem";
+        props.modalWrapperRef.current.style.width = prevState.page === 1 ? "60rem" : "40rem";
         return prevState.page < 3 ? {
           page: prevState.page + 1,
           animationName: "slide_davam_next",
@@ -63,42 +61,32 @@ const OrderModal = (props) => {
   };
 
   const mouseDownHandlerGeri = (e) => {
-    const target = e.target;
-    target.style.backgroundColor = "#9c2929";
+    e.target.style.backgroundColor = "#9c2929";
   };
   const mouseUpHandlerGeri = (e) => {
-    const target = e.target;
-    target.style.backgroundColor = "#d84343";
+    e.target.style.backgroundColor = "#d84343";
   };
   const mouseOverHandlerGeri = (e) => {
-    const target = e.target;
-    target.style.backgroundColor = "#d84343";
+    e.target.style.backgroundColor = "#d84343";
   };
   const mouseLeaveHandlerGeri = (e) => {
-    const target = e.target;
-    target.style.backgroundColor = "#eb5757";
+    e.target.style.backgroundColor = "#eb5757";
   };
 
   const mouseDownHandlerDavam = (e) => {
-    const target = e.target;
-    target.style.backgroundColor = "#114928";
+    e.target.style.backgroundColor = "#114928";
   };
   const mouseUpHandlerDavam = (e) => {
-    const target = e.target;
-    target.style.backgroundColor = "#187940";
+    e.target.style.backgroundColor = "#187940";
   };
   const mouseOverHandlerDavam = (e) => {
-    const target = e.target;
-    target.style.backgroundColor = "#187940";
+    e.target.style.backgroundColor = "#187940";
   };
   const mouseLeaveHandlerDavam = (e) => {
-    const target = e.target;
-    target.style.backgroundColor = "#27ae60";
+    e.target.style.backgroundColor = "#27ae60";
   };
-console.log(whichPage)
   return (
     <>
-      {/* <h1 className="md-header">Sifariş</h1> */}
       {whichPage.page === 1 ? (
         <FirstPage
           ref={actPageRef}
