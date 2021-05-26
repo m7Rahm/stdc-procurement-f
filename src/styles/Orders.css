@@ -24,11 +24,11 @@ i{
     bottom:60px;
     width:200px;
     transform: translateX(200px);
-    transition:all 700ms;
+    transition:all 1000ms;
     box-shadow: 0px 0px 5px 3px rgb(32 32 32 / 20%);
     background-color:rgba(248, 244, 244, 50%);
     backdrop-filter: blur(6px);
-    
+    z-index: 100;
     
 }
 .sidebar2{
@@ -39,6 +39,7 @@ i{
     width:200px;
     
     z-index: 3;
+   overflow:scroll;
 }
 .sidebar-button-wrap{
     position: absolute;
@@ -77,6 +78,20 @@ i{
     top:38%;
    fill:white;
 }
+.order-card{
+
+    width: 170px;
+    height:150px;
+    background-color:rgba(38, 112, 146, 0.89);
+    border-radius:7%;
+    margin-left:auto;
+    margin-right: auto;
+    
+    margin-top:20px;
+    backdrop-filter: blur(10px);
+    
+    
+    }
 
 div.sel-dep-list{
     float: left;
@@ -90,6 +105,7 @@ div.sel-dep-list{
     font-weight: bold;
     animation: fade-in 400ms ease-in both;
 }
+
 @keyframes fade-in {
     from {
         opacity: 0;
