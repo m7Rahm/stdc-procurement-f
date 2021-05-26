@@ -39,7 +39,7 @@ i{
     width:200px;
     
     z-index: 3;
-   overflow:scroll;
+   overflow:auto;
 }
 .sidebar-button-wrap{
     position: absolute;
