@@ -5,8 +5,9 @@ import { WebSocketContext } from '../../../pages/SelectModule'
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
+import Taskbar from '../../STDC local/Taskbar/Taskbar'
+
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
-const Taskbar = React.lazy(() => import('../../STDC local/Taskbar/Taskbar'))
 const NewOrder = (props) => {
   // eslint-disable-next-line
   const webSocket = useContext(WebSocketContext)
@@ -63,14 +64,16 @@ const NewOrder = (props) => {
     setIsModalVisible(_ => false);
 
     // const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
-    
+
     if (modalList.all.length === 0) {
-      const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:0}
+      const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: 0 }
       setModalList({ all: [current], current: current })
     } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-      setModalList(prevState => ({ all: [...prevState.all, 
-        { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:prevState.all[prevState.all.length-1].name+1}],
-        current: { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name:prevState.all[prevState.all.length-1].name+1} }))
+      setModalList(prevState => ({
+        all: [...prevState.all,
+        { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: prevState.all[prevState.all.length - 1].name + 1 }],
+        current: { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: prevState.all[prevState.all.length - 1].name + 1 }
+      }))
     } else {
       setModalList(prevState =>
       ({
@@ -109,14 +112,15 @@ const NewOrder = (props) => {
             }
           </div>
         </div>
-        {/* <div className="sidebar2"></div> */}
+        <div className="sidebar2">
         <Taskbar
-          className="sidebar2"
+          style={{overflow:'scroll'}}
           modalList={modalList}
           setModalList={setModalList}
           choices={choices}
           handleOrderSelect={handleOrderSelect}
         />
+        </div>
       </div>
       {
         isModalVisible &&

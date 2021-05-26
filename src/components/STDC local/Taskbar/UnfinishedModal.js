@@ -45,12 +45,9 @@ const UnfinishedModal = (props) => {
         return -1;
     }
     
-    const element = props.modalList.all.find(emp => emp.id === props.emp.id);
-    const elementIndex = findWithAttr(props.modalList.all,'id', element.id)
-    
-
+    // const element = props.modalList.all.find(emp => emp.id === props.emp.id);
+    // const elementIndex = findWithAttr(props.modalList.all,'id', element.id)
     return (
-        
         <div
             ref={elem}
             // className="forwarded-person-card"
@@ -59,22 +56,23 @@ const UnfinishedModal = (props) => {
             onDragEnter={onDragEnter}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
+            onClick={() => handleOrderClick(props.emp.id)}
             style={{
-                left: "0px"
+                cursor: "pointer"
             }}
         >
             <div onClick={() => handleClick(props.emp)}>
                 <IoIosClose size="18" />
             </div>
             <div
-                style={{ cursor: "pointer" ,display:'flex',flexDirection:'column'}}
-                onClick={() => handleOrderClick(props.emp.id)}
+                style={{ display:'flex',flexDirection:'column'}}
             >
                 <div>{"Order "+(props.emp.name+1)}</div>
                 <div>{props.emp.value[0]}</div>
                 <div>{String(props.emp.value[1]).split('GMT')[0]}</div>
             </div>
         </div>
-    )
+
+)
 }
 export default UnfinishedModal
