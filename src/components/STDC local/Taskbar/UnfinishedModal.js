@@ -4,6 +4,7 @@ import '../../../styles/Orders.css'
 import {
     IoIosClose
 } from 'react-icons/io'
+import { IconContext } from 'react-icons/lib'
 const UnfinishedModal = (props) => {
     const elem = useRef(null);
 
@@ -48,6 +49,14 @@ const UnfinishedModal = (props) => {
     // const element = props.modalList.all.find(emp => emp.id === props.emp.id);
     // const elementIndex = findWithAttr(props.modalList.all,'id', element.id)
     return (
+      
+       <div className="order-card-wrapper">    
+             <div onClick={() => handleClick(props.emp)} className="order-card-close-button">
+                <IconContext.Provider value={{className:"close-button-card"}}>
+                    <IoIosClose  size="18"  />
+                </IconContext.Provider>
+            </div>
+           
         <div
             ref={elem}
             // className="forwarded-person-card"
@@ -57,20 +66,22 @@ const UnfinishedModal = (props) => {
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
             onClick={() => handleOrderClick(props.emp.id)}
+           
             style={{
                 cursor: "pointer"
             }}
         >
-            <div onClick={() => handleClick(props.emp)}>
-                <IoIosClose size="18" />
-            </div>
-            <div
+           
+           
+            <div className="order-card-info-wrapper"
                 style={{ display:'flex',flexDirection:'column'}}
             >
-                <div>{"Order "+(props.emp.name+1)}</div>
-                <div>{props.emp.value[0]}</div>
-                <div>{String(props.emp.value[1]).split('GMT')[0]}</div>
+                <div className="order-card-info">{"Order "+(props.emp.name+1)}</div>
+                <div  className="order-card-info">{props.emp.value[0]}</div>
+                <div  className="order-card-info">{String(props.emp.value[1]).split('GMT')[0]}</div>
             </div>
+             
+        </div>
         </div>
 
 )
