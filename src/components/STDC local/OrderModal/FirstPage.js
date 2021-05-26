@@ -19,8 +19,8 @@ const FirstPage = React.forwardRef((props, ref) => {
                             <input
                                 type="radio"
                                 name="servis"
-                                value="xidmet"
-                                checked={props.choices.serviceType === "xidmet"}
+                                value="xidmət"
+                                checked={props.choices.serviceType === "xidmət"}
                                 onChange={(e) => updateServiceType(e)}
                             />
                             <span className="custom-checkbox"></span>

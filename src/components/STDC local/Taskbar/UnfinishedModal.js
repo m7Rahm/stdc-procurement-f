@@ -75,7 +75,7 @@ const UnfinishedModal = (props) => {
             >
                 <div className="order-card-info">{"Order "+(props.emp.name+1)}</div>
                 <div  className="order-card-info">{props.emp.value[0]}</div>
-                <div  className="order-card-info">{String(props.emp.value[1]).split('GMT')[0]}</div>
+                <div  className="order-card-info">{props.emp.value[1].toISOString().split('T')[0]}</div>
             </div>
              
         </div>
