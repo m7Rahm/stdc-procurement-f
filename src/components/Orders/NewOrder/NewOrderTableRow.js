@@ -29,9 +29,14 @@ const NewOrderTableRow = (props) => {
   const fetchPost = useFetch("POST")
   const handleAmountChange = (e) => {
     const value = e.target.value;
+    console.log(value)
     const name = e.target.name;
     if (value === '' || Number(value) > 0) {
       setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
+      props.setChoices(prevState=>({
+        ...prevState,
+        selectedData:{...prevState.selectedData,say:value}
+      }))
     }
   }
   useEffect(() => {
@@ -58,6 +63,17 @@ const NewOrderTableRow = (props) => {
 
   const handleAmountChangeButtons = (action) => {
     setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? Number(material.count) + 1 : material.count - 1 } : material))
+    if(action==='inc'){
+      props.setChoices(prevState=>({
+        ...prevState,
+        selectedData:{...prevState.selectedData,say:prevState.selectedData.say+1}
+      }))
+    }else{
+      props.setChoices(prevState=>({
+        ...prevState,
+        selectedData:{...prevState.selectedData,say:prevState.selectedData.say-1}
+      }))
+    }
   }
 
 
@@ -123,13 +139,29 @@ const NewOrderTableRow = (props) => {
       const regExp = new RegExp(`${reg}`, "i");
       const searchResult = modelsRef.current.filter(model => regExp.test(model.title))
       setModels(searchResult);
+      props.setChoices(prevState=>({
+        ...prevState,
+        selectedData:{...prevState.selectedData,model:searchResult}
+      }))
     } else {
       fetchGet(`/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
         .then(respJ => {
           setModels(respJ)
+          props.setChoices(prevState=>({
+            ...prevState,
+            selectedData:{...prevState.selectedData,model:respJ}
+          }))
         })
         .catch(ex => console.log(ex))
     }
+  }
+
+  const updateInfoValue = (e) => {
+    const target_value = e.target.value
+    props.setChoices(prevState=>({
+      ...prevState,
+      selectedData:{...prevState.selectedData,info:target_value}
+    }))
   }
 
   const handlePlaceSearch = (e) => {
@@ -140,6 +172,10 @@ const NewOrderTableRow = (props) => {
       const regExp = new RegExp(`${reg}`, "i");
       const searchResult = placesRef.current.filter(model => regExp.test(model.title))
       setPlaces(searchResult);
+      props.setChoices(prevState=>({
+        ...prevState,
+        selectedData:{...prevState.selectedData,places:searchResult}
+      }))
     // } else {
     //   fetchGet(`/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
     //     .then(respJ => {
@@ -149,6 +185,8 @@ const NewOrderTableRow = (props) => {
     // }
   }
 
+  // console.log(props.choices.selectedData)
+
   const handleCodeSearch = (e) => {
     const value = e.target.value;
     // if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
@@ -157,6 +195,10 @@ const NewOrderTableRow = (props) => {
       const regExp = new RegExp(`${reg}`, "i");
       const searchResult = codesRef.current.filter(model => regExp.test(model.title))
       setCodes(searchResult);
+      props.setChoices(prevState=>({
+        ...prevState,
+        selectedData:{...prevState.selectedData,code:searchResult}
+      }))
     // } else {
     //   fetchGet(`/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
     //     .then(respJ => {
@@ -199,6 +241,10 @@ const NewOrderTableRow = (props) => {
           } else {
             modelListRef.current.style.display = "block";
             setModels(respJ);
+            props.setChoices(prevState=>({
+              ...prevState,
+              selectedData:{...prevState.selectedData,model:respJ}
+            }))
           }
         })
         .catch(ex => {
@@ -274,7 +320,13 @@ const NewOrderTableRow = (props) => {
                   }
                 })
                 }</>
-                return <li key={model.id} onClick={() => setCodes(model)}>{title}</li>
+                {/* return <li key={model.id} onClick={() => setCodes(model)}>{title}</li> */}
+                return <li key={model.id} onClick={() => props.setChoices(prevState => ({
+                  ...prevState,
+                  selectedData: { ...prevState.selectedData, code: model }
+                }))}>
+                  {title}
+                </li>
               })
             }
           </ul>
@@ -356,9 +408,9 @@ const NewOrderTableRow = (props) => {
           style={{ width: '100%' }}
           placeholder="Link və ya əlavə məlumat"
           name="additionalInfo"
-          value={infoValue}
+          value={props.choices.selectedData ? props.choices.selectedData.info : ""}
           type="text"
-          onChange={(e)=>setInfoValue(e.target.value)}
+          onChange={(e)=>updateInfoValue(e)}
         />
       </div>
       <div>

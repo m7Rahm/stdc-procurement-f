@@ -73,7 +73,7 @@ const UnfinishedModal = (props) => {
             <div className="order-card-info-wrapper"
                 style={{ display:'flex',flexDirection:'column'}}
             >
-                <div className="order-card-info">{"Order "+(props.emp.name+1)}</div>
+                <div className="order-card-info">{"Sifariş "+(props.emp.name+1)}</div>
                 <div  className="order-card-info">{props.emp.value[0]}</div>
                 <div  className="order-card-info">{props.emp.value[1].toISOString().split('T')[0]}</div>
             </div>
