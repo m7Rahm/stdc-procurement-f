@@ -60,7 +60,7 @@ const Search = (props) => {
 	}, [fetchGet])
 	return (
 		<>
-			<div style={{ backgroundColor: "#188bc0" }}>
+			<div style={{ backgroundColor: "#40a8c4" }}>
 				<div className="wrapper">
 					<div className="search-container">
 						<div>
