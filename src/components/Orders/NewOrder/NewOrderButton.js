@@ -14,7 +14,7 @@ const NewOrder = (props) => {
   const sidebarRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalList, setModalList] = useState(null)
-  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: {say:1}, receivers: [] })
+  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{id:0,data:{say:1}}], receivers: [] })
   const [fachevron, setFachevron] = useState(false)
 
   const handleClick = (action) => {
@@ -25,7 +25,7 @@ const NewOrder = (props) => {
         : { ...prevState, current: null }
       return newList;
     })
-    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: {say:1}, receivers: [] })
+    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{id:0,data:{say:1}}], receivers: [] })
   }
 
   // const handleClose = (data, receivers) => {
