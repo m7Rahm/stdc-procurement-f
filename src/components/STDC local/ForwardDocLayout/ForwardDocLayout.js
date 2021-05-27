@@ -67,7 +67,7 @@ const ForwardDocLayout = (props) => {
                     textareaVisible &&
                     <textarea ref={textareaRef} />
                 }
-                <div style={{ minHeight: '231px' }}>
+                <div style={{ minHeight: '231px', minWidth:'242.453px'}}>
                     <select ref={selectRef} style={{ height: '30px' }} onChange={handleStructureChange}>
                         <option value="-1">-</option>
                         {

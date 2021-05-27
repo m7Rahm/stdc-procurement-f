@@ -87,11 +87,11 @@ const NewOrder = (props) => {
     }
   }
   const mouseOverHandlerSlide = (e) => {
-    sidebarRef.current.style.transform = "translateX(0px)";
+    // sidebarRef.current.style.transform = "translateX(0px)";
     setFachevron(true)
   };
   const mouseOverHandlerSlideBack = () => {
-    sidebarRef.current.style.transform = "translateX(200px)";
+    // sidebarRef.current.style.transform = "translateX(200px)";
     setFachevron(false)
   };
 
@@ -100,12 +100,10 @@ const NewOrder = (props) => {
       <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
         <MdAdd color="white" size="30" />
       </div>
-      <div className="sidebar" ref={sidebarRef}
+      <div className="sidebar-button-wrap" ref={sidebarRef} onMouseOver={mouseOverHandlerSlide}
         onMouseLeave={mouseOverHandlerSlideBack}>
-        <div className="sidebar-button-wrap">
-          <div className="sidebar-button"
-            onMouseOver={mouseOverHandlerSlide}
-          >
+        <div>
+          <div className="sidebar-button">
             {fachevron === false ?
               <FaChevronLeft className="greater-than-icon" />
               :
