@@ -18,7 +18,9 @@ const [placeList, setPlaceList] = useState([])
   //   handleSendClick(materials)
   // }
   useEffect(() => {
-    props.setMaterials(prev => prev.filter(material => material.isService === orderType))
+    // props.setMaterials(prev => prev.filter(material => material.isService === orderType))
+    // props.setChoices(prev=>prev.materials.filter(material => material.isService === orderType))
+    props.setChoices(prev=>({...prev,materials:prev.materials.filter(material => material.isService === orderType)}))
   }, [orderType])
 
   useEffect(()=>{
@@ -44,10 +46,10 @@ const [placeList, setPlaceList] = useState([])
           <div></div>
         </li>
         {
-          props.materials.map((material, index) => {
+          props.choices.materials.map((material, index) => {
             return (
               <NewOrderTableRow
-                setMaterials={props.setMaterials}
+                // setMaterials={props.setMaterials}
                 index={index}
                 orderType={orderType}
                 material={material}

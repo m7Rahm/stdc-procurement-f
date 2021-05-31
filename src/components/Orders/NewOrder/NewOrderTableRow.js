@@ -9,7 +9,6 @@ const NewOrderTableRow = (props) => {
   const modelListRef = useRef(null);
   const placeListRef = useRef(null);
   const [unit, setUnit] = useState(1);
-  // const [materials, setMaterials] = useState([])
   const [models, setModels] = useState([]);
   const [places, setPlaces] = useState([]);
   const modelInputRef = useRef(null);
@@ -24,7 +23,9 @@ const NewOrderTableRow = (props) => {
     const name = e.target.name;
     if (value === '' || Number(value) > 0) {
       
-      props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
+      // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
+      // props.setChoices(prev=>prev.materials.map(material => material.id === materialid ? { ...material, [name]: value } : material))
+      props.setChoices(prev=>({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, [name]: value } : material)}))
       
     }
   }
@@ -32,10 +33,14 @@ const NewOrderTableRow = (props) => {
     const value = e.target.value;
     const name = e.target.name
     if (value === '')
-      props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
+      // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
+      // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
+      props.setChoices(prev => ({...prev,materials: prev.materials.map(material => material.id === materialid ? { ...material, [name]: 0 } : material)}))
   }
   const handleAmountChangeButtons = (action) => {
-    props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material))
+    // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material))
+    // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material))
+    props.setChoices(prev =>({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material)}) )
   }
 
   const handleFocus = () => {
@@ -68,15 +73,20 @@ const NewOrderTableRow = (props) => {
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
-    props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material))
+    // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material))
+    // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material))
+    props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material)}) )
   }
 
   const handleRowDelete = () => {
     rowRef.current.classList.add("delete-row");
-    rowRef.current.addEventListener('animationend', () => props.setMaterials(prev => prev.filter(material => material.id !== materialid)))
+    // rowRef.current.addEventListener('animationend', () => props.setMaterials(prev => prev.filter(material => material.id !== materialid)))
+    rowRef.current.addEventListener('animationend', () => props.setChoices(prev => ({...prev,materials:prev.materials.filter(material => material.id !== materialid)})))
   }
   const setModel = (model) => {
-    props.setMaterials(prev => prev.map(material => material.id === materialid
+    // props.setMaterials(prev => prev.map(material => material.id === materialid
+    // props.setChoices(prev => prev.materials.map(material => material.id === materialid
+    props.setChoices(prev => ({ ...prev,materials: prev.materials.map(material => material.id === materialid
       ? {
         ...material,
         materialId: model.id,
@@ -88,20 +98,22 @@ const NewOrderTableRow = (props) => {
         percentage: model.perc
       }
       : material
-    ));
+    )}));
     codeRef.current.value = model.product_id;
     modelInputRef.current.value = model.title;
     modelListRef.current.style.display = "none";
   }
 
   const setPlace = (model) => {
-    props.setMaterials(prev => prev.map(material => material.id === materialid
+    // props.setMaterials(prev => prev.map(material => material.id === materialid
+    // props.setChoices(prev => prev.materials.map(material => material.id === materialid
+    props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid
       ? {
         ...material,
         place:model.name
       }
       : material
-    ));
+    )}));
     placeInputRef.current.value = model.name;
     placeListRef.current.style.display = "none";
   }
@@ -135,7 +147,9 @@ const NewOrderTableRow = (props) => {
     const regExp = new RegExp(`${reg}`, "i");
     const searchResult = places.filter(model => regExp.test(model.title))
     setPlaces(searchResult);
-    props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, place: placeInputRef.current.value } : material))
+    // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, place: placeInputRef.current.value } : material))
+    // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, place: placeInputRef.current.value } : material))
+    props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, place: placeInputRef.current.value } : material)}))
   }
   // if(props.material)  console.log(props.material.place) 
   // eslint-disable-next-line
@@ -152,7 +166,8 @@ const NewOrderTableRow = (props) => {
           if (respJ.length === 1) {
             const material = respJ.length !== 0 ? respJ[0] : {};
             modelInputRef.current.value = material.title || "";
-            props.setMaterials(prev => prev.map(prevMaterial => prevMaterial.id === materialid
+            // props.setMaterials(prev => prev.map(prevMaterial => prevMaterial.id === materialid
+            props.setChoices(prev => ({...prev,materials:prev.materials.map(prevMaterial => prevMaterial.id === materialid
               ? {
                 ...prevMaterial,
                 code: material.product_id,
@@ -161,15 +176,15 @@ const NewOrderTableRow = (props) => {
                 materialId: material.id
               }
               : prevMaterial
-            ));
+            )}));
             modelListRef.current.style.display = "none";
           } else {
             modelListRef.current.style.display = "block";
             setModels(respJ);
-            props.setChoices(prevState => ({
-              ...prevState,
-              selectedData: { ...prevState.selectedData, model: respJ }
-            }))
+            // props.setChoices(prevState => ({
+            //   ...prevState,
+            //   selectedData: { ...prevState.selectedData, model: respJ }
+            // }))
           }
         })
         .catch(ex => {
@@ -181,7 +196,9 @@ const NewOrderTableRow = (props) => {
 
   const unitChangeHandler = (e) => {
     const value = e.target.value;
-    props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, unit: value } : material))
+    // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, unit: value } : material))
+    // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, unit: value } : material))
+    props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, unit: value } : material)}))
   }
 
   // console.log(props.choices)

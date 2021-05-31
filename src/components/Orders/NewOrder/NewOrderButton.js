@@ -15,8 +15,8 @@ const NewOrder = (props) => {
   const modalRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null)
-  const [materials, setMaterials] = useState([
-    {
+  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(),
+    materials: [{
       id: Date.now(),
       materialName:'',
       materialId: '',
@@ -27,12 +27,9 @@ const NewOrder = (props) => {
       isService: 0,
       place:"",
       unit:'1'
-    }
-  ]);
-  // if(materials)  console.log(materials) 
-  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: [], receivers: [] })
+    }], 
+  receivers: [] })
   const [fachevron, setFachevron] = useState(false)
-  
 
   const handleClick = () => {
     setIsModalVisible(true);
@@ -47,7 +44,21 @@ const NewOrder = (props) => {
       void modalRef.current.offsetHeight; /* trigger reflow */
       modalRef.current.style.animation = null;
     }
-    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: [], receivers: [] })
+    setChoices({ serviceType: "mal-material", lastDate: new Date(),
+      materials: [{
+        id: Date.now(),
+        materialName:'',
+        materialId: '',
+        code: '',
+        additionalInfo: '',
+        class: '',
+        count: 1,
+        isService: 0,
+        place:"",
+        unit:'1'
+      }], 
+      receivers: [] 
+    })
   }
 
   // const handleClose = (data, receivers) => {
@@ -79,22 +90,22 @@ const NewOrder = (props) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
     setModalList(prevState => ({ ...prevState, current: properties }))
     setIsModalVisible(1);
-    setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3], id: properties.id })
+    setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], materials: properties.value[2], receivers: properties.value[3], id: properties.id })
   }
 
   const minimizeHandler = () => {
     setModalList(prev => {
       if (prev.all.length === 0) {
-        const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: 0 }
+        const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.materials, choices.receivers], name: 0 }
         return { all: [current], current: current }
       } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-        const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: prev.all[prev.all.length - 1].name + 1 }
+        const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.materials, choices.receivers], name: prev.all[prev.all.length - 1].name + 1 }
         return { all: [...prev.all, current], current: current }
       } else {
         return {
           all: prev.all.map(order =>
             order.id === modalList.current.id ?
-              { ...order, 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
+              { ...order, 'value': [choices.serviceType, choices.lastDate, choices.materials, choices.receivers] }
               : order
           ), current: null
         }
@@ -141,7 +152,7 @@ const NewOrder = (props) => {
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
               title="Yeni Sifariş"
               ref={modalRef}
-              childProps={{ choices: choices, setChoices: setChoices,materials: materials,setMaterials:setMaterials }}
+              childProps={{ choices: choices, setChoices: setChoices}}
               minimizeHandler={minimizeHandler}
               changeModalState={handleCloseModal}
               wrapperRef={props.wrapperRef}
