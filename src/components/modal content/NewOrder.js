@@ -39,6 +39,8 @@ const NewOrderContent = (props) => {
       <NewOrderTableBody
         orderInfo={orderInfo || { orderType: 0, structure: -1 }}
         glCategories={glCategories}
+        choices={props.choices}
+        setChoices={props.setChoices}
       />
     </div>
   )
