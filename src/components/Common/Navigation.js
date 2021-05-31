@@ -44,7 +44,6 @@ const Navigation = (props, ref) => {
                                     return { ...prev, all: all, visible: all.slice(prev.offsetStart, prev.offsetEnd), height: height, count: newNotifications[0].total_count }
                                 })
                             }
-
                         })
                         .catch(ex => console.log(ex))
                 }

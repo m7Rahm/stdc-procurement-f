@@ -12,20 +12,26 @@ const NewOrder = (props) => {
   // eslint-disable-next-line
   const webSocket = useContext(WebSocketContext)
   const sidebarRef = useRef(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const modalRef = useRef(null);
+  const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null)
-  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{id:0,data:{say:1}}], receivers: [] })
+  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{ id: 0, data: { say: 1 } }], receivers: [] })
   const [fachevron, setFachevron] = useState(false)
 
-  const handleClick = (action) => {
-    setIsModalVisible(_ => action);
+  const handleClick = () => {
+    setIsModalVisible(true);
     setModalList(prevState => {
       const newList = prevState === null ?
         { all: [], current: null }
         : { ...prevState, current: null }
       return newList;
     })
-    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{id:0,data:{say:1}}], receivers: [] })
+    if (modalRef.current) {
+      modalRef.current.style.animation = "none";
+      void modalRef.current.offsetHeight; /* trigger reflow */
+      modalRef.current.style.animation = null;
+    }
+    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{ id: 0, data: { say: 1 } }], receivers: [] })
   }
 
   // const handleClose = (data, receivers) => {
@@ -41,7 +47,7 @@ const NewOrder = (props) => {
   // };
 
   const handleCloseModal = () => {
-    setIsModalVisible(_ => false);
+    setIsModalVisible(0);
     if (modalList.current !== null) {
       setModalList(prevState => {
         const res = prevState.all.find(emp => emp.id === prevState.current.id);
@@ -56,52 +62,41 @@ const NewOrder = (props) => {
   const handleOrderSelect = (orderId) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
     setModalList(prevState => ({ ...prevState, current: properties }))
-    setIsModalVisible(_ => true);
+    setIsModalVisible(1);
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
   }
 
   const minimizeHandler = () => {
-    setIsModalVisible(_ => false);
-
-    // const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
-
-    if (modalList.all.length === 0) {
-      const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: 0 }
-      setModalList({ all: [current], current: current })
-    } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-      setModalList(prevState => ({
-        all: [...prevState.all,
-        { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: prevState.all[prevState.all.length - 1].name + 1 }],
-        current: { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: prevState.all[prevState.all.length - 1].name + 1 }
-      }))
-    } else {
-      setModalList(prevState =>
-      ({
-        all: prevState.all.map(order =>
-          order.id === modalList.current.id ?
-            { ...order, 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
-            : order
-        ), current: null
-      })
-      )
-    }
+    setModalList(prev => {
+      if (prev.all.length === 0) {
+        const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: 0 }
+        return { all: [current], current: current }
+      } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
+        const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers], name: prev.all[prev.all.length - 1].name + 1 }
+        return { all: [...prev.all, current], current: current }
+      } else {
+        return {
+          all: prev.all.map(order =>
+            order.id === modalList.current.id ?
+              { ...order, 'value': [choices.serviceType, choices.lastDate, choices.selectedData, choices.receivers] }
+              : order
+          ), current: null
+        }
+      }
+    })
+    setIsModalVisible(0.5);
   }
   const mouseOverHandlerSlide = (e) => {
-    // sidebarRef.current.style.transform = "translateX(0px)";
-    setFachevron(true)
-  };
-  const mouseOverHandlerSlideBack = () => {
-    // sidebarRef.current.style.transform = "translateX(200px)";
-    setFachevron(false)
+    setFachevron(prev => !prev)
   };
 
   return (
     <>
-      <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
+      <div title="yeni sifariş" className="new-order-button" onClick={handleClick}>
         <MdAdd color="white" size="30" />
       </div>
       <div className="sidebar-button-wrap" ref={sidebarRef} onMouseOver={mouseOverHandlerSlide}
-        onMouseLeave={mouseOverHandlerSlideBack}>
+        onMouseLeave={mouseOverHandlerSlide}>
         <div>
           <div className="sidebar-button">
             {fachevron === false ?
@@ -112,29 +107,32 @@ const NewOrder = (props) => {
           </div>
         </div>
         <div className="sidebar2">
-        <Taskbar
-          style={{overflow:'scroll'}}
-          modalList={modalList}
-          setModalList={setModalList}
-          choices={choices}
-          handleOrderSelect={handleOrderSelect}
-        />
+          <Taskbar
+            style={{ overflow: 'scroll' }}
+            modalList={modalList}
+            setModalList={setModalList}
+            choices={choices}
+            handleOrderSelect={handleOrderSelect}
+          />
         </div>
       </div>
       {
-        isModalVisible &&
-        <Suspense fallback="">
-          <Modal
-            minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
-            title="Yeni Sifariş"
-            childProps={{ choices: choices, setChoices: setChoices }}
-            minimizeHandler={minimizeHandler}
-            changeModalState={handleCloseModal}
-            wrapperRef={props.wrapperRef}
-          >
-            {OrderModal}
-          </Modal>
-        </Suspense>
+        isModalVisible !== 0 &&
+        <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
+          <Suspense fallback="">
+            <Modal
+              minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
+              title="Yeni Sifariş"
+              ref={modalRef}
+              childProps={{ choices: choices, setChoices: setChoices }}
+              minimizeHandler={minimizeHandler}
+              changeModalState={handleCloseModal}
+              wrapperRef={props.wrapperRef}
+            >
+              {OrderModal}
+            </Modal>
+          </Suspense>
+        </div>
       }
     </>
   )

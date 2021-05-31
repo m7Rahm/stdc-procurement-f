@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useRef } from 'react'
 import UnfinishedModal from "./UnfinishedModal.js"
 
 
@@ -33,21 +33,21 @@ export const ModalArray = (props) => {
 
     return (
         <div >
-                {
-                    props.modalList !== null &&
-                        props.modalList.all.map((modal, index) =>
-                            <UnfinishedModal
-                                key={modal.id}
-                                id={modal.id}
-                                emp={modal}
-                                index={index}
-                                draggedElement={draggedElement}
-                                setReceivers={props.setModalList}
-                                handleSelectChange={props.handleSelectChange}
-                                handleOrderSelect={props.handleOrderSelect}
-                            />
-                        )
-                                        }
+            {
+                props.modalList !== null &&
+                props.modalList.all.map((modal, index) =>
+                    <UnfinishedModal
+                        key={modal.id}
+                        id={modal.id}
+                        emp={modal}
+                        index={index}
+                        draggedElement={draggedElement}
+                        setReceivers={props.setModalList}
+                        handleSelectChange={props.handleSelectChange}
+                        handleOrderSelect={props.handleOrderSelect}
+                    />
+                )
+            }
         </div>
     )
 }
