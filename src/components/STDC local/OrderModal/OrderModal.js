@@ -4,10 +4,9 @@ import ForwardDocLayout from "../ForwardDocLayout/ForwardDocLayout";
 import FirstPage from "./FirstPage";
 import NewOrderContent from "../../modal content/NewOrder"
 const OrderModal = (props) => {
-  const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
   const actPageRef = useRef(null);
 
-  const davamText = whichPage.page === 3 ? "Sifariş et" : "Davam";
+  const davamText = props.whichPage.page === 3 ? "Sifariş et" : "Davam";
   const handleDateChange = (date) => {
     props.setChoices({ ...props.choices, lastDate: date });
   };
@@ -22,7 +21,7 @@ const OrderModal = (props) => {
         animationendEventListener,
         false
       );
-      setWhichPage((prevState) => {
+      props.setWhichPage((prevState) => {
         props.modalWrapperRef.current.style.width = prevState.page === 3 ? "60rem" : "40rem";
         return prevState.page > 1 ? {
           page: prevState.page - 1,
@@ -45,7 +44,7 @@ const OrderModal = (props) => {
         animationendEventListener,
         false
       );
-      setWhichPage(prevState => {
+      props.setWhichPage(prevState => {
         props.modalWrapperRef.current.style.width = prevState.page === 1 ? "60rem" : "40rem";
         return prevState.page < 3 ? {
           page: prevState.page + 1,
@@ -87,20 +86,20 @@ const OrderModal = (props) => {
   };
   return (
     <>
-      {whichPage.page === 1 ? (
+      {props.whichPage.page === 1 ? (
         <FirstPage
           ref={actPageRef}
-          setWhichPage={setWhichPage}
+          setWhichPage={props.setWhichPage}
           handleDateChange={handleDateChange}
           choices={props.choices}
           setChoices={props.setChoices}
           setHandleDateChange={props.setHandleChange}
-          animName={whichPage.animationName}
+          animName={props.whichPage.animationName}
         />
-      ) : whichPage.page === 2 ? (
+      ) : props.whichPage.page === 2 ? (
         <div
           className="page-container"
-          style={{ animationName: whichPage.animationName }}
+          style={{ animationName: props.whichPage.animationName }}
           ref={actPageRef}
         >
           <NewOrderContent 
@@ -108,7 +107,7 @@ const OrderModal = (props) => {
               setChoices={props.setChoices}
             />
         </div>
-      ) : whichPage.page === 3 ? (
+      ) : props.whichPage.page === 3 ? (
         <div className="page-container" ref={actPageRef}>
           <ForwardDocLayout
             handleSendClick={handleSendClick}
@@ -125,7 +124,7 @@ const OrderModal = (props) => {
           className="btn btn-primary btn-modal bg-red py-4 mt-8"
           style={{
             width: "150px",
-            display: whichPage.page === 1 ? "none" : "block",
+            display: props.whichPage.page === 1 ? "none" : "block",
           }}
           type="button"
           onClick={backClickHandler}

@@ -5,8 +5,9 @@ import { productUnit } from '../../../data/data'
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, structure, materialid, className, count, placeslist } = props;
+  const { orderType, structure, materialid, className, count, placeList, setPlaceList } = props;
   const modelListRef = useRef(null);
+  const placeListRef = useRef(null);
   const [unit, setUnit] = useState(1);
   const [materials, setMaterials] = useState([])
   const [models, setModels] = useState([]);
@@ -56,12 +57,27 @@ const NewOrderTableRow = (props) => {
     modelListRef.current.style.display = 'block'
     props.modelsListRef.current = modelListRef.current;
   }
+
+  const handlePlaceFocus = () => {
+    if (props.placesListRef.current)
+      props.placesListRef.current.style.display = 'none';
+    placeListRef.current.style.display = 'block'
+    props.placesListRef.current = placeListRef.current;
+  }
+
   // eslint-disable-next-line
   const handleBlur = (e) => {
     const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
     if (relatedTargetid === null || relatedTargetid !== 'modelListRef')
       modelListRef.current.style.display = 'none'
   }
+
+  const handlePlaceBlur = (e) => {
+    const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
+    if (relatedTargetid === null || relatedTargetid !== 'placeListRef')
+      placeListRef.current.style.display = 'none'
+  }
+
   const handleRowDelete = () => {
     rowRef.current.classList.add("delete-row");
     rowRef.current.addEventListener('animationend', () => setMaterials(prev => prev.filter(material => material.id !== materialid)))
@@ -84,6 +100,12 @@ const NewOrderTableRow = (props) => {
     modelInputRef.current.value = model.title;
     modelListRef.current.style.display = "none";
   }
+
+  const setPlace = (model) => {
+    placeInputRef.current.value = model.name;
+    placeListRef.current.style.display = "none";
+  }
+
   const handleInputSearch = (e) => {
     const value = e.target.value;
     // if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
@@ -169,6 +191,7 @@ const NewOrderTableRow = (props) => {
         })
     }, 500)
   }
+
   return (
     <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
@@ -201,10 +224,10 @@ const NewOrderTableRow = (props) => {
       <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
         <input
           onBlur={handleBlur}
-          onFocus={handleFocus}
+          // onFocus={handleFocus}
           type="text"
           placeholder="Kod"
-          ref={codeInputRef}
+          ref={codeRef}
           name="model"
           autoComplete="off"
           onChange={searchByCode}
@@ -239,11 +262,12 @@ const NewOrderTableRow = (props) => {
           }
         </select>
       </div>
+
       {/* Istifade yeri */}
       <div style={{ position: 'relative' }}>
         <input
-          onBlur={handleBlur}
-          onFocus={handleFocus}
+          onBlur={handlePlaceBlur}
+          onFocus={handlePlaceFocus}
           type="text"
           placeholder="Istifadə yeri"
           ref={placeInputRef}
@@ -252,22 +276,14 @@ const NewOrderTableRow = (props) => {
           onChange={handlePlaceSearch}
         />
         {
-          <ul id="placeListRef" tabIndex="0" className="material-model-list">
+          <ul id="placeListRef" tabIndex="0" ref={placeListRef} style={{ width: '150px', maxWidth: ' 200px', outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
             {
-              // places.map(model => {
-              //   const titleArr3 = model.title.split("");
-              //   const inputVal = placeInputRef.current.value;
-              //   const title = <>{titleArr3.map((char, index) => {
-              //     const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-              //     if (strRegExp.test(char)) {
-              //       return <i key={index}>{char}</i>
-              //     } else {
-              //       return char
-              //     }
-              //   })
-              //   }</>
-              //   return <li key={model.id} onClick={() => setPlaces(model)}>{title}</li>
-              // })
+              placeList.map(model => {
+                const inputVal = placeListRef.current ? placeInputRef.current.value : '';
+                const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+                const title = model.name.replace(strRegExp, (text) => `<i>${text}</i>`);
+                return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setPlace(model)}></li>
+              })
             }
           </ul>
         }

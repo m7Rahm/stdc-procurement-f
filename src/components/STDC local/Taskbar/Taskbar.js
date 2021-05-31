@@ -7,6 +7,7 @@ function Taskbar(props) {
     const handleSelectChange = (employee) => {
         props.setModalList(prevState => {
             const res = prevState.all.find(emp => emp.id === employee.id);
+            props.setIsModalVisible(res && prevState.current && employee.id === prevState.current.id ? 0 : 1)
             const newModals = !res ?
                 { all: [...prevState.all, employee], current: employee }
                 : { all: prevState.all.filter(emp => emp.id !== employee.id), current: null };
