@@ -17,7 +17,7 @@ const NewOrder = (props) => {
   const [modalList, setModalList] = useState(null)
   const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{ id: 0, data: { say: 1 } }], receivers: [] })
   const [fachevron, setFachevron] = useState(false)
-  const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
+  
 
   const handleClick = () => {
     setIsModalVisible(true);
@@ -64,7 +64,7 @@ const NewOrder = (props) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
     setModalList(prevState => ({ ...prevState, current: properties }))
     setIsModalVisible(1);
-    setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3] })
+    setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], selectedData: properties.value[2], receivers: properties.value[3], id: properties.id })
   }
 
   const minimizeHandler = () => {
@@ -86,7 +86,6 @@ const NewOrder = (props) => {
       }
     })
     setIsModalVisible(0.5);
-    setWhichPage({page:1})
   }
   const mouseOverHandlerSlide = (e) => {
     setFachevron(prev => !prev)
@@ -127,7 +126,7 @@ const NewOrder = (props) => {
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
               title="Yeni Sifariş"
               ref={modalRef}
-              childProps={{ choices: choices, setChoices: setChoices , whichPage:whichPage,setWhichPage:setWhichPage}}
+              childProps={{ choices: choices, setChoices: setChoices }}
               minimizeHandler={minimizeHandler}
               changeModalState={handleCloseModal}
               wrapperRef={props.wrapperRef}
