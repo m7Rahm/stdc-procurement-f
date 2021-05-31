@@ -72,7 +72,7 @@ const [placeList, setPlaceList] = useState([])
             )
           })
         }
-        <NewOrderTableRowAdd setMaterials={props.setMaterials} />
+        <NewOrderTableRowAdd setChoices={props.setChoices} />
       </ul>
       {/* <div className="send-order" style={{ cursor: props.active ? 'pointer' : 'not-allowed' }} onClick={onSendClick}>
         Göndər
