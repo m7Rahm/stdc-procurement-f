@@ -15,7 +15,22 @@ const NewOrder = (props) => {
   const modalRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null)
-  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{ id: 0, data: { say: 1 } }], receivers: [] })
+  const [materials, setMaterials] = useState([
+    {
+      id: Date.now(),
+      materialName:'',
+      materialId: '',
+      code: '',
+      additionalInfo: '',
+      class: '',
+      count: 1,
+      isService: 0,
+      place:"",
+      unit:'1'
+    }
+  ]);
+  // if(materials)  console.log(materials) 
+  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(), selectedData: [], receivers: [] })
   const [fachevron, setFachevron] = useState(false)
   
 
@@ -32,7 +47,7 @@ const NewOrder = (props) => {
       void modalRef.current.offsetHeight; /* trigger reflow */
       modalRef.current.style.animation = null;
     }
-    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: [{ id: 0, data: { say: 1 } }], receivers: [] })
+    setChoices({ serviceType: "mal-material", lastDate: new Date(), selectedData: [], receivers: [] })
   }
 
   // const handleClose = (data, receivers) => {
@@ -126,7 +141,7 @@ const NewOrder = (props) => {
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
               title="Yeni Sifariş"
               ref={modalRef}
-              childProps={{ choices: choices, setChoices: setChoices }}
+              childProps={{ choices: choices, setChoices: setChoices,materials: materials,setMaterials:setMaterials }}
               minimizeHandler={minimizeHandler}
               changeModalState={handleCloseModal}
               wrapperRef={props.wrapperRef}

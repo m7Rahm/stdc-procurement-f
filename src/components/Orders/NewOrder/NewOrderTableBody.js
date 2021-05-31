@@ -13,29 +13,18 @@ const [placeList, setPlaceList] = useState([])
     //  handleSendClick 
   } = props;
   const { orderType, structure } = orderInfo;
-  const [materials, setMaterials] = useState([
-    {
-      id: Date.now(),
-      materialId: '',
-      code: '',
-      approx_price: 0,
-      additionalInfo: '',
-      class: '',
-      count: 1,
-      isService: 0
-    }
-  ]);
+
   // const onSendClick = () => {
   //   handleSendClick(materials)
   // }
   useEffect(() => {
-    setMaterials(prev => prev.filter(material => material.isService === orderType))
+    props.setMaterials(prev => prev.filter(material => material.isService === orderType))
   }, [orderType])
 
   useEffect(()=>{
     fetchGet(`/api/departments`)
     .then(respJ => {
-      console.log(respJ)
+      // console.log(respJ)
       setPlaceList(respJ)
     })
     .catch(ex => console.log(ex))
@@ -55,13 +44,14 @@ const [placeList, setPlaceList] = useState([])
           <div></div>
         </li>
         {
-          materials.map((material, index) => {
+          props.materials.map((material, index) => {
             return (
               <NewOrderTableRow
-                setMaterials={setMaterials}
+                setMaterials={props.setMaterials}
                 index={index}
                 orderType={orderType}
                 material={material}
+                place={material.place}
                 key={material.id}
                 materialid={material.id}
                 className={material.class}
@@ -70,6 +60,7 @@ const [placeList, setPlaceList] = useState([])
                 modelsListRef={modelsListRef}
                 additionalInfo={material.additionalInfo}
                 department={material.department}
+
                 choices={props.choices}
                 setChoices={props.setChoices}
                 setPlaceList={setPlaceList}
@@ -79,7 +70,7 @@ const [placeList, setPlaceList] = useState([])
             )
           })
         }
-        <NewOrderTableRowAdd setMaterials={setMaterials} />
+        <NewOrderTableRowAdd setMaterials={props.setMaterials} />
       </ul>
       {/* <div className="send-order" style={{ cursor: props.active ? 'pointer' : 'not-allowed' }} onClick={onSendClick}>
         Göndər
