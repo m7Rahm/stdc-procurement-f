@@ -6,18 +6,10 @@ import Navigation from "../components/Common/Navigation";
 // import PaymentLayout from "../components/Exports/PaymentLayout";
 import Loading from "../components/Misc/Loading"
 const Contracts = lazy(() => import("./Contracts"));
-const Budget = lazy(() => import("./Budget"))
 const Orders = lazy(() => import("./Orders"))
 const Tender = lazy(() => import("./Tender"))
 const Admin = lazy(() => import("./AdminPage"))
-const Other = lazy(() => import("./Other"))
 const availableModules = [
-	{
-		text: "Büdcə",
-		label: "Budget",
-		link: "/budget",
-		component: Budget
-	},
 	{
 		text: "Sifarişlər",
 		label: "Orders",
@@ -41,12 +33,6 @@ const availableModules = [
 		label: "Tender",
 		link: "/tender",
 		component: Tender
-	},
-	{
-		text: "Digər",
-		label: "Other",
-		link: "/other",
-		component: Other
 	}
 ]
 const SelectModule = () => {

@@ -36,7 +36,7 @@ const UnfinishedModal = (props) => {
                 return [...before, draggedElement, ...after]
             })
     }
-    
+    // eslint-disable-next-line
     function findWithAttr(array, attr, value) {
         for(var i = 0; i < array.length; i += 1) {
             if(array[i][attr] === value) {

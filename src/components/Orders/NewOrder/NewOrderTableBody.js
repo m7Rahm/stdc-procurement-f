@@ -1,8 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
+import useFetch from '../../../hooks/useFetch';
+
 const NewOrderTableBody = (props) => {
-  const modelsListRef = useRef(null);
+const fetchGet = useFetch("GET");
+const modelsListRef = useRef(null);
+const placesListRef = useRef(null);
+const [placeList, setPlaceList] = useState([])
+
   const { orderInfo,
     //  handleSendClick 
   } = props;
@@ -25,6 +31,15 @@ const NewOrderTableBody = (props) => {
   useEffect(() => {
     setMaterials(prev => prev.filter(material => material.isService === orderType))
   }, [orderType])
+
+  useEffect(()=>{
+    fetchGet(`/api/departments`)
+    .then(respJ => {
+      console.log(respJ)
+      setPlaceList(respJ)
+    })
+    .catch(ex => console.log(ex))
+  }, [fetchGet])
   return (
     <>
       <ul className="new-order-table">
@@ -57,6 +72,9 @@ const NewOrderTableBody = (props) => {
                 department={material.department}
                 choices={props.choices}
                 setChoices={props.setChoices}
+                setPlaceList={setPlaceList}
+                placeList={placeList}
+                placesListRef={placesListRef}
               />
             )
           })

@@ -5,7 +5,7 @@ import { VscChromeMinimize } from "react-icons/vsc"
 const modalContent = (Content) => ({ ...props }) =>
   <Content {...props} />
 
-const Modal = (props) => {
+const Modal = React.forwardRef((props, ref) => {
   const { style, canBeClosed = true, number, title, changeModalState, minimizable, minimizeHandler } = props;
   const modalWrapperRef = useRef(null)
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
@@ -28,7 +28,7 @@ const Modal = (props) => {
   return (
     <>
       <div className="modal" onClick={onOuterClickHandler}></div>
-      <div ref={modalWrapperRef} className='modal-content wrapper' style={style}>
+      <div ref={ref} className='modal-content wrapper' style={style}>
         <div style={{ marginBottom: '20px' }}>
           {title || ""} {number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
@@ -39,7 +39,7 @@ const Modal = (props) => {
         </div>
         <ModalContent
           closeModal={changeModalState}
-          modalWrapperRef={modalWrapperRef}
+          modalWrapperRef={ref}
           current={number}
           stateRef={stateRef}
           {...props.childProps}
@@ -47,5 +47,5 @@ const Modal = (props) => {
       </div>
     </>
   )
-}
+})
 export default Modal

@@ -30,7 +30,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 	useEffect(() => {
 		if (view === "returned") {
 			const data = { subGlCategoryId: subCategoryid, structureid: structure, orderType: orderType };
-			fetchPost('/api/strucutre-budget-info', data)
+			fetchPost('/api/structure-budget-info', data)
 				.then(respJ => {
 					modelsRef.current = respJ;
 					const budget = respJ.length !== 0 ? respJ[0].budget : 0;
