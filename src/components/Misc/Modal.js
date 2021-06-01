@@ -7,6 +7,7 @@ const modalContent = (Content) => ({ ...props }) =>
 
 const Modal = React.forwardRef((props, ref) => {
   const { style, canBeClosed = true, number, title, changeModalState, minimizable, minimizeHandler } = props;
+  // eslint-disable-next-line
   const modalWrapperRef = useRef(null)
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
   const stateRef = useRef({});
