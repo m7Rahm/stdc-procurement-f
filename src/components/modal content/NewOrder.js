@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import NewOrderTableBody from '../Orders/NewOrder/NewOrderTableBody'
 // import NewOrderHeader from '../Orders/NewOrder/NewOrderHeader'
 import OperationResult from '../../components/Misc/OperationResult'
@@ -7,6 +7,7 @@ import { IoIosCloseCircle } from 'react-icons/io'
 const NewOrderContent = (props) => {
   const { orderInfo } = props;
   const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
+  // eslint-disable-next-line
   const [glCategories, setGlCategories] = useState({ all: [], parent: [], sub: [] });
   // eslint-disable-next-line
   return (

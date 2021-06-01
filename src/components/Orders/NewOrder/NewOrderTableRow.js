@@ -5,13 +5,12 @@ import { productUnit } from '../../../data/data'
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, structure, materialid, className, additionalInfo, count, place,placeList, setPlaceList } = props;
+  const { orderType, structure, materialid, className, additionalInfo, count,placeList } = props;
   const modelListRef = useRef(null);
   const placeListRef = useRef(null);
   const [models, setModels] = useState([]);
   const [places, setPlaces] = useState([]);
   const modelInputRef = useRef(null);
-  const codeInputRef = useRef(null);
   const placeInputRef = useRef(null);
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
@@ -64,7 +63,6 @@ const NewOrderTableRow = (props) => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    const name = e.target.name;
     props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material)}) )
   }
 
@@ -82,7 +80,8 @@ const NewOrderTableRow = (props) => {
         code: model.product_id,
         department: model.department_name,
         isAmortisized: model.is_amortisized,
-        percentage: model.perc
+        percentage: model.perc,
+        isService:orderType
       }
       : material
     )}));
@@ -196,7 +195,7 @@ const NewOrderTableRow = (props) => {
           <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ width: '150px', maxWidth: ' 200px', outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
             {
               models.map(model => {
-                const inputVal = modelInputRef.current.value;
+                const inputVal = modelInputRef.current.value.replace("-", "\\-");
                 const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
                 const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
                 return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>

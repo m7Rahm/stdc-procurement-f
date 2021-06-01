@@ -88,8 +88,9 @@ const NewOrder = (props) => {
   // eslint-disable-next-line
   const handleOrderSelect = (orderId) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
-    setModalList(prevState => ({ ...prevState, current: properties }))
+    // console.log(properties.value[2])
     setIsModalVisible(1);
+    setModalList(prevState => ({ ...prevState, current: properties }))
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], materials: properties.value[2], receivers: properties.value[3], id: properties.id })
   }
 

@@ -17,11 +17,12 @@ const [placeList, setPlaceList] = useState([])
   // const onSendClick = () => {
   //   handleSendClick(materials)
   // }
+  const setChoices = props.setChoices;
   useEffect(() => {
     // props.setMaterials(prev => prev.filter(material => material.isService === orderType))
     // props.setChoices(prev=>prev.materials.filter(material => material.isService === orderType))
-    props.setChoices(prev=>({...prev,materials:prev.materials.filter(material => material.isService === orderType)}))
-  }, [orderType])
+    setChoices(prev=>({...prev,materials:prev.materials.filter(material => material.isService === orderType)}))
+  }, [orderType,setChoices])
 
   useEffect(()=>{
     fetchGet(`/api/departments`)
@@ -31,6 +32,7 @@ const [placeList, setPlaceList] = useState([])
     })
     .catch(ex => console.log(ex))
   }, [fetchGet])
+
   return (
     <>
       <ul className="new-order-table">
@@ -64,7 +66,7 @@ const [placeList, setPlaceList] = useState([])
                 department={material.department}
 
                 choices={props.choices}
-                setChoices={props.setChoices}
+                setChoices={setChoices}
                 setPlaceList={setPlaceList}
                 placeList={placeList}
                 placesListRef={placesListRef}

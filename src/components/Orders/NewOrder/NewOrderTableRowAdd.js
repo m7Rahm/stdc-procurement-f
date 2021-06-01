@@ -5,7 +5,6 @@ import {
 import { newOrderInitial } from '../../../data/data'
 const NewOrderTableRowAdd = (props) => {
   const handleClick = () => {
-    // props.setMaterials(prev => [...prev, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}])
     props.setChoices(prev => ({...prev,materials:[...prev.materials, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}]}))
   }
   return (
