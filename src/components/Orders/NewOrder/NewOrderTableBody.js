@@ -2,12 +2,17 @@ import React, { useEffect, useRef, useState } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 import useFetch from '../../../hooks/useFetch';
+import { IoIosAdd } from 'react-icons/io'
+import { newOrderInitial } from '../../../data/data'
 
 const NewOrderTableBody = (props) => {
 const fetchGet = useFetch("GET");
 const modelsListRef = useRef(null);
 const placesListRef = useRef(null);
 const [placeList, setPlaceList] = useState([])
+const handleAddClick = () => {
+  props.setChoices(prev => ({...prev,materials:[...prev.materials, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}]}))
+}
 
   const { orderInfo,
     //  handleSendClick 
@@ -45,7 +50,7 @@ const [placeList, setPlaceList] = useState([])
           <div style={{ width: '170px', maxWidth: '150px' }}>Ölçü vahidi</div>
           <div>İstifadə yeri</div>
           <div>Əlavə məlumat</div>
-          <div></div>
+          <div> <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} /></div>
         </li>
         {
           props.choices.materials.map((material, index) => {
@@ -74,7 +79,7 @@ const [placeList, setPlaceList] = useState([])
             )
           })
         }
-        <NewOrderTableRowAdd setChoices={props.setChoices} />
+        {/* <NewOrderTableRowAdd setChoices={props.setChoices} /> */}
       </ul>
       {/* <div className="send-order" style={{ cursor: props.active ? 'pointer' : 'not-allowed' }} onClick={onSendClick}>
         Göndər

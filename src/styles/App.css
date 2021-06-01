@@ -1276,9 +1276,23 @@ div.forwarded-person-card>div:last-of-type {
 
 div.new-order-footer-wrapper {
   margin: 0px 50px;
+  z-index: 1;
   margin-top: 30px;
 }
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+ }
+ ::-webkit-scrollbar-thumb {
+  background: radial-gradient(circle, #828282 14%,#949494 64%);
+  border-radius: 9px;
+ }
 
+ ::-webkit-scrollbar-track{
+  background: #ffffff;
+  border-radius: 11px;
+  box-shadow: inset 7px 10px 12px #f0f0f0;
+ }
 div.new-order-footer-wrapper>div:first-of-type>div:first-of-type {
   width: 954px;
   /* overflow: hidden; */
@@ -1414,6 +1428,7 @@ div.my-orders-footer {
   margin: auto;
   background-color: rgb(64, 168, 196);
   height: 60px;
+  
 }
 
 div.my-orders-footer svg {
