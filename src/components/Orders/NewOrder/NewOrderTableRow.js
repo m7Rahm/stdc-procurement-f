@@ -8,7 +8,6 @@ const NewOrderTableRow = (props) => {
   const { orderType, structure, materialid, className, additionalInfo, count, place,placeList, setPlaceList } = props;
   const modelListRef = useRef(null);
   const placeListRef = useRef(null);
-  const [unit, setUnit] = useState(1);
   const [models, setModels] = useState([]);
   const [places, setPlaces] = useState([]);
   const modelInputRef = useRef(null);
@@ -18,28 +17,21 @@ const NewOrderTableRow = (props) => {
   const codeRef = useRef(null);
   const fetchGet = useFetch("GET");
   const fetchPost = useFetch("POST")
+
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
     if (value === '' || Number(value) > 0) {
-      
-      // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
-      // props.setChoices(prev=>prev.materials.map(material => material.id === materialid ? { ...material, [name]: value } : material))
       props.setChoices(prev=>({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, [name]: value } : material)}))
-      
     }
   }
   const handleAmountFocusLose = (e) => {
     const value = e.target.value;
     const name = e.target.name
     if (value === '')
-      // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
-      // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
       props.setChoices(prev => ({...prev,materials: prev.materials.map(material => material.id === materialid ? { ...material, [name]: 0 } : material)}))
   }
   const handleAmountChangeButtons = (action) => {
-    // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material))
-    // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material))
     props.setChoices(prev =>({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material)}) )
   }
 
@@ -73,19 +65,14 @@ const NewOrderTableRow = (props) => {
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
-    // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material))
-    // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material))
     props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material)}) )
   }
 
   const handleRowDelete = () => {
     rowRef.current.classList.add("delete-row");
-    // rowRef.current.addEventListener('animationend', () => props.setMaterials(prev => prev.filter(material => material.id !== materialid)))
     rowRef.current.addEventListener('animationend', () => props.setChoices(prev => ({...prev,materials:prev.materials.filter(material => material.id !== materialid)})))
   }
   const setModel = (model) => {
-    // props.setMaterials(prev => prev.map(material => material.id === materialid
-    // props.setChoices(prev => prev.materials.map(material => material.id === materialid
     props.setChoices(prev => ({ ...prev,materials: prev.materials.map(material => material.id === materialid
       ? {
         ...material,
@@ -105,8 +92,6 @@ const NewOrderTableRow = (props) => {
   }
 
   const setPlace = (model) => {
-    // props.setMaterials(prev => prev.map(material => material.id === materialid
-    // props.setChoices(prev => prev.materials.map(material => material.id === materialid
     props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid
       ? {
         ...material,
@@ -141,17 +126,13 @@ const NewOrderTableRow = (props) => {
 
   const handlePlaceSearch = (e) => {
     const value = e.target.value;
-    // if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
     const charArray = value.split("")
     const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
     const regExp = new RegExp(`${reg}`, "i");
     const searchResult = places.filter(model => regExp.test(model.title))
     setPlaces(searchResult);
-    // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, place: placeInputRef.current.value } : material))
-    // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, place: placeInputRef.current.value } : material))
     props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, place: placeInputRef.current.value } : material)}))
   }
-  // if(props.material)  console.log(props.material.place) 
   // eslint-disable-next-line
   const searchByCode = (e) => {
     const data = { product_id: e.target.value, orderType: orderType, structure: structure };
@@ -166,7 +147,6 @@ const NewOrderTableRow = (props) => {
           if (respJ.length === 1) {
             const material = respJ.length !== 0 ? respJ[0] : {};
             modelInputRef.current.value = material.title || "";
-            // props.setMaterials(prev => prev.map(prevMaterial => prevMaterial.id === materialid
             props.setChoices(prev => ({...prev,materials:prev.materials.map(prevMaterial => prevMaterial.id === materialid
               ? {
                 ...prevMaterial,
@@ -181,10 +161,6 @@ const NewOrderTableRow = (props) => {
           } else {
             modelListRef.current.style.display = "block";
             setModels(respJ);
-            // props.setChoices(prevState => ({
-            //   ...prevState,
-            //   selectedData: { ...prevState.selectedData, model: respJ }
-            // }))
           }
         })
         .catch(ex => {
@@ -196,12 +172,9 @@ const NewOrderTableRow = (props) => {
 
   const unitChangeHandler = (e) => {
     const value = e.target.value;
-    // props.setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, unit: value } : material))
-    // props.setChoices(prev => prev.materials.map(material => material.id === materialid ? { ...material, unit: value } : material))
     props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, unit: value } : material)}))
   }
 
-  // console.log(props.choices)
 
   return (
     <li ref={rowRef} className={className}>
@@ -213,6 +186,7 @@ const NewOrderTableRow = (props) => {
           onFocus={handleFocus}
           type="text"
           placeholder="Məhsul"
+          defaultValue={props.material.materialName}
           ref={modelInputRef}
           name="model"
           autoComplete="off"
@@ -235,9 +209,9 @@ const NewOrderTableRow = (props) => {
       <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
         <input
           onBlur={handleBlur}
-          // onFocus={handleFocus}
           type="text"
           placeholder="Kod"
+          defaultValue={props.material.code}
           ref={codeRef}
           name="model"
           autoComplete="off"
@@ -249,14 +223,13 @@ const NewOrderTableRow = (props) => {
       {/* Say */}
       <div style={{ maxWidth: '140px' }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
-          <FaMinus cursor="pointer" onClick={() => { if (props.choices.selectedData.say > 1) handleAmountChangeButtons('dec') }} color="#ffae00" style={{ margin: '0px 3px' }} />
+          <FaMinus cursor="pointer" onClick={() => { if (count > 1) handleAmountChangeButtons('dec') }} color="#ffae00" style={{ margin: '0px 3px' }} />
           <input
             name="count"
             style={{ width: '40px', textAlign: 'center', padding: '0px 2px', margin: '0px 5px', flex: 1 }}
             type="text"
             onBlur={handleAmountFocusLose}
             onChange={handleAmountChange}
-            // value={props.choices.selectedData.say}
             value={count}
           />
           <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ margin: '0px 3px' }} />
@@ -269,7 +242,6 @@ const NewOrderTableRow = (props) => {
         <select
           name="product_unit"
           value={props.material.unit}
-          // onChange={(e) => setUnit(e.target.value)}
           onChange={unitChangeHandler}
         >
           {
@@ -289,6 +261,7 @@ const NewOrderTableRow = (props) => {
           placeholder="Istifadə yeri"
           ref={placeInputRef}
           name="model"
+          defaultValue={props.material.place}
           autoComplete="off"
           onChange={handlePlaceSearch}
         />
@@ -311,10 +284,8 @@ const NewOrderTableRow = (props) => {
           style={{ width: '100%' }}
           placeholder="Link və ya əlavə məlumat"
           name="additionalInfo"
-          // value={props.choices.selectedData ? props.choices.selectedData.info : ""}
           value={additionalInfo}
           type="text"
-          // onChange={(e) => updateInfoValue(e)}
           onChange={handleChange}
         />
       </div>

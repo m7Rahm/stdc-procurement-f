@@ -91,21 +91,6 @@ const NewOrder = (props) => {
     setModalList(prevState => ({ ...prevState, current: properties }))
     setIsModalVisible(1);
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], materials: properties.value[2], receivers: properties.value[3], id: properties.id })
-    // console.log(properties.value[2])
-    // setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], 
-    //   materials: [{
-    //     id: Date.now(),
-    //     materialName:properties.value[2].materialName,
-    //     materialId: properties.value[2].materialId,
-    //     code: properties.value[2].code,
-    //     additionalInfo: properties.value[2].additionalInfo,
-    //     class: '',
-    //     count: properties.value[2].count,
-    //     isService: 0,
-    //     place:properties.value[2].place,
-    //     unit:properties.value[2].unit
-    //   }],
-    //   receivers: properties.value[3], id: properties.id })
   }
 
   const minimizeHandler = () => {
