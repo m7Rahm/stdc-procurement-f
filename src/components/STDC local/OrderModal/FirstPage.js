@@ -7,7 +7,7 @@ const FirstPage = React.forwardRef((props, ref) => {
 
     const updateServiceType = (e) => {
         const value = e.target.value
-        props.setChoices(prevState=>({...prevState ,serviceType:value}))
+        props.setChoices(prevState=>({...prevState ,serviceType:+value}))
     }
 
     return (
@@ -19,8 +19,8 @@ const FirstPage = React.forwardRef((props, ref) => {
                             <input
                                 type="radio"
                                 name="servis"
-                                value="xidmət"
-                                checked={props.choices.serviceType === "xidmət"}
+                                value={1}
+                                checked={props.choices.serviceType === 1}
                                 onChange={(e) => updateServiceType(e)}
                             />
                             <span className="custom-checkbox"></span>
@@ -33,8 +33,8 @@ const FirstPage = React.forwardRef((props, ref) => {
                             <input
                                 type="radio"
                                 name="servis"
-                                value="mal-material"
-                                checked={props.choices.serviceType === "mal-material"}
+                                value={0}
+                                checked={props.choices.serviceType === 0}
                                 onChange={(e) => updateServiceType(e)}
                             />
                             <span className="custom-checkbox"></span>

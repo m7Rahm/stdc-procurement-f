@@ -15,7 +15,7 @@ const NewOrder = (props) => {
   const modalRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null)
-  const [choices, setChoices] = useState({ serviceType: "mal-material", lastDate: new Date(),
+  const [choices, setChoices] = useState({ serviceType: 0, lastDate: new Date(),
     materials: [{
       id: Date.now(),
       materialName:'',
@@ -44,7 +44,7 @@ const NewOrder = (props) => {
       void modalRef.current.offsetHeight; /* trigger reflow */
       modalRef.current.style.animation = null;
     }
-    setChoices({ serviceType: "mal-material", lastDate: new Date(),
+    setChoices({ serviceType: 0, lastDate: new Date(),
       materials: [{
         id: Date.now(),
         materialName:'',

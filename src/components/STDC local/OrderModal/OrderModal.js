@@ -110,7 +110,7 @@ const OrderModal = (props) => {
           <NewOrderContent
             choices={props.choices}
             setChoices={props.setChoices}
-            orderInfo={{orderType:props.choices.serviceType === "mal-material" ? 0 : 1,structure:-1}}
+            orderInfo={{orderType:props.choices.serviceType,structure:-1}}
           />
         </div>
       ) : whichPage.page === 3 ? (
