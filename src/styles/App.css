@@ -1284,7 +1284,7 @@ div.new-order-footer-wrapper {
   height: 12px;
  }
  ::-webkit-scrollbar-thumb {
-  background: radial-gradient(circle, #828282 14%,#949494 64%);
+  background: #c5c4c4;
   border-radius: 9px;
  }
 
