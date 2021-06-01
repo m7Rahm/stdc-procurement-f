@@ -27,7 +27,7 @@ const Modal = React.forwardRef((props, ref) => {
   }, [changeModalState, canBeClosed]);
   const onOuterClickHandler = minimizeHandler ? minimizeHandler : closeModal
   return (
-    <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0 }}>
+    <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 5,overflow: "auto" }}>
       <div className="modal" onClick={onOuterClickHandler}></div>
         <div ref={ref} className='modal-content wrapper' style={style}>
           <div style={{ marginBottom: '20px' }}>
