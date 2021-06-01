@@ -953,7 +953,7 @@ div.icons-panel-hide {
   top: 0px;
   left: 0px;
   height: 100%;
-  z-index: 1;
+  z-index: 2;
   animation: blur-in 0.2s ease-in-out both;
 }
 
@@ -970,24 +970,19 @@ div.icons-panel-hide {
   border: 1px solid #1f1f1f;
   border-top-width: 0px;
   width: 60%;
- 
- position:absolute;
- top:25%;
- bottom:25%;
- left:25%;
- right:25%;
-
-
+  position: relative;
   overflow-x: hidden;
   margin: auto;
+  top: 20%;
   margin-bottom: 100px;
   background-color: #f5f5f5;
   padding: 0px;
-  z-index: 2;
-  height:30rem;
+  z-index: 3;
+
   animation: modal-show 0.5s ease-in-out both;
   transition: min-width, width 0.5s;
 }
+
 
 @keyframes modal-show {
   from {

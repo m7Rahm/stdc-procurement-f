@@ -27,26 +27,29 @@ const Modal = React.forwardRef((props, ref) => {
   }, [changeModalState, canBeClosed]);
   const onOuterClickHandler = minimizeHandler ? minimizeHandler : closeModal
   return (
-    <>
+    <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0 }}>
       <div className="modal" onClick={onOuterClickHandler}></div>
-      <div ref={ref} className='modal-content wrapper' style={style}>
-        <div style={{ marginBottom: '20px' }}>
-          {title || ""} {number}
-          <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
-          {
-            minimizable &&
-            <VscChromeMinimize className="modal-close-button" onClick={minimizeHandler} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
-          }
-        </div>
-        <ModalContent
-          closeModal={changeModalState}
-          modalWrapperRef={ref}
-          current={number}
-          stateRef={stateRef}
-          {...props.childProps}
-        />
-      </div>
-    </>
+        <div ref={ref} className='modal-content wrapper' style={style}>
+          <div style={{ marginBottom: '20px' }}>
+            {title || ""} {number}
+            <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
+            {
+              minimizable &&
+              <VscChromeMinimize className="modal-close-button" onClick={minimizeHandler} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
+            }
+          </div>
+          
+          <ModalContent
+            closeModal={changeModalState}
+            modalWrapperRef={ref}
+            current={number}
+            stateRef={stateRef}
+            {...props.childProps}
+          />
+          </div>
+        
+    
+    </div>
   )
 })
 export default Modal
