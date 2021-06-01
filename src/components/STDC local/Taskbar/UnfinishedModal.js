@@ -77,10 +77,13 @@ const UnfinishedModal = (props) => {
                         <div className="order-card-info order-card-info-number">Sifariş № {(props.emp.name + 1)}</div>
                     </div>
                     <div className="order-card-info-additional">
-                        <div className="order-card-info ">Növü: {props.emp.value[0]}</div>
+                        <div className="order-card-info ">Növü: {props.emp.value[0] === 0 ? "Mal-material" : "Xidmət"}</div>
                     </div>
                     <div className="order-card-info-additional">
                         <div className="order-card-info ">Son tarix: {props.emp.value[1].toISOString().split('T')[0]}</div>
+                    </div>
+                    <div className="order-card-info-additional">
+                        <div className="order-card-info ">Məhsul sayı: {props.emp.value[2].length}</div>
                     </div>
                 </div>
 
