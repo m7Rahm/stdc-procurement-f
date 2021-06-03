@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import useFetch from '../../../hooks/useFetch';
 import { IoIosAdd } from 'react-icons/io'
@@ -8,7 +8,6 @@ const NewOrderTableBody = (props) => {
 const fetchGet = useFetch("GET");
 const modelsListRef = useRef(null);
 const placesListRef = useRef(null);
-const [placeList, setPlaceList] = useState([])
 const handleAddClick = () => {
   props.setChoices(prev => ({...prev,materials:[...prev.materials, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}]}))
 }
@@ -28,6 +27,7 @@ const handleAddClick = () => {
     setChoices(prev=>({...prev,materials:prev.materials.filter(material => material.isService === orderType)}))
   }, [orderType,setChoices])
 
+  const setPlaceList = props.setPlaceList;
   useEffect(()=>{
     fetchGet(`/api/departments`)
     .then(respJ => {
@@ -35,7 +35,7 @@ const handleAddClick = () => {
       setPlaceList(respJ)
     })
     .catch(ex => console.log(ex))
-  }, [fetchGet])
+  }, [fetchGet,setPlaceList])
 
   return (
     <>
@@ -71,8 +71,8 @@ const handleAddClick = () => {
 
                 choices={props.choices}
                 setChoices={setChoices}
-                setPlaceList={setPlaceList}
-                placeList={placeList}
+                setPlaceList={props.setPlaceList}
+                placeList={props.placeList}
                 placesListRef={placesListRef}
               />
             )

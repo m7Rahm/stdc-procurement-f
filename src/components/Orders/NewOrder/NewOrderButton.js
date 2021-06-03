@@ -1,7 +1,6 @@
-import React, { useContext, useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { Suspense } from 'react'
 import { MdAdd } from 'react-icons/md'
-import { WebSocketContext } from '../../../pages/SelectModule'
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
@@ -10,7 +9,6 @@ import Taskbar from '../../STDC local/Taskbar/Taskbar'
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
   // eslint-disable-next-line
-  const webSocket = useContext(WebSocketContext)
   const sidebarRef = useRef(null);
   const modalRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(0);
@@ -153,7 +151,7 @@ const NewOrder = (props) => {
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
               title={modalList.current !== null ? "Sifariş "+(modalList.current.name+1) : "Yeni Sifariş"} 
               ref={modalRef}
-              childProps={{ choices: choices, setChoices: setChoices}}
+              childProps={{ choices: choices, setChoices: setChoices, setIsModalVisible:handleCloseModal}}
               minimizeHandler={minimizeHandler}
               changeModalState={handleCloseModal}
               wrapperRef={props.wrapperRef}

@@ -26,6 +26,8 @@ const NewOrderContent = (props) => {
         setOrderInfo={setOrderInfo}
       /> */}
       <NewOrderTableBody
+        placeList={props.placeList}
+        setPlaceList={props.setPlaceList}
         orderInfo={orderInfo}
         glCategories={glCategories}
         choices={props.choices}
