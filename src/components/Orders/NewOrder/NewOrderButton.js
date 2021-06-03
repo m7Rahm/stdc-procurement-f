@@ -151,7 +151,7 @@ const NewOrder = (props) => {
           <Suspense fallback="">
             <Modal
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
-              title="Yeni Sifariş"
+              title={modalList.current !== null ? "Sifariş "+(modalList.current.name+1) : "Yeni Sifariş"} 
               ref={modalRef}
               childProps={{ choices: choices, setChoices: setChoices}}
               minimizeHandler={minimizeHandler}

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
-import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 import useFetch from '../../../hooks/useFetch';
 import { IoIosAdd } from 'react-icons/io'
 import { newOrderInitial } from '../../../data/data'
