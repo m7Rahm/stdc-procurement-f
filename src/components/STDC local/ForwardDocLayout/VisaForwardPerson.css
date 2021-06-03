@@ -25,9 +25,14 @@ div.forwarded-person-card>div:first-of-type {
   cursor: pointer;
 }
 
-.forwarded-person-card2>div:first-of-type:hover{
+.forwarded-person-card2:hover{
   background-color: gray;
 }
+
+.forwarded-person-card21:hover{
+  background-color: rgb(253,200,86) !important;
+}
+
 
 .forwarded-person-card2>div:first-of-type {
   height: 100%;

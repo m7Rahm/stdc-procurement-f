@@ -173,6 +173,7 @@ export const ForwardedPeople = (props) => {
                             id={emp.id}
                             emp={emp}
                             index={index}
+                            drag={index<props.number? 0:1}
                             draggedElement={draggedElement}
                             setChoices={props.setChoices}
                             handleSelectChange={props.handleSelectChange}

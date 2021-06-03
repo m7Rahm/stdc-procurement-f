@@ -260,11 +260,11 @@ export const riskZones = [
 export const productUnit = [
     {
         val: 1,
-        text: 'Kg'
+        text: 'Ədəd'
     },
     {
         val: 2,
-        text: 'Ədəd'
+        text: 'Kg'
     },
     {
         val: 3,

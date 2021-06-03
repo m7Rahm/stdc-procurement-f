@@ -1,9 +1,11 @@
-import React, { useState, useRef, useLayoutEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect ,useEffect} from 'react'
 import useFetch from '../../../hooks/useFetch';
 import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
     const { textareaVisible = true } = props;
     const [empList, setEmpList] = useState([]);
+    const [fixedDependency, setFixedDependency] = useState(0);
+    const [fixedNames, setFixedNames] = useState([])
     // const [props.choices.receivers, props.setChoices] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -36,6 +38,27 @@ const ForwardDocLayout = (props) => {
                 .catch(err => console.log(err));
         return () => mounted = false
     }, [fetchGet]);
+
+    const setChoices = props.setChoices;
+
+    useEffect(() => {
+        let mounted = true;
+        if (mounted)
+            fetchGet('/api/dependency-graph')
+                .then(respJ => {
+                    if (mounted) {
+                        setFixedDependency(respJ.length);
+                        setFixedNames(respJ);
+                        setChoices(prev=>({
+                           ...prev,
+                            receivers : respJ
+                        }))
+                    }
+                })
+                .catch(err => console.log(err));
+        return () => mounted = false
+    },[fetchGet,setChoices,setFixedDependency]);
+
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
         const searchResult = empListRef.current.filter(emp => {
@@ -52,13 +75,15 @@ const ForwardDocLayout = (props) => {
         setEmpList(value !== -1 ? empListRef.current.filter(employee => employee.structure_dependency_id === value) : empListRef.current);
     }
     const handleSelectChange = (employee) => {
-        const res = props.choices.receivers.find(emp => emp.id === employee.id);
-        const newReceivers = !res ? [...props.choices.receivers, employee] : props.choices.receivers.filter(emp => emp.id !== employee.id);
-        props.setChoices(prevState=>({
-            ...prevState,
-            receivers:newReceivers
-        }))
-        setSearchQuery('');
+        if(fixedNames.filter(name=>name.full_name===employee.full_name).length===0){
+            const res = props.choices.receivers.find(emp => emp.id === employee.id);
+            const newReceivers = !res ? [...props.choices.receivers, employee] : props.choices.receivers.filter(emp => emp.id !== employee.id);
+            props.setChoices(prevState=>({
+                ...prevState,
+                receivers:newReceivers
+            }))
+            setSearchQuery('');
+        }
     }
     return (
         <div style={{ padding: '10px 20px' }}>
@@ -96,6 +121,7 @@ const ForwardDocLayout = (props) => {
                 choices={props.choices}
                 setChoices={props.setChoices}
                 handleSelectChange={handleSelectChange}
+                number={fixedDependency}
             />
         </div>
     )
