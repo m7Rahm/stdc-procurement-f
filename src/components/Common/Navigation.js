@@ -235,7 +235,7 @@ const Navigation = (props, ref) => {
                                                 >
                                                     <strong style={{ fontSize: "1.2rem" }}>{notification.full_name}</strong>
                                                     <br />
-                                                    <div>
+                                                    <div style={{ fontSize: "0.85rem" }}>
                                                         {getNotifText(notification)}
                                                     </div>
                                                     <span>{notification.date_time}</span>

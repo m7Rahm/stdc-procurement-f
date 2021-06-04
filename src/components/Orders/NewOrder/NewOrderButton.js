@@ -83,7 +83,8 @@ const NewOrder = (props) => {
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], materials: properties.value[2], receivers: properties.value[3], id: properties.id })
   }
 
-  const minimizeHandler = () => {
+  const minimizeHandler = (ref) => {
+    modalRef.current.style.width = "40rem";
     setModalList(prev => {
       if (prev.all.length === 0) {
         const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.materials, choices.receivers], name: 0 }
@@ -139,7 +140,7 @@ const NewOrder = (props) => {
         <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
           <Suspense fallback="">
             <Modal
-              minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
+              minimizable={true} style={{ width: "45rem", top: "10%", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
               title={modalList.current !== null ? "Sifariş " + (modalList.current.name + 1) : "Yeni Sifariş"}
               ref={modalRef}
               childProps={{ choices: choices, setChoices: setChoices, setIsModalVisible: handleCloseModal, setOrders: props.setOrders, modalList: modalList }}
