@@ -74,8 +74,6 @@ const NewOrder = (props) => {
     }
   }
 
-  console.log(choices.receivers)
-
   const handleOrderSelect = (orderId) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
     setIsModalVisible(1);

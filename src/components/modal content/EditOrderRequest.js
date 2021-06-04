@@ -12,10 +12,32 @@ const EditOrderRequest = (props) => {
     const textareaRef = useRef(null);
     const initialValuesRef = useRef(null);
     const { structureid } = useContext(TokenContext)[0].userData.userInfo;
+    const [departments, setDepartments] = useState([])
     const [orderState, setOrderState] = useState([]);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const glCatid = orderState.length !== 0 ? orderState[0].gl_category_id : ''
     const fetchGet = useFetch("GET");
+    useEffect(() => {
+        fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
+            .then(respJ => {
+                const orderRows = respJ.map(row => ({ ...row, models: [], className: '' }));
+                initialValuesRef.current = respJ;
+                setOrderState(orderRows);
+            })
+            .catch(ex => console.log(ex))
+    }, [ordNumb, version, fetchGet]);
+    useEffect(() => {
+        let mounted = true;
+        if (mounted && view === "protected")
+            fetchGet('/api/departments')
+                .then(respJ => {
+                    if (mounted) {
+                        setDepartments(respJ)
+                    }
+                })
+                .catch(err => console.log(err));
+        return () => mounted = false
+    }, [fetchGet, view]);
     useEffect(() => {
         fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
             .then(respJ => {
@@ -117,6 +139,7 @@ const EditOrderRequest = (props) => {
                             view={view}
                             key={row.id}
                             index={index}
+                            departments={departments}
                             setOrderState={setOrderState}
                             orderType={row.order_type}
                             glCatid={glCatid}

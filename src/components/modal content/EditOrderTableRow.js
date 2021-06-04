@@ -1,26 +1,41 @@
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import {
 	FaPlus,
 	FaTrashAlt,
 	FaMinus
 } from "react-icons/fa"
 import useFetch from "../../hooks/useFetch";
-const EditOrderTableRow = ({ index, row, setOrderState, ordNumb, version, view, glCatid, orderType, structure }) => {
+const EditOrderTableRow = ({ index, row, setOrderState, departments, view, orderType, structure }) => {
 	const rowid = row.id;
 	const modelsRef = useRef([]);
 	const codeRef = useRef(null);
 	const rowRef = useRef(null);
+	const assignmentRef = useRef(null)
 	const modelListRef = useRef(null);
 	const timeoutRef = useRef(null);
-	const modelInputRef = useRef(null)
+	const modelInputRef = useRef(null);
+	const [deps, setDeps] = useState(departments)
 	const fetchPost = useFetch("POST");
 	const handleBlur = (e) => {
 		const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
 		if (relatedTargetid === null || relatedTargetid !== `${rowid}-modelListRef`)
 			modelListRef.current.style.display = "none"
 	}
+	const handleAssignmentBlur = (e) => {
+		const relatedTarget = e.relatedTarget
+		if (relatedTarget && relatedTarget.classList.contains("structure-dep")) {
+			relatedTarget.click()
+		}
+	}
 	const handleFocus = () => {
 		modelListRef.current.style.display = "block"
+	}
+	const handleAssignmentChange = (e) => {
+		const value = e.target.value;
+		const charArray = value.split("")
+		const reg = charArray.reduce((conc, curr) => conc += curr !== "\\" ? curr + "(.*)" : curr + "\\(.*)", "")
+		const regExp = new RegExp(reg, "i")
+		setDeps(prev => departments.filter(dep => dep.name.match(regExp)))
 	}
 	const searchByCode = (e) => {
 		const data = { product_id: e.target.value, orderType: orderType, structure: structure };
@@ -93,17 +108,13 @@ const EditOrderTableRow = ({ index, row, setOrderState, ordNumb, version, view, 
 		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({
 			...row,
 			material_id: model.id,
-			approx_price: model.approx_price,
 			title: model.title,
-			department_name: model.department_name,
-			budget: model.budget,
-			sub_gl_category_id: model.sub_gl_category_id,
-			isAmortisized: model.is_amortisized,
-			perc: model.perc
+			department_name: model.department_name
 		})))
 		codeRef.current.value = model.product_id;
 		modelListRef.current.style.display = "none";
 	}
+
 	const handleInputSearch = (e) => {
 		const value = e.target.value;
 		const name = e.target.name;
@@ -112,6 +123,14 @@ const EditOrderTableRow = ({ index, row, setOrderState, ordNumb, version, view, 
 		const regExp = new RegExp(`${reg}`, "i");
 		const searchResult = modelsRef.current.filter(model => regExp.test(model.title))
 		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, [name]: value, models: searchResult })))
+	}
+	const setAssignment = (department) => {
+		assignmentRef.current.value = department.name;
+		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({
+			...row,
+			assignment_id: department.id,
+			department_name: department.department_name
+		})))
 	}
 	return (
 		<li ref={rowRef} className={row.className}>
@@ -172,8 +191,28 @@ const EditOrderTableRow = ({ index, row, setOrderState, ordNumb, version, view, 
 					}
 				</div>
 			</div>
-			<div>
-				<div>{row.department_name}</div>
+			<div style={{ position: "relative", zIndex: "2" }}>
+				<input
+					onBlur={handleAssignmentBlur}
+					type="text"
+					defaultValue={row.assignment_name}
+					name="assignment"
+					autoComplete="off"
+					ref={assignmentRef}
+					disabled={view === "protected"}
+					className="assignment-input"
+					onChange={handleAssignmentChange}
+				/>
+				<ul style={{ top: "40px" }} className="structures-list">
+					{
+						deps.map((department, index) => {
+							const inputVal = assignmentRef.current ? assignmentRef.current.value.replace("-", "\\-") : "";
+							const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+							const title = department.name.replace(strRegExp, (text) => `<i>${text}</i>`);
+							return <li className="structure-dep" tabIndex={index} dangerouslySetInnerHTML={{ __html: title }} key={department.id} onClick={() => setAssignment(department)}></li>
+						})
+					}
+				</ul>
 			</div>
 			<div>
 				<input

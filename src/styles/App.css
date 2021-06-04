@@ -978,12 +978,15 @@ div.icons-panel-hide {
   background-color: #f5f5f5;
   padding: 0px;
   z-index: 3;
-
   animation: modal-show 0.5s ease-in-out both;
   transition: min-width, width 0.5s;
 }
-
-
+input.assignment-input{
+  font-size: 0.9rem;
+}
+input.assignment-input:focus + ul.structures-list{
+  display: block;
+}
 @keyframes modal-show {
   from {
     transform: translate3d(0px, 0px, 0);
@@ -2116,7 +2119,7 @@ span.reviewers-header {
   outline-offset: 0px;
   outline: 3px #ffae00 solid;
 }
-.search-container ul.structures-list {
+ul.structures-list {
   position: absolute;
   margin: 0px;
   display: none;
@@ -2130,27 +2133,27 @@ span.reviewers-header {
   box-shadow: 0px 1px 10px 5px rgba(0, 0, 0, 0.25);
   background-color: rgb(241, 240, 240);
 }
-.search-container ul.structures-list>li {
+ul.structures-list>li {
   max-height: 60px;
   overflow: hidden;
   font-size: 12px;
   padding: 10px;
 }
-.search-container ul.structures-list>li:not(:last-of-type) {
+ul.structures-list>li:not(:last-of-type) {
   border-bottom: 1.5px white solid;
 }
-.search-container ul.structures-list>li:hover {
+ul.structures-list>li:hover {
   color: white;
   background-color: #00a3e4;
   border-bottom-color: white;
 }
-.search-container ul.structures-list::-webkit-scrollbar-thumb {
+ul.structures-list::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.1);
   border: 2px solid transparent;
   border-radius: 20px;
   background-clip: padding-box;
 }
-.search-container ul.structures-list::-webkit-scrollbar {
+ul.structures-list::-webkit-scrollbar {
   width: 8px;
 }
 .search-container input:focus + ul{
