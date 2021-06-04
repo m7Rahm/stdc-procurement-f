@@ -6,17 +6,16 @@ import { IoIosCloseCircle } from 'react-icons/io'
 
 const NewOrderContent = (props) => {
   const { orderInfo } = props;
-  const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
   // eslint-disable-next-line
   const [glCategories, setGlCategories] = useState({ all: [], parent: [], sub: [] });
   // eslint-disable-next-line
   return (
     <div className="modal-content-new-order">
       {
-        operationResult.visible &&
+        props.operationResult.visible &&
         <OperationResult
-          setOperationResult={setOperationResult}
-          operationDesc={operationResult.desc}
+          setOperationResult={props.setOperationResult}
+          operationDesc={props.operationResult.desc}
           backgroundColor="whitesmoke"
           icon={IoIosCloseCircle}
         />

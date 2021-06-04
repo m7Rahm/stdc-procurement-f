@@ -8,25 +8,26 @@ import Taskbar from '../../STDC local/Taskbar/Taskbar'
 
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
-  // eslint-disable-next-line
   const sidebarRef = useRef(null);
   const modalRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null)
-  const [choices, setChoices] = useState({ serviceType: 0, lastDate: new Date(),
+  const [choices, setChoices] = useState({
+    serviceType: 0, lastDate: new Date(),
     materials: [{
       id: Date.now(),
-      materialName:'',
+      materialName: '',
       materialId: '',
       code: '',
       additionalInfo: '',
       class: '',
       count: 1,
       isService: 0,
-      place:"",
-      unit:'1'
-    }], 
-  receivers: [] })
+      place: "",
+      unit: '1'
+    }],
+    receivers: []
+  })
   const [fachevron, setFachevron] = useState(false)
 
   const handleClick = () => {
@@ -42,34 +43,23 @@ const NewOrder = (props) => {
       void modalRef.current.offsetHeight; /* trigger reflow */
       modalRef.current.style.animation = null;
     }
-    setChoices({ serviceType: 0, lastDate: new Date(),
+    setChoices({
+      serviceType: 0, lastDate: new Date(),
       materials: [{
         id: Date.now(),
-        materialName:'',
+        materialName: '',
         materialId: '',
         code: '',
         additionalInfo: '',
         class: '',
         count: 1,
         isService: 0,
-        place:"",
-        unit:'1'
-      }], 
-      receivers: [] 
+        place: "",
+        unit: '1'
+      }],
+      receivers: []
     })
   }
-
-  // const handleClose = (data, receivers) => {
-  //   // todo: send notif on new order to receivers
-  //   setIsModalVisible(_ => false);
-  //   const message = {
-  //     message: "notification",
-  //     receivers: receivers.map(receiver => ({ id: receiver, notif: "newOrder" })),
-  //     data: undefined
-  //   }
-  //   webSocket.send(JSON.stringify(message))
-  //   props.setOrders({ count: data[0].total_count, orders: data });
-  // };
 
   const handleCloseModal = () => {
     setIsModalVisible(0);
@@ -83,10 +73,9 @@ const NewOrder = (props) => {
       });
     }
   }
-  // eslint-disable-next-line
+
   const handleOrderSelect = (orderId) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
-    // console.log(properties.value[2])
     setIsModalVisible(1);
     setModalList(prevState => ({ ...prevState, current: properties }))
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], materials: properties.value[2], receivers: properties.value[3], id: properties.id })
@@ -149,9 +138,9 @@ const NewOrder = (props) => {
           <Suspense fallback="">
             <Modal
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
-              title={modalList.current !== null ? "Sifariş "+(modalList.current.name+1) : "Yeni Sifariş"} 
+              title={modalList.current !== null ? "Sifariş " + (modalList.current.name + 1) : "Yeni Sifariş"}
               ref={modalRef}
-              childProps={{ choices: choices, setChoices: setChoices, setIsModalVisible:handleCloseModal}}
+              childProps={{ choices: choices, setChoices: setChoices, setIsModalVisible: handleCloseModal, setOrders: props.setOrders, modalList:modalList }}
               minimizeHandler={minimizeHandler}
               changeModalState={handleCloseModal}
               wrapperRef={props.wrapperRef}

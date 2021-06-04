@@ -11,7 +11,8 @@ const OrderModal = (props) => {
   const actPageRef = useRef(null);
   const fetchPost = useFetch("POST");
   const davamText = whichPage.page === 3 ? "Sifariş et" : "Davam";
-  const [placeList,setPlaceList] = useState([])
+  const [placeList, setPlaceList] = useState([])
+  const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifariş boş ola bilməz' })
   const handleDateChange = (date) => {
     props.setChoices({ ...props.choices, lastDate: date });
   };
@@ -39,60 +40,80 @@ const OrderModal = (props) => {
       false
     );
   };
-  const id = props.choices.id
+  const id = props.modalList.current ? props.modalList.current.id : undefined
   useEffect(() => {
     setWhichPage({ page: 1 })
   }, [id])
 
   const forwardClickHandler = () => {
-    if (davamText === "Davam"){
-      actPageRef.current.style.animationName = "slide_davam_current";
-      const animationendEventListener = () => {
-        actPageRef.current.removeEventListener(
+    if (davamText === "Davam") {
+      if (whichPage.page === 2 && (!props.choices.materials[0] || props.choices.materials[0].materialId === '')) {
+        setOperationResult(prev => ({visible: true ,desc: 'Sifariş boş ola bilməz'}))
+      } else {
+
+        actPageRef.current.style.animationName = "slide_davam_current";
+        const animationendEventListener = () => {
+          actPageRef.current.removeEventListener(
+            "animationend",
+            animationendEventListener,
+            false
+          );
+          setWhichPage(prevState => {
+            props.modalWrapperRef.current.style.width = prevState.page === 1 ? "60rem" : "40rem";
+            return prevState.page < 3 ? {
+              page: prevState.page + 1,
+              animationName: "slide_davam_next",
+            } : prevState;
+          });
+        }
+        actPageRef.current.addEventListener(
           "animationend",
           animationendEventListener,
           false
         );
-        setWhichPage(prevState => {
-          props.modalWrapperRef.current.style.width = prevState.page === 1 ? "60rem" : "40rem";
-          return prevState.page < 3 ? {
-            page: prevState.page + 1,
-            animationName: "slide_davam_next",
-          } : prevState;
-        });
       }
-      actPageRef.current.addEventListener(
-        "animationend",
-        animationendEventListener,
-        false
-      );
-    }else{
-      const rec = props.choices.receivers.map((receiver,i)=>{
+    } else {
+      const rec = props.choices.receivers.map((receiver, i) => {
         let recData = []
-        if(props.choices.receivers.length===i+1)  recData.push(receiver.id,1)
-        else recData.push(receiver.id,0)
+        if (props.choices.receivers.length === i + 1) recData.push(receiver.id, 1)
+        else recData.push(receiver.id, 0)
         return recData;
       })
 
-      const mat = props.choices.materials.map(material=>{
+      const mat = props.choices.materials.map(material => {
         let matData = []
-        const assignment = placeList.filter(place=>place.name===material.place)
-        matData.push(material.materialId,material.count,assignment.id,material.additionalInfo)
+        const assignment = placeList.filter(place => place.name === material.place)
+        matData.push(material.materialId, material.count, assignment.id, material.additionalInfo)
         return matData;
       })
 
-      const data = {deadline:props.choices.lastDate.toISOString().split('T')[0],mats:mat,inventoryNums:[],basedon:"",ordNumb:"",isWarehouseOrder:0, orderType: props.choices.serviceType,receivers: rec}
+      const data = { deadline: props.choices.lastDate.toISOString().split('T')[0], mats: mat, inventoryNums: [], basedon: "", ordNumb: "", isWarehouseOrder: 0, orderType: props.choices.serviceType, receivers: rec }
       fetchPost(`/api/new-order`, data)
-      .then(respJ => {
-        const message = {
-          message: "notification",
-          receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "nO" })),
-          data: undefined
-        }
-        webSocket.send(JSON.stringify(message))
-        props.setIsModalVisible(0);
-      })
-      .catch(ex => console.log(ex))
+        .then(respJ => {
+          const message = {
+            message: "notification",
+            receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "nO" })),
+            data: undefined
+          }
+          webSocket.send(JSON.stringify(message))
+          props.setIsModalVisible(0);
+          const inParams = {
+            from: 0,
+            until: 20,
+            status: -3,
+            dateFrom: '',
+            dateTill: '',
+            ordNumb: "",
+            departments: []
+          }
+          fetchPost('/api/orders', inParams)
+            .then(respJ => {
+              const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+              props.setOrders({ count: totalCount, orders: respJ })
+            })
+            .catch(ex => console.log(ex))
+        })
+        .catch(ex => console.log(ex))
     }
   };
 
@@ -100,7 +121,6 @@ const OrderModal = (props) => {
     e.target.style.backgroundColor = "#9c2929";
   };
   const mouseUpHandlerGeri = (e) => {
-
     e.target.style.backgroundColor = "#d84343";
   };
   const mouseLeaveHandlerGeri = (e) => {
@@ -139,7 +159,9 @@ const OrderModal = (props) => {
             setPlaceList={setPlaceList}
             choices={props.choices}
             setChoices={props.setChoices}
-            orderInfo={{orderType:props.choices.serviceType,structure:-1}}
+            orderInfo={{ orderType: props.choices.serviceType, structure: -1 }}
+            operationResult={operationResult}
+            setOperationResult={setOperationResult}
           />
         </div>
       ) : whichPage.page === 3 ? (
