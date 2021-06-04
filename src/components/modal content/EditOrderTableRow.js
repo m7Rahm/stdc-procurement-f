@@ -153,7 +153,10 @@ const EditOrderTableRow = ({ index, row, setOrderState, ordNumb, version, view, 
 			</div>
 			<div style={{ maxWidth: "140px" }}>
 				<div style={{ backgroundColor: "transparent", padding: "0px 15px" }}>
-					<FaMinus cursor="pointer" onClick={() => { if (row.amount > 1 && view === "returned") handleAmountChangeButtons("dec") }} color="#ffae00" style={{ margin: "0px 3px" }} />
+					{
+						view !== "protected" &&
+						<FaMinus cursor="pointer" onClick={() => handleAmountChangeButtons("dec")} color="#ffae00" style={{ margin: "0px 3px" }} />
+					}
 					<input
 						name="amount"
 						disabled={view !== "returned"}
@@ -163,7 +166,10 @@ const EditOrderTableRow = ({ index, row, setOrderState, ordNumb, version, view, 
 						onChange={handleAmountChange}
 						value={row.amount}
 					/>
-					<FaPlus cursor="pointer" onClick={() => { if (view === "returned") handleAmountChangeButtons("inc") }} color="#3cba54" style={{ margin: "0px 3px" }} />
+					{
+						view !== "protected" &&
+						<FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons("inc")} color="#3cba54" style={{ margin: "0px 3px" }} />
+					}
 				</div>
 			</div>
 			<div>
