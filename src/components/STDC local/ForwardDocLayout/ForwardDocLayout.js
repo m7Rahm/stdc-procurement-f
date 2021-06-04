@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect ,useEffect} from 'react'
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
 import useFetch from '../../../hooks/useFetch';
 import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
@@ -49,15 +49,15 @@ const ForwardDocLayout = (props) => {
                     if (mounted) {
                         setFixedDependency(respJ.length);
                         setFixedNames(respJ);
-                        setChoices(prev=>({
-                           ...prev,
-                            receivers : respJ
-                        }))
+                        setChoices(prev => {
+                            if (prev.receivers.length === 0) return { ...prev, receivers: respJ }
+                            else return { ...prev, receivers: prev.receivers }
+                        })
                     }
                 })
                 .catch(err => console.log(err));
         return () => mounted = false
-    },[fetchGet,setChoices,setFixedDependency]);
+    }, [fetchGet, setChoices, setFixedDependency]);
 
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
@@ -75,12 +75,12 @@ const ForwardDocLayout = (props) => {
         setEmpList(value !== -1 ? empListRef.current.filter(employee => employee.structure_dependency_id === value) : empListRef.current);
     }
     const handleSelectChange = (employee) => {
-        if(fixedNames.filter(name=>name.full_name===employee.full_name).length===0){
+        if (fixedNames.filter(name => name.full_name === employee.full_name).length === 0) {
             const res = props.choices.receivers.find(emp => emp.id === employee.id);
             const newReceivers = !res ? [...props.choices.receivers, employee] : props.choices.receivers.filter(emp => emp.id !== employee.id);
-            props.setChoices(prevState=>({
+            props.setChoices(prevState => ({
                 ...prevState,
-                receivers:newReceivers
+                receivers: newReceivers
             }))
             setSearchQuery('');
         }
@@ -92,7 +92,7 @@ const ForwardDocLayout = (props) => {
                     textareaVisible &&
                     <textarea ref={textareaRef} />
                 }
-                <div style={{ minHeight: '231px', minWidth:'242.453px'}}>
+                <div style={{ minHeight: '231px', minWidth: '242.453px' }}>
                     <select ref={selectRef} style={{ height: '30px' }} onChange={handleStructureChange}>
                         <option value="-1">-</option>
                         {

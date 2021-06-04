@@ -12,7 +12,7 @@ const OrderModal = (props) => {
   const fetchPost = useFetch("POST");
   const davamText = whichPage.page === 3 ? "Sifariş et" : "Davam";
   const [placeList, setPlaceList] = useState([])
-  const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifariş boş ola bilməz' })
+  const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
   const handleDateChange = (date) => {
     props.setChoices({ ...props.choices, lastDate: date });
   };
@@ -48,9 +48,8 @@ const OrderModal = (props) => {
   const forwardClickHandler = () => {
     if (davamText === "Davam") {
       if (whichPage.page === 2 && (!props.choices.materials[0] || props.choices.materials[0].materialId === '')) {
-        setOperationResult(prev => ({visible: true ,desc: 'Sifariş boş ola bilməz'}))
+        setOperationResult(prev => ({ visible: true, desc: 'Sifarişə məhsul əlavə edin' }))
       } else {
-
         actPageRef.current.style.animationName = "slide_davam_current";
         const animationendEventListener = () => {
           actPageRef.current.removeEventListener(
