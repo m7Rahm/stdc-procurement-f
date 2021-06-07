@@ -82,7 +82,7 @@ const OrderModal = (props) => {
       const mat = props.choices.materials.map(material => {
         let matData = []
         const assignment = placeList.filter(place => place.name === material.place)
-        matData.push(material.materialId, material.count, assignment.id, material.additionalInfo)
+        matData.push(material.materialId, material.count, assignment[0].id, material.additionalInfo)
         return matData;
       })
 
