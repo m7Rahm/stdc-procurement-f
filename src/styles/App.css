@@ -1286,8 +1286,10 @@ div.new-order-footer-wrapper {
   height: 12px;
  }
  ::-webkit-scrollbar-thumb {
-  background: #c5c4c4;
-  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background-clip: padding-box;
  }
 
  ::-webkit-scrollbar-track{
@@ -1873,7 +1875,7 @@ div.files-ribbon {
 .visa-content-container>div:not(.modal) {
   max-width: 1256px;
   width: 100%;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   margin: auto;
 }
 
