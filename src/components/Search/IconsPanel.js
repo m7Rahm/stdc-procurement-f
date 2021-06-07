@@ -6,6 +6,7 @@ import SearchBox from './SearchBox';
 import useFetch from '../../hooks/useFetch';
 const IconsPanel = (props) => {
     const searchBoxRef = useRef(null);
+    const priorityRef = useRef({style: { display: 'none' }})
     const {
         updateList,
         checkedAmountRef,
@@ -40,15 +41,32 @@ const IconsPanel = (props) => {
             searchBoxRef.current.classList.add('advanced-search-bar-hide')
         }
     }
+
+    const priorityClickHandler = () => {
+        priorityRef.current.style.display = priorityRef.current.style.display === 'none' ? 'block' : 'none' 
+    }
     return (
         <>
             {
                 iconsVisible ?
                     <>
-                        <FaTimes onClick={() => setBulkPriority(0)} title="" size="25" />
+                        {/* <FaTimes onClick={() => setBulkPriority(0)} title="" size="25" />
                         <IoMdBookmark onClick={() => setBulkPriority(1)} cursor="pointer" color="#1a73e8" title="Aşağı prioritet" size="25" />
                         <IoMdBookmark onClick={() => setBulkPriority(2)} cursor="pointer" color="#d8eb3e" title="Orta prioritet" size="25" />
-                        <IoMdBookmark onClick={() => setBulkPriority(3)} cursor="pointer" color="tomato" title="Yüksək prioritet" size="25" />
+                        <IoMdBookmark onClick={() => setBulkPriority(3)} cursor="pointer" color="tomato" title="Yüksək prioritet" size="25" /> */}
+
+                        <div 
+                            style={{ position: "relative", float: 'right',cursor:"pointer" }} 
+                            onClick={priorityClickHandler} 
+                            >
+                                Prioriteti dəyiş
+                            <ul style={{ position: 'absolute', right: '0', top: '34px', backgroundColor: 'rgb(255, 174, 0)',display:'none'}} ref={priorityRef}>
+                                <li onClick={() => setBulkPriority(1)} >Yüksək</li>
+                                <li onClick={() => setBulkPriority(2)} >Orta</li>
+                                <li onClick={() => setBulkPriority(3)} >Aşağı</li>
+                                <li onClick={() => setBulkPriority(0)}>Prioriteti sil</li>
+                            </ul>
+                        </div>
                     </>
                     : <div>
                         <GoChevronDown size="24" onClick={onAdvSearchClick} />
