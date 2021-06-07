@@ -16,7 +16,6 @@ const VisaCard = (props) => {
 		isOpened,
 		from,
 		priority,
-		remark,
 		senderid,
 		date,
 		checkedAmount,
@@ -76,11 +75,14 @@ const VisaCard = (props) => {
 							{date}
 						</span>
 					</div>
-					<div style={{ height: '15px', position: 'relative' }}>
+					<div>
+						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !== '' ? 'white' : 'gray' }}>
+							{"Deadline: " + props.deadline}
+						</span>
 					</div>
-					<div style={{ height: '23px', paddingTop: '8px' }}>
-						<span style={{ fontSize: '12px', color: 'gray', float: 'left', position: 'relative', zIndex: 0, background: 'whitesmoke', padding: '0px 5px 0px 0px' }}>
-							{remark}
+					<div>
+						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !== '' ? 'white' : 'gray' }}>
+							{props.order_type === 0 ? "mal-material" : "xidmət"}
 						</span>
 					</div>
 				</div>
