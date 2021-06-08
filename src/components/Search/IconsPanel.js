@@ -1,12 +1,10 @@
 import React, { useRef, useState } from 'react'
 import { GoChevronDown } from 'react-icons/go'
-import { IoMdBookmark } from 'react-icons/io'
-import { FaTimes } from 'react-icons/fa'
 import SearchBox from './SearchBox';
 import useFetch from '../../hooks/useFetch';
 const IconsPanel = (props) => {
     const searchBoxRef = useRef(null);
-    const priorityRef = useRef({style: { display: 'none' }})
+    const priorityRef = useRef({ style: { display: 'none' } })
     const {
         updateList,
         checkedAmountRef,
@@ -17,7 +15,9 @@ const IconsPanel = (props) => {
     } = props;
     const [searchBoxState, setSearchBoxState] = useState(false);
     const fetchPost = useFetch("POST")
-    const setBulkPriority = (priority) => {
+    const setBulkPriority = (e, priority) => {
+        e.stopPropagation();
+        priorityRef.current.classList.remove("visible");
         const data = {
             visaCards: checkedAmountRef.current.map(id =>
                 [id, 0, priority]),
@@ -43,28 +43,30 @@ const IconsPanel = (props) => {
     }
 
     const priorityClickHandler = () => {
-        priorityRef.current.style.display = priorityRef.current.style.display === 'none' ? 'block' : 'none' 
+        priorityRef.current.classList.toggle("visible")
+    }
+    const handleFocusLose = (e) => {
+        const relatedTarget = e.relatedTarget;
+        if (!relatedTarget || !relatedTarget.classList.contains("priority"))
+            priorityRef.current.classList.remove("visible")
     }
     return (
         <>
             {
                 iconsVisible ?
                     <>
-                        {/* <FaTimes onClick={() => setBulkPriority(0)} title="" size="25" />
-                        <IoMdBookmark onClick={() => setBulkPriority(1)} cursor="pointer" color="#1a73e8" title="Aşağı prioritet" size="25" />
-                        <IoMdBookmark onClick={() => setBulkPriority(2)} cursor="pointer" color="#d8eb3e" title="Orta prioritet" size="25" />
-                        <IoMdBookmark onClick={() => setBulkPriority(3)} cursor="pointer" color="tomato" title="Yüksək prioritet" size="25" /> */}
-
-                        <div 
-                            style={{ position: "relative", float: 'right',cursor:"pointer" }} 
-                            onClick={priorityClickHandler} 
-                            >
-                                Prioriteti dəyiş
-                            <ul style={{ position: 'absolute', right: '0', top: '34px', backgroundColor: 'rgb(255, 174, 0)',display:'none'}} ref={priorityRef}>
-                                <li onClick={() => setBulkPriority(1)} >Yüksək</li>
-                                <li onClick={() => setBulkPriority(2)} >Orta</li>
-                                <li onClick={() => setBulkPriority(3)} >Aşağı</li>
-                                <li onClick={() => setBulkPriority(0)}>Prioriteti sil</li>
+                        <div
+                            onClick={priorityClickHandler}
+                            className="priorities-list"
+                            tabIndex="0"
+                            onBlur={handleFocusLose}
+                        >
+                            Prioriteti dəyiş
+                            <ul className="priorities-list" ref={priorityRef}>
+                                <li className="priority" onBlur={handleFocusLose} tabIndex="1" onClick={(e) => setBulkPriority(e, 1)} >Yüksək</li>
+                                <li className="priority" onBlur={handleFocusLose} tabIndex="2" onClick={(e) => setBulkPriority(e, 2)} >Orta</li>
+                                <li className="priority" onBlur={handleFocusLose} tabIndex="3" onClick={(e) => setBulkPriority(e, 3)} >Aşağı</li>
+                                <li className="priority" onBlur={handleFocusLose} tabIndex="4" onClick={(e) => setBulkPriority(e, 0)}>Prioriteti sil</li>
                             </ul>
                         </div>
                     </>

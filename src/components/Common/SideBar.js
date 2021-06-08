@@ -60,8 +60,6 @@ const SideBar = (props) => {
 		refreshVisas(0);
 	}
 
-	console.log(visas.visas)
-
 	return (
 		<div className='side-bar'>
 			<div ref={iconsPanelRef}>

@@ -18,6 +18,48 @@ div.content-loading>div{
   margin: 10px 0px;
   position: relative;
 }
+div.priorities-list{
+  float: right;
+  cursor: pointer;
+  padding: 0.5rem 2.2rem;
+  border-radius: 3px;
+  margin-right: 8px;
+  background-color: gainsboro;
+  transition: all 0.2s;
+}
+div.priorities-list:hover{
+  background-color: rgba(220, 220, 220, 0.5);
+}
+div.priorities-list ul {
+  position: absolute;
+  right: 0;
+  top: 34px;
+  padding: 6px 0px;
+  box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  transform-origin: left top;
+  transform: scale(0);
+  background-color: #ffffff;  
+  display: block;
+  transition: transform 300ms;
+}
+div.priorities-list ul.visible{
+  transform: scale(1);
+}
+div.priorities-list ul.visible>li{
+  color: rgb(74, 74, 74);
+}
+div.priorities-list ul>li {
+  color: white;
+  height: 2.5rem;
+  padding-top: 13px;
+  padding-left: 24px;
+  padding-right: 58px;
+  line-height: 1rem;
+}
+div.priorities-list ul>li:hover{
+  background-color: rgb(245, 245, 245);
+}
 @keyframes content-loading {
   0% {
     opacity: 0;

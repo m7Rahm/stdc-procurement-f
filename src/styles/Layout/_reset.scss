@@ -58,16 +58,6 @@ table {
   border-spacing: 0;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-  cursor: auto;
-  &:hover {
-    text-decoration: none !important;
-    color: initial !important;
-  }
-}
-
 *:focus {
   outline: none;
 }
