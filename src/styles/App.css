@@ -264,6 +264,7 @@ nav>ul>li {
 }
 
 .side-bar>ul>li:hover {
+  cursor: pointer;
   background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -1464,21 +1465,6 @@ table.users-table>tbody>tr:nth-of-type(2n) {
 
 ul.employees-list::-webkit-scrollbar {
   width: 5px;
-}
-
-div.my-orders-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  background-color: rgb(64, 168, 196);
-  height: 60px;
-  
-}
-
-div.my-orders-footer svg {
-  color: white;
 }
 
 ul.employees-list::-webkit-scrollbar-track {

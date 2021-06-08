@@ -81,7 +81,7 @@ const NewOrder = (props) => {
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], materials: properties.value[2], receivers: properties.value[3], id: properties.id })
   }
 
-  const minimizeHandler = (ref) => {
+  const minimizeHandler = () => {
     modalRef.current.style.width = "40rem";
     setModalList(prev => {
       if (prev.all.length === 0) {

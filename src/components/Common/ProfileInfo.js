@@ -122,7 +122,7 @@ const Profile = (props) => {
                         <input ref={passRef} required type="password" name="pass" placeholder="Yeni şifrə" />
                     }
                     <input type="submit" onClick={handleSend} value="Yadda saxla" />
-                    <div onClick={handePasswordChangeClick}>{!changePassword ? "Şifrəni dəyişdir" : "Gizlət"}</div>
+                    <div onClick={handePasswordChangeClick}>{!changePassword ? "Şifrəni dəyiş" : "Gizlət"}</div>
                 </div>
             </div>
         </div>
