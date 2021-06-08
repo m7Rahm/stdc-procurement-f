@@ -2502,6 +2502,7 @@ div.chat-footer{
 }
 div.chat-footer textarea{
   padding: 8px;
+  background-color: rgb(240, 240, 240);
   max-height: 38px;
   /* overflow: hidden; */
 }

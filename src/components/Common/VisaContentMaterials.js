@@ -28,8 +28,11 @@ const VisaContentMaterials = (props) => {
 			<ul className="new-order-table order-table-protex">
 				<li>
 					<div>#</div>
-					<div style={{ textAlign: 'left' }}>Material</div>
+					<div style={{ textAlign: 'left' }}>Məhsul</div>
+					<div style={{ maxWidth: '140px' }}>Kod</div>
 					<div style={{ maxWidth: '140px' }}>Say</div>
+					<div style={{ maxWidth: '140px' }}>İstifadə yeri</div>
+					
 					{
 						((forwardType === 3 || forwardType === 5) && order_type === 1) &&
 						<div style={{ maxWidth: '140px' }}>Məbləğ</div>
@@ -61,7 +64,20 @@ export default React.memo(VisaContentMaterials)
 
 const TableRow = (props) => {
 	const { canProceed, setOperationResult, index, forwardType, userData } = props;
-	const { amount, material_comment, order_material_id, material_name, total, department_id, order_type, title, result, can_influence: canInfluence } = props.material;
+	const {
+		amount,
+		material_comment,
+		order_material_id,
+		material_name,
+		total,
+		department_id,
+		order_type,
+		title,
+		result,
+		product_id,
+		mat_ass,
+		can_influence: canInfluence
+	} = props.material;
 	const fetchPost = useFetch("POST");
 	const structureid = userData.userInfo.structureid;
 	const [disabled, setDisabled] = useState(true);
@@ -105,12 +121,18 @@ const TableRow = (props) => {
 			<div style={{ textAlign: 'left' }}>
 				{material_name || title}
 			</div>
+			<div style={{ textAlign: 'left' }}>
+				{product_id}
+			</div>
 			<div style={{ maxWidth: '140px' }}>
 				<div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
 					<div style={{ width: '40px', textAlign: 'center', padding: '0px 2px', margin: 'auto', flex: 1 }}>
 						{amount}
 					</div>
 				</div>
+			</div>
+			<div style={{ textAlign: 'left' }}>
+				{mat_ass}
 			</div>
 			{
 				((forwardType === 3 || forwardType === 5) && order_type === 1) &&
