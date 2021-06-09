@@ -180,6 +180,7 @@ export const ForwardedPeople = (props) => {
                             draggable={!emp.dp}
                             draggedElement={draggedElement}
                             setChoices={props.setChoices}
+                            handleDeselection={props.handleDeselection}
                             handleSelectChange={props.handleSelectChange}
                         />
                     )

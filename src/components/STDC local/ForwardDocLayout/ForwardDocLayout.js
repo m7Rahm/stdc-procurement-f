@@ -33,7 +33,7 @@ const ForwardDocLayout = (props) => {
                 .catch(err => console.log(err));
         return () => mounted = false
     }, [fetchGet]);
-    
+
     const setChoices = props.setChoices;
 
     useEffect(() => {
@@ -66,6 +66,9 @@ const ForwardDocLayout = (props) => {
     const handleStructureChange = (e) => {
         const value = Number(e.target.value);
         setEmpList(value !== -1 ? empListRef.current.filter(employee => employee.structure_dependency_id === value) : empListRef.current);
+    }
+    const handleDeselection = (employee) => {
+        props.setChoices(prevState => ({ ...prevState, receivers: prevState.receivers.filter(emp => emp.id !== employee.id) }))
     }
     const handleSelectChange = (employee) => {
         props.setChoices(prevState => {
@@ -124,6 +127,7 @@ const ForwardDocLayout = (props) => {
             <ForwardedPeople
                 choices={props.choices}
                 setChoices={props.setChoices}
+                handleDeselection={handleDeselection}
                 handleSelectChange={handleSelectChange}
             />
         </div>

@@ -4,7 +4,7 @@ const VisaForwardPerson = (props) => {
     const elem = useRef(null);
     const handleClick = (emp) => {
         if (props.draggable)
-        props.handleSelectChange(emp)
+            props.handleDeselection(emp)
     }
     const onDragStart = props.draggable ? () => {
         setTimeout(() => { elem.current.style.opacity = "0" }, 1)
