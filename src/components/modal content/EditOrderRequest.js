@@ -175,15 +175,14 @@ const EditOrderRequest = (props) => {
                     handleSendClick={handleConfirmClick}
                 />
             }
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                {
-                    view === 'returned' &&
+            {
+                view === 'returned' &&
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div className="send-order" onClick={handleSendClick}>
                         Göndər
                     </div>
-                }
-            </div>
-
+                </div>
+            }
         </div>
     )
 }

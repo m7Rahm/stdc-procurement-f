@@ -1,14 +1,12 @@
 import React, { useState, useRef } from 'react'
 import { Suspense } from 'react'
 import { MdAdd } from 'react-icons/md'
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
 import Taskbar from '../../STDC local/Taskbar/Taskbar'
 
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
-  const sidebarRef = useRef(null);
   const modalRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null)
@@ -28,7 +26,6 @@ const NewOrder = (props) => {
     }],
     receivers: []
   })
-  const [fachevron, setFachevron] = useState(false)
 
   const handleClick = () => {
     setIsModalVisible(true);
@@ -102,37 +99,20 @@ const NewOrder = (props) => {
     })
     setIsModalVisible(0.5);
   }
-  const mouseOverHandlerSlide = (e) => {
-    setFachevron(prev => !prev)
-  };
 
   return (
     <>
       <div title="yeni sifariş" className="new-order-button" onClick={handleClick}>
         <MdAdd color="white" size="30" />
       </div>
-      <div className="sidebar-button-wrap" ref={sidebarRef} onMouseOver={mouseOverHandlerSlide}
-        onMouseLeave={mouseOverHandlerSlide}>
-        <div>
-          <div className="sidebar-button">
-            {fachevron === false ?
-              <FaChevronLeft className="greater-than-icon" />
-              :
-              <FaChevronRight className="greater-than-icon" />
-            }
-          </div>
-        </div>
-        <div className="sidebar2">
-          <Taskbar
-            style={{ overflow: 'scroll' }}
-            modalList={modalList}
-            setModalList={setModalList}
-            choices={choices}
-            handleOrderSelect={handleOrderSelect}
-            setIsModalVisible={setIsModalVisible}
-          />
-        </div>
-      </div>
+      <Taskbar
+        style={{ overflow: 'scroll' }}
+        modalList={modalList}
+        setModalList={setModalList}
+        choices={choices}
+        handleOrderSelect={handleOrderSelect}
+        setIsModalVisible={setIsModalVisible}
+      />
       {
         isModalVisible !== 0 &&
         <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>

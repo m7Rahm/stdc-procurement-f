@@ -32,19 +32,19 @@ i {
     backdrop-filter: blur(6px);
     z-index: 4;
 }
-button.direction{
+div.direction{
     width: 150px;
 }
-button.direction[name="forward"] {
+div.direction[name="forward"] {
     background-color: #27ae60;
 }
-button.direction[name="forward"]:active {
+div.direction[name="forward"]:active {
     background-color: #187940;
 }
-button.direction[name="back"] {
+div.direction[name="back"] {
     background-color: #eb5757;
 }
-button.direction[name="back"]:active {
+div.direction[name="back"]:active {
     background-color: #9c2929;
 }
 .sidebar2 {
@@ -510,13 +510,15 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
 
 .material-model-list {
     position: absolute;
-    top: 40px;
+    top: 3rem;
     max-height: 108px;
     overflow: auto;
     display: none;
     width: 150%;
-    padding: 0px;
+    border-radius: 3px;
+    /* padding: 0.5rem 0px; */
     z-index: 2;
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
     list-style-type: none;
 }
 
@@ -528,7 +530,12 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     padding: 5px 8px;
     text-align: left;
 }
-
+.material-model-list>li:first-of-type{
+    margin-top: 0.5rem;
+}
+.material-model-list>li:last-of-type {
+    margin-bottom: 0.5rem;
+}
 .material-model-list>li:hover {
     background-color: #1a73e8;
     color: white;

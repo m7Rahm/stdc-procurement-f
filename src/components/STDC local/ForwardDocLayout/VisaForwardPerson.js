@@ -1,21 +1,19 @@
 import React, { useRef } from 'react'
-import './VisaForwardPerson.css'
-import {
-    IoIosClose
-} from 'react-icons/io'
+import { IoIosClose } from 'react-icons/io'
 const VisaForwardPerson = (props) => {
     const elem = useRef(null);
     const handleClick = (emp) => {
-        if (props.drag) props.handleSelectChange(emp)
+        if (props.draggable)
+        props.handleSelectChange(emp)
     }
-    const onDragStart = props.drag ? () => {
+    const onDragStart = props.draggable ? () => {
         setTimeout(() => { elem.current.style.opacity = "0" }, 1)
         props.draggedElement.current = { props: props, elem: elem }
     } : () => { }
-    const onDragEnd = props.drag ? (e) => {
+    const onDragEnd = props.draggable ? (e) => {
         elem.current.style.opacity = "1"
     } : () => { }
-    const onDragEnter = props.drag ? (e) => {
+    const onDragEnter = props.draggable ? (e) => {
         const parent = e.target.parentElement;
         const draggedElement = props.draggedElement.current.props.emp;
         if ((e.target.classList.contains("forwarded-person-card") || parent.classList.contains("forwarded-person-card")) && props.id !== draggedElement.id)
@@ -31,31 +29,26 @@ const VisaForwardPerson = (props) => {
     return (
         <div
             ref={elem}
-            className="forwarded-person-card"
-            draggable={props.drag === 1 ? "true" : "false"}
+            className={`forwarded-person-card ${!props.draggable && "dp"}`}
+            draggable={props.draggable}
             onDragEnter={onDragEnter}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
             style={{
-                left: "0px"
+                left: "0px",
+                backgroundColor: props.draggable ? "dodgerblue" : "rgb(253,200,86)"
             }}
         >
-            <div
-                className={props.drag?"forwarded-person-card2":"forwarded-person-card2 forwarded-person-card21"}
-                style={{ backgroundColor: props.drag ? "dodgerblue" : "rgb(253,200,86)", display: 'flex', justifyContent: 'space-between' }}>
-                {props.drag ?
-                    <div className="cursor1" onClick={() => handleClick(props.emp)}>
-                        <IoIosClose size="18" />
-                    </div>
-                    : <></>
-                }
-                <div
-                    style={{ cursor: "pointer" }}
-                >
-                    {props.emp.full_name}
+            {
+                props.draggable &&
+                <div className="cursor1" onClick={() => handleClick(props.emp)}>
+                    <IoIosClose size="18" />
                 </div>
+            }
+            <div style={{ cursor: "pointer" }}>
+                {props.emp.full_name}
             </div>
-        </div>
+        </div >
     )
 }
 export default VisaForwardPerson

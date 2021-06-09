@@ -155,16 +155,16 @@ const OrderModal = (props) => {
         <div></div>
       )}
       <div className="flex gap-3" style={{ float: "right" }}>
-        <button
+        <div
           name="back"
           className="btn btn-primary btn-modal bg-red py-4 mt-8 direction"
           style={{ display: whichPage.page === 1 ? "none" : "block", }}
           onClick={backClickHandler}
         >
           Geri
-        </button>
+        </div>
 
-        <button
+        <div
           className="btn btn-primary btn-modal bg-green py-4 mt-8 direction"
           style={{ float: "right" }}
           type="button"
@@ -172,7 +172,7 @@ const OrderModal = (props) => {
           onClick={forwardClickHandler}
         >
           {davamText}
-        </button>
+        </div>
       </div>
     </>
   );

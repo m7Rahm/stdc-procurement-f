@@ -33,7 +33,7 @@ const Modal = React.forwardRef((props, ref) => {
   }
   const handleDragModal = (e) => {
     e.preventDefault();
-    const elem = ref || modalContentRef.current
+    const elem = ref ? ref.current : modalContentRef.current
     elem.style.top = `${elem.offsetTop - mousePositionRef.current.y + e.clientY}px`
     elem.style.left = `${elem.offsetLeft - mousePositionRef.current.x + e.clientX}px`
     mousePositionRef.current.x = e.clientX;
@@ -54,10 +54,10 @@ const Modal = React.forwardRef((props, ref) => {
           onMouseDown={handleDragStart}
         >
           {title || ""} {number}
-          <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
+          <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
           {
             minimizable &&
-            <VscChromeMinimize className="modal-close-button" onClick={minimizeHandler} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
+            <VscChromeMinimize className="modal-close-button" onClick={minimizeHandler} size='18' style={{ verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
           }
         </div>
 

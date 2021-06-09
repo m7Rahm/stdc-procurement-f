@@ -1028,16 +1028,30 @@ div.icons-panel-hide {
     background-color: rgba(0, 0, 0, 0.6);
   }
 }
-
+div.forwarded-people-container{
+  margin-top: 20px;
+  overflow: hidden;
+  padding: 15px;
+  box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  transition: all 400ms;
+  width: 15rem
+}
+div.modal-content>div:first-of-type:hover{
+  cursor: grab;
+}
+div.forwarded-people-container:hover{
+  box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2);
+}
 .modal-content {
   border: 1px solid #1f1f1f;
   border-top-width: 0px;
   width: 60%;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 0;
   transform: translateX(-50%);
-  /* overflow-x: hidden; */
+  overflow-x: hidden;
   margin-bottom: 100px;
   background-color: #f5f5f5;
   padding: 0px;
@@ -1056,10 +1070,10 @@ input.assignment-input:focus+ul.structures-list {
 
 @keyframes modal-show {
   from {
-    transform: translate(-50%, 0%)
+    transform: translate(-50%, 10vh)
   }
   to {
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, 14vh)
   }
 }
 
@@ -1345,13 +1359,14 @@ div.forwarded-person-card>div:first-of-type {
   cursor: pointer;
 }
 
-div.forwarded-person-card>div:first-of-type:hover {
+div.forwarded-person-card:not(.dp)>div:first-of-type:hover {
   background-color: gray;
 }
 
 div.forwarded-person-card>div:last-of-type {
   border-left: 1px white solid;
   padding-right: 10px;
+  height: 100%;
 }
 
 div.new-order-footer-wrapper {
@@ -1521,6 +1536,7 @@ ul.employees-list>li {
   padding-left: 20px;
   font-size: 16px;
   height: 50px;
+  cursor: pointer;
   padding: 5px;
   border: 1px white solid;
 }
@@ -2583,11 +2599,13 @@ div.chat-footer textarea {
   padding: 8px;
   background-color: rgb(240, 240, 240);
   max-height: 38px;
+  transition: all 200ms;
   /* overflow: hidden; */
 }
 
 div.chat-footer textarea:focus {
   outline: none;
+  background-color: rgba(188, 200, 212, 0.479);
 }
 
 div.chat-container>div:first-of-type::-webkit-scrollbar {
