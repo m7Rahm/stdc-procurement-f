@@ -32,7 +32,21 @@ i {
     backdrop-filter: blur(6px);
     z-index: 4;
 }
-
+button.direction{
+    width: 150px;
+}
+button.direction[name="forward"] {
+    background-color: #27ae60;
+}
+button.direction[name="forward"]:active {
+    background-color: #187940;
+}
+button.direction[name="back"] {
+    background-color: #eb5757;
+}
+button.direction[name="back"]:active {
+    background-color: #9c2929;
+}
 .sidebar2 {
     top: 0;
     bottom: 0;

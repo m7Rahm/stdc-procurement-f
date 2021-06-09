@@ -138,7 +138,7 @@ const NewOrder = (props) => {
         <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
           <Suspense fallback="">
             <Modal
-              minimizable={true} style={{ width: "45rem", top: "10%", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
+              minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
               title={modalList.current !== null ? "Sifariş " + (modalList.current.name + 1) : "Yeni Sifariş"}
               ref={modalRef}
               childProps={{ choices: choices, setChoices: setChoices, setIsModalVisible: handleCloseModal, setOrders: props.setOrders, modalList: modalList }}

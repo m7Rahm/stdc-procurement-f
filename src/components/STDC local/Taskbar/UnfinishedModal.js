@@ -1,9 +1,7 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import './UnfinishedModal.css'
 import '../../../styles/Orders.css'
-import {
-    IoIosClose
-} from 'react-icons/io'
+import { IoIosClose } from 'react-icons/io'
 const UnfinishedModal = (props) => {
     const handleClick = (emp) => {
         props.handleSelectChange(emp);

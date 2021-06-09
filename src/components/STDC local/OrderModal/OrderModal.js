@@ -27,7 +27,7 @@ const OrderModal = (props) => {
         false
       );
       setWhichPage((prevState) => {
-        props.modalWrapperRef.current.style.width = prevState.page === 3 ? "60rem" : "40rem";
+        props.modalWrapperRef.current.style.width = prevState.page === 3 ? "70rem" : "40rem";
         return prevState.page > 1 ? {
           page: prevState.page - 1,
           animationName: "slide_geri_next",
@@ -58,7 +58,7 @@ const OrderModal = (props) => {
             false
           );
           setWhichPage(prevState => {
-            props.modalWrapperRef.current.style.width = prevState.page === 1 ? "60rem" : "40rem";
+            props.modalWrapperRef.current.style.width = prevState.page === 1 ? "70rem" : "40rem";
             return prevState.page < 3 ? {
               page: prevState.page + 1,
               animationName: "slide_davam_next",
@@ -115,26 +115,6 @@ const OrderModal = (props) => {
         .catch(ex => console.log(ex))
     }
   };
-
-  const mouseDownHandlerGeri = (e) => {
-    e.target.style.backgroundColor = "#9c2929";
-  };
-  const mouseUpHandlerGeri = (e) => {
-    e.target.style.backgroundColor = "#d84343";
-  };
-  const mouseLeaveHandlerGeri = (e) => {
-    e.target.style.backgroundColor = "#eb5757";
-  };
-
-  const mouseDownHandlerDavam = (e) => {
-    e.target.style.backgroundColor = "#114928";
-  };
-  const mouseUpHandlerDavam = (e) => {
-    e.target.style.backgroundColor = "#187940";
-  };
-  const mouseLeaveHandlerDavam = (e) => {
-    e.target.style.backgroundColor = "#27ae60";
-  };
   return (
     <>
       {whichPage.page === 1 ? (
@@ -174,32 +154,22 @@ const OrderModal = (props) => {
       ) : (
         <div></div>
       )}
-      <div className="flex gap-3 " style={{ float: "right" }}>
+      <div className="flex gap-3" style={{ float: "right" }}>
         <button
-          className="btn btn-primary btn-modal bg-red py-4 mt-8"
-          style={{
-            width: "150px",
-            display: whichPage.page === 1 ? "none" : "block",
-          }}
-          type="button"
+          name="back"
+          className="btn btn-primary btn-modal bg-red py-4 mt-8 direction"
+          style={{ display: whichPage.page === 1 ? "none" : "block", }}
           onClick={backClickHandler}
-          onMouseDown={mouseDownHandlerGeri}
-          onMouseUp={mouseUpHandlerGeri}
-          onMouseOver={mouseUpHandlerGeri}
-          onMouseLeave={mouseLeaveHandlerGeri}
         >
           Geri
         </button>
 
         <button
-          className="btn btn-primary btn-modal bg-green py-4 mt-8"
-          style={{ float: "right", width: "150px" }}
+          className="btn btn-primary btn-modal bg-green py-4 mt-8 direction"
+          style={{ float: "right" }}
           type="button"
+          name="forward"
           onClick={forwardClickHandler}
-          onMouseDown={mouseDownHandlerDavam}
-          onMouseUp={mouseUpHandlerDavam}
-          onMouseOver={mouseUpHandlerDavam}
-          onMouseLeave={mouseLeaveHandlerDavam}
         >
           {davamText}
         </button>

@@ -222,7 +222,7 @@ const Chat = (props) => {
                 </div>
             </div>
             <div className="chat-footer" style={{ maxWidth: '1206px' }} >
-                <textarea ref={messageBoxRef} placeholder="Mesaj yazın..." onKeyDown={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
+                <textarea ref={messageBoxRef} placeholder="Mesaj daxil edin..." onKeyDown={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
                 <span style={{ width: '60px' }}>
                     <IoMdSend size="30" cursor="pointer" onClick={() => sendMessage(0)} />
                 </span>
