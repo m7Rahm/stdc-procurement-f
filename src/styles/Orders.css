@@ -164,7 +164,7 @@ div.my-orders-footer {
     position: fixed;
     bottom: 0;
     left: 0;
-    z-index: 2;
+    z-index: 1;
     right: 0;
     margin: auto;
     background-color: rgb(64, 168, 196);

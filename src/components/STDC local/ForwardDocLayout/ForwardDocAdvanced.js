@@ -93,7 +93,6 @@ const ForwardDocAdvanced = (props) => {
 
     const handleSelectChange = (employee) => {
         const res = props.receivers.find(emp => emp.id === employee.id);
-        console.log(res)
         if (!res) {
             const [first, ...rest] = res
             const newReceivers = [first, employee, ...rest]

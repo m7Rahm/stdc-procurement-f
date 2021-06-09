@@ -94,7 +94,7 @@ div.result-empty>h1 {
   top: 0px;
   left: 0px;
   width: 240px;
-  z-index: 2;
+  z-index: 3;
   height: 100vh;
   transform: translateX(-240px);
   background-color: white;
@@ -1947,8 +1947,11 @@ div.login input:-webkit-autofill+label {
 .visa-content-container {
   flex: 1;
   background: transparent;
-  height: 100vh;
-  padding-top: 56px;
+  position: fixed;
+  left: 350px;
+  top: 56px;
+  bottom: 0px;
+  right: 0px;
   text-align: center;
   min-width: 906px;
   overflow: auto;
@@ -2597,15 +2600,15 @@ div.chat-footer {
 
 div.chat-footer textarea {
   padding: 8px;
-  background-color: rgb(240, 240, 240);
+  background-image: linear-gradient(to right, rgba(230,160,21, 0.1),rgba(220, 220, 220, 0.596));
   max-height: 38px;
-  transition: all 200ms;
+  transition: all 1200ms;
+  caret-color: steelblue;
   /* overflow: hidden; */
 }
 
 div.chat-footer textarea:focus {
   outline: none;
-  background-color: rgba(188, 200, 212, 0.479);
 }
 
 div.chat-container>div:first-of-type::-webkit-scrollbar {
