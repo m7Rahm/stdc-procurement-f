@@ -29,43 +29,38 @@ const Participants = (props) => {
       )
       .catch(err => console.log(err))
   }, [id, fetchGet])
+  console.log(participants)
   return (
     participants &&
-    <>
-      <div className="toggle-container">
-        <span className={`toggle-container ${checked ? 'active' : ''}`} onClick={handleChange}>
-          <span></span>
-        </span>
-        <span>{!checked ? 'Rəyçiləri göstər' : 'Rəyçiləri gizlət'}</span>
-      </div>
-      <ul className='participants'>
-        <li>
-          <div>Ad Soyad</div>
-          <div>Status</div>
-          <div>Tarix</div>
-          <div style={{ textAlign: 'left' }}>Qeyd</div>
-        </li>
+    <div className="sidebar3">
         {
           participants.map((participant, index) =>
-            <li key={index}>
-              <div>{participant.full_name}
-                <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{participant.vezife || ""}</div>
-              </div>
-              <div>{getResultText(participant.result)}</div>
-              <div>{participant.act_date_time || participant.date_time}</div>
-              <div style={{ textAlign: 'left' }}>{participant.comment}</div>
-            </li>
+          <div className="order-card-info-wrapper"
+                    style={{ display: 'flex', flexDirection: 'column' }}
+                >
+                    <div className="order-card-info-additional">
+                        <div className="order-card-info ">{participant.full_name}</div>
+                    </div>
+                    <div className="order-card-info-additional">
+                        <div className="order-card-info ">{participant.vezife}</div>
+                    </div>
+                    <div className="order-card-info-additional">
+                        <div className="order-card-info ">{participant.act_date_time || participant.date_time}</div>
+                    </div>
+                    <div className="order-card-info-additional">
+                        <div className="order-card-info ">{getResultText(participant.result)}</div>
+                    </div>
+                    {participant.comment!==""?
+                      <div className="order-card-info-additional">
+                          <div className="order-card-info ">{participant.comment}</div>
+                      </div>
+                      :
+                      <></>
+                    }
+                </div>
           )
         }
-      </ul>
-      {
-        checked &&
-        <Reviewers
-          id={id}
-          fetchGet={fetchGet}
-        />
-      }
-    </>
+    </div>
   )
 }
 

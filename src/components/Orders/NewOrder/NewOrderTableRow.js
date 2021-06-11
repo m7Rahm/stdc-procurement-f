@@ -5,7 +5,7 @@ import { productUnit } from '../../../data/data'
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, structure, materialid, className, additionalInfo, count,placeList } = props;
+  const { orderType, structure, materialid, className, additionalInfo, count,placeList, tesvir } = props;
   const modelListRef = useRef(null);
   const placeListRef = useRef(null);
   const [models, setModels] = useState([]);
@@ -64,6 +64,11 @@ const NewOrderTableRow = (props) => {
   const handleChange = (e) => {
     const value = e.target.value;
     props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, additionalInfo: value } : material)}) )
+  }
+
+  const handleChange2 = (e) => {
+    const value = e.target.value;
+    props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, tesvir: value } : material)}) )
   }
 
   const handleRowDelete = () => {
@@ -284,6 +289,17 @@ const NewOrderTableRow = (props) => {
           value={additionalInfo}
           type="text"
           onChange={handleChange}
+        />
+      </div>
+      {/* Tesvir */}
+      <div>
+        <input
+          style={{ width: '100%' }}
+          placeholder="Təsvir"
+          name="tesvir"
+          value={tesvir}
+          type="text"
+          onChange={handleChange2}
         />
       </div>
       <div>
