@@ -60,7 +60,6 @@ const Modal = React.forwardRef((props, ref) => {
             <VscChromeMinimize className="modal-close-button" onClick={minimizeHandler} size='18' style={{ verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
           }
         </div>
-
         <ModalContent
           closeModal={changeModalState}
           modalWrapperRef={ref || modalContentRef}
@@ -69,8 +68,6 @@ const Modal = React.forwardRef((props, ref) => {
           {...props.childProps}
         />
       </div>
-
-
     </div>
   )
 })

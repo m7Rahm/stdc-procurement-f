@@ -145,24 +145,24 @@ const Search = (props) => {
 								style={{ height: "35px", float: "left" }}
 							/>
 						</div>
-						<div style={{ textAlign: "left", height: "55px", display: "flex", minWidth: "180px", flexDirection: "column-reverse" }}>
-							<button
-								onClick={handleSearch}
-								style={{
-									height: "35px",
-									marginBottom: "1.5px",
-									cursor: "pointer",
-									color: "white",
-									fontWeight: "600",
-									padding: "3px 6px",
-									float: "left",
-									minWidth: "180px",
-									fontFamily: "sans-serif",
-									border: "none",
-									backgroundColor: "#ffae00"
-								}}>
-								AXTAR
-						</button>
+						<div
+							onClick={handleSearch}
+							style={{
+								height: "35px",
+								cursor: "pointer",
+								marginTop: "20px",
+								borderRadius: "3px",
+								color: "white",
+								fontWeight: "600",
+								padding: "3px 6px",
+								float: "left",
+								lineHeight: "35px",
+								textAlign: "center",
+								minWidth: "180px",
+								fontFamily: "sans-serif",
+								backgroundColor: "#ffae00"
+							}}>
+							AXTAR
 						</div>
 					</div>
 				</div>

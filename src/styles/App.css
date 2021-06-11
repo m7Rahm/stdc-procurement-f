@@ -2185,19 +2185,18 @@ span.reviewers-header {
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
+  justify-items: flex-end;
   flex-flow: row wrap;
   padding: 16px 0px;
 }
 
 .search-container>div:not(:first-of-type):not(:last-of-type) {
   text-align: left;
-  height: 58px;
   margin: 0px;
 }
 
 .search-container>div:first-of-type {
   text-align: left;
-  height: 58px;
   margin-right: 10px;
 }
 
