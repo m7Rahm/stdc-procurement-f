@@ -66,7 +66,7 @@ div.direction[name="back"]:active {
     /* bottom:300px; */
     max-height: 250px;
     overflow: auto;
-    background-color: rgb(244, 180, 0);
+    background-color: white;
 }
 
 .participantsR>li:first-of-type {
@@ -463,7 +463,7 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     margin: 35px 50px;
 }
 
-.protex-order-header-container>h1 {
+.protex-order-header-container>div>h1 {
     font-size: 26px;
     text-align: left;
     color: #606066;

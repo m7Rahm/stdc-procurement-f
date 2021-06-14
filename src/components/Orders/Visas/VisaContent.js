@@ -3,7 +3,6 @@ import OrderContentProtected from './OrderContentProtected'
 import ParticipantsR from '../../modal content/ParticipantsR'
 import VisaContentFooter from './VisaContentFooter'
 import EmptyContent from '../../Misc/EmptyContent'
-import { FaAngleDown } from 'react-icons/fa'
 import { useLocation } from 'react-router-dom'
 import useFetch from '../../../hooks/useFetch'
 import Chat from '../../Misc/Chat'
@@ -88,6 +87,7 @@ const VisaContent = (props) => {
                             setVisa={setVisa}
                             canProceed={canProceed}
                             current={visa}
+                            clicked={handleParticipantsTransition}
                         />
                         <div style={{ margin: "10px 20px" }}>
                             <Chat
@@ -97,10 +97,7 @@ const VisaContent = (props) => {
                                 sendMessage={sendMessage}
                             />
                         </div>
-                        <div className="toggle-participants" onClick={handleParticipantsTransition}>
-                            Tarixçəni göstər
-                        <FaAngleDown size="36" color="royalblue" />
-                        </div>
+
                         {
                             participantsVisiblity &&
                             <div ref={participantsRef} className="visa-content-participants-show">

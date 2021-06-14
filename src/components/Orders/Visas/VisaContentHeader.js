@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import { FaAngleDown } from 'react-icons/fa'
 import {
 	FaEdit,
 	FaCheck,
@@ -64,16 +65,22 @@ const VisaContentHeader = (props) => {
 	return (
 		<>
 			<div className="protex-order-header-container">
-				<h1>
-					{`Sifariş № ${orderNumb}`}
-					{
-						canEditRequest && !visaGenInfo.result && visaGenInfo.can_influence &&
-						<FaEdit onClick={showEditOrderContent}
-							title="düzəliş et"
-							size="20"
-						/>
-					}
-				</h1>
+				<div style={{overflow:'auto'}}>
+					<h1>
+						{`Sifariş № ${orderNumb}`}
+						{
+							canEditRequest && !visaGenInfo.result && visaGenInfo.can_influence &&
+							<FaEdit onClick={showEditOrderContent}
+								title="düzəliş et"
+								size="20"
+							/>
+						}
+					</h1>
+					<div className="toggle-participants" onMouseEnter={props.clicked} onMouseLeave={props.clicked}>
+								Tarixçəni göstər
+							<FaAngleDown size="36" color="royalblue" />
+					</div>
+				</div>
 				{
 					visaGenInfo.result === 1
 						? <span>

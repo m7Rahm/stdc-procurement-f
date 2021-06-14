@@ -50,6 +50,7 @@ const OrderContentProtected = (props) => {
 					handleEditClick={handleEditClick}
 					intention={current[0].intention}
 					orderNumb={current[0].ord_numb}
+					clicked={props.clicked}
 				/>
 			</>
 			<VisaContentMaterials
