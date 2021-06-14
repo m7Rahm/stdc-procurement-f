@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import OrderContentProtected from './OrderContentProtected'
-import Participants from '../../modal content/Participants'
+import ParticipantsR from '../../modal content/ParticipantsR'
 import VisaContentFooter from './VisaContentFooter'
 import EmptyContent from '../../Misc/EmptyContent'
 import { FaAngleDown } from 'react-icons/fa'
@@ -104,7 +104,7 @@ const VisaContent = (props) => {
                         {
                             participantsVisiblity &&
                             <div ref={participantsRef} className="visa-content-participants-show">
-                                <Participants
+                                <ParticipantsR
                                     id={visa[0].order_id}
                                 />
                             </div>

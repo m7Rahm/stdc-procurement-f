@@ -45,6 +45,7 @@ const ForwardDocLayout = (props) => {
                         setChoices(prev => {
                             if (prev.receivers.length === 0)
                                 return { ...prev, receivers: respJ.map(rec => ({ ...rec, dp: true })) }
+                            else return prev
                         })
                     }
                 })

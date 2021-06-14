@@ -52,7 +52,8 @@ const NewOrder = (props) => {
         count: 1,
         isService: 0,
         place: "",
-        unit: '1'
+        unit: '1',
+        tesvir: ""
       }],
       receivers: []
     })

@@ -29,9 +29,8 @@ const handleAddClick = () => {
 
   const setPlaceList = props.setPlaceList;
   useEffect(()=>{
-    fetchGet(`/api/departments`)
+    fetchGet(`/api/assignments`)
     .then(respJ => {
-      // console.log(respJ)
       setPlaceList(respJ)
     })
     .catch(ex => console.log(ex))
@@ -49,6 +48,7 @@ const handleAddClick = () => {
           <div style={{ width: '170px', maxWidth: '150px' }}>Ölçü vahidi</div>
           <div>İstifadə yeri</div>
           <div>Əlavə məlumat</div>
+          <div>Təsvir</div>
           <div> <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} /></div>
         </li>
         {
@@ -68,6 +68,7 @@ const handleAddClick = () => {
                 modelsListRef={modelsListRef}
                 additionalInfo={material.additionalInfo}
                 department={material.department}
+                tesvir={material.tesvir}
 
                 choices={props.choices}
                 setChoices={setChoices}
