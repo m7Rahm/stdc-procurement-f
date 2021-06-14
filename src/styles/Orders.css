@@ -58,24 +58,48 @@ div.direction[name="back"]:active {
 }
 
 .sidebar3 {
-    top: 0;
+    top: 200px;
     bottom: 0;
-    padding: 58px 0px 60px 0px;
     position: fixed;
-    width: 200px;
     z-index: 3;
+    right:0;
+    /* bottom:300px; */
+    max-height: 250px;
     overflow: auto;
-    right:30px;
+    background-color: rgb(244, 180, 0);
 }
 
-/* .sidebar-button-wrap{
-    position: absolute;
-    top: 50%;
-    left:-30px;
-    transform: translate(0, -50%);
-    filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.3))
-   
-} */
+.participantsR>li:first-of-type {
+    background-color: #D93404;
+    color: white;
+    font-weight: 600;
+    overflow: hidden;
+  }
+  
+  .participantsR>li:not(:first-of-type):nth-of-type(2n) {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #222222;
+  }
+  
+  .participantsR>li>div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    float: left;
+    width: 25%;
+    padding: 10px 20px;
+    height: auto;
+  }
+  
+  .participantsR>li>div:first-of-type {
+    text-align: left;
+  }
+  
+  .participantsR>li:not(:first-of-type) {
+    height: 50px;
+    overflow: hidden;
+  }
+
 
 .sidebar-button-wrap>div:first-of-type {
     position: absolute;
