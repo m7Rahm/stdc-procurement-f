@@ -8,7 +8,6 @@
 #procurement-edit-section{
     float:right;
     display: flex;
-    height: 100px;
     flex-flow: wrap row;
     margin-bottom: 10px;
 

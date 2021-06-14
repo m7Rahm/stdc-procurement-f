@@ -173,8 +173,6 @@ const NewOrderTableRow = (props) => {
     const value = e.target.value;
     props.setChoices(prev => ({...prev,materials:prev.materials.map(material => material.id === materialid ? { ...material, unit: value } : material)}))
   }
-
-
   return (
     <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
@@ -192,7 +190,7 @@ const NewOrderTableRow = (props) => {
           onChange={handleInputSearch}
         />
         {
-          <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ width: '150px', maxWidth: ' 200px', outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
+          <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ width: '150px', maxWidth: ' 200px' }} className="material-model-list">
             {
               models.map(model => {
                 const inputVal = modelInputRef.current.value.replace("-", "\\-");

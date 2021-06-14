@@ -1,74 +1,41 @@
-import React, { useRef, useEffect } from "react"
+import React, { useRef, useState } from "react"
 import {
 	FaPlus,
 	FaTrashAlt,
 	FaMinus
 } from "react-icons/fa"
 import useFetch from "../../hooks/useFetch";
-const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, version, view, glCatid, orderType, structure }) => {
-	const { sub_gl_category_id: subCategoryid } = row;
+const EditOrderTableRow = ({ index, row, setOrderState, departments, view, orderType, structure }) => {
 	const rowid = row.id;
 	const modelsRef = useRef([]);
 	const codeRef = useRef(null);
 	const rowRef = useRef(null);
+	const assignmentRef = useRef(null)
 	const modelListRef = useRef(null);
 	const timeoutRef = useRef(null);
-	const modelInputRef = useRef(null)
+	const modelInputRef = useRef(null);
+	const [deps, setDeps] = useState(departments)
 	const fetchPost = useFetch("POST");
-	useEffect(() => {
-		if (view === "returned" || view === "procurement") {
-			const data = { categoryid: subCategoryid, ordNumb, empVersion: version }
-			fetchPost("/api/get-budget-per-order", data)
-				.then(respJ => {
-					modelsRef.current = respJ;
-					const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-					setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, budget: budget, models: respJ })))
-				})
-		}
-	}, [subCategoryid, fetchPost, ordNumb, version, rowid, setOrderState, view])
-	const subCategories = glCategories.all.filter(category => category.dependent_id === Number(glCatid));
-	useEffect(() => {
-		if (view === "returned") {
-			const data = { subGlCategoryId: subCategoryid, structureid: structure, orderType: orderType };
-			fetchPost('/api/structure-budget-info', data)
-				.then(respJ => {
-					modelsRef.current = respJ;
-					const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-					const modelInput = modelInputRef.current.value.toLowerCase();
-					setOrderState(prev => prev.map(row => row.id !== rowid
-						? row
-						: ({
-							...row,
-							sub_gl_category_id: subCategoryid,
-							models: respJ.filter(model => model.title.toLowerCase().includes(modelInput)),
-							budget: budget,
-						})
-					))
-				})
-				.catch(ex => console.log(ex))
-		}
-	}, [subCategoryid, fetchPost, orderType, structure, view, rowid, setOrderState])
 	const handleBlur = (e) => {
 		const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
 		if (relatedTargetid === null || relatedTargetid !== `${rowid}-modelListRef`)
 			modelListRef.current.style.display = "none"
 	}
+	const handleAssignmentBlur = (e) => {
+		const relatedTarget = e.relatedTarget
+		if (relatedTarget && relatedTarget.classList.contains("structure-dep")) {
+			relatedTarget.click()
+		}
+	}
 	const handleFocus = () => {
 		modelListRef.current.style.display = "block"
 	}
-	const handleSubCategoryChange = (e) => {
+	const handleAssignmentChange = (e) => {
 		const value = e.target.value;
-		const data = { categoryid: value, ordNumb, empVersion: version }
-		fetchPost("/api/get-budget-per-order", data)
-			.then(respJ => {
-				modelsRef.current = respJ;
-				const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-				setOrderState(prev => prev.map(row => row.id !== rowid
-					? row
-					: ({ ...row, sub_gl_category_id: value, models: respJ, budget: budget, title: "", material_id: "NaN" })
-				))
-			})
-			.catch(ex => console.log(ex))
+		const charArray = value.split("")
+		const reg = charArray.reduce((conc, curr) => conc += curr !== "\\" ? curr + "(.*)" : curr + "\\(.*)", "")
+		const regExp = new RegExp(reg, "i")
+		setDeps(prev => departments.filter(dep => dep.name.match(regExp)))
 	}
 	const searchByCode = (e) => {
 		const data = { product_id: e.target.value, orderType: orderType, structure: structure };
@@ -83,7 +50,6 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 					if (respJ.length !== 0) {
 						const updatedRow = respJ.length === 1
 							? {
-								sub_gl_category_id: respJ[0].subGlCategory,
 								models: respJ,
 								budget: respJ[0].budget,
 								title: respJ[0].title,
@@ -142,17 +108,13 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({
 			...row,
 			material_id: model.id,
-			approx_price: model.approx_price,
 			title: model.title,
-			department_name: model.department_name,
-			budget: model.budget,
-			sub_gl_category_id: model.sub_gl_category_id,
-			isAmortisized: model.is_amortisized,
-			perc: model.perc
+			department_name: model.department_name
 		})))
 		codeRef.current.value = model.product_id;
 		modelListRef.current.style.display = "none";
 	}
+
 	const handleInputSearch = (e) => {
 		const value = e.target.value;
 		const name = e.target.name;
@@ -162,19 +124,17 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 		const searchResult = modelsRef.current.filter(model => regExp.test(model.title))
 		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, [name]: value, models: searchResult })))
 	}
+	const setAssignment = (department) => {
+		assignmentRef.current.value = department.name;
+		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({
+			...row,
+			assignment_id: department.id,
+			department_name: department.department_name
+		})))
+	}
 	return (
 		<li ref={rowRef} className={row.className}>
 			<div>{index + 1}</div>
-			<div>
-				<select disabled={view !== "returned"} onChange={handleSubCategoryChange} name="sub_gl_category_id" value={row.sub_gl_category_id}>
-					<option value="-1">-</option>
-					{
-						subCategories.map(category =>
-							<option key={category.id} value={category.id}>{category.name}</option>
-						)
-					}
-				</select>
-			</div>
 			<div style={{ position: "relative" }}>
 				<input
 					onBlur={handleBlur}
@@ -191,18 +151,10 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 				<ul id={`${rowid}-modelListRef`} tabIndex="0" ref={modelListRef} className="material-model-list">
 					{
 						row.models.map(model => {
-							const titleArr = model.title.split("");
-							const inputVal = modelInputRef.current.value;
-							const title = <>{titleArr.map((char, index) => {
-								const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-								if (strRegExp.test(char))
-									return <i key={index}>{char}</i>
-								else {
-									return char
-								}
-							})
-							}</>
-							return <li key={model.id} onClick={() => setModel(model)}>{title}</li>
+							const inputVal = modelInputRef.current.value.replace("-", "\\-");
+							const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+							const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
+							return <li dangerouslySetInnerHTML={{ __html: title }} key={model.id} onClick={() => setModel(model)}></li>
 						})
 					}
 				</ul>
@@ -220,7 +172,10 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 			</div>
 			<div style={{ maxWidth: "140px" }}>
 				<div style={{ backgroundColor: "transparent", padding: "0px 15px" }}>
-					<FaMinus cursor="pointer" onClick={() => { if (row.amount > 1 && view === "returned") handleAmountChangeButtons("dec") }} color="#ffae00" style={{ margin: "0px 3px" }} />
+					{
+						view !== "protected" &&
+						<FaMinus cursor="pointer" onClick={() => handleAmountChangeButtons("dec")} color="#ffae00" style={{ margin: "0px 3px" }} />
+					}
 					<input
 						name="amount"
 						disabled={view !== "returned"}
@@ -230,14 +185,34 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 						onChange={handleAmountChange}
 						value={row.amount}
 					/>
-					<FaPlus cursor="pointer" onClick={() => { if (view === "returned") handleAmountChangeButtons("inc") }} color="#3cba54" style={{ margin: "0px 3px" }} />
+					{
+						view !== "protected" &&
+						<FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons("inc")} color="#3cba54" style={{ margin: "0px 3px" }} />
+					}
 				</div>
 			</div>
-			<div>
-				<div>{row.department_name}</div>
-			</div>
-			<div>
-				{row.budget}
+			<div style={{ position: "relative", zIndex: "2" }}>
+				<input
+					onBlur={handleAssignmentBlur}
+					type="text"
+					defaultValue={row.assignment_name}
+					name="assignment"
+					autoComplete="off"
+					ref={assignmentRef}
+					disabled={view === "protected"}
+					className="assignment-input"
+					onChange={handleAssignmentChange}
+				/>
+				<ul style={{ top: "40px" }} className="structures-list">
+					{
+						deps.map((department, index) => {
+							const inputVal = assignmentRef.current ? assignmentRef.current.value.replace("-", "\\-") : "";
+							const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+							const title = department.name.replace(strRegExp, (text) => `<i>${text}</i>`);
+							return <li className="structure-dep" tabIndex={index} dangerouslySetInnerHTML={{ __html: title }} key={department.id} onClick={() => setAssignment(department)}></li>
+						})
+					}
+				</ul>
 			</div>
 			<div>
 				<input

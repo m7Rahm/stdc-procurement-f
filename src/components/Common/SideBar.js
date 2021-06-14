@@ -37,8 +37,8 @@ const SideBar = (props) => {
 		const showNotificationIcon = () => {
 			notifIcon.current.style.display = "block";
 		}
-		window.addEventListener("newOrder", showNotificationIcon, false)
-		return () => window.removeEventListener("newOrder", showNotificationIcon)
+		window.addEventListener("nO", showNotificationIcon, false)
+		return () => window.removeEventListener("nO", showNotificationIcon)
 	}, []);
 	useEffect(() => {
 		const data = initData;
@@ -59,6 +59,7 @@ const SideBar = (props) => {
 		notifIcon.current.addEventListener('animationend', onAnimationEnd, false);
 		refreshVisas(0);
 	}
+
 	return (
 		<div className='side-bar'>
 			<div ref={iconsPanelRef}>
@@ -97,6 +98,8 @@ const SideBar = (props) => {
 								priority={visa.priority}
 								remark={visa.comment}
 								date={visa.date_time}
+								deadline={visa.deadline}
+								order_type={visa.order_type}
 							/>
 						)
 					})

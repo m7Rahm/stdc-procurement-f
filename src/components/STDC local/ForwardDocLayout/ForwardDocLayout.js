@@ -1,13 +1,12 @@
-import React, { useState, useRef, useLayoutEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
 import useFetch from '../../../hooks/useFetch';
 import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
     const { textareaVisible = true } = props;
     const [empList, setEmpList] = useState([]);
-    // const [props.choices.receivers, props.setChoices] = useState([]);
     const [departments, setDepartments] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
     const selectRef = useRef(null);
+    const searchQueryInput = useRef(null)
     const empListRef = useRef(null);
     const textareaRef = useRef(null);
     const fetchGet = useFetch("GET");
@@ -29,13 +28,30 @@ const ForwardDocLayout = (props) => {
         if (mounted)
             fetchGet('/api/departments')
                 .then(respJ => {
-                    if (mounted) {
-                        setDepartments(respJ)
-                    }
+                    if (mounted) { setDepartments(respJ) }
                 })
                 .catch(err => console.log(err));
         return () => mounted = false
     }, [fetchGet]);
+
+    const setChoices = props.setChoices;
+
+    useEffect(() => {
+        let mounted = true;
+        if (mounted)
+            fetchGet('/api/dependency-graph')
+                .then(respJ => {
+                    if (mounted && respJ.length !== 0) {
+                        setChoices(prev => {
+                            if (prev.receivers.length === 0)
+                                return { ...prev, receivers: respJ.map(rec => ({ ...rec, dp: true })) }
+                        })
+                    }
+                })
+                .catch(err => console.log(err));
+        return () => mounted = false
+    }, [fetchGet, setChoices]);
+
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
         const searchResult = empListRef.current.filter(emp => {
@@ -44,30 +60,46 @@ const ForwardDocLayout = (props) => {
             else
                 return emp.full_name.toLowerCase().includes(str)
         });
-        setSearchQuery(str);
+        searchQueryInput.current.value = str;
         setEmpList(searchResult);
     }
     const handleStructureChange = (e) => {
         const value = Number(e.target.value);
         setEmpList(value !== -1 ? empListRef.current.filter(employee => employee.structure_dependency_id === value) : empListRef.current);
     }
+    const handleDeselection = (employee) => {
+        props.setChoices(prevState => ({ ...prevState, receivers: prevState.receivers.filter(emp => emp.id !== employee.id) }))
+    }
     const handleSelectChange = (employee) => {
-        const res = props.choices.receivers.find(emp => emp.id === employee.id);
-        const newReceivers = !res ? [...props.choices.receivers, employee] : props.choices.receivers.filter(emp => emp.id !== employee.id);
-        props.setChoices(prevState=>({
-            ...prevState,
-            receivers:newReceivers
-        }))
-        setSearchQuery('');
+        props.setChoices(prevState => {
+            const receivers = [...prevState.receivers]
+            const res = receivers.find(emp => emp.id === employee.id);
+            if (!res) {
+                let lastNonDpIndex = 1;
+                for (let i = receivers.length - 1; i >= 0; i--) {
+                    if (receivers[i].dp === undefined) {
+                        lastNonDpIndex = i + 1;
+                        break;
+                    }
+                }
+                receivers.splice(lastNonDpIndex, 0, employee)
+                searchQueryInput.current.value = ""
+                return {
+                    ...prevState,
+                    receivers: receivers
+                }
+            }
+            else return prevState
+        })
     }
     return (
-        <div style={{ padding: '10px 20px' }}>
+        <div style={{ padding: '10px 20px', overflow: "hidden" }}>
             <div style={{ marginTop: '20px' }} id="procurement-edit-section">
                 {
                     textareaVisible &&
                     <textarea ref={textareaRef} />
                 }
-                <div style={{ minHeight: '231px', minWidth:'242.453px'}}>
+                <div style={{ minHeight: '231px', minWidth: '242.453px' }}>
                     <select ref={selectRef} style={{ height: '30px' }} onChange={handleStructureChange}>
                         <option value="-1">-</option>
                         {
@@ -77,7 +109,7 @@ const ForwardDocLayout = (props) => {
                         }
                     </select>
                     <div>
-                        <input type="text" className="search-with-query" placeholder="İşçinin adını daxil edin.." value={searchQuery} onChange={handleSearchChange}></input>
+                        <input type="text" className="search-with-query" placeholder="İşçinin adını daxil edin.." ref={searchQueryInput} onChange={handleSearchChange}></input>
                     </div>
                     <ul className="employees-list">
                         {
@@ -95,6 +127,7 @@ const ForwardDocLayout = (props) => {
             <ForwardedPeople
                 choices={props.choices}
                 setChoices={props.setChoices}
+                handleDeselection={handleDeselection}
                 handleSelectChange={handleSelectChange}
             />
         </div>

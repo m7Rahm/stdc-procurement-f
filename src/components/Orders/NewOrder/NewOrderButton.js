@@ -1,35 +1,31 @@
-import React, { useContext, useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { Suspense } from 'react'
 import { MdAdd } from 'react-icons/md'
-import { WebSocketContext } from '../../../pages/SelectModule'
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
 import Taskbar from '../../STDC local/Taskbar/Taskbar'
 
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
-  // eslint-disable-next-line
-  const webSocket = useContext(WebSocketContext)
-  const sidebarRef = useRef(null);
   const modalRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null)
-  const [choices, setChoices] = useState({ serviceType: 0, lastDate: new Date(),
+  const [choices, setChoices] = useState({
+    serviceType: 0, lastDate: new Date(),
     materials: [{
       id: Date.now(),
-      materialName:'',
+      materialName: '',
       materialId: '',
       code: '',
       additionalInfo: '',
       class: '',
       count: 1,
       isService: 0,
-      place:"",
-      unit:'1'
-    }], 
-  receivers: [] })
-  const [fachevron, setFachevron] = useState(false)
+      place: "",
+      unit: '1'
+    }],
+    receivers: []
+  })
 
   const handleClick = () => {
     setIsModalVisible(true);
@@ -44,34 +40,23 @@ const NewOrder = (props) => {
       void modalRef.current.offsetHeight; /* trigger reflow */
       modalRef.current.style.animation = null;
     }
-    setChoices({ serviceType: 0, lastDate: new Date(),
+    setChoices({
+      serviceType: 0, lastDate: new Date(),
       materials: [{
         id: Date.now(),
-        materialName:'',
+        materialName: '',
         materialId: '',
         code: '',
         additionalInfo: '',
         class: '',
         count: 1,
         isService: 0,
-        place:"",
-        unit:'1'
-      }], 
-      receivers: [] 
+        place: "",
+        unit: '1'
+      }],
+      receivers: []
     })
   }
-
-  // const handleClose = (data, receivers) => {
-  //   // todo: send notif on new order to receivers
-  //   setIsModalVisible(_ => false);
-  //   const message = {
-  //     message: "notification",
-  //     receivers: receivers.map(receiver => ({ id: receiver, notif: "newOrder" })),
-  //     data: undefined
-  //   }
-  //   webSocket.send(JSON.stringify(message))
-  //   props.setOrders({ count: data[0].total_count, orders: data });
-  // };
 
   const handleCloseModal = () => {
     setIsModalVisible(0);
@@ -85,16 +70,16 @@ const NewOrder = (props) => {
       });
     }
   }
-  // eslint-disable-next-line
+
   const handleOrderSelect = (orderId) => {
     const properties = modalList.all.find(emp => emp.id === orderId)
-    // console.log(properties.value[2])
     setIsModalVisible(1);
     setModalList(prevState => ({ ...prevState, current: properties }))
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], materials: properties.value[2], receivers: properties.value[3], id: properties.id })
   }
 
   const minimizeHandler = () => {
+    modalRef.current.style.width = "40rem";
     setModalList(prev => {
       if (prev.all.length === 0) {
         const current = { 'id': Date.now(), 'value': [choices.serviceType, choices.lastDate, choices.materials, choices.receivers], name: 0 }
@@ -114,46 +99,29 @@ const NewOrder = (props) => {
     })
     setIsModalVisible(0.5);
   }
-  const mouseOverHandlerSlide = (e) => {
-    setFachevron(prev => !prev)
-  };
 
   return (
     <>
       <div title="yeni sifariş" className="new-order-button" onClick={handleClick}>
         <MdAdd color="white" size="30" />
       </div>
-      <div className="sidebar-button-wrap" ref={sidebarRef} onMouseOver={mouseOverHandlerSlide}
-        onMouseLeave={mouseOverHandlerSlide}>
-        <div>
-          <div className="sidebar-button">
-            {fachevron === false ?
-              <FaChevronLeft className="greater-than-icon" />
-              :
-              <FaChevronRight className="greater-than-icon" />
-            }
-          </div>
-        </div>
-        <div className="sidebar2">
-          <Taskbar
-            style={{ overflow: 'scroll' }}
-            modalList={modalList}
-            setModalList={setModalList}
-            choices={choices}
-            handleOrderSelect={handleOrderSelect}
-            setIsModalVisible={setIsModalVisible}
-          />
-        </div>
-      </div>
+      <Taskbar
+        style={{ overflow: 'scroll' }}
+        modalList={modalList}
+        setModalList={setModalList}
+        choices={choices}
+        handleOrderSelect={handleOrderSelect}
+        setIsModalVisible={setIsModalVisible}
+      />
       {
         isModalVisible !== 0 &&
         <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
           <Suspense fallback="">
             <Modal
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
-              title="Yeni Sifariş"
+              title={modalList.current !== null ? "Sifariş " + (modalList.current.name + 1) : "Yeni Sifariş"}
               ref={modalRef}
-              childProps={{ choices: choices, setChoices: setChoices}}
+              childProps={{ choices: choices, setChoices: setChoices, setIsModalVisible: handleCloseModal, setOrders: props.setOrders, modalList: modalList }}
               minimizeHandler={minimizeHandler}
               changeModalState={handleCloseModal}
               wrapperRef={props.wrapperRef}

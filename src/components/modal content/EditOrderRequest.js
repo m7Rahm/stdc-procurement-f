@@ -12,18 +12,31 @@ const EditOrderRequest = (props) => {
     const textareaRef = useRef(null);
     const initialValuesRef = useRef(null);
     const { structureid } = useContext(TokenContext)[0].userData.userInfo;
+    const [departments, setDepartments] = useState([])
     const [orderState, setOrderState] = useState([]);
-    const [glCategories, setGlCategories] = useState({ all: [], main: [] });
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const glCatid = orderState.length !== 0 ? orderState[0].gl_category_id : ''
     const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetchGet('/api/gl-categories')
+        fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
             .then(respJ => {
-                const main = respJ.filter(glCategory => glCategory.dependent_id === null)
-                setGlCategories({ all: respJ, main: main });
+                const orderRows = respJ.map(row => ({ ...row, models: [], className: '' }));
+                initialValuesRef.current = respJ;
+                setOrderState(orderRows);
             })
-            .catch(err => console.log(err))
+            .catch(ex => console.log(ex))
+    }, [ordNumb, version, fetchGet]);
+    useEffect(() => {
+        let mounted = true;
+        if (mounted && view === "protected")
+            fetchGet('/api/departments')
+                .then(respJ => {
+                    if (mounted) {
+                        setDepartments(respJ)
+                    }
+                })
+                .catch(err => console.log(err));
+        return () => mounted = false
     }, [fetchGet, view]);
     useEffect(() => {
         fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
@@ -35,7 +48,7 @@ const EditOrderRequest = (props) => {
             .catch(ex => console.log(ex))
     }, [ordNumb, version, fetchGet]);
     const handleConfirmClick = (receivers, text) => {
-        const error = orderState.find(material => isNaN(material.material_id * material.amount * material.approx_price * material.sub_gl_category_id))
+        const error = orderState.find(material => isNaN(material.material_id))
         if (!error) {
             const action = receivers.length === 0 ? 1 : 0
             const parsedMaterials = orderState.map(material =>
@@ -43,9 +56,7 @@ const EditOrderRequest = (props) => {
                     material.id,
                     material.material_id,
                     material.amount,
-                    material.approx_price * material.amount * (material.isAmortisized ? material.perc / 100 : 1),
                     material.material_comment,
-                    material.sub_gl_category_id
                 ]
             );
             const data = {
@@ -63,15 +74,13 @@ const EditOrderRequest = (props) => {
     }
 
     const handleSendClick = () => {
-        const error = orderState.find(material => isNaN(material.material_id * material.amount * material.approx_price * material.sub_gl_category_id))
+        const error = orderState.find(material => isNaN(material.material_id))
         if (!error) {
             const parsedMaterials = orderState.map(material =>
                 [
                     material.material_id,
                     material.amount,
-                    material.approx_price * material.amount * (material.isAmortisized ? material.perc / 100 : 1),
                     material.material_comment,
-                    material.sub_gl_category_id
                 ]);
             const data = {
                 orderType: initialValuesRef.current[0].order_type,
@@ -91,7 +100,6 @@ const EditOrderRequest = (props) => {
             id: Math.random().toString(),
             models: [],
             className: 'new-row',
-            sub_gl_category_id: '',
             gl_category_id: '',
             approx_value: 0,
             amount: 1,
@@ -117,12 +125,10 @@ const EditOrderRequest = (props) => {
             <ul className="new-order-table">
                 <li>
                     <div>#</div>
-                    <div>Sub-Gl Kateqoriya</div>
                     <div>Məhsul</div>
                     <div style={{ width: '170px', maxWidth: '200px', textAlign: 'left' }}>Kod</div>
                     <div style={{ maxWidth: '140px' }}>Say</div>
-                    <div>Kurasiya</div>
-                    <div>Büdcə</div>
+                    <div>Istifadə yeri</div>
                     <div>Əlavə məlumat</div>
                     <div> </div>
                 </li>
@@ -133,8 +139,8 @@ const EditOrderRequest = (props) => {
                             view={view}
                             key={row.id}
                             index={index}
+                            departments={departments}
                             setOrderState={setOrderState}
-                            glCategories={glCategories}
                             orderType={row.order_type}
                             glCatid={glCatid}
                             structure={row.structure_id}
@@ -169,15 +175,14 @@ const EditOrderRequest = (props) => {
                     handleSendClick={handleConfirmClick}
                 />
             }
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                {
-                    view === 'returned' &&
+            {
+                view === 'returned' &&
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div className="send-order" onClick={handleSendClick}>
                         Göndər
                     </div>
-                }
-            </div>
-
+                </div>
+            }
         </div>
     )
 }

@@ -84,6 +84,7 @@ const MyOrders = (props) => {
         <NewOrderButton
           setOrders={setOrders}
           wrapperRef={wrapperRef}
+          canSeeOtherOrders={canSeeOtherOrders}
         />
       }
       <div className="my-orders-footer">

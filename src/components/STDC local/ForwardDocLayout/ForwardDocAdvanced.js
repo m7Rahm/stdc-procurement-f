@@ -93,9 +93,12 @@ const ForwardDocAdvanced = (props) => {
 
     const handleSelectChange = (employee) => {
         const res = props.receivers.find(emp => emp.id === employee.id);
-        const newReceivers = !res ? [...props.receivers, employee] : props.receivers.filter(emp => emp.id !== employee.id);
-        props.setReceivers(newReceivers);
-        searchInputRef.current.value = ""
+        if (!res) {
+            const [first, ...rest] = res
+            const newReceivers = [first, employee, ...rest]
+            props.setReceivers(newReceivers);
+            searchInputRef.current.value = ""
+        }
     }
 
     // const handleCheckChange = () => {
@@ -111,7 +114,7 @@ const ForwardDocAdvanced = (props) => {
     // }
 
     return (
-        <div style={{ padding: '10px 20px'}} className="flex flex-jc-c">
+        <div style={{ padding: '10px 20px' }} className="flex flex-jc-c">
 
             <ForwardedPeople
                 receivers={props.receivers}
@@ -119,7 +122,7 @@ const ForwardDocAdvanced = (props) => {
                 handleSelectChange={handleSelectChange}
             />
 
-            <div style={{ marginTop: '20px',marginLeft:'100px' }} id="procurement-edit-section">
+            <div style={{ marginTop: '20px', marginLeft: '100px' }} id="procurement-edit-section">
 
                 <div style={{ minHeight: '100px', minWidth: "250px" }}>
                     {
@@ -144,7 +147,7 @@ const ForwardDocAdvanced = (props) => {
                     </div>
                     <ul className="employees-list">
                         {
-                            empList.map((employee,index) =>
+                            empList.map((employee, index) =>
                                 <li key={index} value={employee.id} onClick={() => handleSelectChange(employee)}>
                                     {employee.full_name}
                                     <br />
@@ -165,7 +168,7 @@ export const ForwardedPeople = (props) => {
     const draggedElement = useRef(null);
     return (
         <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
-            <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px',width:'15em'}}>
+            <div className="forwarded-people-container">
                 {
                     props.choices.receivers.map((emp, index) =>
                         <VisaForwardPerson
@@ -173,8 +176,10 @@ export const ForwardedPeople = (props) => {
                             id={emp.id}
                             emp={emp}
                             index={index}
+                            draggable={!emp.dp}
                             draggedElement={draggedElement}
                             setChoices={props.setChoices}
+                            handleDeselection={props.handleDeselection}
                             handleSelectChange={props.handleSelectChange}
                         />
                     )
