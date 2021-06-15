@@ -1,88 +1,64 @@
 import React, { useEffect, useState } from 'react'
-import Loading from '../Misc/Loading'
+import { FaCheck, FaTimes } from 'react-icons/fa'
 import useFetch from '../../hooks/useFetch'
+import { } from "react-icons/"
 
 const getResultText = (result) => {
     if (result === 0)
-        return 'Baxılır..'
+        return <FaTimes color="var(--primary-color-accept)" title='Baxılır...'/>
     else if (result === -1)
-        return 'Etiraz Edildi'
+        return <FaTimes color="var(--primary-color-decline)" title="Etiraz Edildi"/>
     else if (result === 1)
-        return 'Təsdiq Edildi'
+        return <FaCheck color="var(--primary-color-accept)" title="Təsdiq Edildi"/>
     else if (result === 2)
-        return 'Redaytəyə Qaytarıldı'
+        return <FaTimes color="var(--primary-color-decline)" title="Redaktəyə qaytarıldı"/>
     else if (result === 3)
-        return 'Redaktə Edildi'
+    return <FaTimes color="var(--primary-color-decline)" title="Redaktə Edildi"/>
 }
 
 const ParticipantsR = (props) => {
     const { id } = props;
-    const [checked, setChecked] = useState(false);
     const [participants, setParticipants] = useState(null);
     const fetchGet = useFetch("GET");
-    const handleChange = () => {
-        setChecked(prev => !prev);
-    }
+    const navigationRef = props.navigationRef;
     useEffect(() => {
+        const navBar = navigationRef.current;
+        navBar.style.right = "25rem";
         fetchGet(`/api/participants/${id}?type=1`)
-            .then(respJ => setParticipants(respJ)
-            )
+            .then(respJ => setParticipants(respJ))
             .catch(err => console.log(err))
-    }, [id, fetchGet])
-    console.log(participants)
+        return () => {
+            navBar.style.right = "0px";
+        }
+    }, [id, fetchGet, navigationRef])
+    const closeParticipantsBar = props.closeParticipantsBar
     return (
         participants &&
         <div className="sidebar3">
+            <div>
+                <FaTimes onClick={closeParticipantsBar}/>
+                İştirakçılar
+            </div>
             <ul className='participantsR'>
-                <li>
-                    <div>Ad Soyad</div>
-                    <div>Status</div>
-                    <div>Qeyd</div>
-                    {/* <div style={{ textAlign: 'left' }}>Qeyd</div> */}
-                </li>
                 {
                     participants.map((participant, index) =>
                         <li key={index}>
-                            <div>{participant.full_name}
-                                <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{participant.vezife || ""}</div>
+                            <div>
+                                {participant.full_name}
+                                {getResultText(participant.result)}
+                                <div style={{ fontWeight: "650", fontSize: "0.8rem", color: '#1665d8' }}>{participant.vezife || ""}</div>
                             </div>
-                            <div>{getResultText(participant.result)}</div>
-                            {/* <div>{participant.act_date_time || participant.date_time}</div> */}
-                            <div>{/*participant.comment*/"asdsadas"}
-                                <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{participant.act_date_time || participant.date_time}</div>
+                            <div style={{ textAlign: "left", position: "relative" }}>
+                                {/*participant.comment*/"asdsadas"}
+                                <span>
+                                    {participant.act_date_time || participant.date_time}
+                                </span>
                             </div>
                             {/* <span style={{fontSize: "10px", float: "right", padding: "2px 5px", width: "100px"}}>{participant.act_date_time || participant.date_time}</span> */}
                         </li>
                     )
                 }
             </ul>
-            {/*
-          participants.map((participant, index) =>
-          <div className="order-card-info-wrapper"
-                    style={{ display: 'flex', flexDirection: 'column' }}
-                >
-                    <div className="order-card-info-additional">
-                        <div className="order-card-info ">{participant.full_name}</div>
-                    </div>
-                    <div className="order-card-info-additional">
-                        <div className="order-card-info ">{participant.vezife || ""}</div>
-                    </div>
-                    <div className="order-card-info-additional">
-                        <div className="order-card-info ">{participant.act_date_time || participant.date_time}</div>
-                    </div>
-                    <div className="order-card-info-additional">
-                        <div className="order-card-info ">{getResultText(participant.result)}</div>
-                    </div>
-                    {participant.comment!==""?
-                      <div className="order-card-info-additional">
-                          <div className="order-card-info ">{participant.comment}</div>
-                      </div>
-                      :
-                      <></>
-                    }
-                </div>
-          )
-        */}
         </div>
     )
 }

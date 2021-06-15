@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import OrderContentProtected from './OrderContentProtected'
-import ParticipantsR from '../../modal content/ParticipantsR'
 import VisaContentFooter from './VisaContentFooter'
 import EmptyContent from '../../Misc/EmptyContent'
 import { useLocation } from 'react-router-dom'
@@ -10,14 +9,11 @@ import Chat from '../../Misc/Chat'
 const VisaContent = (props) => {
     const location = useLocation();
     const { tranid, documentType, initid } = props;
+    const visaContentRef = useRef(null);
     const [visa, setVisa] = useState(undefined);
     const locationTranid = location.state ? location.state.tranid : undefined
     const inid = location.state ? location.state.initid : undefined
     const canProceed = useRef({});
-    // const otherProcurementUsers = useRef([]);
-    // const getOtherProcUsers = (abortController) => {
-    //     fetch
-    // }
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST")
     const fetchMessages = useCallback((from = 0) =>
@@ -63,31 +59,19 @@ const VisaContent = (props) => {
             }
         }
     }, [locationTranid, fetchGet, inid]);
-
-    const participantsRef = useRef(null);
-    const [participantsVisiblity, setParticipantsVisiblity] = useState(false);
-    const handleParticipantsTransition = () => {
-        if (participantsRef.current) {
-            participantsRef.current.classList.toggle('visa-content-participants-hide');
-            participantsRef.current.addEventListener('animationend', () => {
-                if (participantsRef.current)
-                    setParticipantsVisiblity(prev => !prev)
-            })
-        }
-        else
-            setParticipantsVisiblity(prev => !prev);
-    }
+    
     return (
-        <div className="visa-content-container">
+        <div className="visa-content-container" style={{ minWidth: "0px" }} ref={visaContentRef}>
             {
                 visa ?
                     <div>
                         <OrderContentProtected
                             footerComponent={VisaContentFooter}
                             setVisa={setVisa}
+                            visaContentRef={visaContentRef}
                             canProceed={canProceed}
                             current={visa}
-                            clicked={handleParticipantsTransition}
+                            navigationRef={props.navigationRef}
                         />
                         <div style={{ margin: "10px 20px" }}>
                             <Chat
@@ -97,15 +81,6 @@ const VisaContent = (props) => {
                                 sendMessage={sendMessage}
                             />
                         </div>
-
-                        {
-                            participantsVisiblity &&
-                            <div ref={participantsRef} className="visa-content-participants-show">
-                                <ParticipantsR
-                                    id={visa[0].order_id}
-                                />
-                            </div>
-                        }
                     </div>
                     : <EmptyContent />
             }

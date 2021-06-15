@@ -12,7 +12,7 @@ const initData = {
   until: 20
 }
 const documentType = 10
-const Visas = () => {
+const Visas = (props) => {
   const oIndex = window.location.search.match(/i=(\d+)&?/)
   const orderid = oIndex ? oIndex[1] : undefined
   const rIndex = window.location.search.match(/r=(\d+)&?/)
@@ -30,6 +30,7 @@ const Visas = () => {
       <VisaContent
         tranid={active.orderid}
         initid={active.initid}
+        navigationRef={props.navigationRef}
         documentType={documentType}
       />
     </div>

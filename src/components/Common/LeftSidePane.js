@@ -6,11 +6,12 @@ import {
 const icon = (Icon, active) => ({ ...props }) =>
     <Icon color={active ? "red" : '#808080'} {...props} />
 
-const setStyle = (active) => {
+const getStyle = (active) => {
     const style = active
         ? {
             background: 'rgba(0, 0, 0, 0.1)',
-            color: 'black'
+            color: 'black',
+            boxShadow: "0px 2px 5px #AAA, 0px -2px 5px #AAA"
         }
         : {}
     return style
@@ -43,7 +44,7 @@ const LeftSidePane = (props, ref) => {
                         props.links.map((link, index) => {
                             const active = index === activeLink ? true : false
                             const Icon = icon(link.icon, active)
-                            return <div key={index} style={setStyle(active)} >
+                            return <div key={index} style={getStyle(active)} >
                                 <Link
                                     onClick={() => {
                                         setActiveLink(index);

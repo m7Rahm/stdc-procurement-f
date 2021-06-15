@@ -1,13 +1,12 @@
-import React, { useContext } from 'react'
-import { FaAngleDown } from 'react-icons/fa'
+import React, { useContext, useState } from 'react'
 import {
 	FaEdit,
 	FaCheck,
 	FaTimes
 } from 'react-icons/fa'
-import {
-	IoIosWarning
-} from 'react-icons/io'
+import { IoIosWarning } from 'react-icons/io'
+import ParticipantsR from '../../modal content/ParticipantsR'
+
 import VisaVersionsContainer from './VisaVersionsContainer'
 import { TokenContext } from '../../../App'
 import useFetch from '../../../hooks/useFetch'
@@ -17,6 +16,7 @@ const VisaContentHeader = (props) => {
 	const { version, current, orderNumb, handleEditClick, updateContent } = props;
 	const visaGenInfo = current[0];
 	const tranid = current[0].id;
+	const [participantsVisiblity, setParticipantsVisiblity] = useState(false);
 	const tokenContext = useContext(TokenContext);
 	const userData = tokenContext[0].userData;
 	const fetchPost = useFetch("POST");
@@ -62,10 +62,19 @@ const VisaContentHeader = (props) => {
 			{...props}
 		/>
 	)
+	const handleParticipantsTransition = () => {
+		props.visaContentRef.current.style.right = "25rem";
+		props.navigationRef.current.style.right = "25rem";
+		setParticipantsVisiblity(true)
+	}
+	const closeParticipantsBar = () => {
+		props.visaContentRef.current.style.right = "0px";
+		setParticipantsVisiblity(false);
+	}
 	return (
 		<>
 			<div className="protex-order-header-container">
-				<div style={{overflow:'auto'}}>
+				<div>
 					<h1>
 						{`Sifariş № ${orderNumb}`}
 						{
@@ -76,9 +85,8 @@ const VisaContentHeader = (props) => {
 							/>
 						}
 					</h1>
-					<div className="toggle-participants" onMouseEnter={props.clicked} onMouseLeave={props.clicked}>
-								Tarixçəni göstər
-							<FaAngleDown size="36" color="royalblue" />
+					<div className="toggle-participants" onClick={handleParticipantsTransition}>
+						Tarixçəni göstər
 					</div>
 				</div>
 				{
@@ -101,6 +109,14 @@ const VisaContentHeader = (props) => {
 
 				}
 			</div>
+			{
+				participantsVisiblity &&
+				<ParticipantsR
+					navigationRef={props.navigationRef}
+					id={visaGenInfo.order_id}
+					closeParticipantsBar={closeParticipantsBar}
+				/>
+			}
 		</>
 	)
 }

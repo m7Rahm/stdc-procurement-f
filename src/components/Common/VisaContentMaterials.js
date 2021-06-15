@@ -121,7 +121,7 @@ const TableRow = (props) => {
 			<div style={{ textAlign: 'left' }}>
 				{material_name || title}
 			</div>
-			<div style={{ textAlign: 'left' }}>
+			<div style={{ textAlign: 'left', maxWidth: "140px" }}>
 				{product_id}
 			</div>
 			<div style={{ maxWidth: '140px' }}>
@@ -131,7 +131,7 @@ const TableRow = (props) => {
 					</div>
 				</div>
 			</div>
-			<div style={{ textAlign: 'left' }}>
+			<div style={{ maxWidth: "140px" }}>
 				{mat_ass}
 			</div>
 			{

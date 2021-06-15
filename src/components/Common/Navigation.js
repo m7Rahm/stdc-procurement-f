@@ -193,7 +193,7 @@ const Navigation = (props, ref) => {
         pushHistory(notif)
     }
     return (
-        <nav>
+        <nav ref={props.navigationRef}>
             <div className="loading-indicator">
                 <div ref={ref} className="loaded"></div>
             </div>
