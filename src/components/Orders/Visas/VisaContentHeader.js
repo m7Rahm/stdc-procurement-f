@@ -63,9 +63,18 @@ const VisaContentHeader = (props) => {
 		/>
 	)
 	const handleParticipantsTransition = () => {
-		props.visaContentRef.current.style.right = "25rem";
-		props.navigationRef.current.style.right = "25rem";
-		setParticipantsVisiblity(true)
+		setParticipantsVisiblity(prev => {
+			if (prev === false) {
+				props.visaContentRef.current.style.right = "25rem";
+				props.navigationRef.current.style.right = "25rem";
+				return true
+			}
+			else {
+				props.visaContentRef.current.style.right = "0";
+				props.navigationRef.current.style.right = "0";
+				return false
+			}
+		})
 	}
 	const closeParticipantsBar = () => {
 		props.visaContentRef.current.style.right = "0px";

@@ -23,6 +23,7 @@ const VisaCard = (props) => {
 		setIconsVisible,
 		setActive,
 		orderid,
+		ord_numb
 	} = props;
 	const stateRef = useRef(null);
 	const checkBoxRef = useRef(null)
@@ -78,6 +79,9 @@ const VisaCard = (props) => {
 					<div>
 						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !== '' ? 'white' : 'gray' }}>
 							{"Deadline: " + props.deadline}
+						</span>
+						<span style={{ fontSize: '17px', fontWeight: 500, verticalAlign: 'baseline', float:'right',color: backgroundColor !== '' ? 'white' : 'rgb(217, 52, 4)' }}>
+							{ord_numb}
 						</span>
 					</div>
 					<div>

@@ -60,6 +60,8 @@ const SideBar = (props) => {
 		refreshVisas(0);
 	}
 
+	console.log(visas.visas)
+
 	return (
 		<div className='side-bar'>
 			<div ref={iconsPanelRef}>
@@ -100,6 +102,7 @@ const SideBar = (props) => {
 								date={visa.date_time}
 								deadline={visa.deadline}
 								order_type={visa.order_type}
+								ord_numb={visa.ord_numb}
 							/>
 						)
 					})

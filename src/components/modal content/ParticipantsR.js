@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { FaCheck, FaTimes } from 'react-icons/fa'
+import { FaCheck, FaTimes, FaHourglassHalf, FaPen } from 'react-icons/fa'
 import useFetch from '../../hooks/useFetch'
 import { } from "react-icons/"
 
 const getResultText = (result) => {
     if (result === 0)
-        return <FaTimes color="var(--primary-color-accept)" title='Baxılır...'/>
+        return <FaHourglassHalf title='Baxılır...' />
     else if (result === -1)
-        return <FaTimes color="var(--primary-color-decline)" title="Etiraz Edildi"/>
+        return <FaTimes color="red" title="Etiraz Edildi" />
     else if (result === 1)
-        return <FaCheck color="var(--primary-color-accept)" title="Təsdiq Edildi"/>
+        return <FaCheck color="green" title="Təsdiq Edildi" />
     else if (result === 2)
-        return <FaTimes color="var(--primary-color-decline)" title="Redaktəyə qaytarıldı"/>
+        return <FaPen title="Redaktəyə qaytarıldı" />
     else if (result === 3)
-    return <FaTimes color="var(--primary-color-decline)" title="Redaktə Edildi"/>
+        return <FaPen color="orange" title="Redaktə Edildi" />
 }
 
 const ParticipantsR = (props) => {
@@ -36,7 +36,7 @@ const ParticipantsR = (props) => {
         participants &&
         <div className="sidebar3">
             <div>
-                <FaTimes onClick={closeParticipantsBar}/>
+                <FaTimes onClick={closeParticipantsBar} />
                 İştirakçılar
             </div>
             <ul className='participantsR'>
