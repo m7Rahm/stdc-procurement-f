@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FaCheck, FaTimes, FaHourglassHalf, FaPen } from 'react-icons/fa'
+import { FaCheck, FaTimes, FaHourglassHalf, FaPen, FaUserEdit } from 'react-icons/fa'
 import useFetch from '../../hooks/useFetch'
 import { } from "react-icons/"
 
@@ -11,7 +11,7 @@ const getResultText = (result) => {
     else if (result === 1)
         return <FaCheck color="green" title="Təsdiq Edildi" />
     else if (result === 2)
-        return <FaPen title="Redaktəyə qaytarıldı" />
+        return <FaUserEdit title="Redaktəyə qaytarıldı" />
     else if (result === 3)
         return <FaPen color="orange" title="Redaktə Edildi" />
 }

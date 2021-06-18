@@ -73,14 +73,14 @@ const VisaContent = (props) => {
                             current={visa}
                             navigationRef={props.navigationRef}
                         />
-                        <div style={{ margin: "10px 20px" }}>
+                        {/* <div style={{ margin: "10px 20px" }}>
                             <Chat
                                 loadMessages={fetchMessages}
                                 documentid={tranid}
                                 documentType={documentType}
                                 sendMessage={sendMessage}
                             />
-                        </div>
+                        </div> */}
                     </div>
                     : <EmptyContent />
             }
