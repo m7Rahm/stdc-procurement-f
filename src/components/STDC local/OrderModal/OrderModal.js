@@ -47,7 +47,7 @@ const OrderModal = (props) => {
 
   const forwardClickHandler = () => {
     if (davamText === "Davam") {
-      if (whichPage.page === 2 && (!props.choices.materials[0] || props.choices.materials[0].materialId === '')) {
+      if (whichPage.page === 2 && (!props.choices.materials[0] || props.choices.materials[0].materialName === '')) {
         setOperationResult(prev => ({ visible: true, desc: 'Sifarişə məhsul əlavə edin' }))
       } else {
         actPageRef.current.style.animationName = "slide_davam_current";

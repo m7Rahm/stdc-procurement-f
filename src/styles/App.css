@@ -2058,15 +2058,29 @@ span.reviewers-header {
 .visa-content-participants-hide {
   animation: visibility-hide 0.5s both;
 }
-
+/* .wrapper-toggle-participants{
+  background-color:red;
+  width:auto;
+  height:auto;
+  w230px;
+} */
 .toggle-participants {
-  color: gray;
+  display:flex;
+  
+  justify-content: center;
+  align-items: center;
+  color: white;
   cursor: pointer;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 500;
   float: right;
-  width: 230px;
-  text-align: left;
+  width: 180px;
+  text-align: center;
+  border-radius:7px;
+  background-color:gray;
+  height:35px;
+
+
 }
 
 .toggle-participants>svg {

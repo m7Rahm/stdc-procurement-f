@@ -3,6 +3,8 @@ import { TokenContext } from '../../../App'
 import useFetch from '../../../hooks/useFetch';
 import ForwardDocLayout from '../../Misc/ForwardDocLayout';
 import OperationResult from '../../Misc/OperationResult'
+import EditOrder from './EditOrder'
+import NewOrderContent from '../../modal content/NewOrder'
 const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline'))
 
 const VisaContentFooter = (props) => {
@@ -99,13 +101,17 @@ const VisaContentFooter = (props) => {
                         canReturn && current.forward_type !== 4 &&
                         <div
                             onClick={
-                                hoc(AcceptDecline,
+                                hoc(EditOrder,
                                     {
                                         handleModalClose: setIsModalOpen,
                                         tranid: current.id,
                                         setOperationResult: setOperationResult,
+                                        operationResult:operationResult,
                                         action: 2,
-                                        backgroundColor: '#F4B400'
+                                        backgroundColor: '#F4B400',
+                                        orderContent:props.orderContent,
+                                        canProceed:props.canProceed,
+                                        forwardType:props.forwardType
                                     }
                                 )
                             }

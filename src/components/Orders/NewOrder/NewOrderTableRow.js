@@ -124,6 +124,23 @@ const NewOrderTableRow = (props) => {
     //     selectedData: { ...prevState.selectedData, model: searchResult }
     //   }))
     // } else {
+    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid ? { ...material, place: placeInputRef.current.value } : material) }))
+    props.setChoices(prev => ({
+      ...prev, materials: prev.materials.map(material => material.id === materialid
+        ? {
+          ...material,
+          materialId: '',
+          materialName: value,
+          approx_price: '',
+          code: '',
+          department: '',
+          isAmortisized: '',
+          percentage: '',
+          isService: orderType
+        }
+        : material
+      )
+    }));
     fetchGet(`/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
       .then(respJ => {
         setModels(respJ)
@@ -184,6 +201,7 @@ const NewOrderTableRow = (props) => {
     const value = e.target.value;
     props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid ? { ...material, unit: value } : material) }))
   }
+  console.log(props.material.materialName)
   return (
     <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
@@ -194,7 +212,7 @@ const NewOrderTableRow = (props) => {
           onFocus={handleFocus}
           type="text"
           placeholder="Məhsul"
-          defaultValue={props.material.materialName}
+          defaultValue={props.material.materialName ? props.material.materialName:props.material.material_name}
           ref={modelInputRef}
           name="model"
           autoComplete="off"
@@ -219,7 +237,7 @@ const NewOrderTableRow = (props) => {
           onBlur={handleBlur}
           type="text"
           placeholder="Kod"
-          defaultValue={props.material.code}
+          defaultValue={props.material.code ? props.material.code:props.material.product_id}
           ref={codeRef}
           name="model"
           autoComplete="off"
@@ -269,7 +287,7 @@ const NewOrderTableRow = (props) => {
           placeholder="Istifadə yeri"
           ref={placeInputRef}
           name="model"
-          defaultValue={props.material.place}
+          defaultValue={props.material.place ? props.material.place : props.material.mat_ass}
           autoComplete="off"
           onChange={handlePlaceSearch}
         />
