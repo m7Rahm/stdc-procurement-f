@@ -94,11 +94,8 @@ const VisaContentHeader = (props) => {
 							/>
 						}
 					</h1>
-					<div className="wrapper-toggle-participants">
 					<div className="toggle-participants" onClick={handleParticipantsTransition}>
-					
 						Tarixçəni göstər
-					</div>
 					</div>
 				</div>
 				{

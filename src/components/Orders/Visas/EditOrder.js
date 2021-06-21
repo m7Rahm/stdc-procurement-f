@@ -3,6 +3,7 @@ import { TokenContext } from '../../../App'
 import { IoIosAdd } from 'react-icons/io'
 import NewOrderTableRow from '../NewOrder/NewOrderTableRow'
 import useFetch from '../../../hooks/useFetch'
+import { newOrderInitial } from '../../../data/data'
 
 
 const EditOrder = (props) => {
@@ -63,7 +64,7 @@ const EditOrder = (props) => {
 
 
     const handleAddClick = () => {
-
+        setChoices(prev => ({...prev,materials:[...prev.materials, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}]}))
     }
 
     const modelsListRef = useRef(null);
@@ -79,6 +80,8 @@ const EditOrder = (props) => {
             .catch(ex => console.log(ex))
     }, [fetchGet, setPlaceList])
 
+    console.log(choices.materials)
+    // console.log(orders)
     return (
         <div>
             <ul className="new-order-table">
@@ -96,20 +99,21 @@ const EditOrder = (props) => {
                 </li>
 
                 {
-                    orders.map((material, index) =>
+                    choices.materials.map((material, index) =>
                         <NewOrderTableRow
                             // setMaterials={props.setMaterials}
                             index={index}
-                            orderType={material.orderType}
+
+
+                            orderType={material.isService}
                             material={material}
-                            place={material.department_id}
-                            key={material.order_material_id}
-                            materialid={material.order_material_id}
-                            count={material.amount}
+                            place={material.place}
+                            key={material.materialId}
+                            materialid={material.materialId}
+                            count={material.count}
                             modelsListRef={modelsListRef}
-                            additionalInfo={material.material_comment}
-                            department={material.department_id}
-                            code={material.product_id}
+                            additionalInfo={material.additionalInfo}
+                            code={material.code}
 
                             choices={choices}
                             setChoices={setChoices}

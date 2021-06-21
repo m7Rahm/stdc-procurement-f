@@ -32,7 +32,7 @@ const VisaContentMaterials = (props) => {
 					<div style={{ maxWidth: '140px' }}>Kod</div>
 					<div style={{ maxWidth: '140px' }}>Say</div>
 					<div style={{ maxWidth: '140px' }}>İstifadə yeri</div>
-					
+
 					{
 						((forwardType === 3 || forwardType === 5) && order_type === 1) &&
 						<div style={{ maxWidth: '140px' }}>Məbləğ</div>
