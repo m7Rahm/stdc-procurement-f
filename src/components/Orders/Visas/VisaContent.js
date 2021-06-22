@@ -4,7 +4,7 @@ import VisaContentFooter from './VisaContentFooter'
 import EmptyContent from '../../Misc/EmptyContent'
 import { useLocation } from 'react-router-dom'
 import useFetch from '../../../hooks/useFetch'
-import Chat from '../../Misc/Chat'
+// import Chat from '../../Misc/Chat'
 
 const VisaContent = (props) => {
     const location = useLocation();
@@ -16,9 +16,11 @@ const VisaContent = (props) => {
     const canProceed = useRef({});
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST")
+    // eslint-disable-next-line 
     const fetchMessages = useCallback((from = 0) =>
         fetchGet(`/api/messages/${tranid}?from=${from}&replyto=0&doctype=${documentType}`)
         , [tranid, fetchGet, documentType]);
+    // eslint-disable-next-line 
     const sendMessage = useCallback((data) => {
         const apiData = { ...data, docType: documentType };
         return fetchPost(`/api/send-message`, apiData)
@@ -59,7 +61,7 @@ const VisaContent = (props) => {
             }
         }
     }, [locationTranid, fetchGet, inid]);
-    
+
     return (
         <div className="visa-content-container" style={{ minWidth: "0px" }} ref={visaContentRef}>
             {

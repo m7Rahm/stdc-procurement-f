@@ -67,7 +67,6 @@ const OrderContentProtected = (props) => {
 				handleEditClick={handleEditClick}
 				updateContent={updateContent}
 				orderContent={current}
-				canProceed={canProceed}
 				forwardType={forwardType}
 			/>
 		</>

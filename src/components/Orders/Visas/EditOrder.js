@@ -7,26 +7,11 @@ import { newOrderInitial } from '../../../data/data'
 
 
 const EditOrder = (props) => {
-    const { forwardType, canProceed, orderContent } = props;
+    const { forwardType, orderContent } = props;
     const tokenContext = useContext(TokenContext)
     const userData = tokenContext[0].userData;
-    const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
-    const { emp_version_id, order_type } = props.orderContent[0];
+    // const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const [placeList, setPlaceList] = useState([])
-    // const [choices, setChoices] = useState({
-    //     materials: [{
-    //       id: Date.now(),
-    //       materialName: '',
-    //       materialId: '',
-    //       code: '',
-    //       additionalInfo: '',
-    //       class: '',
-    //       count: 1,
-    //       isService: 0,
-    //       place: "",
-    //       unit: '1'
-    //     }]
-    //   })
 
     let orders = [];
     if (forwardType === 3)
@@ -60,11 +45,9 @@ const EditOrder = (props) => {
     //       place: "",
     //       unit: '1'
     //     }]
-    //   })))
-
 
     const handleAddClick = () => {
-        setChoices(prev => ({...prev,materials:[...prev.materials, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}]}))
+        setChoices(prev => ({ ...prev, materials: [...prev.materials, { ...newOrderInitial.materials[0], id: Date.now(), materialId: Date.now(), class: 'new-row', isService:0 }] }))
     }
 
     const modelsListRef = useRef(null);
@@ -79,6 +62,10 @@ const EditOrder = (props) => {
             })
             .catch(ex => console.log(ex))
     }, [fetchGet, setPlaceList])
+
+    const editClickHandler = () => {
+        console.log("sent")
+    }
 
     console.log(choices.materials)
     // console.log(orders)
@@ -104,17 +91,15 @@ const EditOrder = (props) => {
                             // setMaterials={props.setMaterials}
                             index={index}
 
-
                             orderType={material.isService}
                             material={material}
                             place={material.place}
-                            key={material.materialId}
+                            key={material.materialId || material.id}
                             materialid={material.materialId}
                             count={material.count}
                             modelsListRef={modelsListRef}
                             additionalInfo={material.additionalInfo}
                             code={material.code}
-
                             choices={choices}
                             setChoices={setChoices}
                             setPlaceList={setPlaceList}
@@ -124,7 +109,8 @@ const EditOrder = (props) => {
                     )
                 }
             </ul>
-            <div style={{ backgroundColor: 'rgb(244, 180, 0)', float: 'right', padding: '10px 20px', margin: '10px', color: 'white' }}>
+            <div style={{ backgroundColor: 'rgb(244, 180, 0)', float: 'right', padding: '10px 20px', margin: '10px', color: 'white',cursor:'pointer' }}
+                onClick={editClickHandler}>
                 Göndər
             </div>
         </div>

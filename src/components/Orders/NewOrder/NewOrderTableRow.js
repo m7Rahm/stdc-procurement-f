@@ -21,17 +21,17 @@ const NewOrderTableRow = (props) => {
     const value = e.target.value;
     const name = e.target.name;
     if (value === '' || Number(value) > 0) {
-      props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId===materialid ? { ...material, [name]: value } : material) }))
+      props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, [name]: value } : material) }))
     }
   }
   const handleAmountFocusLose = (e) => {
     const value = e.target.value;
     const name = e.target.name
     if (value === '')
-      props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId===materialid ? { ...material, [name]: 0 } : material) }))
+      props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, [name]: 0 } : material) }))
   }
   const handleAmountChangeButtons = (action) => {
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid  || material.materialId===materialid? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material) }))
+    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material) }))
   }
 
   const handleFocus = () => {
@@ -63,21 +63,25 @@ const NewOrderTableRow = (props) => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid  || material.materialId===materialid? { ...material, additionalInfo: value } : material) }))
+    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, additionalInfo: value } : material) }))
   }
 
   const handleChange2 = (e) => {
     const value = e.target.value;
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid  || material.materialId===materialid? { ...material, tesvir: value } : material) }))
+    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, tesvir: value } : material) }))
   }
-
+  // console.log(materialid,props.material.materialId,props.material.id)
   const handleRowDelete = () => {
     rowRef.current.classList.add("delete-row");
-    rowRef.current.addEventListener('animationend', () => props.setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.id !== materialid) })))
+    if (props.material.id === materialid) {
+      rowRef.current.addEventListener('animationend', () => props.setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.id !== materialid) })))// ||   
+    } else {
+      rowRef.current.addEventListener('animationend', () => props.setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.materialId !== materialid) })))// || material.id !== materialid
+    }
   }
   const setModel = (model) => {
     props.setChoices(prev => ({
-      ...prev, materials: prev.materials.map(material => material.id === materialid  || material.materialId===materialid
+      ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
           ...material,
           materialId: model.id,
@@ -101,7 +105,7 @@ const NewOrderTableRow = (props) => {
     // props.choices.materials.map(material=> material.id===materialid || material.materialId===materialid ? console.log("material not found"):console.log(material.id,materialid))
 
     props.setChoices(prev => ({
-      ...prev, materials: prev.materials.map(material => material.id === materialid  || material.materialId===materialid
+      ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
           ...material,
           place: model.name
@@ -116,7 +120,7 @@ const NewOrderTableRow = (props) => {
   const handleInputSearch = (e) => {
     const value = e.target.value;
     props.setChoices(prev => ({
-      ...prev, materials: prev.materials.map(material => material.id === materialid  || material.materialId===materialid
+      ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
           ...material,
           materialId: '',
@@ -145,7 +149,7 @@ const NewOrderTableRow = (props) => {
     const regExp = new RegExp(`${reg}`, "i");
     const searchResult = places.filter(model => regExp.test(model.title))
     setPlaces(searchResult);
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid  || material.materialId===materialid ? { ...material, place: placeInputRef.current.value } : material) }))
+    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, place: placeInputRef.current.value } : material) }))
   }
   // eslint-disable-next-line
   const searchByCode = (e) => {
@@ -188,7 +192,7 @@ const NewOrderTableRow = (props) => {
 
   const unitChangeHandler = (e) => {
     const value = e.target.value;
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid  || material.materialId===materialid? { ...material, unit: value } : material) }))
+    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, unit: value } : material) }))
   }
   return (
     <li ref={rowRef} className={className}>
@@ -225,7 +229,7 @@ const NewOrderTableRow = (props) => {
           onBlur={handleBlur}
           type="text"
           placeholder="Kod"
-          defaultValue={props.material.code ? props.material.code : props.material.product_id}
+          defaultValue={props.material.code}
           ref={codeRef}
           name="model"
           autoComplete="off"
@@ -275,7 +279,7 @@ const NewOrderTableRow = (props) => {
           placeholder="Istifadə yeri"
           ref={placeInputRef}
           name="model"
-          defaultValue={props.material.place ? props.material.place : props.material.mat_ass}
+          defaultValue={props.material.place}
           autoComplete="off"
           onChange={handlePlaceSearch}
         />
