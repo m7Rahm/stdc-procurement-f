@@ -58,19 +58,24 @@ div.direction[name="back"]:active {
 }
 
 .sidebar3 {
-    top: 200px;
+    top: 100px;
     bottom: 0;
     position: fixed;
     z-index: 3;
     right:0;
     /* bottom:300px; */
-    max-height: 250px;
+    /* width:00px; */
+    width:fit-content;
     overflow: auto;
-    background-color: rgb(244, 180, 0);
+    background-color: rgb(255, 255, 255);
+    width:300px;
+    border-radius:7px;
+    border:solid 1px   #6aa0b3;
+    height:fit-content; 
 }
 
 .participantsR>li:first-of-type {
-    background-color: #D93404;
+    background: #6aa0b3;
     color: white;
     font-weight: 600;
     overflow: hidden;
@@ -88,6 +93,9 @@ div.direction[name="back"]:active {
     float: left;
     width: 25%;
     padding: 10px 20px;
+    padding-left: 20px;
+    padding-right: 78px;
+
     height: auto;
   }
   
