@@ -10,10 +10,12 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 14px;
 }
-:root{
+
+:root {
   --primary-color-accept: rgb(15, 157, 88);
   --primary-color-decline: rgb(217, 52, 4);
 }
+
 div.content-loading>div {
   animation: content-loading 1.5s ease-in-out infinite both;
   background-image: linear-gradient(to right, whitesmoke, whitesmoke, whitesmoke);
@@ -140,6 +142,20 @@ div.result-empty>h1 {
   overflow: hidden;
   margin-top: 50px;
   background-color: white;
+}
+
+div.operation-state-lite {
+  position: fixed;
+  top: 80px;
+  border-radius: 5px;
+  padding: 12px 2rem;
+  left: 0px;
+  right: 0px;
+  width: fit-content;
+  margin: auto;
+  color: white;
+  background-color: #123456;
+  animation: show-up 800ms ease-in-out both;
 }
 
 .left-side-pane>div:not(:first-of-type)>div>div {
@@ -1033,7 +1049,8 @@ div.icons-panel-hide {
     background-color: rgba(0, 0, 0, 0.6);
   }
 }
-div.forwarded-people-container{
+
+div.forwarded-people-container {
   margin-top: 20px;
   overflow: hidden;
   padding: 15px;
@@ -1042,12 +1059,15 @@ div.forwarded-people-container{
   transition: all 400ms;
   width: 15rem
 }
-div.modal-content>div:first-of-type:hover{
+
+div.modal-content>div:first-of-type:hover {
   cursor: grab;
 }
-div.forwarded-people-container:hover{
+
+div.forwarded-people-container:hover {
   box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2);
 }
+
 .modal-content {
   border: 1px solid #1f1f1f;
   border-top-width: 0px;
@@ -2060,15 +2080,16 @@ span.reviewers-header {
 .visa-content-participants-hide {
   animation: visibility-hide 0.5s both;
 }
+
 /* .wrapper-toggle-participants{
   background-color:red;
   width:auto;
   height:auto;
   w230px;
 } */
+
 .toggle-participants {
-  display:flex;
-  
+  display: flex;
   justify-content: center;
   align-items: center;
   color: white;
@@ -2078,11 +2099,9 @@ span.reviewers-header {
   float: right;
   width: 180px;
   text-align: center;
-  border-radius:7px;
-  background-color:gray;
-  height:35px;
-
-
+  border-radius: 7px;
+  background-color: gray;
+  height: 35px;
 }
 
 .toggle-participants>svg {
@@ -2617,7 +2636,7 @@ div.chat-footer {
 
 div.chat-footer textarea {
   padding: 8px;
-  background-image: linear-gradient(to right, rgba(230,160,21, 0.1),rgba(220, 220, 220, 0.596));
+  background-image: linear-gradient(to right, rgba(230, 160, 21, 0.1), rgba(220, 220, 220, 0.596));
   max-height: 38px;
   transition: all 1200ms;
   caret-color: steelblue;

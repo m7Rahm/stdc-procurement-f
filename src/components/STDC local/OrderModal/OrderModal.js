@@ -82,6 +82,7 @@ const OrderModal = (props) => {
       })
 
       const data = { deadline: props.choices.lastDate.toISOString().split('T')[0], mats: mat, inventoryNums: [], basedon: "", ordNumb: "", isWarehouseOrder: 0, orderType: props.choices.serviceType, receivers: rec }
+      props.setSending(true);
       fetchPost(`/api/new-order`, data)
         .then(respJ => {
           const message = {
@@ -89,8 +90,10 @@ const OrderModal = (props) => {
             receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
             data: undefined
           }
+          props.operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both"
+          props.setSending(false);
+
           webSocket.send(JSON.stringify(message))
-          props.setIsModalVisible(0);
           const inParams = {
             from: 0,
             until: 20,
@@ -98,7 +101,8 @@ const OrderModal = (props) => {
             dateFrom: '',
             dateTill: '',
             ordNumb: "",
-            departments: []
+            departments: [],
+            canSeeOtherOrders: props.canSeeOtherOrders
           }
           fetchPost('/api/orders', inParams)
             .then(respJ => {
@@ -108,6 +112,7 @@ const OrderModal = (props) => {
             .catch(ex => console.log(ex))
         })
         .catch(ex => console.log(ex))
+      props.setIsModalVisible(0);
     }
   };
   return (

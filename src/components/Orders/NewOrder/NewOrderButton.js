@@ -4,12 +4,15 @@ import { MdAdd } from 'react-icons/md'
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
 import Taskbar from '../../STDC local/Taskbar/Taskbar'
+import OperationStateLite from '../../Misc/OperationStateLite'
 
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
   const modalRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(0);
-  const [modalList, setModalList] = useState(null)
+  const [modalList, setModalList] = useState(null);
+  const [sending, setSending] = useState(undefined);
+  const operationStateRef = useRef(null);
   const [choices, setChoices] = useState({
     serviceType: 0, lastDate: new Date(),
     materials: [{
@@ -100,20 +103,19 @@ const NewOrder = (props) => {
     })
     setIsModalVisible(0.5);
   }
-
   return (
     <>
       <div title="yeni sifariş" className="new-order-button" onClick={handleClick}>
         <MdAdd color="white" size="30" />
       </div>
       <Taskbar
-        style={{ overflow: 'scroll' }}
         modalList={modalList}
         setModalList={setModalList}
         choices={choices}
         handleOrderSelect={handleOrderSelect}
         setIsModalVisible={setIsModalVisible}
       />
+      {sending !== undefined && <OperationStateLite ref={operationStateRef} state={sending} setState={setSending} text="Sifariş göndərilir.." />}
       {
         isModalVisible !== 0 &&
         <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
@@ -122,7 +124,16 @@ const NewOrder = (props) => {
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
               title={modalList.current !== null ? "Sifariş " + (modalList.current.name + 1) : "Yeni Sifariş"}
               ref={modalRef}
-              childProps={{ choices: choices, setChoices: setChoices, setIsModalVisible: handleCloseModal, setOrders: props.setOrders, modalList: modalList }}
+              childProps={{
+                choices: choices,
+                setChoices: setChoices,
+                setIsModalVisible: handleCloseModal,
+                setOrders: props.setOrders,
+                modalList: modalList,
+                setSending,
+                operationStateRef,
+                canSeeOtherOrders: props.canSeeOtherOrders
+              }}
               minimizeHandler={minimizeHandler}
               changeModalState={handleCloseModal}
               wrapperRef={props.wrapperRef}
