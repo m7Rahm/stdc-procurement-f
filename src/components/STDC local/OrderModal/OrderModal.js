@@ -47,9 +47,7 @@ const OrderModal = (props) => {
 
   const forwardClickHandler = () => {
     if (davamText === "Davam") {
-      if (whichPage.page === 2 && (!props.choices.materials[0] || props.choices.materials[0].materialName === '')) {
-        setOperationResult(prev => ({ visible: true, desc: 'Sifarişə məhsul əlavə edin' }))
-      } else {
+      const continueNext = () => {
         actPageRef.current.style.animationName = "slide_davam_current";
         const animationendEventListener = () => {
           actPageRef.current.removeEventListener(
@@ -71,6 +69,20 @@ const OrderModal = (props) => {
           false
         );
       }
+      if (whichPage.page === 2) {
+        let errorMessage = "";
+        let details = ""
+        const unAssignedMaterials = props.choices.materials.filter(material => !material.place);
+        if (props.choices.materials.length === 0 || props.choices.materials.find(material => !material.materialName))
+          errorMessage = "Sifarişə məhsul əlavə edin"
+        else if (unAssignedMaterials.length !== 0) {
+          details = unAssignedMaterials.reduce((prev, curr) => prev += `<div>${curr.materialName}</div>`, "")
+          errorMessage = "İstifadə yeri göstərilməmişdir";
+        }
+        if (errorMessage !== "")
+          setOperationResult({ visible: true, desc: errorMessage, details: details })
+        else continueNext()
+      } else continueNext()
     } else {
       const rec = props.choices.receivers.reverse().map((receiver, i) => [receiver.id, i, receiver.dp ? 1 : 2, i === 0 ? 1 : 0]);
       const mat = props.choices.materials.map(material => {

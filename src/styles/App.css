@@ -362,15 +362,22 @@ ul.vendors-list>li:hover {
   background-color: gainsboro;
   color: white;
 }
-
+div.operation-result-details{
+  font-weight: 550;
+  color: var(--primary-color-decline);
+}
+div.operation-result-details>div{
+  margin-top: 0.5rem;
+  color: var(--primary-color-decline);
+}
 div.operation-result {
   padding: 30px 15px;
   position: fixed;
-  top: 150px;
+  top: 10%;
   left: 0px;
   right: 0px;
   width: 350px !important;
-  z-index: 2;
+  z-index: 3;
   margin: auto !important;
   background-color: transparent;
   color: white;

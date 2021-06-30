@@ -6,7 +6,8 @@ const OperationResult = (props) => {
         setOperationResult,
         icon: Icon = IoIosCloseCircle,
         iconColor = "#D93404",
-        backgroundColor = 'transparent'
+        backgroundColor = 'transparent',
+        detailes
     } = props;
     const count = useRef(0);
     const operationResultRef = useRef(null);
@@ -26,6 +27,8 @@ const OperationResult = (props) => {
                 <Icon color={iconColor} size="88" />
             </div>
             <h1 style={{ color: '#343a40', fontSize: '24px' }}>{operationDesc}</h1>
+            {detailes && <div className="operation-result-details" dangerouslySetInnerHTML={{ __html: detailes }}></div>}
+
         </div>
     )
 }

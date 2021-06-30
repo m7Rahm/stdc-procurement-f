@@ -17,6 +17,7 @@ const NewOrderContent = (props) => {
           setOperationResult={props.setOperationResult}
           operationDesc={props.operationResult.desc}
           backgroundColor="whitesmoke"
+          detailes={props.operationResult.details}
           icon={IoIosCloseCircle}
         />
       }
