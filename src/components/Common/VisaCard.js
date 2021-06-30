@@ -52,7 +52,13 @@ const VisaCard = (props) => {
 		}
 	}
 	const handleClick = () => {
-		window.history.replaceState(null, "", window.location.pathname + "?i=" + orderid + "&r=" + senderid)
+		window.history.replaceState(null, "", window.location.pathname + "?i=" + orderid + "&r=" + senderid);
+		if (!isOpened) {
+			const event = new CustomEvent("inAppEvent", {
+				detail: { tranid: orderid, docType: 0, categoryid: 1 }
+			});
+			window.dispatchEvent(event)
+		}
 		setActive({ orderid: orderid, initid: senderid })
 		activeRef.current.style.background = activeRef.current.prevBackColor;
 		stateRef.current.style.background = 'skyblue'
@@ -80,7 +86,7 @@ const VisaCard = (props) => {
 						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !== '' ? 'white' : 'gray' }}>
 							{"Deadline: " + props.deadline}
 						</span>
-						<span style={{ fontSize: '17px', fontWeight: 500, verticalAlign: 'baseline', float:'right',color: backgroundColor !== '' ? 'white' : 'rgb(217, 52, 4)' }}>
+						<span style={{ fontSize: '17px', fontWeight: 500, verticalAlign: 'baseline', float: 'right', color: backgroundColor !== '' ? 'white' : 'rgb(217, 52, 4)' }}>
 							{ord_numb}
 						</span>
 					</div>

@@ -10,6 +10,7 @@ import { MdPayment } from "react-icons/md"
 import "../styles/Orders.css"
 import PaymentContent from "../components/Orders/Contracts/PaymentContent"
 import ContractContent from "../components/Orders/Contracts/ContractContent"
+import useFetch from "../hooks/useFetch"
 
 const Contracts = ContractsHOC(ContractContent);
 const Payments = ContractsHOC(PaymentContent);
@@ -31,7 +32,7 @@ const routes = [
             method: "POST",
             link: "/api/orders",
             referer: "protected"
-        }
+        },
     },
     {
         text: "Redaktəyə qaytarılmış",
@@ -56,7 +57,9 @@ const routes = [
         text: "Vizalar",
         link: "/visas",
         icon: IoMdCheckmarkCircleOutline,
-        component: Visas
+        component: Visas,
+        docType: 0,
+        categoryid: 1
     },
     {
         text: "Q/T razılaşmaları",
@@ -70,14 +73,18 @@ const routes = [
                 number: "number",
             },
             method: "POST",
-            newDocNotifName: "nA"
-        }
+            newDocNotifName: "oA"
+        },
+        docType: 1,
+        categoryid: 1
     },
     {
         text: "Müqavilə razılaşmaları",
         link: "/contracts",
         icon: FaHandshake,
         component: Contracts,
+        docType: 2,
+        categoryid: 1,
         props: {
             link: "/api/get-user-contracts",
             method: "POST",
@@ -93,7 +100,7 @@ const routes = [
                 number: "number"
             },
             docType: 2,
-            newDocNotifName: "nC"
+            newDocNotifName: "oC"
         }
     },
     {
@@ -101,6 +108,8 @@ const routes = [
         link: "/payments",
         icon: MdPayment,
         component: Payments,
+        docType: 3,
+        categoryid: 1,
         props: {
             link: "/api/get-user-payments",
             method: "POST",
@@ -114,21 +123,28 @@ const routes = [
                 active: "message_id"
             },
             docType: 3,
-            newDocNotifName: "nP"
+            newDocNotifName: "oP"
         }
     }
 ];
 
 const Orders = (props) => {
     const { setMenuData, loadingIndicatorRef } = props;
-    const { path, url } = useRouteMatch()
+    const { path, url } = useRouteMatch();
+    const fetchGet = useFetch("GET");
     useEffect(() => {
-        loadingIndicatorRef.current.style.transform = "translateX(0%)";
-        loadingIndicatorRef.current.style.opacity = "0";
-        loadingIndicatorRef.current.classList.add("load-to-start");
-        setMenuData({ url: url, routes: routes });
-        props.leftNavRef.current.style.display = "block";
-    }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef]);
+        fetchGet("/api/notifications-by-categories")
+            .then(respJ => {
+                loadingIndicatorRef.current.style.transform = "translateX(0%)";
+                loadingIndicatorRef.current.style.opacity = "0";
+                loadingIndicatorRef.current.classList.add("load-to-start");
+                respJ.filter(cat => cat.category_id === 1).forEach(notif => {
+                    routes.find(route => route.docType === notif.doc_type).notifCount = notif.cnt;
+                });
+                setMenuData({ url: url, routes: routes });
+                props.leftNavRef.current.style.display = "block";
+            })
+    }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef, fetchGet]);
     return (
         <div className="dashboard">
             <Switch>

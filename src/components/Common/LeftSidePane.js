@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import {
-    IoMdMenu,
-} from 'react-icons/io'
+import { IoMdMenu } from 'react-icons/io'
 const icon = (Icon, active) => ({ ...props }) =>
     <Icon color={active ? "red" : '#808080'} {...props} />
 
@@ -55,6 +53,23 @@ const LeftSidePane = (props, ref) => {
                                     <Icon size="24" style={{ marginRight: '5px' }} />
                                     {link.text}
                                 </Link>
+                                {
+                                    <span
+                                        ref={element => { if (link.categoryid) props.refs.current[`${link.categoryid}-${link.docType}`] = element }}
+                                        style={{
+                                            background: "#123456",
+                                            padding: "3px 0.5rem",
+                                            marginRight: "1rem",
+                                            fontWeight: 600,
+                                            height: "19px",
+                                            color: "white",
+                                            display: link.notifCount ? "inline" : "none",
+                                            borderRadius: "50%"
+                                        }}
+                                    >
+                                        {link.notifCount}
+                                    </span>
+                                }
                             </div>
                         })
                     }

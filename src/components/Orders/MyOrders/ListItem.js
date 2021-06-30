@@ -83,7 +83,7 @@ const ListItem = (props) => {
               message: "notification",
               receivers: respJ
                 .filter(receiver => receiver.receiver_id)
-                .map(receiver => ({ id: receiver.receiver_id, notif: "newOrder" })),
+                .map(receiver => ({ id: receiver.receiver_id, notif: "oO" })),
               data: undefined
             }
             webSocket.send(JSON.stringify(message))

@@ -61,7 +61,7 @@ const NewBudgetRequest = (props) => {
                         }))
                         const message = {
                             message: "notification",
-                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "nO" })),
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "mD" })),
                             data: undefined
                         }
                         webSocket.send(JSON.stringify(message))

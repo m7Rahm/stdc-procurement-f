@@ -145,6 +145,7 @@ div.result-empty>h1 {
 .left-side-pane>div:not(:first-of-type)>div>div {
   padding-left: 16px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -1956,6 +1957,7 @@ div.login input:-webkit-autofill+label {
   top: 56px;
   bottom: 0px;
   right: 0px;
+  z-index: 1;
   text-align: center;
   min-width: 906px;
   transition: all 600ms ease-in-out;

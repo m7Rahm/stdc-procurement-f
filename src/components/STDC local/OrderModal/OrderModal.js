@@ -72,18 +72,11 @@ const OrderModal = (props) => {
         );
       }
     } else {
-      const rec = props.choices.receivers.map((receiver, i) => {
-        let recData = []
-        if (props.choices.receivers.length === i + 1) recData.push(receiver.id, 1)
-        else recData.push(receiver.id, 0)
-        return recData;
-      })
-
+      const rec = props.choices.receivers.reverse().map((receiver, i) => [receiver.id, i, receiver.dp ? 1 : 2, i === 0 ? 1 : 0]);
       const mat = props.choices.materials.map(material => {
-        let matData = []
+        const matData = []
         const assignment = placeList.filter(place => place.name === material.place)
-        console.log(material.place)
-        if(assignment.length===0) matData.push(material.materialId, material.count, null, material.place, material.additionalInfo, material.tesvir)
+        if (assignment.length === 0) matData.push(material.materialId, material.count, null, material.place, material.additionalInfo, material.tesvir)
         else matData.push(material.materialId, material.count, assignment[0].id, assignment[0].name, material.additionalInfo, material.tesvir)
         return matData;
       })
@@ -93,7 +86,7 @@ const OrderModal = (props) => {
         .then(respJ => {
           const message = {
             message: "notification",
-            receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "nO" })),
+            receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
             data: undefined
           }
           webSocket.send(JSON.stringify(message))

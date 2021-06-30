@@ -71,7 +71,7 @@ const NewPayment = (props) => {
                     if (respJ.length !== 0) {
                         const message = {
                             message: "notification",
-                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "nP" })),
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "oP" })),
                             data: undefined
                         }
                         webSocket.send(JSON.stringify(message))

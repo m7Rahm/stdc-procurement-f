@@ -17,7 +17,7 @@ const OrderContentProtected = (props) => {
 	const updateContent = (updatedCtnt, receivers, originid) => {
 		const message = JSON.stringify({
 			message: "notification",
-			receivers: [...receivers.map(receiver => ({ id: receiver, notif: "newOrder" })), { id: originid, notif: "simpleNotification" }],
+			receivers: [...receivers.map(receiver => ({ id: receiver, notif: "oO" })), { id: originid, notif: "simpleNotification" }],
 			data: undefined
 		})
 		webSocket.send(message)
@@ -28,7 +28,7 @@ const OrderContentProtected = (props) => {
 		setModalContent({ visible: false, content: null })
 		const message = JSON.stringify({
 			message: "notification",
-			receivers: receivers.map(receiver => ({ id: receiver.id, notif: "newOrder" })),
+			receivers: receivers.map(receiver => ({ id: receiver.id, notif: "oO" })),
 			data: undefined
 		})
 		webSocket.send(message)

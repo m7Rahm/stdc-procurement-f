@@ -40,12 +40,13 @@ const SelectModule = () => {
 	const token = tokenContext[0].token;
 	const userData = tokenContext[0].userData;
 	const navigationRef = useRef(null);
+	const menuNavRefs = useRef({});
 	const [menuData, setMenuData] = useState({ url: "", routes: [] })
 	const [webSocket, setWebSocket] = useState(null);
 	const leftPaneRef = useRef(null);
 	const backgroundRef = useRef(null);
 	const leftNavIconRef = useRef(null);
-	const loadingIndicatorRef = useRef(null)
+	const loadingIndicatorRef = useRef(null);
 	useEffect(() => {
 		let mounted = true;
 		if (token) {
@@ -97,7 +98,7 @@ const SelectModule = () => {
 								<a href="http://192.168.0.182:62447">
 									<div className="module-card">
 										Anbar
-								</div>
+									</div>
 								</a>
 							}
 						</div>
@@ -113,6 +114,7 @@ const SelectModule = () => {
 								webSocket={webSocket}
 								token={token}
 								userData={userData}
+								menuNavRefs={menuNavRefs}
 								ref={loadingIndicatorRef}
 								leftNavRef={leftNavIconRef}
 								navigationRef={navigationRef}
@@ -141,6 +143,7 @@ const SelectModule = () => {
 											url={menuData.url}
 											links={menuData.routes}
 											ref={leftPaneRef}
+											refs={menuNavRefs}
 											backgroundRef={backgroundRef}
 											handleNavClick={handleNavClick}
 										/>

@@ -49,7 +49,7 @@ const AgreementVendors = (props) => {
                         props.setInitData(prev => ({ ...prev }))
                         const message = {
                             message: "notification",
-                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.not_type === 0 ? "" : "nA" })),
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.not_type === 0 ? "" : "oA" })),
                             data: undefined
                         }
                         webSocket.send(JSON.stringify(message))
@@ -76,7 +76,7 @@ const AgreementVendors = (props) => {
                         props.setInitData(prev => ({ ...prev }))
                         const message = {
                             message: "notification",
-                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.not_type === 0 ? "" : "nA" })),
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.not_type === 0 ? "" : "oA" })),
                             data: undefined
                         }
                         webSocket.send(JSON.stringify(message))

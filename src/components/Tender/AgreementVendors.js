@@ -55,7 +55,7 @@ const AgreementVendors = (props) => {
                 if (respJ.length) {
                     const message = {
                         message: "notification",
-                        receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "nA" })),
+                        receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "oA" })),
                         data: undefined
                     }
                     webSocket.send(JSON.stringify(message))

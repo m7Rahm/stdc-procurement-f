@@ -1,30 +1,28 @@
-import { useContext, useMemo } from "react"
+import { useContext, useMemo, useRef } from "react"
 import { TokenContext } from "../App"
 import { serverAddress, serverPort } from "../data/data"
 const useFetch = (method) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
-    const logout = tokenContext[2];
+    const logout = useRef(tokenContext[2]);
     const func = useMemo(() => method === "GET"
-        ? (url, abortController) => {
+        ? async (url, abortController) => {
             const aController = abortController || new AbortController()
-            return fetch(`${serverAddress}:${serverPort}${url}`, {
+            const resp = await fetch(`${serverAddress}:${serverPort}${url}`, {
                 signal: aController.signal,
                 headers: {
                     "Authorization": "Bearer " + token
                 }
-            })
-                .then(resp => {
-                    if (resp.status === 401)
-                        logout()
-                    else
-                        return resp.json()
-                })
+            });
+            if (resp.status === 401)
+                logout.current();
+            else
+                return resp.json();
         }
-        : (url, data, abortController) => {
+        : async (url, data, abortController) => {
             const apiData = JSON.stringify(data);
             const aController = abortController || new AbortController()
-            return fetch(`${serverAddress}:${serverPort}${url}`, {
+            const resp = await fetch(`${serverAddress}:${serverPort}${url}`, {
                 method: "POST",
                 signal: aController.signal,
                 headers: {
@@ -33,18 +31,17 @@ const useFetch = (method) => {
                     "Content-Length": apiData.length
                 },
                 body: apiData
-            })
-                .then(resp => {
-                    const contentType = resp.headers.get("content-type");
-                    if (resp.status === 401)
-                        logout()
-                    else if (resp.status === 403)
-                        throw new Error(403)
-                    else if (contentType && contentType.indexOf("application/json") !== -1)
-                        return resp.json()
-                    else
-                        throw new Error(500)
-                })
+            });
+            const contentType = resp.headers.get("content-type");
+            if (resp.status === 401)
+                logout.current();
+            else if (resp.status === 403)
+                throw new Error(403);
+            else if (contentType && contentType.indexOf("application/json") !== -1)
+                return resp.json();
+
+            else
+                throw new Error(500);
         }, [token, method, logout])
     return func
 }

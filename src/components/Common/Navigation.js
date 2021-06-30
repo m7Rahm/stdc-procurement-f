@@ -18,7 +18,23 @@ const Navigation = (props, ref) => {
     const [profileData, setProfileData] = useState({ visible: false })
     const fetchNotifications = useFetch("GET");
     useEffect(() => {
-        let mounted = true;
+        const handleInAppEvent = event => {
+            const { docType, tranid, categoryid } = event.detail;
+            const key = `${categoryid}-${docType}`
+            if (props.menuNavRefs.current[key]) {
+                const prev = Number(props.menuNavRefs[key]);
+                if (prev - 1 > 0)
+                    props.menuNavRefs.current[key].innerHTML = prev - 1;
+                else
+                    props.menuNavRefs.current[key].style.display = "none"
+            }
+            setNotifications(prev => {
+                const all = prev.all.map(notif => notif.tran_id === tranid && notif.doc_type === docType && notif.category_id === categoryid ? { ...notif, is_read: 1 } : notif);
+                const visible = prev.all.slice(prev.offsetStart, prev.offsetEnd)
+                return { ...prev, all, visible, count: prev.count - 1 <= 0 ? "" : prev.count - 1 }
+            })
+        }
+        window.addEventListener("inAppEvent", handleInAppEvent, false);
         props.webSocket.onmessage = (data) => {
             const webSockMessage = JSON.parse(data.data);
             const event = new CustomEvent(webSockMessage.messageType, {
@@ -26,7 +42,27 @@ const Navigation = (props, ref) => {
             });
             if (webSockMessage.messageType !== "recognition") {
                 window.dispatchEvent(event);
-                if (notificationsRef.current.style.display !== "block" && mounted)
+                let docType = "";
+                const categoryid = webSockMessage.messageType[0] === "o" ? 1 : webSockMessage.messageType[0] === "m" ? 10 : 0;
+                if (webSockMessage.messageType[1] === "O")
+                    docType = "0";
+                else if (webSockMessage.messageType[1] === "A")
+                    docType = "1";
+                else if (webSockMessage.messageType[1] === "C")
+                    docType = "2";
+                else if (webSockMessage.messageType[1] === "P")
+                    docType = "3";
+                const key = `${categoryid}-${docType}`
+                if (props.menuNavRefs.current[key]) {
+                    const prev = Number(props.menuNavRefs.current[key].innerHTML);
+                    if (props.menuNavRefs.current[key].style.display === "none") {
+                        props.menuNavRefs.current[key].innerHTML = "1";
+                        props.menuNavRefs.current[key].style.display = "inline"
+                    }
+                    else
+                        props.menuNavRefs.current[key].innerHTML = prev + 1;
+                }
+                if (notificationsRef.current.style.display !== "block")
                     setNotifications(prev => {
                         update.current = true;
                         return ({ ...prev, count: Number(prev.count + 1) })
@@ -34,7 +70,7 @@ const Navigation = (props, ref) => {
                 else {
                     fetchNotifications(`/api/notifications?from=0&active=1`)
                         .then(respJ => {
-                            if (respJ.length !== 0 && mounted) {
+                            if (respJ.length !== 0) {
                                 setNotifications(prev => {
                                     const newNotifications = prev.all.filter(notification => !respJ.find(newNotifications => newNotifications.id === notification.id));
                                     const all = [...newNotifications, ...respJ]
@@ -50,9 +86,9 @@ const Navigation = (props, ref) => {
             }
         }
         return () => {
-            mounted = false
+            window.removeEventListener("inAppEvent", handleInAppEvent, false)
         }
-    }, [props.webSocket, fetchNotifications]);
+    }, [props.webSocket, fetchNotifications, props.menuNavRefs]);
     useEffect(() => {
         let mounted = true;
         fetchNotifications('/api/notifications?from=0')
@@ -151,7 +187,7 @@ const Navigation = (props, ref) => {
                             ? "/contracts?"
                             : "/payments?"
         const { tran_id: tranid, doc_number: docNumber } = notification;
-        let link = module + subModule + `i=${tranid}`
+        let link = module + subModule + `i=${tranid}&r=${notification.init_id}`
         if (notification.category_id === 10) {
             link = "/other?i=" + tranid + "&dt=" + notification.doc_type
         }
@@ -235,7 +271,7 @@ const Navigation = (props, ref) => {
                                                 >
                                                     <strong style={{ fontSize: "1.2rem" }}>{notification.full_name}</strong>
                                                     <br />
-                                                    <div style={{ fontSize: "0.85rem" }}>
+                                                    <div style={{ fontSize: "12px", paddingTop: "2px" }}>
                                                         {getNotifText(notification)}
                                                     </div>
                                                     <span>{notification.date_time}</span>

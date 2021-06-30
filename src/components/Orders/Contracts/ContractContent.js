@@ -80,7 +80,7 @@ const ContractContent = (props) => {
                 if (respJ.length !== 0) {
                     const message = {
                         message: "notification",
-                        receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.next_id !== 0 ? "nC" : "sNot" })),
+                        receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.next_id !== 0 ? "oC" : "sNot" })),
                         data: undefined
                     }
                     webSocket.send(JSON.stringify(message))

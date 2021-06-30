@@ -6,7 +6,7 @@ import MiscDocContainer from "../Common/MiscDocContainer";
 import EmptyContent from "../Misc/EmptyContent";
 const Modal = lazy(() => import("../Misc/Modal"));
 const NewBudgetRequest = lazy(() => import("../../pages/Budget/NewBudgetRequest"));
-const miscDocNotifName = "nO";
+const miscDocNotifName = "mD";
 
 const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
     const { updateListContent, params, inData, referer } = props
