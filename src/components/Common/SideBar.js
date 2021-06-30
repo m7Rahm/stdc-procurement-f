@@ -100,6 +100,7 @@ const SideBar = (props) => {
 								date={visa.date_time}
 								deadline={visa.deadline}
 								order_type={visa.order_type}
+								ord_numb={visa.ord_numb}
 							/>
 						)
 					})

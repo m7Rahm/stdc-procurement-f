@@ -5,12 +5,12 @@ import { IoIosAdd } from 'react-icons/io'
 import { newOrderInitial } from '../../../data/data'
 
 const NewOrderTableBody = (props) => {
-const fetchGet = useFetch("GET");
-const modelsListRef = useRef(null);
-const placesListRef = useRef(null);
-const handleAddClick = () => {
-  props.setChoices(prev => ({...prev,materials:[...prev.materials, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}]}))
-}
+  const fetchGet = useFetch("GET");
+  const modelsListRef = useRef(null);
+  const placesListRef = useRef(null);
+  const handleAddClick = () => {
+    props.setChoices(prev => ({ ...prev, materials: [...prev.materials, { ...newOrderInitial.materials[0], id: Date.now(), class: 'new-row' }] }))
+  }
 
   const { orderInfo,
     //  handleSendClick 
@@ -24,17 +24,17 @@ const handleAddClick = () => {
   useEffect(() => {
     // props.setMaterials(prev => prev.filter(material => material.isService === orderType))
     // props.setChoices(prev=>prev.materials.filter(material => material.isService === orderType))
-    setChoices(prev=>({...prev,materials:prev.materials.filter(material => material.isService === orderType)}))
-  }, [orderType,setChoices])
+    setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.isService === orderType) }))
+  }, [orderType, setChoices])
 
   const setPlaceList = props.setPlaceList;
-  useEffect(()=>{
+  useEffect(() => {
     fetchGet(`/api/assignments`)
-    .then(respJ => {
-      setPlaceList(respJ)
-    })
-    .catch(ex => console.log(ex))
-  }, [fetchGet,setPlaceList])
+      .then(respJ => {
+        setPlaceList(respJ)
+      })
+      .catch(ex => console.log(ex))
+  }, [fetchGet, setPlaceList])
 
   return (
     <>

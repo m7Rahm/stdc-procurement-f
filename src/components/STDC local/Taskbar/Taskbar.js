@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react'
+import React, { useRef } from 'react'
 import UnfinishedModal from "./UnfinishedModal.js"
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
+import { FaChevronLeft } from "react-icons/fa"
 
 function Taskbar(props) {
-    const [fachevron, setFachevron] = useState(false)
     const sidebarRef = useRef(null);
     const handleSelectChange = (employee) => {
         props.setModalList(prevState => {
@@ -15,19 +14,11 @@ function Taskbar(props) {
             return newModals;
         });
     }
-    const mouseOverHandlerSlide = (e) => {
-        setFachevron(prev => !prev)
-    };
     return (
-        <div className="sidebar-button-wrap" ref={sidebarRef} onMouseOver={mouseOverHandlerSlide}
-            onMouseLeave={mouseOverHandlerSlide}>
+        <div className="sidebar-button-wrap" ref={sidebarRef}>
             <div>
                 <div className="sidebar-button">
-                    {fachevron === false ?
-                        <FaChevronLeft className="greater-than-icon" />
-                        :
-                        <FaChevronRight className="greater-than-icon" />
-                    }
+                    <FaChevronLeft className="greater-than-icon" />
                 </div>
             </div>
             <div className="sidebar2">

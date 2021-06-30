@@ -39,6 +39,7 @@ const SelectModule = () => {
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0].token;
 	const userData = tokenContext[0].userData;
+	const navigationRef = useRef(null);
 	const [menuData, setMenuData] = useState({ url: "", routes: [] })
 	const [webSocket, setWebSocket] = useState(null);
 	const leftPaneRef = useRef(null);
@@ -114,6 +115,7 @@ const SelectModule = () => {
 								userData={userData}
 								ref={loadingIndicatorRef}
 								leftNavRef={leftNavIconRef}
+								navigationRef={navigationRef}
 								tokenContext={tokenContext}
 							/>
 							<div
@@ -146,6 +148,7 @@ const SelectModule = () => {
 											<route.component
 												handleNavClick={handleNavClick}
 												menuData={menuData}
+												navigationRef={navigationRef}
 												loadingIndicatorRef={loadingIndicatorRef}
 												leftNavRef={leftNavIconRef}
 												setMenuData={setMenuData}

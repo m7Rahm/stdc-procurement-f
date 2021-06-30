@@ -46,10 +46,13 @@ const OrderContentProtected = (props) => {
 				<VisaContentHeader
 					updateContent={updateContent}
 					current={current}
+					navigationRef={props.navigationRef}
+					visaContentRef={props.visaContentRef}
 					version={current[0].emp_version_id}
 					handleEditClick={handleEditClick}
 					intention={current[0].intention}
 					orderNumb={current[0].ord_numb}
+					clicked={props.clicked}
 				/>
 			</>
 			<VisaContentMaterials
@@ -63,6 +66,8 @@ const OrderContentProtected = (props) => {
 				forwardDoc={forwardDoc}
 				handleEditClick={handleEditClick}
 				updateContent={updateContent}
+				orderContent={current}
+				forwardType={forwardType}
 			/>
 		</>
 	)

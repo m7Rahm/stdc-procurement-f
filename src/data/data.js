@@ -269,8 +269,8 @@ export const productUnit = [
     {
         val: 3,
         text: 'L'
-    },{
-        val:4,
+    }, {
+        val: 4,
         text: 'M'
     }
 ]
