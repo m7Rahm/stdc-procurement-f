@@ -15,6 +15,7 @@ const VisaContentMaterials = (props) => {
 		orders = orderContent.filter(material => material.techizatci_id === userData.userInfo.structureid)
 	else
 		orders = orderContent
+	console.log(orders)
 	return (
 		orders.length !== 0 &&
 		<>
@@ -32,12 +33,12 @@ const VisaContentMaterials = (props) => {
 					<div style={{ maxWidth: '140px' }}>Kod</div>
 					<div style={{ maxWidth: '140px' }}>Say</div>
 					<div style={{ maxWidth: '140px' }}>İstifadə yeri</div>
-
 					{
 						((forwardType === 3 || forwardType === 5) && order_type === 1) &&
 						<div style={{ maxWidth: '140px' }}>Məbləğ</div>
 					}
 					<div>Əlavə məlumat</div>
+					<div style={{ maxWidth: '140px' }}>Təsviri</div>
 					<div style={{ width: '50px', flex: 'none' }}></div>
 				</li>
 				{
@@ -76,6 +77,7 @@ const TableRow = (props) => {
 		result,
 		product_id,
 		mat_ass,
+		description,
 		can_influence: canInfluence
 	} = props.material;
 	const fetchPost = useFetch("POST");
@@ -143,6 +145,11 @@ const TableRow = (props) => {
 			<div>
 				<span style={{ width: '100%' }} >
 					{material_comment}
+				</span>
+			</div>
+			<div>
+				<span style={{ width: '100%' }} >
+					{description}
 				</span>
 			</div>
 			<div style={{ minWidth: '50px', flex: 'none' }}>

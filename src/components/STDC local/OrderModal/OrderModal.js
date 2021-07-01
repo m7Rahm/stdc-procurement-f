@@ -89,7 +89,7 @@ const OrderModal = (props) => {
         const matData = []
         const assignment = placeList.filter(place => place.name === material.place)
         if (assignment.length === 0) matData.push(material.materialId, material.count, null, material.place, material.additionalInfo, material.tesvir)
-        else matData.push(material.materialId, material.count, assignment[0].id, assignment[0].name, material.additionalInfo, material.tesvir)
+        else matData.push(material.materialId, material.materialName, material.count, assignment[0].id, assignment[0].name, material.additionalInfo, material.tesvir)
         return matData;
       })
 

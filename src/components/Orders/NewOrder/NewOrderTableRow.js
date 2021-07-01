@@ -119,11 +119,17 @@ const NewOrderTableRow = (props) => {
 
   const handleInputSearch = (e) => {
     const value = e.target.value;
+    let valueWithoutE = encodeURIComponent(value.replace('e','[eə]'));
+    valueWithoutE = encodeURIComponent(value.replace('c','[cç]'));
+    valueWithoutE = encodeURIComponent(value.replace('i','[iı]'));
+    valueWithoutE = encodeURIComponent(value.replace('g','[gğ]'));
+    valueWithoutE = encodeURIComponent(value.replace('s','[sş]'));
+    valueWithoutE = encodeURIComponent(value.replace('u','[uü]'));
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
           ...material,
-          materialId: '',
+          materialId: null,
           materialName: value,
           approx_price: '',
           code: '',
@@ -135,7 +141,7 @@ const NewOrderTableRow = (props) => {
         : material
       )
     }));
-    fetchGet(`/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
+    fetchGet(`/api/material-by-title?title=${valueWithoutE}&orderType=${orderType}&structure=${structure}`)
       .then(respJ => {
         setModels(respJ)
       })
@@ -214,7 +220,13 @@ const NewOrderTableRow = (props) => {
           <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ width: '150px', maxWidth: ' 200px' }} className="material-model-list">
             {
               models.map(model => {
-                const inputVal = modelInputRef.current.value.replace("-", "\\-");
+                let inputVal = modelInputRef.current.value.replace("-", "\\-");
+                inputVal = inputVal.replace('e','eə');
+                inputVal = inputVal.replace('c','cç');
+                inputVal = inputVal.replace('i','iı');
+                inputVal = inputVal.replace('g','gğ');
+                inputVal = inputVal.replace('s','sş');
+                inputVal = inputVal.replace('u','uü');
                 const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
                 const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
                 return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>

@@ -4,6 +4,7 @@ import { IoIosAdd } from 'react-icons/io'
 import NewOrderTableRow from '../NewOrder/NewOrderTableRow'
 import useFetch from '../../../hooks/useFetch'
 import { newOrderInitial } from '../../../data/data'
+import { WebSocketContext } from '../../../pages/SelectModule'
 
 
 const EditOrder = (props) => {
@@ -12,6 +13,9 @@ const EditOrder = (props) => {
     const userData = tokenContext[0].userData;
     // const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const [placeList, setPlaceList] = useState([])
+    const fetchPost = useFetch('POST')
+    const webSocket = useContext(WebSocketContext);
+
 
     let orders = [];
     if (forwardType === 3)
@@ -65,6 +69,43 @@ const EditOrder = (props) => {
 
     const editClickHandler = () => {
         console.log("sent")
+        const mat = choices.materials.map(material => {
+          const matData = []
+          const assignment = placeList.filter(place => place.name === material.place)
+          if (assignment.length === 0) matData.push(material.materialId, material.count, null, material.place, material.additionalInfo, material.tesvir)
+          else matData.push(material.materialId, material.materialName, material.count, assignment[0].id, assignment[0].name, material.additionalInfo, material.tesvir)
+          return matData;
+        })
+  
+        const data = { mats: mat}
+        fetchPost(`/api/new-order`, data)
+          .then(respJ => {
+            const message = {
+              message: "notification",
+              receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
+              data: undefined
+            }
+            props.operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both"
+  
+            webSocket.send(JSON.stringify(message))
+            const inParams = {
+              from: 0,
+              until: 20,
+              status: -3,
+              dateFrom: '',
+              dateTill: '',
+              ordNumb: "",
+              departments: [],
+              canSeeOtherOrders: props.canSeeOtherOrders
+            }
+            fetchPost('/api/orders', inParams)
+              .then(respJ => {
+                // const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                // props.setOrders({ count: totalCount, orders: respJ })
+              })
+              .catch(ex => console.log(ex))
+          })
+          .catch(ex => console.log(ex))
     }
 
     console.log(choices.materials)

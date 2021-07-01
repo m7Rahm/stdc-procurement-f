@@ -55,18 +55,15 @@ const VisaContentHeader = (props) => {
 				{
 					visaGenInfo.result === 1
 						? <span>
-							{visaGenInfo.act_date_time}
-							<FaCheck size="30" title="Təsdiq" color="#34A853" />
+							<FaCheck size="30" title={visaGenInfo.act_date_time} color="#34A853" />
 						</span>
 						: visaGenInfo.result === -1
 							? <span>
-								{visaGenInfo.act_date_time}
-								<FaTimes title="Etiraz" size="30" color="#EA4335" />
+								<FaTimes title={visaGenInfo.act_date_time} size="30" color="#EA4335" />
 							</span>
 							: visaGenInfo.result === 3
 								? <span>
-									{visaGenInfo.act_date_time}
-									<IoIosWarning onClick={showOrderVersions} title="Dəyişikliklərə bax" cursor="pointer" size="30" color="#EA4335" />
+									<IoIosWarning onClick={showOrderVersions} title={visaGenInfo.act_date_time} cursor="pointer" size="30" color="#EA4335" />
 								</span>
 								: ''
 

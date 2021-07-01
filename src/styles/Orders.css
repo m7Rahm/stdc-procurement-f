@@ -525,7 +525,7 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     font-size: 24px;
     font-weight: 600;
     color: gray;
-    float: right;
+    float: left;
 }
 
 .protex-order-header-container>svg {
