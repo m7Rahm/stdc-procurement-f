@@ -119,12 +119,12 @@ const NewOrderTableRow = (props) => {
 
   const handleInputSearch = (e) => {
     const value = e.target.value;
-    let valueWithoutE = value.replace('e','[eə]')
-    valueWithoutE = valueWithoutE.replace('c','[cç]');
-    valueWithoutE = valueWithoutE.replace('i','[iı]');
-    valueWithoutE = valueWithoutE.replace('g','[gğ]');
-    valueWithoutE = valueWithoutE.replace('s','[sş]');
-    valueWithoutE = valueWithoutE.replace('u','[uü]');
+    let valueWithoutE = value.replace('e', '[eə]')
+    valueWithoutE = valueWithoutE.replace(/ch?/, '[cç]');
+    valueWithoutE = valueWithoutE.replace('i', '[iı]');
+    valueWithoutE = valueWithoutE.replace(/gh?/, '[gğ]');
+    valueWithoutE = valueWithoutE.replace(/sh?/, '[sş]');
+    valueWithoutE = valueWithoutE.replace('u', '[uü]');
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
@@ -221,12 +221,12 @@ const NewOrderTableRow = (props) => {
             {
               models.map(model => {
                 let inputVal = modelInputRef.current.value.replace("-", "\\-");
-                inputVal = inputVal.replace('e','eə');
-                inputVal = inputVal.replace('c','cç');
-                inputVal = inputVal.replace('i','iı');
-                inputVal = inputVal.replace('g','gğ');
-                inputVal = inputVal.replace('s','sş');
-                inputVal = inputVal.replace('u','uü');
+                inputVal = inputVal.replace('e', 'eə');
+                inputVal = inputVal.replace('c', 'cç');
+                inputVal = inputVal.replace('i', 'iı');
+                inputVal = inputVal.replace('g', 'gğ');
+                inputVal = inputVal.replace('s', 'sş');
+                inputVal = inputVal.replace('u', 'uü');
                 const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
                 const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
                 return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>
