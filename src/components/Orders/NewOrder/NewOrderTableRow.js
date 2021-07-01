@@ -121,10 +121,11 @@ const NewOrderTableRow = (props) => {
     const value = e.target.value;
     let valueWithoutE = value.replace('e', '[eə]')
     valueWithoutE = valueWithoutE.replace(/ch?/, '[cç]');
-    valueWithoutE = valueWithoutE.replace('i', '[iı]');
+    valueWithoutE = valueWithoutE.replace(/i/, '[iı]');
     valueWithoutE = valueWithoutE.replace(/gh?/, '[gğ]');
     valueWithoutE = valueWithoutE.replace(/sh?/, '[sş]');
-    valueWithoutE = valueWithoutE.replace('u', '[uü]');
+    valueWithoutE = valueWithoutE.replace(/u/, '[uü]');
+    valueWithoutE = valueWithoutE.replace(/o/, '[oö]');
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
@@ -150,7 +151,14 @@ const NewOrderTableRow = (props) => {
   }
 
   const handlePlaceSearch = (e) => {
-    const value = e.target.value;
+    let value = e.target.value;
+    value = value.replace('e', '[eə]')
+    value = value.replace(/ch?/, '[cç]');
+    value = value.replace(/i/, '[iı]');
+    value = value.replace(/gh?/, '[gğ]');
+    value = value.replace(/sh?/, '[sş]');
+    value = value.replace(/u/, '[uü]');
+    value = value.replace(/o/, '[oö]');
     const charArray = value.split("")
     const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
     const regExp = new RegExp(`${reg}`, "i");
@@ -222,12 +230,13 @@ const NewOrderTableRow = (props) => {
             {
               models.map(model => {
                 let inputVal = modelInputRef.current.value.replace("-", "\\-");
-                inputVal = inputVal.replace('e', 'eə');
-                inputVal = inputVal.replace('c', 'cç');
-                inputVal = inputVal.replace('i', 'iı');
-                inputVal = inputVal.replace('g', 'gğ');
-                inputVal = inputVal.replace('s', 'sş');
-                inputVal = inputVal.replace('u', 'uü');
+                inputVal = inputVal.replace(/e/, 'eə');
+                inputVal = inputVal.replace(/c/, 'cç');
+                inputVal = inputVal.replace(/i/, 'iı');
+                inputVal = inputVal.replace(/g/, 'gğ');
+                inputVal = inputVal.replace(/s/, 'sş');
+                inputVal = inputVal.replace(/u/, 'uü');
+                inputVal = inputVal.replace(/o/, 'oö');
                 const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
                 const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
                 return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>
@@ -300,7 +309,14 @@ const NewOrderTableRow = (props) => {
           <ul id="placeListRef" tabIndex="0" ref={placeListRef} style={{ width: '150px', maxWidth: ' 200px', outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
             {
               placeList.map(model => {
-                const inputVal = placeListRef.current ? placeInputRef.current.value.replace("-", "\\-") : '';
+                let inputVal = placeListRef.current ? placeInputRef.current.value.replace("-", "\\-") : '';
+                inputVal = inputVal.replace(/e/, 'eə');
+                inputVal = inputVal.replace(/c/, 'cç');
+                inputVal = inputVal.replace(/i/, 'iı');
+                inputVal = inputVal.replace(/g/, 'gğ');
+                inputVal = inputVal.replace(/s/, 'sş');
+                inputVal = inputVal.replace(/u/, 'uü');
+                inputVal = inputVal.replace(/o/, 'oö');
                 const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
                 const title = model.name.replace(strRegExp, (text) => `<i>${text}</i>`);
                 return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setPlace(model)}></li>
