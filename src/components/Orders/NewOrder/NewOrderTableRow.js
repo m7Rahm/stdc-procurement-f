@@ -119,11 +119,11 @@ const NewOrderTableRow = (props) => {
 
   const handleInputSearch = (e) => {
     const value = e.target.value;
-    let valueWithoutE = encodeURIComponent(value.replace('e','[eə]'));
-    valueWithoutE = encodeURIComponent(value.replace('c','[cç]'));
-    valueWithoutE = encodeURIComponent(value.replace('i','[iı]'));
-    valueWithoutE = encodeURIComponent(value.replace('g','[gğ]'));
-    valueWithoutE = encodeURIComponent(value.replace('s','[sş]'));
+    let valueWithoutE = value.replace('e','[eə]')
+    valueWithoutE = value.replace('c','[cç]');
+    valueWithoutE = value.replace('i','[iı]');
+    valueWithoutE = value.replace('g','[gğ]');
+    valueWithoutE = value.replace('s','[sş]');
     valueWithoutE = encodeURIComponent(value.replace('u','[uü]'));
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
