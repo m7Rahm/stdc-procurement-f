@@ -120,11 +120,11 @@ const NewOrderTableRow = (props) => {
   const handleInputSearch = (e) => {
     const value = e.target.value;
     let valueWithoutE = value.replace('e','[eə]')
-    valueWithoutE = value.replace('c','[cç]');
-    valueWithoutE = value.replace('i','[iı]');
-    valueWithoutE = value.replace('g','[gğ]');
-    valueWithoutE = value.replace('s','[sş]');
-    valueWithoutE = encodeURIComponent(value.replace('u','[uü]'));
+    valueWithoutE = valueWithoutE.replace('c','[cç]');
+    valueWithoutE = valueWithoutE.replace('i','[iı]');
+    valueWithoutE = valueWithoutE.replace('g','[gğ]');
+    valueWithoutE = valueWithoutE.replace('s','[sş]');
+    valueWithoutE = valueWithoutE.replace('u','[uü]');
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
@@ -141,7 +141,7 @@ const NewOrderTableRow = (props) => {
         : material
       )
     }));
-    fetchGet(`/api/material-by-title?title=${valueWithoutE}&orderType=${orderType}&structure=${structure}`)
+    fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}&structure=${structure}`)
       .then(respJ => {
         setModels(respJ)
       })
