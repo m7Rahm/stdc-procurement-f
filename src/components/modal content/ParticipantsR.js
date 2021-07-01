@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { FaCheck, FaTimes, FaHourglassHalf, FaPen, FaUserEdit } from 'react-icons/fa'
+import { FaCheck, FaTimes, FaPen, FaUserEdit } from 'react-icons/fa'
 import useFetch from '../../hooks/useFetch'
-import { } from "react-icons/"
+import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
-const getResultText = (result) => {
-    if (result === 0)
-        return <FaHourglassHalf title='Baxılır...' />
+const getResultText = (result, stat) => {
+    if (result === 0 && stat === true)
+        return <AiOutlineLoading3Quarters style={{ animation: "loading 1.5s ease-in-out infinite both" }} color="rgb(244, 180, 0)" title='Baxılır...' />
     else if (result === -1)
         return <FaTimes color="red" title="Etiraz Edildi" />
     else if (result === 1)
@@ -45,16 +45,15 @@ const ParticipantsR = (props) => {
                         <li key={index}>
                             <div>
                                 {participant.full_name}
-                                {getResultText(participant.result)}
+                                {getResultText(participant.result, participant.stat)}
                                 <div style={{ fontWeight: "650", fontSize: "0.8rem", color: '#1665d8' }}>{participant.vezife || ""}</div>
                             </div>
                             <div style={{ textAlign: "left", position: "relative" }}>
                                 {/*participant.comment*/"asdsadas"}
                                 <span>
-                                    {participant.act_date_time || participant.date_time}
+                                    {participant.stat ? participant.act_date_time || participant.date_time : participant.act_date_time}
                                 </span>
                             </div>
-                            {/* <span style={{fontSize: "10px", float: "right", padding: "2px 5px", width: "100px"}}>{participant.act_date_time || participant.date_time}</span> */}
                         </li>
                     )
                 }

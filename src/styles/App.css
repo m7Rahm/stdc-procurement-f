@@ -14,6 +14,7 @@
 :root {
   --primary-color-accept: rgb(15, 157, 88);
   --primary-color-decline: rgb(217, 52, 4);
+  --primary-color-yellow: rgb(244, 180, 0);
 }
 
 div.content-loading>div {
