@@ -108,7 +108,7 @@ const EditOrder = (props) => {
           .catch(ex => console.log(ex))
     }
 
-    console.log(choices.materials)
+    // console.log(choices.materials)
     // console.log(orders)
     return (
         <div>

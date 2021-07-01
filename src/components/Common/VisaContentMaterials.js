@@ -15,7 +15,7 @@ const VisaContentMaterials = (props) => {
 		orders = orderContent.filter(material => material.techizatci_id === userData.userInfo.structureid)
 	else
 		orders = orderContent
-	console.log(orders)
+	// console.log(orders)
 	return (
 		orders.length !== 0 &&
 		<>

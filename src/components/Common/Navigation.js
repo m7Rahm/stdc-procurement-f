@@ -278,7 +278,7 @@ const Navigation = (props, ref) => {
                                                 </li>
                                             )
                                         }
-                                        <div ref={delimterRef} style={{ position: "absolute", top: `${notifications.height}px`, opacity: 0 }}>demileter</div>
+                                        <div ref={delimterRef} style={{ position: "absolute", top: `${notifications.height}px`, opacity: 0 }}>delimiter</div>
                                     </ul>
                                 </div>
                             </div>
