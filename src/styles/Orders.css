@@ -73,7 +73,8 @@ div.direction[name="back"]:active {
     animation: slide-right 600ms ease-in-out both;
     background-color: rgba(255, 255, 255, 0.8);
 }
-.sidebar3>div:first-of-type{
+
+.sidebar3>div:first-of-type {
     height: 58px;
     border-top: 2px solid gainsboro;
     font-size: 1.5rem;
@@ -84,20 +85,49 @@ div.direction[name="back"]:active {
     cursor: default;
     background-color: whitesmoke;
 }
-.sidebar3>div:first-of-type svg{
+
+.sidebar3>div:first-of-type svg {
     height: 24px;
     float: left;
     color: rgb(145, 145, 145);
     margin-right: 20px;
     cursor: pointer;
 }
+
 @keyframes slide-right {
-    0%{
-        transform: translateX(25rem);;
+    0% {
+        transform: translateX(25rem);
+        ;
     }
-    100%{
+    100% {
         transform: translateX(0rem);
     }
+}
+
+.toggle-participants {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    float: right;
+    width: 180px;
+    text-align: center;
+    border-radius: 5px;
+    background-image: linear-gradient(to bottom, #3C8DAD, #53a5c5);
+    height: 35px;
+}
+
+.toggle-participants:hover {
+    background-image: linear-gradient(to bottom, #52a9cc, #5395af);
+}
+
+.toggle-participants::after {
+    display: block;
+    content: '';
+    clear: both;
 }
 
 /* .participantsR>li:first-of-type {
@@ -106,6 +136,11 @@ div.direction[name="back"]:active {
     font-weight: 600;
     overflow: hidden;
 } */
+
+.participantsR {
+    padding: 0px;
+    margin: 0px;
+}
 
 .participantsR>li {
     display: flex;
@@ -122,11 +157,13 @@ div.direction[name="back"]:active {
     position: relative;
     padding: 10px;
 }
-.participantsR>li>div:first-of-type>svg{
+
+.participantsR>li>div:first-of-type>svg {
     position: absolute;
     right: 0px;
-    top: 0.5rem;
+    top: 1rem;
 }
+
 .participantsR>li>div:not(:first-of-type) {
     flex: 0.6;
     padding: 10px 20px;
@@ -135,6 +172,7 @@ div.direction[name="back"]:active {
 .participantsR>li>div:first-of-type {
     text-align: left;
 }
+
 .participantsR span {
     position: absolute;
     font-weight: 600;
@@ -143,6 +181,7 @@ div.direction[name="back"]:active {
     bottom: 0.5rem;
     right: 1rem;
 }
+
 .participantsR>li:not(:first-of-type) {
     overflow: hidden;
 }
@@ -518,7 +557,7 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
 }
 
 .protex-order-header-container>span>svg {
-    margin-left: 20px;
+    margin-left: 0.5rem;
 }
 
 .protex-order-header-container>span {
@@ -570,9 +609,11 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
 .order-table-protex {
     margin-top: 20px;
 }
-.order-table-protex>li{
+
+.order-table-protex>li {
     max-height: none;
 }
+
 .order-table-protex>li>div {
     display: flex;
     justify-content: flex-start;
@@ -585,7 +626,7 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
 
 .order-table-protex>li:first-of-type {
     border-bottom-left-radius: 0px;
-    background-image: linear-gradient(to bottom, #ac9e9e, gray);
+    background-image: linear-gradient(to bottom, #3C8DAD, gray);
 }
 
 .order-table-protex>li>div:not(:first-of-type) {
