@@ -363,14 +363,17 @@ ul.vendors-list>li:hover {
   background-color: gainsboro;
   color: white;
 }
-div.operation-result-details{
+
+div.operation-result-details {
   font-weight: 550;
   color: var(--primary-color-decline);
 }
-div.operation-result-details>div{
+
+div.operation-result-details>div {
   margin-top: 0.5rem;
   color: var(--primary-color-decline);
 }
+
 div.operation-result {
   padding: 30px 15px;
   position: fixed;
@@ -1860,12 +1863,6 @@ div.approve-vendor {
   cursor: pointer;
 }
 
-.toggle-participants::after {
-  display: block;
-  content: '';
-  clear: both;
-}
-
 div.save-button {
   float: right;
   padding: 8px 15px;
@@ -2087,49 +2084,6 @@ span.reviewers-header {
 
 .visa-content-participants-hide {
   animation: visibility-hide 0.5s both;
-}
-
-/* .wrapper-toggle-participants{
-  background-color:red;
-  width:auto;
-  height:auto;
-  w230px;
-} */
-
-.toggle-participants {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 500;
-  float: right;
-  width: 180px;
-  text-align: center;
-  border-radius: 7px;
-  background-color: gray;
-  height: 35px;
-}
-
-.toggle-participants>svg {
-  float: right;
-  animation: jump-up-down .4s ease-in-out infinite both;
-  animation-direction: alternate;
-  animation-play-state: paused;
-}
-
-@keyframes jump-up-down {
-  from {
-    transform: translateY(-4px);
-  }
-  to {
-    transform: translateY(-2px);
-  }
-}
-
-.toggle-participants:hover>svg {
-  animation-play-state: running;
 }
 
 @keyframes visibility-hide {

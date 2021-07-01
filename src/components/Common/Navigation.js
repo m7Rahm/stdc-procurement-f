@@ -159,7 +159,7 @@ const Navigation = (props, ref) => {
                                 .map((notification, index) => ({ ...notification, offset: index * 62 }));
                             const height = all.length * 62;
                             const end = prev.offsetEnd === 0 ? all.length - 1 : prev.offsetEnd
-                            return { ...prev, all: all, height: height, visible: all.slice(prev.offsetStart, end), offsetEnd: end, count: respJ[0].total_count }
+                            return { ...prev, all: all, height: height, visible: all.slice(prev.offsetStart, end), offsetEnd: end, count: respJ[0].total_count <= 0 ? "" : respJ[0].total_count }
                         })
                     }
 

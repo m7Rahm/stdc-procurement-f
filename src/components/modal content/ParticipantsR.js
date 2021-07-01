@@ -31,7 +31,7 @@ const ParticipantsR = (props) => {
             navBar.style.right = "0px";
         }
     }, [id, fetchGet, navigationRef])
-    const closeParticipantsBar = props.closeParticipantsBar
+    const closeParticipantsBar = props.closeParticipantsBar;
     return (
         participants &&
         <div className="sidebar3">
@@ -49,7 +49,7 @@ const ParticipantsR = (props) => {
                                 <div style={{ fontWeight: "650", fontSize: "0.8rem", color: '#1665d8' }}>{participant.vezife || ""}</div>
                             </div>
                             <div style={{ textAlign: "left", position: "relative" }}>
-                                {/*participant.comment*/"asdsadas"}
+                                {participant.comment}
                                 <span>
                                     {participant.stat ? participant.act_date_time || participant.date_time : participant.act_date_time}
                                 </span>
