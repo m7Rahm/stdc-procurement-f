@@ -320,7 +320,7 @@ div.agreements-container {
   background-color: #00acee;
   top: 116px;
   display: none;
-  z-index: 3;
+  z-index: 1;
   width: 150px;
   height: 2rem;
   /* font-size: 15px; */
@@ -1088,7 +1088,6 @@ div.forwarded-people-container:hover {
   top: 0;
   transform: translateX(-50%);
   overflow-x: hidden;
-  margin-bottom: 100px;
   background-color: #f5f5f5;
   padding: 0px;
   z-index: 3;
@@ -1419,7 +1418,7 @@ div.new-order-footer-wrapper {
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.1);
   border: 2px solid transparent;
-  border-radius: 6px;
+  border-radius: 3px;
   background-clip: padding-box;
 }
 

@@ -123,11 +123,7 @@ const VisaContentFooter = (props) => {
                         current.forward_type === 3 &&
                         <div
                             onClick={
-                                hoc(ForwardDocLayout,
-                                    {
-                                        handleSendClick: handleForwardOrder,
-                                    }
-                                )
+                                hoc(ForwardDocLayout,{handleSendClick: handleForwardOrder})
                             }
                             style={{ background: '#00a3e4' }}
                         >

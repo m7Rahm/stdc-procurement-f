@@ -68,7 +68,6 @@ const EditOrder = (props) => {
     }, [fetchGet, setPlaceList])
 
     const editClickHandler = () => {
-        console.log("sent")
         const mat = choices.materials.map(material => {
           const matData = []
           const assignment = placeList.filter(place => place.name === material.place)
@@ -107,9 +106,6 @@ const EditOrder = (props) => {
           })
           .catch(ex => console.log(ex))
     }
-
-    console.log(choices.materials)
-    // console.log(orders)
     return (
         <div>
             <ul className="new-order-table">

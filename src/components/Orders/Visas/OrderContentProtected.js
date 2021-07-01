@@ -39,7 +39,7 @@ const OrderContentProtected = (props) => {
 			<>
 				{
 					modalContent.visible &&
-					<Modal canBeClosed={true} title="Sifariş № " number={current[0].ord_numb} changeModalState={handleModalClose}>
+					<Modal canBeClosed={true} style={{ overflow: "visible" }} title="Sifariş № " number={current[0].ord_numb} changeModalState={handleModalClose}>
 						{modalContent.content}
 					</Modal>
 				}

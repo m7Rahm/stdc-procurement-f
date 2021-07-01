@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import useFetch from '../../../hooks/useFetch';
 import { IoIosAdd } from 'react-icons/io'
@@ -6,42 +6,28 @@ import { newOrderInitial } from '../../../data/data'
 
 const NewOrderTableBody = (props) => {
   const fetchGet = useFetch("GET");
-  const modelsListRef = useRef(null);
-  const placesListRef = useRef(null);
   const handleAddClick = () => {
     props.setChoices(prev => ({ ...prev, materials: [...prev.materials, { ...newOrderInitial.materials[0], id: Date.now(), class: 'new-row' }] }))
   }
+  const { orderType, structure } = props.orderInfo;
 
-  const { orderInfo,
-    //  handleSendClick 
-  } = props;
-  const { orderType, structure } = orderInfo;
-
-  // const onSendClick = () => {
-  //   handleSendClick(materials)
-  // }
+  const [placeList, setPlaceList] = useState([])
   const setChoices = props.setChoices;
   useEffect(() => {
-    // props.setMaterials(prev => prev.filter(material => material.isService === orderType))
-    // props.setChoices(prev=>prev.materials.filter(material => material.isService === orderType))
     setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.isService === orderType) }))
   }, [orderType, setChoices])
 
-  const setPlaceList = props.setPlaceList;
   useEffect(() => {
     fetchGet(`/api/assignments`)
-      .then(respJ => {
-        setPlaceList(respJ)
-      })
+      .then(respJ => setPlaceList(respJ))
       .catch(ex => console.log(ex))
-  }, [fetchGet, setPlaceList])
+  }, [fetchGet])
 
   return (
     <>
       <ul className="new-order-table">
         <li>
           <div>#</div>
-          {/* <div>Sub-Gl Kateqoriya</div> */}
           <div>Məhsul</div>
           <div style={{ width: '170px', maxWidth: '235px' }}>Kod</div>
           <div style={{ maxWidth: '120px' }}>Say</div>
@@ -55,7 +41,6 @@ const NewOrderTableBody = (props) => {
           props.choices.materials.map((material, index) => {
             return (
               <NewOrderTableRow
-                // setMaterials={props.setMaterials}
                 index={index}
                 orderType={orderType}
                 material={material}
@@ -65,25 +50,18 @@ const NewOrderTableBody = (props) => {
                 className={material.class}
                 structure={structure}
                 count={material.count}
-                modelsListRef={modelsListRef}
                 additionalInfo={material.additionalInfo}
                 department={material.department}
                 tesvir={material.tesvir}
-
                 choices={props.choices}
                 setChoices={setChoices}
                 setPlaceList={props.setPlaceList}
-                placeList={props.placeList}
-                placesListRef={placesListRef}
+                placeList={placeList}
               />
             )
           })
         }
-        {/* <NewOrderTableRowAdd setChoices={props.setChoices} /> */}
       </ul>
-      {/* <div className="send-order" style={{ cursor: props.active ? 'pointer' : 'not-allowed' }} onClick={onSendClick}>
-        Göndər
-      </div> */}
     </>
   )
 }

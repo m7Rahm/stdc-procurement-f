@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import useFetch from '../../../hooks/useFetch';
 import { productUnit } from '../../../data/data'
+import InputSearchList from '../../Misc/InputSearchList';
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
@@ -34,43 +35,12 @@ const NewOrderTableRow = (props) => {
     props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material) }))
   }
 
-  const handleFocus = () => {
-    if (props.modelsListRef.current)
-      props.modelsListRef.current.style.display = 'none';
-    modelListRef.current.style.display = 'block'
-    props.modelsListRef.current = modelListRef.current;
-  }
-
-  const handlePlaceFocus = () => {
-    if (props.placesListRef.current)
-      props.placesListRef.current.style.display = 'none';
-    placeListRef.current.style.display = 'block'
-    props.placesListRef.current = placeListRef.current;
-  }
-
-  // eslint-disable-next-line
-  const handleBlur = (e) => {
-    const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
-    if (relatedTargetid === null || relatedTargetid !== 'modelListRef')
-      modelListRef.current.style.display = 'none'
-  }
-
-  const handlePlaceBlur = (e) => {
-    const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
-    if (relatedTargetid === null || relatedTargetid !== 'placeListRef')
-      placeListRef.current.style.display = 'none'
-  }
-
   const handleChange = (e) => {
     const value = e.target.value;
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, additionalInfo: value } : material) }))
+    const name = e.target.name;
+    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, [name]: value } : material) }))
   }
 
-  const handleChange2 = (e) => {
-    const value = e.target.value;
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, tesvir: value } : material) }))
-  }
-  // console.log(materialid,props.material.materialId,props.material.id)
   const handleRowDelete = () => {
     rowRef.current.classList.add("delete-row");
     if (props.material.id === materialid) {
@@ -79,7 +49,7 @@ const NewOrderTableRow = (props) => {
       rowRef.current.addEventListener('animationend', () => props.setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.materialId !== materialid) })))// || material.id !== materialid
     }
   }
-  const setModel = (model) => {
+  const setModel = (_, model) => {
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
@@ -101,30 +71,29 @@ const NewOrderTableRow = (props) => {
     modelListRef.current.style.display = "none";
   }
 
-  const setPlace = (model) => {
-    // props.choices.materials.map(material=> material.id===materialid || material.materialId===materialid ? console.log("material not found"):console.log(material.id,materialid))
-
+  const setPlace = (place) => {
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
           ...material,
-          place: model.name
+          place: place.name,
+          placeid: place.id
         }
         : material
       )
     }));
-    placeInputRef.current.value = model.name;
+    placeInputRef.current.value = place.name;
     placeListRef.current.style.display = "none";
   }
-
   const handleInputSearch = (e) => {
     const value = e.target.value;
-    let valueWithoutE = value.replace('e', '[eə]')
-    valueWithoutE = valueWithoutE.replace(/ch?/, '[cç]');
-    valueWithoutE = valueWithoutE.replace('i', '[iı]');
-    valueWithoutE = valueWithoutE.replace(/gh?/, '[gğ]');
-    valueWithoutE = valueWithoutE.replace(/sh?/, '[sş]');
-    valueWithoutE = valueWithoutE.replace('u', '[uü]');
+    let valueWithoutE = value.replace(/e/gi, '[eə]')
+      .replace(/ch?/gi, '[cç]')
+      .replace(/o/gi, '[oö]')
+      .replace(/i/gi, '[iı]')
+      .replace(/gh?/gi, '[gğ]')
+      .replace(/sh?/gi, '[sş]')
+      .replace(/u/gi, '[uü]');
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
@@ -150,14 +119,13 @@ const NewOrderTableRow = (props) => {
 
   const handlePlaceSearch = (e) => {
     const value = e.target.value;
-    const charArray = value.split("")
+    const charArray = value.split("");
     const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
-    const regExp = new RegExp(`${reg}`, "i");
-    const searchResult = places.filter(model => regExp.test(model.title))
+    const regExp = new RegExp(`${reg}`, "gi");
+    const searchResult = placeList.filter(place => regExp.test(place.name));
     setPlaces(searchResult);
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, place: placeInputRef.current.value } : material) }))
+    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, place: value } : material) }))
   }
-  // eslint-disable-next-line
   const searchByCode = (e) => {
     const data = { product_id: e.target.value, orderType: orderType, structure: structure };
     if (timeoutRef.current) {
@@ -196,49 +164,27 @@ const NewOrderTableRow = (props) => {
     }, 500)
   }
 
-  const unitChangeHandler = (e) => {
-    const value = e.target.value;
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, unit: value } : material) }))
-  }
   return (
     <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
       {/* Məhsul */}
       <div style={{ position: 'relative' }}>
-        <input
-          onBlur={handleBlur}
-          onFocus={handleFocus}
-          type="text"
-          placeholder="Məhsul"
+        <InputSearchList
+          listid="modelListRef"
           defaultValue={props.material.materialName ? props.material.materialName : props.material.material_name}
-          ref={modelInputRef}
+          placeholder="Məhsul"
+          inputRef={modelInputRef}
+          listRef={modelListRef}
           name="model"
-          autoComplete="off"
-          onChange={handleInputSearch}
+          text="title"
+          items={models}
+          handleInputChange={handleInputSearch}
+          handleItemClick={setModel}
         />
-        {
-          <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ width: '150px', maxWidth: ' 200px' }} className="material-model-list">
-            {
-              models.map(model => {
-                let inputVal = modelInputRef.current.value.replace("-", "\\-");
-                inputVal = inputVal.replace('e', 'eə');
-                inputVal = inputVal.replace('c', 'cç');
-                inputVal = inputVal.replace('i', 'iı');
-                inputVal = inputVal.replace('g', 'gğ');
-                inputVal = inputVal.replace('s', 'sş');
-                inputVal = inputVal.replace('u', 'uü');
-                const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-                const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
-                return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>
-              })
-            }
-          </ul>
-        }
       </div>
       {/* Kod */}
       <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
         <input
-          onBlur={handleBlur}
           type="text"
           placeholder="Kod"
           defaultValue={props.material.code}
@@ -248,8 +194,6 @@ const NewOrderTableRow = (props) => {
           onChange={searchByCode}
         />
       </div>
-
-
       {/* Say */}
       <div style={{ maxWidth: '140px' }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
@@ -265,14 +209,12 @@ const NewOrderTableRow = (props) => {
           <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ margin: '0px 3px' }} />
         </div>
       </div>
-
-
       {/* Ölçü vahidi */}
       <div style={{ maxWidth: '140px' }}>
         <select
-          name="product_unit"
+          name="unit"
           value={props.material.unit}
-          onChange={unitChangeHandler}
+          onChange={handleChange}
         >
           {
             productUnit.map(unit =>
@@ -284,29 +226,19 @@ const NewOrderTableRow = (props) => {
 
       {/* Istifade yeri */}
       <div style={{ position: 'relative' }}>
-        <input
-          onBlur={handlePlaceBlur}
-          onFocus={handlePlaceFocus}
-          type="text"
-          placeholder="Istifadə yeri"
-          ref={placeInputRef}
-          name="model"
+        <InputSearchList
           defaultValue={props.material.place}
-          autoComplete="off"
-          onChange={handlePlaceSearch}
+          placeholder="Istifadə yeri"
+          text="name"
+          name="place"
+          listid="placeListRef"
+          inputRef={placeInputRef}
+          listRef={placeListRef}
+          handleInputChange={handlePlaceSearch}
+          items={places}
+          handleItemClick={setPlace}
+          style={{ width: '150px', maxWidth: ' 200px', outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
         />
-        {
-          <ul id="placeListRef" tabIndex="0" ref={placeListRef} style={{ width: '150px', maxWidth: ' 200px', outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
-            {
-              placeList.map(model => {
-                const inputVal = placeListRef.current ? placeInputRef.current.value.replace("-", "\\-") : '';
-                const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-                const title = model.name.replace(strRegExp, (text) => `<i>${text}</i>`);
-                return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setPlace(model)}></li>
-              })
-            }
-          </ul>
-        }
       </div>
       {/* Əlavə məlumat */}
       <div>
@@ -327,7 +259,7 @@ const NewOrderTableRow = (props) => {
           name="tesvir"
           value={tesvir}
           type="text"
-          onChange={handleChange2}
+          onChange={handleChange}
         />
       </div>
       <div>
