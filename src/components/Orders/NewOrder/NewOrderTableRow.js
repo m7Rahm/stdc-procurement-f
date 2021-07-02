@@ -71,7 +71,7 @@ const NewOrderTableRow = (props) => {
     modelListRef.current.style.display = "none";
   }
 
-  const setPlace = (place) => {
+  const setPlace = (_, place) => {
     props.setChoices(prev => ({
       ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
         ? {
