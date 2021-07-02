@@ -51,7 +51,7 @@ const ListItem = (props) => {
   const tokenContext = useContext(TokenContext);
   const webSocket = useContext(WebSocketContext);
   const token = tokenContext[0].token;
-  const { referer, setOrders, status, participants, date, id, number, empid } = props;
+  const { referer, setOrders, status, participants, date, deadline, id, number, empid } = props;
   const [modalState, setModalState] = useState({ visible: false, content: null, childProps: {}, title: "Sifariş №" });
 
   const handleClose = () => {
@@ -121,8 +121,14 @@ const ListItem = (props) => {
             : status === 1
               ? <IoMdCheckmark color="#0F9D58" title="Təsdiq" size="20" />
               : status === 25 || status === 44
-                ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20"/>
+                ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20" />
                 : ""
+
+  const getColor = (deadline, date) => {
+    const newDate = '20' + date.split('/')[2].split(' ')[0] + '-' + date.split('/')[1] + '-' + date.split('/')[0]
+    if (Date.parse(deadline) < Date.parse(newDate))
+      return "red"
+  }
   return (
     <>
       <li style={{ justifyContent: "space-between" }}>
@@ -139,6 +145,7 @@ const ListItem = (props) => {
           </Suspense>
         </div>
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left" }}>{date}</div>
+        <div style={{ minWidth: "80px", width: "15%", textAlign: "left", color: getColor(deadline, date) }}>{deadline}</div>
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
         <div style={{ width: "40%", textAlign: "left" }}>
           {participants}

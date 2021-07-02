@@ -47,12 +47,14 @@ const Table = (props) => {
   const sortIcon = !sortStatusUp
     ? <FaSortDown style={{ float: 'right', marginRight: '10px' }} onClick={() => setSortStatusUp(prev => !prev)} />
     : <FaSortUp onClick={() => setSortStatusUp(prev => !prev)} style={{ float: 'right', marginRight: '10px' }} />
+  // console.log(props.orders.orders)
   return (
     <ul className='table'>
       <li style={{ justifyContent: "space-between" }}>
         <div style={{ width: '30px', textAlign: "center" }}> #</div>
         <div style={{ minWidth: '80px', textAlign: "center" }}> Status {sortIcon}</div>
         <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Tarix {createDateFilterIcon}</div>
+        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Deadline {createDateFilterIcon}</div>
         <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə {numberIcon}</div>
         <div style={{ width: '40%', textAlign: 'left' }}> İştirakçılar</div>
         <div style={{ minWidth: '5%', width: "60px" }}> Qeyd</div>
@@ -70,6 +72,7 @@ const Table = (props) => {
             status={order.status}
             participants={order.participants}
             date={order.create_date_time}
+            deadline={order.deadline}
             id={order.id}
             empid={order.emp_id}
             number={order.ord_numb}
