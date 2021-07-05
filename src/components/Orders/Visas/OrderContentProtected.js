@@ -67,6 +67,11 @@ const OrderContentProtected = (props) => {
 				handleEditClick={handleEditClick}
 				updateContent={updateContent}
 				orderContent={current}
+				setVisa={setVisa}
+				setModalContent={setModalContent}
+				setSending={props.setSending}
+				operationStateRef={props.operationStateRef}
+				setOperationStateText={props.setOperationStateText}
 				forwardType={forwardType}
 			/>
 		</>

@@ -96,7 +96,6 @@ const OrderModal = (props) => {
           }
           props.operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both"
           props.setSending(false);
-
           webSocket.send(JSON.stringify(message))
           const inParams = {
             from: 0,

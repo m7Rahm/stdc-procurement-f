@@ -3,8 +3,9 @@ import { TokenContext } from '../../../App'
 import useFetch from '../../../hooks/useFetch';
 import ForwardDocLayout from '../../Misc/ForwardDocLayout';
 import OperationResult from '../../Misc/OperationResult'
-import EditOrder from './EditOrder'
+
 const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline'))
+const EditOrder = React.lazy(() => import('./EditOrder'))
 
 const VisaContentFooter = (props) => {
     const { handleEditClick, current, canProceed, updateContent, forwardDoc } = props;
@@ -67,6 +68,8 @@ const VisaContentFooter = (props) => {
                                         handleModalClose: setIsModalOpen,
                                         tranid: current.id,
                                         action: -1,
+                                        setSending: props.setSending,
+                                        setOperationStateText: props.setOperationStateText,
                                         setOperationResult: setOperationResult,
                                         backgroundColor: '#D93404'
                                     }
@@ -87,6 +90,8 @@ const VisaContentFooter = (props) => {
                                         tranid: current.id,
                                         setOperationResult: setOperationResult,
                                         action: 1,
+                                        setSending: props.setSending,
+                                        setOperationStateText: props.setOperationStateText,
                                         backgroundColor: 'rgb(15, 157, 88)'
                                     }
                                 )
@@ -107,8 +112,13 @@ const VisaContentFooter = (props) => {
                                         setOperationResult: setOperationResult,
                                         operationResult: operationResult,
                                         action: 2,
+                                        setModalContent: props.setModalContent,
+                                        setSending: props.setSending,
+                                        operationStateRef: props.operationStateRef,
                                         backgroundColor: '#F4B400',
+                                        setVisa: props.setVisa,
                                         orderContent: props.orderContent,
+                                        setOperationStateText: props.setOperationStateText,
                                         canProceed: props.canProceed,
                                         forwardType: props.forwardType
                                     }
@@ -123,7 +133,7 @@ const VisaContentFooter = (props) => {
                         current.forward_type === 3 &&
                         <div
                             onClick={
-                                hoc(ForwardDocLayout,{handleSendClick: handleForwardOrder})
+                                hoc(ForwardDocLayout, { handleSendClick: handleForwardOrder })
                             }
                             style={{ background: '#00a3e4' }}
                         >

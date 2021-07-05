@@ -6,7 +6,7 @@ import InputSearchList from '../../Misc/InputSearchList';
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, structure, materialid, className, additionalInfo, count, placeList, tesvir } = props;
+  const { orderType, structure, materialid, className, additionalInfo, count, placeList, tesvir, handleRowDelete } = props;
   const modelListRef = useRef(null);
   const placeListRef = useRef(null);
   const [models, setModels] = useState([]);
@@ -22,66 +22,34 @@ const NewOrderTableRow = (props) => {
     const value = e.target.value;
     const name = e.target.name;
     if (value === '' || Number(value) > 0) {
-      props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, [name]: value } : material) }))
+      props.handleChange(name, value, materialid)
     }
   }
   const handleAmountFocusLose = (e) => {
     const value = e.target.value;
     const name = e.target.name
     if (value === '')
-      props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, [name]: 0 } : material) }))
+      props.handleChange(name, value, materialid)
   }
   const handleAmountChangeButtons = (action) => {
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, count: action === 'inc' ? +material.count + 1 : material.count - 1 } : material) }))
+    props.handleChange("count", undefined, materialid, true, action)
   }
 
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, [name]: value } : material) }))
+    props.handleChange(name, value, materialid)
   }
 
-  const handleRowDelete = () => {
-    rowRef.current.classList.add("delete-row");
-    if (props.material.id === materialid) {
-      rowRef.current.addEventListener('animationend', () => props.setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.id !== materialid) })))// ||   
-    } else {
-      rowRef.current.addEventListener('animationend', () => props.setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.materialId !== materialid) })))// || material.id !== materialid
-    }
-  }
   const setModel = (_, model) => {
-    props.setChoices(prev => ({
-      ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
-        ? {
-          ...material,
-          materialId: model.id,
-          materialName: model.title,
-          approx_price: model.approx_price,
-          code: model.product_id,
-          department: model.department_name,
-          isAmortisized: model.is_amortisized,
-          percentage: model.perc,
-          isService: orderType
-        }
-        : material
-      )
-    }));
+    props.handleModelSelection(model, materialid)
     codeRef.current.value = model.product_id;
     modelInputRef.current.value = model.title;
     modelListRef.current.style.display = "none";
   }
 
   const setPlace = (_, place) => {
-    props.setChoices(prev => ({
-      ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
-        ? {
-          ...material,
-          place: place.name,
-          placeid: place.id
-        }
-        : material
-      )
-    }));
+    props.handlePlaceSelection(place, materialid)
     placeInputRef.current.value = place.name;
     placeListRef.current.style.display = "none";
   }
@@ -94,24 +62,8 @@ const NewOrderTableRow = (props) => {
       .replace(/gh?/gi, '[gğ]')
       .replace(/sh?/gi, '[sş]')
       .replace(/u/gi, '[uü]');
-    props.setChoices(prev => ({
-      ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid
-        ? {
-          ...material,
-          materialId: null,
-          materialName: value,
-          approx_price: '',
-          code: '',
-          department: '',
-          isAmortisized: '',
-          percentage: '',
-          isService: orderType
-        }
-        : material
-      )
-    }));
-    // eslint-disable-next-line
-    fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}&structure=${structure == undefined ? "":structure}`)
+    props.searchByMaterialName(value, materialid)
+    fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}&structure=${structure || ""}`)
       .then(respJ => {
         setModels(respJ)
       })
@@ -125,7 +77,7 @@ const NewOrderTableRow = (props) => {
     const regExp = new RegExp(`${reg}`, "gi");
     const searchResult = placeList.filter(place => regExp.test(place.name));
     setPlaces(searchResult);
-    props.setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid || material.materialId === materialid ? { ...material, place: value } : material) }))
+    props.handlePlaceSearch(value, materialid)
   }
   const searchByCode = (e) => {
     const data = { product_id: e.target.value, orderType: orderType, structure: structure };
@@ -140,18 +92,7 @@ const NewOrderTableRow = (props) => {
           if (respJ.length === 1) {
             const material = respJ.length !== 0 ? respJ[0] : {};
             modelInputRef.current.value = material.title || "";
-            props.setChoices(prev => ({
-              ...prev, materials: prev.materials.map(prevMaterial => prevMaterial.id === materialid
-                ? {
-                  ...prevMaterial,
-                  code: material.product_id,
-                  approx_price: material.approx_price,
-                  department: material.department_name,
-                  materialId: material.id
-                }
-                : prevMaterial
-              )
-            }));
+            props.setCode(material, materialid);
             modelListRef.current.style.display = "none";
           } else {
             modelListRef.current.style.display = "block";
@@ -166,13 +107,13 @@ const NewOrderTableRow = (props) => {
   }
 
   return (
-    <li ref={rowRef} className={className}>
+    <li ref={rowRef} id={materialid} className={className}>
       <div>{props.index + 1}</div>
       {/* Məhsul */}
       <div style={{ position: 'relative' }}>
         <InputSearchList
           listid="modelListRef"
-          defaultValue={props.material.materialName ? props.material.materialName : props.material.material_name}
+          defaultValue={props.materialName}
           placeholder="Məhsul"
           inputRef={modelInputRef}
           listRef={modelListRef}
@@ -188,7 +129,7 @@ const NewOrderTableRow = (props) => {
         <input
           type="text"
           placeholder="Kod"
-          defaultValue={props.material.code}
+          defaultValue={props.code}
           ref={codeRef}
           name="model"
           autoComplete="off"
@@ -214,7 +155,7 @@ const NewOrderTableRow = (props) => {
       <div style={{ maxWidth: '140px' }}>
         <select
           name="unit"
-          value={props.material.unit}
+          value={props.unit}
           onChange={handleChange}
         >
           {
@@ -228,7 +169,7 @@ const NewOrderTableRow = (props) => {
       {/* Istifade yeri */}
       <div style={{ position: 'relative' }}>
         <InputSearchList
-          defaultValue={props.material.place}
+          defaultValue={props.place}
           placeholder="Istifadə yeri"
           text="name"
           name="place"
@@ -264,7 +205,7 @@ const NewOrderTableRow = (props) => {
         />
       </div>
       <div>
-        <FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />
+        <FaTrashAlt cursor="pointer" onClick={e => handleRowDelete(rowRef)} title="Sil" color="#ff4a4a" />
       </div>
     </li>
   )

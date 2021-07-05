@@ -152,6 +152,7 @@ div.operation-state-lite {
   padding: 12px 2rem;
   left: 0px;
   right: 0px;
+  cursor: pointer;
   width: fit-content;
   margin: auto;
   color: white;
