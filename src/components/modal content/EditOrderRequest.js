@@ -130,6 +130,8 @@ const EditOrderRequest = (props) => {
                     <div style={{ maxWidth: '140px' }}>Say</div>
                     <div>Istifadə yeri</div>
                     <div>Əlavə məlumat</div>
+                    {view==="returned" &&             
+                    <div>Təsvir</div>}
                     <div> </div>
                 </li>
                 {
@@ -164,11 +166,11 @@ const EditOrderRequest = (props) => {
                     </li>
                 }
             </ul>
-            {
+            {/* {
                 view === 'returned' && orderState.length !== 0 &&
                 <textarea ref={textareaRef} disabled={true} defaultValue={orderState[0].review} style={{ margin: '20px' }}>
                 </textarea>
-            }
+            } */}
             {
                 view === 'procurement' &&
                 <ForwardDocLayout

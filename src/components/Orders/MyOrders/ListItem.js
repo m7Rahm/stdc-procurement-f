@@ -1,4 +1,4 @@
-import React, { lazy, useState, useContext, useCallback } from "react"
+import React, { lazy, useState, useContext, useCallback, useEffect } from "react"
 import { FaBoxOpen, FaBox } from "react-icons/fa"
 import {
   IoMdCheckmark,
@@ -15,6 +15,7 @@ import { WebSocketContext } from "../../../pages/SelectModule"
 import useFetch from "../../../hooks/useFetch"
 import { Suspense } from "react"
 import Chat from "../../Misc/Chat"
+import ReturnedOrderCards from "./ReturnedOrderCards"
 const FinishOrder = lazy(() => import("../../modal content/FinishOrder"))
 const ParticipantsModal = lazy(() => import("../../modal content/Participants"))
 const StatusModal = lazy(() => import("../../modal content/Status"))
@@ -37,16 +38,49 @@ const OrderContentWithChat = (props) => {
     <>
       <EditOrderRequest {...props} />
       <div style={{ padding: "0px 20px " }}>
-        <Chat
-          loadMessages={fetchMessages}
-          documentid={props.id}
-          documentType={10}
-          sendMessage={sendMessage}
-        />
+        {props.view !== "returned" &&
+          <Chat
+            loadMessages={fetchMessages}
+            documentid={props.id}
+            documentType={10}
+            sendMessage={sendMessage}
+          />
+        }
       </div>
     </>
   )
 }
+
+const PreviousOrders = (props) => {
+  const fetchGet = useFetch("GET");
+  const [versions, setVersions] = useState({})
+  var _ = require('lodash');
+  useEffect(() => {
+    fetchGet(`/api/order-versions/${props.ordNumb}`)
+      .then(respJ => {
+        // console.log(respJ)
+        var grouped = _.mapValues(_.groupBy(respJ, 'full_name'),
+          clist => clist.map(card => _.omit(card, 'full_name')));
+          // console.log(grouped)
+        setVersions(grouped)
+      })
+      .catch(ex => console.log(ex))
+  }, [props.ordNumb, fetchGet,_])
+  const orderCards =
+    <div style={{display:'flex',flexDirection:'row',gap:'12px',paddingLeft:'15px'}}>
+      {Object.keys(versions).map((key, index) =>
+      <ReturnedOrderCards
+        key={index}
+        order={versions[key]}
+        full_name={key}
+      />)}
+    </div>
+
+return (
+  orderCards
+  )
+}
+
 const ListItem = (props) => {
   const tokenContext = useContext(TokenContext);
   const webSocket = useContext(WebSocketContext);
@@ -99,6 +133,7 @@ const ListItem = (props) => {
             throw new Error("Error Performing operation")
         })
     }
+
     const childProps = {
       version: empid,
       ordNumb: number,
@@ -106,7 +141,8 @@ const ListItem = (props) => {
       id: id,
       onSendClick
     }
-    setModalState(prev => ({ ...prev, visible: true, content: OrderContentWithChat, childProps, number: number }))
+    // setModalState(prev => ({ ...prev, visible: true, content: OrderContentWithChat, childProps, number: number }))
+    setModalState(prev => ({ ...prev, visible: true, content: PreviousOrders, childProps, number: number }))
   }
   const icon = status === 0
     ? <IoMdCheckmark color="#F4B400" title="Baxılır" size="20" />
@@ -147,9 +183,10 @@ const ListItem = (props) => {
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left" }}>{date}</div>
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left", color: getColor(deadline, date) }}>{deadline}</div>
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
-        <div style={{ width: "40%", textAlign: "left" }}>
-          {participants}
+        <div style={{ width: "40%", textAlign: "left", position: "relative" }}>
+          <input defaultValue={participants.replace(/,\s*$/, "")} disabled={true} style={{ width: "90%", borderStyle: 'hidden', textAlign: 'justify' }} />
           <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ float: "left", marginRight: "10px" }} color="gray" />
+          <div className="fadingText"></div>
         </div>
         <div style={{ width: "60px" }}>
           <IoMdChatbubbles size="20" color="#4285F4" cursor="pointer" onClick={onInfoClick} />

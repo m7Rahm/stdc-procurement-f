@@ -13,6 +13,22 @@
     background-image: linear-gradient(to bottom, #f1f1f1, #e1e1e1);
 }
 
+.fadingText{
+    position:absolute;
+    right: 20px;
+    width: 40px;
+    height: 100%;
+    top: 0;
+}
+
+.table>li:nth-of-type(2n) .fadingText{
+    background-image: linear-gradient(to right,rgb(230,230,230,0.7) 10%, #e9e9e9 90%);
+}
+
+.table>li:nth-of-type(2n+1) .fadingText{
+    background-image: linear-gradient(to right,rgb(255,255,255,0.7) 10%, white 90%);
+}
+
 i {
     color: #ffaa00;
     font-weight: bold;
@@ -217,8 +233,8 @@ div.direction[name="back"]:active {
 
 .order-card {
     box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2);
-    width: 170px;
-    height: 150px;
+    width: 270px;
+    height: 250px;
     background-color: #e8e8e8;
     border-radius: 7%;
     margin-left: auto;
@@ -228,6 +244,7 @@ div.direction[name="back"]:active {
     margin-bottom: 15px;
     backdrop-filter: blur(10px);
     transition: all 1s;
+    padding: 30px 0 0 0;
 }
 
 .order-card-wrapper:hover {
@@ -274,7 +291,6 @@ div.direction[name="back"]:active {
 
 .order-card-info-wrapper {
     position: relative;
-    padding: 30px 0;
     margin-top: auto;
     margin-bottom: auto;
     text-decoration-color: white;
@@ -318,7 +334,7 @@ div.my-orders-footer svg {
     margin-left: auto;
     margin-right: auto;
     width: 160px;
-    height: 30px;
+    /* height: 30px; */
     background-color: #f0eaea;
     transform: translateY(-25px);
     margin-top: 3px;

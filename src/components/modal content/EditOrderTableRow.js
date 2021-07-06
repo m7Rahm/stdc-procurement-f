@@ -132,6 +132,7 @@ const EditOrderTableRow = ({ index, row, setOrderState, departments, view, order
 			department_name: department.department_name
 		})))
 	}
+	console.log(row)
 	return (
 		<li ref={rowRef} className={row.className}>
 			<div>{index + 1}</div>
@@ -225,6 +226,19 @@ const EditOrderTableRow = ({ index, row, setOrderState, departments, view, order
 					onChange={handleChange}
 				/>
 			</div>
+			{view==="returned" &&
+			<div>
+				<input
+					style={{ width: "100%" }}
+					placeholder="Təsvir"
+					name="description"
+					disabled={view !== "returned"}
+					value={row.description || ""}
+					type="text"
+					onChange={handleChange}
+				/>
+			</div>
+			}
 			<div>
 				{view === "returned" &&
 					<FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />
