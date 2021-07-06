@@ -230,13 +230,13 @@ const NewOrderTableRow = (props) => {
             {
               models.map(model => {
                 let inputVal = modelInputRef.current.value.replace("-", "\\-");
-                inputVal = inputVal.replace(/e/, 'eə');
-                inputVal = inputVal.replace(/c/, 'cç');
-                inputVal = inputVal.replace(/i/, 'iı');
-                inputVal = inputVal.replace(/g/, 'gğ');
-                inputVal = inputVal.replace(/s/, 'sş');
-                inputVal = inputVal.replace(/u/, 'uü');
-                inputVal = inputVal.replace(/o/, 'oö');
+                inputVal = inputVal.replace(/e/gi, 'eə');
+                inputVal = inputVal.replace(/c/gi, 'cç');
+                inputVal = inputVal.replace(/i/gi, 'iı');
+                inputVal = inputVal.replace(/g/gi, 'gğ');
+                inputVal = inputVal.replace(/s/gi, 'sş');
+                inputVal = inputVal.replace(/u/gi, 'uü');
+                inputVal = inputVal.replace(/o/gi, 'oö');
                 const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
                 const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
                 return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>
@@ -310,13 +310,13 @@ const NewOrderTableRow = (props) => {
             {
               placeList.map(model => {
                 let inputVal = placeListRef.current ? placeInputRef.current.value.replace("-", "\\-") : '';
-                inputVal = inputVal.replace(/e/, 'eə');
-                inputVal = inputVal.replace(/c/, 'cç');
-                inputVal = inputVal.replace(/i/, 'iı');
-                inputVal = inputVal.replace(/g/, 'gğ');
-                inputVal = inputVal.replace(/s/, 'sş');
-                inputVal = inputVal.replace(/u/, 'uü');
-                inputVal = inputVal.replace(/o/, 'oö');
+                inputVal = inputVal.replace(/e/gi, 'eə');
+                inputVal = inputVal.replace(/c/gi, 'cç');
+                inputVal = inputVal.replace(/i/gi, 'iı');
+                inputVal = inputVal.replace(/g/gi, 'gğ');
+                inputVal = inputVal.replace(/s/gi, 'sş');
+                inputVal = inputVal.replace(/u/gi, 'uü');
+                inputVal = inputVal.replace(/o/gi, 'oö');
                 const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
                 const title = model.name.replace(strRegExp, (text) => `<i>${text}</i>`);
                 return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setPlace(model)}></li>
