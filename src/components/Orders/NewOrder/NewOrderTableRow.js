@@ -143,7 +143,7 @@ const NewOrderTableRow = (props) => {
       )
     }));
     // eslint-disable-next-line
-    fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}&structure=${structure == undefined ? "":structure}`)
+    fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}&structure=${structure == undefined ? "" : structure}`)
       .then(respJ => {
         setModels(respJ)
       })
