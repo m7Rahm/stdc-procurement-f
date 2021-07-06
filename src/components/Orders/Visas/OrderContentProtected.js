@@ -39,7 +39,7 @@ const OrderContentProtected = (props) => {
 			<>
 				{
 					modalContent.visible &&
-					<Modal canBeClosed={true} title="Sifariş № " number={current[0].ord_numb} changeModalState={handleModalClose}>
+					<Modal canBeClosed={true} style={{ overflow: "visible" }} title="Sifariş № " number={current[0].ord_numb} changeModalState={handleModalClose}>
 						{modalContent.content}
 					</Modal>
 				}
@@ -67,6 +67,11 @@ const OrderContentProtected = (props) => {
 				handleEditClick={handleEditClick}
 				updateContent={updateContent}
 				orderContent={current}
+				setVisa={setVisa}
+				setModalContent={setModalContent}
+				setSending={props.setSending}
+				operationStateRef={props.operationStateRef}
+				setOperationStateText={props.setOperationStateText}
 				forwardType={forwardType}
 			/>
 		</>

@@ -640,6 +640,8 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     overflow: auto;
     display: none;
     width: 150%;
+    margin: 0px;
+    padding: 0px;
     border-radius: 3px;
     /* padding: 0.5rem 0px; */
     z-index: 2;
@@ -658,10 +660,6 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
 
 .material-model-list>li:first-of-type {
     margin-top: 0.5rem;
-}
-
-.material-model-list>li:last-of-type {
-    margin-bottom: 0.5rem;
 }
 
 .material-model-list>li:hover {

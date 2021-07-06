@@ -45,7 +45,7 @@ const VisaContentMaterials = (props) => {
 						<TableRow
 							index={index}
 							setOperationResult={setOperationResult}
-							key={index}
+							key={material.order_material_id}
 							canProceed={canProceed}
 							empVersion={emp_version_id}
 							userData={userData}

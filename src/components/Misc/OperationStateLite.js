@@ -14,7 +14,7 @@ const OperationStateLite = React.forwardRef((props, ref) => {
         }
     }, [state, setState, ref])
     return (
-        <div ref={ref} className="operation-state-lite">
+        <div ref={ref} onClick={props.handleOperationStateClick} style={{ width: "fit-content" }} className="operation-state-lite">
             {props.text}
         </div>
     )

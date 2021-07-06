@@ -1,5 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
-import { TokenContext } from '../../../App'
+import React, { useState, useContext, useRef, useEffect, useCallback } from 'react'
 import { IoIosAdd } from 'react-icons/io'
 import NewOrderTableRow from '../NewOrder/NewOrderTableRow'
 import useFetch from '../../../hooks/useFetch'
@@ -8,57 +7,36 @@ import { WebSocketContext } from '../../../pages/SelectModule'
 
 
 const EditOrder = (props) => {
-    const { forwardType, orderContent } = props;
-    const tokenContext = useContext(TokenContext)
-    const userData = tokenContext[0].userData;
+    const { orderContent } = props;
     // const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const [placeList, setPlaceList] = useState([])
     const fetchPost = useFetch('POST')
     const webSocket = useContext(WebSocketContext);
-
-
-    let orders = [];
-    if (forwardType === 3)
-        orders = orderContent.filter(material => material.techizatci_id === userData.userInfo.structureid)
-    else
-        orders = orderContent
-
-    const [choices, setChoices] = useState({
-        materials: orders.map((material) => ({
-            id: Date.now(),
+    const modelsListRef = useRef(null);
+    const placesListRef = useRef(null);
+    const fetchGet = useFetch('GET');
+    const [choices, setChoices] = useState(
+        orderContent.map(material => ({
+            id: material.order_material_id,
             materialName: material.material_name,
-            materialId: material.order_material_id,
+            materialId: material.material_id,
             code: material.product_id,
             additionalInfo: material.material_comment,
             class: '',
             count: material.amount,
             isService: 0,
             place: material.mat_ass,
-            unit: '1'
+            unit: '1',
+            tesvir: material.description
         }))
-    })
-    //     materials: [{
-    //       id: Date.now(),
-    //       materialName: '',
-    //       materialId: '',
-    //       code: '',
-    //       additionalInfo: '',
-    //       class: '',
-    //       count: 1,
-    //       isService: 0,
-    //       place: "",
-    //       unit: '1'
-    //     }]
-
+    );
     const handleAddClick = () => {
-        setChoices(prev => ({ ...prev, materials: [...prev.materials, { ...newOrderInitial.materials[0], id: Date.now(), materialId: Date.now(), class: 'new-row', isService:0 }] }))
+        newOrderInitial.materials[0].id = Date.now();
+        newOrderInitial.materials[0].class = 'new-row';
+        newOrderInitial.materials[0].isService = orderContent[0].order_type;
+        newOrderInitial.materials[0].tesvir = "";
+        setChoices(prev => ([...prev, { ...newOrderInitial.materials[0] }]))
     }
-
-    const modelsListRef = useRef(null);
-    const placesListRef = useRef(null);
-
-    const fetchGet = useFetch('GET')
-
     useEffect(() => {
         fetchGet(`/api/assignments`)
             .then(respJ => {
@@ -66,56 +44,114 @@ const EditOrder = (props) => {
             })
             .catch(ex => console.log(ex))
     }, [fetchGet, setPlaceList])
-
     const editClickHandler = () => {
-        console.log("sent")
-        const mat = choices.materials.map(material => {
-          const matData = []
-          const assignment = placeList.filter(place => place.name === material.place)
-          if (assignment.length === 0) matData.push(material.materialId, material.count, null, material.place, material.additionalInfo, material.tesvir)
-          else matData.push(material.materialId, material.materialName, material.count, assignment[0].id, assignment[0].name, material.additionalInfo, material.tesvir)
-          return matData;
-        })
-  
-        const data = { mats: mat}
-        fetchPost(`/api/new-order`, data)
-          .then(respJ => {
-            const message = {
-              message: "notification",
-              receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
-              data: undefined
-            }
-            props.operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both"
-  
-            webSocket.send(JSON.stringify(message))
-            const inParams = {
-              from: 0,
-              until: 20,
-              status: -3,
-              dateFrom: '',
-              dateTill: '',
-              ordNumb: "",
-              departments: [],
-              canSeeOtherOrders: props.canSeeOtherOrders
-            }
-            fetchPost('/api/orders', inParams)
-              .then(respJ => {
-                // const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                // props.setOrders({ count: totalCount, orders: respJ })
-              })
-              .catch(ex => console.log(ex))
-          })
-          .catch(ex => console.log(ex))
+        // eslint-disable-next-line
+        let error = "";
+        if (choices.find(material => material.name === ""))
+            error = "Məhsul seçimi düzgün aparılmamışdır"
+        else if (choices.find(material => material.place === ""))
+            // eslint-disable-next-line
+            error = "Istifadə yeri düzgün göstərilməmişdir"
+        else {
+            const data = {
+                mats: choices.map(material =>
+                    [material.materialId, material.materialName, material.count, material.placeid, material.place, material.additionalInfo, material.tesvir]
+                ),
+                edit: 1,
+                ordNumb: orderContent[0].ord_numb,
+                orderType: orderContent[0].order_type,
+                orderid: orderContent[0].order_id
+            };
+            props.setSending(true);
+            props.setModalContent(prev => ({ ...prev, visible: false }));
+            fetchPost(`/api/new-order`, data)
+                .then(_ => {
+                    const message = {
+                        message: "notification",
+                        receivers: [{ id: orderContent[0].sender_id, notif: "oR" }],
+                        data: undefined
+                    }
+                    props.operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both";
+                    props.setVisa(prev => prev.map((row, index) => index === 0 ? ({ ...row, result: 2, act_date_time: "Indicə" }) : row))
+                    props.setSending(false);
+                    webSocket.send(JSON.stringify(message))
+                })
+                .catch(ex => {
+                    console.log(ex);
+                    props.setOperationStateText({ text: "Xəta baş verdi", orderid: orderContent[0].order_id, initid: orderContent[0].sender_id })
+                })
+        }
     }
-
-    // console.log(choices.materials)
-    // console.log(orders)
+    const handleRowDelete = useCallback((rowRef) => {
+        rowRef.current.classList.add("delete-row");
+        rowRef.current.addEventListener('animationend', () => setChoices(prev => prev.filter(material => material.id !== rowRef.current.id)))
+    }, []);
+    const searchByMaterialName = useCallback((value, materialid) => {
+        setChoices(prev => prev.map(material => material.id === materialid
+            ? {
+                ...material,
+                materialId: null,
+                materialName: value,
+                approx_price: '',
+                code: '',
+                department: '',
+                isAmortisized: '',
+                percentage: ''
+            }
+            : material
+        ));
+    }, []);
+    const handlePlaceSearch = useCallback((value, materialid) => {
+        setChoices(prev => prev.map(material => material.id === materialid ? { ...material, place: value } : material))
+    }, []);
+    const handleChange = useCallback((name, value, materialid, sync = false, op) => {
+        if (!sync)
+            setChoices(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
+        else
+            setChoices(prev => prev.map(material => material.id === materialid ? { ...material, [name]: op === "inc" ? material[name] + 1 : material[name] - 1 } : material))
+    }, [])
+    const handleModelSelection = useCallback((model, materialid) => {
+        setChoices(prev => prev.map(material => material.id === materialid
+            ? {
+                ...material,
+                materialId: model.id,
+                materialName: model.title,
+                approx_price: model.approx_price,
+                code: model.product_id,
+                department: model.department_name,
+                isAmortisized: model.is_amortisized,
+                percentage: model.perc
+            }
+            : material
+        ))
+    }, []);
+    const handlePlaceSelection = useCallback((place, materialid) => {
+        setChoices(prev => prev.map(material => material.id === materialid
+            ? {
+                ...material,
+                place: place.name,
+                placeid: place.id
+            }
+            : material)
+        )
+    }, []);
+    const setCode = useCallback((material, materialid) => {
+        setChoices(prev => prev.map(prevMaterial => prevMaterial.id === materialid
+            ? {
+                ...prevMaterial,
+                code: material.product_id,
+                approx_price: material.approx_price,
+                department: material.department_name,
+                materialId: material.id
+            }
+            : prevMaterial)
+        );
+    }, [])
     return (
         <div>
             <ul className="new-order-table">
                 <li>
                     <div>#</div>
-                    {/* <div>Sub-Gl Kateqoriya</div> */}
                     <div>Məhsul</div>
                     <div style={{ width: '170px', maxWidth: '235px' }}>Kod</div>
                     <div style={{ maxWidth: '120px' }}>Say</div>
@@ -125,32 +161,38 @@ const EditOrder = (props) => {
                     <div>Təsvir</div>
                     <div> <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} /></div>
                 </li>
-
                 {
-                    choices.materials.map((material, index) =>
+                    choices.map((material, index) =>
                         <NewOrderTableRow
-                            // setMaterials={props.setMaterials}
                             index={index}
-
                             orderType={material.isService}
-                            material={material}
                             place={material.place}
-                            key={material.materialId || material.id}
-                            materialid={material.materialId}
+                            className={material.class}
+                            key={material.id}
+                            materialName={material.materialName}
+                            materialid={material.id}
                             count={material.count}
                             modelsListRef={modelsListRef}
                             additionalInfo={material.additionalInfo}
                             code={material.code}
                             choices={choices}
+                            handleChange={handleChange}
+                            searchByMaterialName={searchByMaterialName}
+                            tesvir={material.tesvir}
                             setChoices={setChoices}
                             setPlaceList={setPlaceList}
                             placeList={placeList}
+                            handlePlaceSearch={handlePlaceSearch}
                             placesListRef={placesListRef}
+                            setCode={setCode}
+                            handlePlaceSelection={handlePlaceSelection}
+                            handleModelSelection={handleModelSelection}
+                            handleRowDelete={handleRowDelete}
                         />
                     )
                 }
             </ul>
-            <div style={{ backgroundColor: 'rgb(244, 180, 0)', float: 'right', padding: '10px 20px', margin: '10px', color: 'white',cursor:'pointer' }}
+            <div style={{ backgroundColor: 'rgb(244, 180, 0)', float: 'right', padding: '10px 20px', margin: '10px 20px', color: 'white', cursor: 'pointer' }}
                 onClick={editClickHandler}>
                 Göndər
             </div>

@@ -11,7 +11,6 @@ const OrderModal = (props) => {
   const actPageRef = useRef(null);
   const fetchPost = useFetch("POST");
   const davamText = whichPage.page === 3 ? "Sifariş et" : "Davam";
-  const [placeList, setPlaceList] = useState([])
   const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
   const handleDateChange = (date) => {
     props.setChoices({ ...props.choices, lastDate: date });
@@ -85,14 +84,7 @@ const OrderModal = (props) => {
       } else continueNext()
     } else {
       const rec = props.choices.receivers.reverse().map((receiver, i) => [receiver.id, i, receiver.dp ? 1 : 2, i === 0 ? 1 : 0]);
-      const mat = props.choices.materials.map(material => {
-        const matData = []
-        const assignment = placeList.filter(place => place.name === material.place)
-        if (assignment.length === 0) matData.push(material.materialId, material.materialName, material.count, null, material.place, material.additionalInfo, material.tesvir)
-        else matData.push(material.materialId, material.materialName, material.count, assignment[0].id, assignment[0].name, material.additionalInfo, material.tesvir)
-        return matData;
-      })
-
+      const mat = props.choices.materials.map(material => [material.materialId, material.materialName, material.count, material.placeid, material.place, material.additionalInfo, material.tesvir])
       const data = { deadline: props.choices.lastDate.toISOString().split('T')[0], mats: mat, inventoryNums: [], basedon: "", ordNumb: "", isWarehouseOrder: 0, orderType: props.choices.serviceType, receivers: rec }
       props.setSending(true);
       fetchPost(`/api/new-order`, data)
@@ -104,7 +96,6 @@ const OrderModal = (props) => {
           }
           props.operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both"
           props.setSending(false);
-
           webSocket.send(JSON.stringify(message))
           const inParams = {
             from: 0,
@@ -146,8 +137,6 @@ const OrderModal = (props) => {
           ref={actPageRef}
         >
           <NewOrderContent
-            placeList={placeList}
-            setPlaceList={setPlaceList}
             choices={props.choices}
             setChoices={props.setChoices}
             orderInfo={{ orderType: props.choices.serviceType, structure: -1 }}

@@ -29,6 +29,7 @@ const Visas = (props) => {
       />
       <VisaContent
         tranid={active.orderid}
+        setActive={setActive}
         initid={active.initid}
         navigationRef={props.navigationRef}
         documentType={documentType}

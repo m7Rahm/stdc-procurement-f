@@ -43,8 +43,9 @@ const Navigation = (props, ref) => {
             if (webSockMessage.messageType !== "recognition") {
                 window.dispatchEvent(event);
                 let docType = "";
-                const categoryid = webSockMessage.messageType[0] === "o" ? 1 : webSockMessage.messageType[0] === "m" ? 10 : 0;
-                if (webSockMessage.messageType[1] === "O")
+                let categoryid = webSockMessage.messageType[0] === "o" ? 1 : webSockMessage.messageType[0] === "m" ? 10 : 0;
+                categoryid = webSockMessage.messageType === "oR" ? 2 : categoryid
+                if (webSockMessage.messageType[1] === "O" || webSockMessage.messageType === "oR")
                     docType = "0";
                 else if (webSockMessage.messageType[1] === "A")
                     docType = "1";

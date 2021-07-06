@@ -37,6 +37,8 @@ const routes = [
     {
         text: "Redaktəyə qaytarılmış",
         link: "/returned",
+        docType: 0,
+        categoryid: 2,
         icon: IoMdDocument,
         component: MyOrders,
         props: {
@@ -138,7 +140,7 @@ const Orders = (props) => {
                 loadingIndicatorRef.current.style.transform = "translateX(0%)";
                 loadingIndicatorRef.current.style.opacity = "0";
                 loadingIndicatorRef.current.classList.add("load-to-start");
-                respJ.filter(cat => cat.category_id === 1).forEach(notif => {
+                respJ.forEach(notif => {
                     routes.find(route => route.docType === notif.doc_type).notifCount = notif.cnt;
                 });
                 setMenuData({ url: url, routes: routes });
