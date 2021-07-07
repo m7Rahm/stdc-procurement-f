@@ -1,191 +1,183 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import EditOrderTableRow from './EditOrderTableRow';
-import { IoIosAdd } from 'react-icons/io';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { IoIosAdd, IoIosArrowBack } from 'react-icons/io';
 import OperationResult from '../Misc/OperationResult';
 import useFetch from '../../hooks/useFetch';
-import { TokenContext } from '../../App';
-const ForwardDocLayout = React.lazy(() => import('../../components/Misc/ForwardDocLayout'));
+import NewOrderTableRow from '../Orders/NewOrder/NewOrderTableRow';
 
 const EditOrderRequest = (props) => {
-    const { version, onSendClick, view, editOrderAndApprove } = props;
+    const { version, onSendClick, view } = props;
     const ordNumb = props.current || props.ordNumb;
     const textareaRef = useRef(null);
-    const initialValuesRef = useRef(null);
-    const { structureid } = useContext(TokenContext)[0].userData.userInfo;
-    const [departments, setDepartments] = useState([])
     const [orderState, setOrderState] = useState([]);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
-    const glCatid = orderState.length !== 0 ? orderState[0].gl_category_id : ''
+    const [placeList, setPlaceList] = useState([]);
     const fetchGet = useFetch("GET");
+    const orderType = useRef(undefined);
     useEffect(() => {
         fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
             .then(respJ => {
-                const orderRows = respJ.map(row => ({ ...row, models: [], className: '' }));
-                initialValuesRef.current = respJ;
+                const orderRows = respJ.map(row => ({
+                    ...row,
+                    models: [],
+                    className: '',
+                    materialid: row.material_id,
+                    count: row.amount,
+                    additionalInfo: row.material_comment
+                }));
+                orderType.current = respJ[0].order_type;
                 setOrderState(orderRows);
             })
             .catch(ex => console.log(ex))
-    }, [ordNumb, version, fetchGet]);
+    }, [ordNumb, version, fetchGet, orderType]);
     useEffect(() => {
-        let mounted = true;
-        if (mounted && view === "protected")
-            fetchGet('/api/departments')
-                .then(respJ => {
-                    if (mounted) {
-                        setDepartments(respJ)
-                    }
-                })
-                .catch(err => console.log(err));
-        return () => mounted = false
-    }, [fetchGet, view]);
-    useEffect(() => {
-        fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
-            .then(respJ => {
-                const orderRows = respJ.map(row => ({ ...row, models: [], className: '' }));
-                initialValuesRef.current = respJ;
-                setOrderState(orderRows);
-            })
+        fetchGet(`/api/assignments`)
+            .then(respJ => setPlaceList(respJ))
             .catch(ex => console.log(ex))
-    }, [ordNumb, version, fetchGet]);
-    const handleConfirmClick = (receivers, text) => {
-        const error = orderState.find(material => isNaN(material.material_id))
-        if (!error) {
-            const action = receivers.length === 0 ? 1 : 0
-            const parsedMaterials = orderState.map(material =>
-                [
-                    material.id,
-                    material.material_id,
-                    material.amount,
-                    material.material_comment,
-                ]
-            );
-            const data = {
-                mats: parsedMaterials,
-                recs: receivers.map(receiver => [receiver.id]),
-                ordNumb: ordNumb,
-                empVersion: version,
-                comment: text,
-                action: action
-            }
-            editOrderAndApprove(data, receivers, setOperationResult);
-        }
-        else
-            setOperationResult({ visible: true, desc: "Məhsul seçimi düzgün deyil" })
-    }
-
+    }, [fetchGet])
     const handleSendClick = () => {
-        const error = orderState.find(material => isNaN(material.material_id))
+        const error = orderState.find(material => material.title.trim() === "")
         if (!error) {
-            const parsedMaterials = orderState.map(material =>
-                [
-                    material.material_id,
-                    material.amount,
-                    material.material_comment,
-                ]);
-            const data = {
-                orderType: initialValuesRef.current[0].order_type,
-                mats: parsedMaterials,
-                receivers: [],
-                ordNumb: ordNumb,
-                structureid: orderState[0].structure_id,
-                returned: view === 'returned' ? 1 : 0
-            }
-            onSendClick(data, setOperationResult)
+
         }
         else
             setOperationResult({ visible: true, desc: "Məhsul seçimi düzgün deyil" })
     }
-    const addNewRow = () => {
+    const handleAddClick = () => {
         setOrderState(prev => [...prev, {
-            id: Math.random().toString(),
+            id: Date.now(),
             models: [],
             className: 'new-row',
-            gl_category_id: '',
-            approx_value: 0,
-            amount: 1,
+            count: 1,
             title: '',
             material_id: '',
-            material_comment: ''
+            material_comment: '',
+            tesvir: "",
+            orderType: orderType.current
         }])
     }
+    const handleRowDelete = (rowRef) => {
+        rowRef.current.classList.add("delete-row");
+        rowRef.current.addEventListener('animationend', () => setOrderState(prev => prev.materials.filter(material => material.id !== rowRef.current.id)))
+    }
+    const searchByMaterialName = useCallback((value, materialid) => {
+        setOrderState(prev => prev.map(material => material.id === materialid
+            ? {
+                ...material,
+                materialId: null,
+                materialName: value,
+                approx_price: '',
+                code: '',
+                department: '',
+                isAmortisized: '',
+                percentage: ''
+            }
+            : material
+        )
+        );
+    }, []);
+    const handlePlaceSearch = useCallback((value, materialid) => {
+        setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, place: value } : material));
+    }, []);
+    const handleChange = useCallback((name, value, materialid, sync = false, op) => {
+        if (!sync)
+            setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
+        else
+            setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, [name]: op === 'inc' ? material[name] + 1 : material[name] - 1 } : material))
+    }, [])
+    const handleModelSelection = useCallback((model, materialid) => {
+        setOrderState(prev => prev.map(material => material.id === materialid
+            ? {
+                ...material,
+                materialid: model.id,
+                title: model.title,
+                product_id: model.product_id,
+            }
+            : material
+        ));
+    }, []);
+    const handlePlaceSelection = useCallback((place, materialid) => {
+        setOrderState(prev => prev.map(material => material.id === materialid
+            ? {
+                ...material,
+                assignment_name: place.name,
+                placeid: place.id
+            }
+            : material
+        ));
+    }, []);
+    const setCode = useCallback((material, materialid) => {
+        setOrderState(prev => prev.map(prevMaterial => prevMaterial.id === materialid
+            ? {
+                ...prevMaterial,
+                product_id: material.product_id,
+                materialId: material.id
+            }
+            : prevMaterial
+        ));
+    }, [])
     return (
-        orderState.length !== 0 &&
-        <div className="modal-content-new-order">
-            {
-                operationResult.visible &&
-                <OperationResult
-                    setOperationResult={setOperationResult}
-                    operationDesc={operationResult.desc}
-                />
+        <>
+            {props.navBack && <span onClick={props.handleBackClick} style={{ float: "left", marginLeft: "10px", cursor: "pointer" }}>
+                <IoIosArrowBack size="3rem" />
+            </span>
             }
-            {
-                orderState[0].structure_id !== structureid &&
-                <div className="filial-name-header">{orderState[0].structure_name}</div>
-            }
-            <ul className="new-order-table">
-                <li>
-                    <div>#</div>
-                    <div>Məhsul</div>
-                    <div style={{ width: '170px', maxWidth: '200px', textAlign: 'left' }}>Kod</div>
-                    <div style={{ maxWidth: '140px' }}>Say</div>
-                    <div>Istifadə yeri</div>
-                    <div>Əlavə məlumat</div>
-                    {view==="returned" &&             
-                    <div>Təsvir</div>}
-                    <div> </div>
-                </li>
-                {
-                    orderState.map((row, index) =>
-                        <EditOrderTableRow
-                            row={row}
-                            view={view}
-                            key={row.id}
-                            index={index}
-                            departments={departments}
-                            setOrderState={setOrderState}
-                            orderType={row.order_type}
-                            glCatid={glCatid}
-                            structure={row.structure_id}
-                            ordNumb={ordNumb}
-                            version={version}
+            {orderState.length !== 0 &&
+                <div className="modal-content-new-order">
+                    {
+                        operationResult.visible &&
+                        <OperationResult
+                            setOperationResult={setOperationResult}
+                            operationDesc={operationResult.desc}
                         />
-                    )
-                }
-                {
-                    view === 'returned' &&
-                    <li style={{ height: '20px', backgroundColor: 'transparent' }}>
-                        <div style={{ padding: '0px' }}></div>
-                        <div style={{ padding: '0px' }}></div>
-                        <div style={{ padding: '0px' }}></div>
-                        <div style={{ padding: '0px' }}></div>
-                        <div style={{ padding: '0px' }}></div>
-                        <div style={{ padding: '0px' }}></div>
-                        <div style={{ padding: '0px' }}>
-                            <IoIosAdd title="Əlavə et" cursor="pointer" onClick={addNewRow} size="20" style={{ margin: 'auto' }} />
-                        </div>
-                    </li>
-                }
-            </ul>
-            {/* {
-                view === 'returned' && orderState.length !== 0 &&
-                <textarea ref={textareaRef} disabled={true} defaultValue={orderState[0].review} style={{ margin: '20px' }}>
-                </textarea>
-            } */}
-            {
-                view === 'procurement' &&
-                <ForwardDocLayout
-                    handleSendClick={handleConfirmClick}
-                />
-            }
-            {
-                view === 'returned' &&
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div className="send-order" onClick={handleSendClick}>
-                        Göndər
-                    </div>
+                    }
+                    <ul className="new-order-table">
+                        <li>
+                            <div>#</div>
+                            <div>Məhsul</div>
+                            <div style={{ width: '170px', maxWidth: '235px' }}>Kod</div>
+                            <div style={{ maxWidth: '120px' }}>Say</div>
+                            <div style={{ width: '170px', maxWidth: '150px' }}>Ölçü vahidi</div>
+                            <div>İstifadə yeri</div>
+                            <div>Əlavə məlumat</div>
+                            <div>Təsvir</div>
+                            <div> {view === 'returned' && <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} />}</div>
+                        </li>
+                        {
+                            orderState.map((row, index) =>
+                                <NewOrderTableRow
+                                    index={index}
+                                    orderType={orderType.current}
+                                    place={row.assignment_name}
+                                    key={row.id}
+                                    materialName={row.title}
+                                    materialid={row.materialid}
+                                    className={row.className}
+                                    handleRowDelete={handleRowDelete}
+                                    count={row.count}
+                                    additionalInfo={row.additionalInfo}
+                                    department={row.department}
+                                    tesvir={row.description}
+                                    setPlaceList={props.setPlaceList}
+                                    placeList={placeList}
+                                    code={row.product_id}
+                                    setCode={setCode}
+                                    handlePlaceSelection={handlePlaceSelection}
+                                    handleChange={handleChange}
+                                    handleModelSelection={handleModelSelection}
+                                    handlePlaceSearch={handlePlaceSearch}
+                                    searchByMaterialName={searchByMaterialName}
+                                />
+                            )
+                        }
+                    </ul>
+                    {
+                        view === 'returned1' && orderState.length !== 0 &&
+                        <textarea ref={textareaRef} disabled={true} defaultValue={orderState[0].review} style={{ margin: '20px' }}>
+                        </textarea>
+                    }
                 </div>
             }
-        </div>
+        </>
     )
 }
 export default EditOrderRequest

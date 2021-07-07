@@ -125,8 +125,6 @@ const NewOrderTableBody = (props) => {
                 additionalInfo={material.additionalInfo}
                 department={material.department}
                 tesvir={material.tesvir}
-                choices={props.choices}
-                setChoices={setChoices}
                 setPlaceList={props.setPlaceList}
                 placeList={placeList}
                 setCode={setCode}

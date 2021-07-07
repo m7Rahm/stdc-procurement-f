@@ -58,7 +58,7 @@ const LeftSidePane = (props, ref) => {
                                         ref={element => { if (link.categoryid) props.refs.current[`${link.categoryid}-${link.docType}`] = element }}
                                         style={{
                                             background: "#123456",
-                                            padding: "3px 0.5rem",
+                                            padding: "2px 0.5rem",
                                             marginRight: "1rem",
                                             fontWeight: 600,
                                             height: "19px",

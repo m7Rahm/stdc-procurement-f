@@ -18,50 +18,11 @@
     }
   }
 }
-.page-container {
-  // width: 50%;
-  position: relative;
-  
-  
-  padding-top: 7.5rem;
-  animation: slide_davam_next 200ms ease-in-out both;
-}
 .new-order-content {
   height: 100%;
   background-color: white;
 }
-@keyframes slide_geri_next {
-  from {
-    transform: translateX(-30rem);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-@keyframes slide_davam_next {
-  from {
-    transform: translateX(30rem);
-  }
-  to {
-    transform: translateX(0px);
-  }
-}
-@keyframes slide_geri_current {
-  from {
-    transform: translateX(0px);
-  }
-  to {
-    transform: translateX(30rem);
-  }
-}
-@keyframes slide_davam_current {
-  from {
-    transform: translateX(0px);
-  }
-  to {
-    transform: translateX(-30rem);
-  }
-}
+
 .cont1{
   position: absolute;
   left: 50%;

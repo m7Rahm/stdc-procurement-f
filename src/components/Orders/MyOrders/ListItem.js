@@ -1,4 +1,4 @@
-import React, { lazy, useState, useContext, useCallback, useEffect } from "react"
+import React, { lazy, useState, useContext, useCallback, useEffect, useRef } from "react"
 import { FaBoxOpen, FaBox } from "react-icons/fa"
 import {
   IoMdCheckmark,
@@ -7,7 +7,7 @@ import {
   IoMdDoneAll,
   IoMdPeople,
   IoMdMore,
-  IoMdChatbubbles
+  IoMdChatbubbles,
 } from "react-icons/io"
 import EditOrderRequest from "../../modal content/EditOrderRequest"
 import { TokenContext } from "../../../App"
@@ -36,8 +36,8 @@ const OrderContentWithChat = (props) => {
   }, [fetchPost]);
   return (
     <>
-      <EditOrderRequest {...props} />
-      <div style={{ padding: "0px 20px " }}>
+      <EditOrderRequest {...props} navBack={props.navBack} handleBackClick={props.handleBackClick} />
+      <div style={{ padding: "0px 20px", width: "100%" }}>
         {props.view !== "returned" &&
           <Chat
             loadMessages={fetchMessages}
@@ -52,32 +52,94 @@ const OrderContentWithChat = (props) => {
 }
 
 const PreviousOrders = (props) => {
+  const actPageRef = useRef(null);
   const fetchGet = useFetch("GET");
-  const [versions, setVersions] = useState({})
-  var _ = require('lodash');
+  const [versions, setVersions] = useState({});
+  const [version, setVersion] = useState({ id: undefined, animationName: "" })
   useEffect(() => {
     fetchGet(`/api/order-versions/${props.ordNumb}`)
       .then(respJ => {
-        // console.log(respJ)
-        var grouped = _.mapValues(_.groupBy(respJ, 'full_name'),
-          clist => clist.map(card => _.omit(card, 'full_name')));
-          // console.log(grouped)
-        setVersions(grouped)
+        const versions = {};
+        for (let i = 0; i < respJ.length; i++) {
+          if (!versions[respJ[i].order_id]) {
+            versions[respJ[i].order_id] = respJ.filter(mat => mat.order_id === respJ[i].order_id)
+          }
+        }
+        if (Object.keys(versions).length > 1)
+          setVersions(versions)
+        else
+          setVersion({ id: respJ[0].order_id })
       })
       .catch(ex => console.log(ex))
-  }, [props.ordNumb, fetchGet,_])
-  const orderCards =
-    <div style={{display:'flex',flexDirection:'row',gap:'12px',paddingLeft:'15px'}}>
-      {Object.keys(versions).map((key, index) =>
-      <ReturnedOrderCards
-        key={index}
-        order={versions[key]}
-        full_name={key}
-      />)}
+  }, [props.ordNumb, fetchGet]);
+  const handleCardClick = (e) => {
+    const id = e.currentTarget.id;
+    actPageRef.current.style.animationName = "slide_davam_current";
+    const animationendEventListener = (e) => {
+      if (e.animationName === "slide_davam_next") {
+        props.modalWrapperRef.current.style.overflow = "visible";
+        actPageRef.current.removeEventListener(
+          "animationend",
+          animationendEventListener,
+          false
+        );
+      }
+      props.modalWrapperRef.current.style.width = "90%";
+      if (e.animationName === "slide_davam_current")
+        setVersion({ id: id, animationName: "slide_davam_next", navBack: true });
+    }
+    actPageRef.current.addEventListener(
+      "animationend",
+      animationendEventListener,
+      false
+    );
+  }
+  const handleBackClick = () => {
+    actPageRef.current.style.animationName = "slide_geri_current";
+    props.modalWrapperRef.current.style.width = "600px";
+    props.modalWrapperRef.current.style.overflow = "hidden";
+    const animationendEventListener = (e) => {
+      actPageRef.current.removeEventListener(
+        "animationend",
+        animationendEventListener,
+        false
+      );
+      setVersion({ id: undefined, animationName: "slide_geri_next" });
+    };
+    actPageRef.current.addEventListener(
+      "animationend",
+      animationendEventListener,
+      false
+    );
+  }
+  return (
+    <div ref={actPageRef} className="page-container" style={{ animationName: version.animationName, padding: "20px" }}>
+      {version.id === undefined ?
+        <div
+          style={{
+            display: 'flex',
+            flexFlow: 'row wrap',
+            gap: '12px',
+            justifyContent: "space-evenly"
+          }} >
+          {Object.keys(versions).map(orderid =>
+            <ReturnedOrderCards
+              key={orderid}
+              orderid={orderid}
+              handleCardClick={handleCardClick}
+              order={versions[orderid]}
+              full_name={versions[orderid][0].full_name}
+            />
+          )}
+        </div>
+        : <OrderContentWithChat
+          {...props}
+          version={version.id}
+          navBack={version.navBack}
+          handleBackClick={handleBackClick}
+        />
+      }
     </div>
-
-return (
-  orderCards
   )
 }
 
@@ -108,7 +170,7 @@ const ListItem = (props) => {
   }
   const fetchPost = useFetch("POST");
   const onInfoClick = () => {
-    const onSendClick = (data, setOperationResult) => {
+    const onSendClick = (data) => {
       const reqData = data;
       fetchPost("/api/new-order", reqData)
         .then(respJ => {
@@ -127,10 +189,6 @@ const ListItem = (props) => {
               return ({ orders: newList, count: newList.count })
             });
           }
-          else if (respJ[0].error)
-            setOperationResult({ visible: true, desc: respJ[0].error })
-          else
-            throw new Error("Error Performing operation")
         })
     }
 
@@ -142,7 +200,7 @@ const ListItem = (props) => {
       onSendClick
     }
     // setModalState(prev => ({ ...prev, visible: true, content: OrderContentWithChat, childProps, number: number }))
-    setModalState(prev => ({ ...prev, visible: true, content: PreviousOrders, childProps, number: number }))
+    setModalState(prev => ({ ...prev, visible: true, content: PreviousOrders, childProps, number: number, style: referer === "returned" ? { minWidth: "auto", width: "600px" } : undefined }))
   }
   const icon = status === 0
     ? <IoMdCheckmark color="#F4B400" title="Baxılır" size="20" />
@@ -174,7 +232,13 @@ const ListItem = (props) => {
           <Suspense fallback="">
             {
               modalState.visible &&
-              <Modal childProps={modalState.childProps} changeModalState={handleClose} number={modalState.number} title={modalState.title} >
+              <Modal
+                childProps={modalState.childProps}
+                changeModalState={handleClose}
+                number={modalState.number}
+                title={modalState.title}
+                style={modalState.style}
+              >
                 {modalState.content}
               </Modal>
             }

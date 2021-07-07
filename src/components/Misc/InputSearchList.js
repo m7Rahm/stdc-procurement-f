@@ -15,6 +15,7 @@ const InputSearchList = (props) => {
                 onBlur={handleBlur}
                 onFocus={handleFocus}
                 type="text"
+                disabled={props.disabled}
                 placeholder={props.placeholder}
                 ref={props.inputRef}
                 name={props.name}

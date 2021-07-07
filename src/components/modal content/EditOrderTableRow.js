@@ -5,6 +5,7 @@ import {
 	FaMinus
 } from "react-icons/fa"
 import useFetch from "../../hooks/useFetch";
+import InputSearchList from "../Misc/InputSearchList";
 const EditOrderTableRow = ({ index, row, setOrderState, departments, view, orderType, structure }) => {
 	const rowid = row.id;
 	const modelsRef = useRef([]);
@@ -16,26 +17,18 @@ const EditOrderTableRow = ({ index, row, setOrderState, departments, view, order
 	const modelInputRef = useRef(null);
 	const [deps, setDeps] = useState(departments)
 	const fetchPost = useFetch("POST");
-	const handleBlur = (e) => {
-		const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
-		if (relatedTargetid === null || relatedTargetid !== `${rowid}-modelListRef`)
-			modelListRef.current.style.display = "none"
-	}
 	const handleAssignmentBlur = (e) => {
 		const relatedTarget = e.relatedTarget
 		if (relatedTarget && relatedTarget.classList.contains("structure-dep")) {
 			relatedTarget.click()
 		}
 	}
-	const handleFocus = () => {
-		modelListRef.current.style.display = "block"
-	}
 	const handleAssignmentChange = (e) => {
 		const value = e.target.value;
 		const charArray = value.split("")
 		const reg = charArray.reduce((conc, curr) => conc += curr !== "\\" ? curr + "(.*)" : curr + "\\(.*)", "")
 		const regExp = new RegExp(reg, "i")
-		setDeps(prev => departments.filter(dep => dep.name.match(regExp)))
+		setDeps(departments.filter(dep => dep.name.match(regExp)))
 	}
 	const searchByCode = (e) => {
 		const data = { product_id: e.target.value, orderType: orderType, structure: structure };
@@ -104,7 +97,7 @@ const EditOrderTableRow = ({ index, row, setOrderState, departments, view, order
 			})
 		}
 	}
-	const setModel = (model) => {
+	const setModel = (_, model) => {
 		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({
 			...row,
 			material_id: model.id,
@@ -132,33 +125,24 @@ const EditOrderTableRow = ({ index, row, setOrderState, departments, view, order
 			department_name: department.department_name
 		})))
 	}
-	console.log(row)
 	return (
 		<li ref={rowRef} className={row.className}>
 			<div>{index + 1}</div>
 			<div style={{ position: "relative" }}>
-				<input
-					onBlur={handleBlur}
-					onFocus={handleFocus}
-					type="text"
-					placeholder="Məhsul"
-					value={row.title}
-					name="title"
-					autoComplete="off"
-					ref={modelInputRef}
-					disabled={view === "protected"}
-					onChange={handleInputSearch}
+				<InputSearchList
+					defaultValue={row.title}
+					placeholder="Istifadə yeri"
+					text="name"
+					name="place"
+					disabled={view !== "returned"}
+					listid="placeListRef"
+					inputRef={modelInputRef}
+					listRef={modelListRef}
+					handleInputChange={handleInputSearch}
+					items={row.models}
+					handleItemClick={setModel}
+					style={{ width: '150px', maxWidth: ' 200px', outline: row.models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
 				/>
-				<ul id={`${rowid}-modelListRef`} tabIndex="0" ref={modelListRef} className="material-model-list">
-					{
-						row.models.map(model => {
-							const inputVal = modelInputRef.current.value.replace("-", "\\-");
-							const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-							const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
-							return <li dangerouslySetInnerHTML={{ __html: title }} key={model.id} onClick={() => setModel(model)}></li>
-						})
-					}
-				</ul>
 			</div>
 			<div style={{ position: "relative", width: "170px", maxWidth: "200px" }}>
 				<input
@@ -226,7 +210,6 @@ const EditOrderTableRow = ({ index, row, setOrderState, departments, view, order
 					onChange={handleChange}
 				/>
 			</div>
-			{view==="returned" &&
 			<div>
 				<input
 					style={{ width: "100%" }}
@@ -238,7 +221,6 @@ const EditOrderTableRow = ({ index, row, setOrderState, departments, view, order
 					onChange={handleChange}
 				/>
 			</div>
-			}
 			<div>
 				{view === "returned" &&
 					<FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />

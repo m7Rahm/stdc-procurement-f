@@ -13,20 +13,21 @@
     background-image: linear-gradient(to bottom, #f1f1f1, #e1e1e1);
 }
 
-.fadingText{
-    position:absolute;
+.fadingText {
+    position: absolute;
     right: 20px;
     width: 40px;
     height: 100%;
+    mask-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 10%, rgba(0, 0, 0, 1) 90%);
     top: 0;
 }
 
-.table>li:nth-of-type(2n) .fadingText{
-    background-image: linear-gradient(to right,rgb(230,230,230,0.7) 10%, #e9e9e9 90%);
+.table>li:nth-of-type(2n) .fadingText {
+    background-image: linear-gradient(to right, rgb(230, 230, 230, 0.7) 10%, #e9e9e9 90%);
 }
 
-.table>li:nth-of-type(2n+1) .fadingText{
-    background-image: linear-gradient(to right,rgb(255,255,255,0.7) 10%, white 90%);
+.table>li:nth-of-type(2n+1) .fadingText {
+    background-image: linear-gradient(to right, rgb(255, 255, 255, 0.7) 10%, white 90%);
 }
 
 i {
@@ -88,6 +89,49 @@ div.direction[name="back"]:active {
     width: 25rem;
     animation: slide-right 600ms ease-in-out both;
     background-color: rgba(255, 255, 255, 0.8);
+}
+
+.page-container {
+    position: relative;
+    animation-duration: 400ms;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes slide_geri_next {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide_geri_current {
+    from {
+        transform: translateX(0px);
+    }
+    to {
+        transform: translateX(120%);
+    }
+}
+
+@keyframes slide_davam_current {
+    0% {
+        transform: translateX(0px);
+    }
+    100% {
+        transform: translateX(-120%);
+    }
+}
+
+@keyframes slide_davam_next {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0px);
+    }
 }
 
 .sidebar3>div:first-of-type {
@@ -244,7 +288,6 @@ div.direction[name="back"]:active {
     margin-bottom: 15px;
     backdrop-filter: blur(10px);
     transition: all 1s;
-    padding: 30px 0 0 0;
 }
 
 .order-card-wrapper:hover {
@@ -291,8 +334,6 @@ div.direction[name="back"]:active {
 
 .order-card-info-wrapper {
     position: relative;
-    margin-top: auto;
-    margin-bottom: auto;
     text-decoration-color: white;
 }
 
@@ -327,16 +368,12 @@ div.my-orders-footer svg {
     height: 26px;
     width: 170px;
     background-color: rgb(64, 168, 196);
-    transform: translateY(-30px);
 }
 
 .order-card-info-additional {
-    margin-left: auto;
-    margin-right: auto;
     width: 160px;
     /* height: 30px; */
     background-color: #f0eaea;
-    transform: translateY(-25px);
     margin-top: 3px;
     font-size: 13px;
     box-shadow: 0px 0px 12px 1px rgba(0, 0, 0, 0.08);

@@ -6,7 +6,7 @@ import InputSearchList from '../../Misc/InputSearchList';
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, structure, materialid, className, additionalInfo, count, placeList, tesvir, handleRowDelete } = props;
+  const { orderType, materialid, className, additionalInfo, count, placeList, tesvir, handleRowDelete } = props;
   const modelListRef = useRef(null);
   const placeListRef = useRef(null);
   const [models, setModels] = useState([]);
@@ -63,7 +63,7 @@ const NewOrderTableRow = (props) => {
       .replace(/sh?/gi, '[sş]')
       .replace(/u/gi, '[uü]');
     props.searchByMaterialName(value, materialid)
-    fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}&structure=${structure || ""}`)
+    fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}`)
       .then(respJ => {
         setModels(respJ)
       })
@@ -80,7 +80,7 @@ const NewOrderTableRow = (props) => {
     props.handlePlaceSearch(value, materialid)
   }
   const searchByCode = (e) => {
-    const data = { product_id: e.target.value, orderType: orderType, structure: structure };
+    const data = { product_id: e.target.value, orderType: orderType };
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;

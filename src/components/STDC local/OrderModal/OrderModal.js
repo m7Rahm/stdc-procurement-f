@@ -19,6 +19,7 @@ const OrderModal = (props) => {
 
   const backClickHandler = (e) => {
     actPageRef.current.style.animationName = "slide_geri_current";
+    props.modalWrapperRef.current.style.overflow = "hidden";
     const animationendEventListener = () => {
       actPageRef.current.removeEventListener(
         "animationend",
@@ -26,10 +27,10 @@ const OrderModal = (props) => {
         false
       );
       setWhichPage((prevState) => {
+        actPageRef.current.style.animationName = "slide_geri_next"
         props.modalWrapperRef.current.style.width = prevState.page === 3 ? "90%" : "40rem";
         return prevState.page > 1 ? {
           page: prevState.page - 1,
-          animationName: "slide_geri_next",
         } : prevState;
       });
     };
@@ -48,18 +49,24 @@ const OrderModal = (props) => {
     if (davamText === "Davam") {
       const continueNext = () => {
         actPageRef.current.style.animationName = "slide_davam_current";
+        props.modalWrapperRef.current.style.overflow = "hidden";
         const animationendEventListener = () => {
-          actPageRef.current.removeEventListener(
-            "animationend",
-            animationendEventListener,
-            false
-          );
+          if (actPageRef.current.style.animationName === "slide_davam_next") {
+            props.modalWrapperRef.current.style.overflow = "visible";
+            actPageRef.current.removeEventListener(
+              "animationend",
+              animationendEventListener,
+              false
+            );
+          }
           setWhichPage(prevState => {
-            props.modalWrapperRef.current.style.width = prevState.page === 1 ? "90%" : "40rem";
-            return prevState.page < 3 ? {
-              page: prevState.page + 1,
-              animationName: "slide_davam_next",
-            } : prevState;
+            if (actPageRef.current.style.animationName === "slide_davam_current" && prevState.page < 3) {
+              actPageRef.current.style.animationName = "slide_davam_next"
+              props.modalWrapperRef.current.style.width = prevState.page === 1 ? "90%" : "40rem";
+              return {
+                page: prevState.page + 1,
+              }
+            } else return prevState
           });
         }
         actPageRef.current.addEventListener(
@@ -119,10 +126,13 @@ const OrderModal = (props) => {
     }
   };
   return (
-    <>
+    <div
+      className="page-container"
+      style={{ paddingTop: "7.5rem" }}
+      ref={actPageRef}
+    >
       {whichPage.page === 1 ? (
         <FirstPage
-          ref={actPageRef}
           setWhichPage={setWhichPage}
           handleDateChange={handleDateChange}
           choices={props.choices}
@@ -131,27 +141,19 @@ const OrderModal = (props) => {
           animName={whichPage.animationName}
         />
       ) : whichPage.page === 2 ? (
-        <div
-          className="page-container"
-          style={{ animationName: whichPage.animationName }}
-          ref={actPageRef}
-        >
-          <NewOrderContent
-            choices={props.choices}
-            setChoices={props.setChoices}
-            orderInfo={{ orderType: props.choices.serviceType, structure: -1 }}
-            operationResult={operationResult}
-            setOperationResult={setOperationResult}
-          />
-        </div>
+        <NewOrderContent
+          choices={props.choices}
+          setChoices={props.setChoices}
+          orderInfo={{ orderType: props.choices.serviceType, structure: -1 }}
+          operationResult={operationResult}
+          setOperationResult={setOperationResult}
+        />
       ) : whichPage.page === 3 ? (
-        <div className="page-container" ref={actPageRef}>
-          <ForwardDocLayout
-            textareaVisible={false}
-            choices={props.choices}
-            setChoices={props.setChoices}
-          />
-        </div>
+        <ForwardDocLayout
+          textareaVisible={false}
+          choices={props.choices}
+          setChoices={props.setChoices}
+        />
       ) : (
         <div></div>
       )}
@@ -175,7 +177,7 @@ const OrderModal = (props) => {
           {davamText}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
