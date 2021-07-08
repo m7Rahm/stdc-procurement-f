@@ -46,7 +46,7 @@ const EditOrderRequest = (props) => {
         else {
             const data = {
                 mats: orderState.map(material =>
-                    [material.materialid, material.title, material.count, material.placeid, material.assignment_name, material.additionalInfo, material.tesvir]
+                    [material.materialid, material.title, material.count, material.placeid, material.placeid, material.additionalInfo, material.tesvir]
                 ),
                 returned: 1,
                 ordNumb: ordNumb,
