@@ -141,7 +141,7 @@ const Orders = (props) => {
                 loadingIndicatorRef.current.style.opacity = "0";
                 loadingIndicatorRef.current.classList.add("load-to-start");
                 respJ.forEach(notif => {
-                    routes.find(route => route.docType === notif.doc_type).notifCount = notif.cnt;
+                    routes.find(route => route.docType === notif.doc_type && route.categoryid === notif.category_id).notifCount = notif.cnt;
                 });
                 setMenuData({ url: url, routes: routes });
                 props.leftNavRef.current.style.display = "block";
