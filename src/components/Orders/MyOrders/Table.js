@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense, lazy } from 'react'
 import {
   FaSortDown,
   FaSortUp
 } from 'react-icons/fa'
+import OperationStateLite from '../../Misc/OperationStateLite'
 import ListItem from './ListItem'
+const Modal = lazy(() => import("../../Misc/Modal"))
 const Table = (props) => {
+  const { referer, setOrders } = props;
   const [sortDateUp, setSortDateUp] = useState(undefined)
-  // const [deadlineFilter, setDeadlineFilter] = useState(false)
-  const referer = props.referer;
-  const [sortNumberUp, setSortNumberUp] = useState(undefined)
-  const [sortStatusUp, setSortStatusUp] = useState(undefined)
-  const setOrders = props.setOrders;
+  const [sending, setSending] = useState(undefined);
+  const [operationStateText, setOperationStateText] = useState({ text: "Sifariş göndərilir..." })
+  const [sortNumberUp, setSortNumberUp] = useState(undefined);
+  const [sortStatusUp, setSortStatusUp] = useState(undefined);
   useEffect(() => {
     if (sortDateUp !== undefined) {
       const asc = (a, b) => a.id > b.id ? 1 : -1
@@ -38,6 +40,7 @@ const Table = (props) => {
   const sortByNumber = () => {
     setSortNumberUp(prev => !prev)
   }
+  const [modalState, setModalState] = useState({ visible: false, content: null, childProps: {}, title: "Sifariş №" });
   const createDateFilterIcon = !sortDateUp
     ? <FaSortDown style={{ float: 'right', marginRight: '10px' }} onClick={sortByDate} />
     : <FaSortUp onClick={sortByDate} style={{ float: 'right', marginRight: '10px' }} />
@@ -48,38 +51,61 @@ const Table = (props) => {
     ? <FaSortDown style={{ float: 'right', marginRight: '10px' }} onClick={() => setSortStatusUp(prev => !prev)} />
     : <FaSortUp onClick={() => setSortStatusUp(prev => !prev)} style={{ float: 'right', marginRight: '10px' }} />
   // console.log(props.orders.orders)
+  const handleClose = () => {
+    setModalState(prev => ({ ...prev, visible: false }));
+  }
   return (
-    <ul className='table'>
-      <li style={{ justifyContent: "space-between" }}>
-        <div style={{ width: '30px', textAlign: "center" }}> #</div>
-        <div style={{ minWidth: '80px', textAlign: "center" }}> Status {sortIcon}</div>
-        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Tarix {createDateFilterIcon}</div>
-        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Deadline {createDateFilterIcon}</div>
-        <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə {numberIcon}</div>
-        <div style={{ width: '40%', textAlign: 'left' }}> İştirakçılar</div>
-        <div style={{ minWidth: '5%', width: "60px" }}> Qeyd</div>
-        {/* <div style={{ minWidth: '40px', overflow: 'visible', display: 'inline-block', width: 'auto' }}> </div> */}
-        <div style={{ width: "20px" }}></div>
-      </li>
-      {
-        props.orders.orders.map((order, index) =>
-          <ListItem
-            index={index}
-            key={order.id}
-            order={order}
-            referer={referer}
-            setOrders={setOrders}
-            status={order.status}
-            participants={order.participants}
-            date={order.create_date_time}
-            deadline={order.deadline}
-            id={order.id}
-            empid={order.emp_id}
-            number={order.ord_numb}
-          />
-        )
-      }
-    </ul>
+    <>
+      <Suspense fallback="">
+        {
+          modalState.visible &&
+          <Modal
+            childProps={modalState.childProps}
+            changeModalState={handleClose}
+            number={modalState.number}
+            title={modalState.title}
+            style={modalState.style}
+          >
+            {modalState.content}
+          </Modal>
+        }
+      </Suspense>
+      {sending !== undefined && <OperationStateLite state={sending} setState={setSending} text={operationStateText.text} />}
+      <ul className='table'>
+        <li style={{ justifyContent: "space-between" }}>
+          <div style={{ width: '30px', textAlign: "center" }}> #</div>
+          <div style={{ minWidth: '80px', textAlign: "center" }}> Status {sortIcon}</div>
+          <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Tarix {createDateFilterIcon}</div>
+          <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Deadline {createDateFilterIcon}</div>
+          <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə {numberIcon}</div>
+          <div style={{ width: '40%', textAlign: 'left' }}> İştirakçılar</div>
+          <div style={{ minWidth: '5%', width: "60px" }}> Qeyd</div>
+          {/* <div style={{ minWidth: '40px', overflow: 'visible', display: 'inline-block', width: 'auto' }}> </div> */}
+          <div style={{ width: "20px" }}></div>
+        </li>
+        {
+          props.orders.orders.map((order, index) =>
+            <ListItem
+              index={index}
+              key={order.id}
+              order={order}
+              referer={referer}
+              setOrders={setOrders}
+              status={order.status}
+              participants={order.participants}
+              date={order.create_date_time}
+              deadline={order.deadline}
+              id={order.id}
+              setModalState={setModalState}
+              setSending={setSending}
+              setOperationStateText={setOperationStateText}
+              empid={order.emp_id}
+              number={order.ord_numb}
+            />
+          )
+        }
+      </ul>
+    </>
   )
 }
 

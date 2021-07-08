@@ -101,7 +101,6 @@ const OrderModal = (props) => {
             receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
             data: undefined
           }
-          props.operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both"
           props.setSending(false);
           webSocket.send(JSON.stringify(message))
           const inParams = {

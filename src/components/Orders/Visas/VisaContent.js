@@ -10,7 +10,6 @@ const VisaContent = (props) => {
     const location = useLocation();
     const { tranid, initid } = props;
     const visaContentRef = useRef(null);
-    const operationStateRef = useRef(null);
     const [operationStateText, setOperationStateText] = useState({ text: "Əməliyyat icra olunur...", orderid: null, initid: null });
     const [sending, setSending] = useState(undefined);
     const [visa, setVisa] = useState(undefined);
@@ -59,13 +58,12 @@ const VisaContent = (props) => {
     }, [locationTranid, fetchGet, inid]);
     const handleOperationStateClick = () => {
         props.setActive({ orderid: operationStateText.orderid, initid: operationStateText.initid });
-        operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both";
         setSending(false)
         window.history.replaceState(undefined, "", `/orders/visas?i=${operationStateText.orderid}&r=${operationStateText.initid}`)
     }
     return (
         <div className="visa-content-container" style={{ minWidth: "0px" }} ref={visaContentRef}>
-            {sending !== undefined && <OperationStateLite handleOperationStateClick={handleOperationStateClick} ref={operationStateRef} state={sending} setState={setSending} text={operationStateText.text} />}
+            {sending !== undefined && <OperationStateLite handleOperationStateClick={handleOperationStateClick} state={sending} setState={setSending} text={operationStateText.text} />}
             {
                 visa ?
                     <div>
@@ -77,7 +75,6 @@ const VisaContent = (props) => {
                             current={visa}
                             setOperationStateText={setOperationStateText}
                             setSending={setSending}
-                            operationStateRef={operationStateRef}
                             navigationRef={props.navigationRef}
                         />
                     </div>

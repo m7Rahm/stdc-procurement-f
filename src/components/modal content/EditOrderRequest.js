@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { IoIosAdd, IoIosArrowBack } from 'react-icons/io';
 import OperationResult from '../Misc/OperationResult';
 import useFetch from '../../hooks/useFetch';
 import NewOrderTableRow from '../Orders/NewOrder/NewOrderTableRow';
-import { WebSocketContext } from '../../pages/SelectModule';
 
 const EditOrderRequest = (props) => {
     const { version, onSendClick, view } = props;
@@ -13,8 +12,6 @@ const EditOrderRequest = (props) => {
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const [placeList, setPlaceList] = useState([]);
     const fetchGet = useFetch("GET");
-    const fetchPost = useFetch('POST')
-    const webSocket = useContext(WebSocketContext);
     const orderType = useRef(undefined);
     useEffect(() => {
         fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
@@ -25,6 +22,7 @@ const EditOrderRequest = (props) => {
                     className: '',
                     materialid: row.material_id,
                     count: row.amount,
+                    tesvir: row.description,
                     additionalInfo: row.material_comment
                 }));
                 orderType.current = respJ[0].order_type;
@@ -42,10 +40,10 @@ const EditOrderRequest = (props) => {
         if (orderState.find(material => material.title.trim() === "")) {
             setOperationResult({ visible: true, desc: "Məhsul seçimi düzgün deyil" })
         }
-        else if(orderState.find(material => material.assignment_name.trim() === "")){
+        else if (orderState.find(material => material.assignment_name.trim() === "")) {
             setOperationResult({ visible: true, desc: "Istifadə yeri düzgün göstərilməmişdir" })
         }
-        else{
+        else {
             const data = {
                 mats: orderState.map(material =>
                     [material.material_id, material.title, material.count, material.assignment_id, material.assignment_name, material.material_comment, material.description]
@@ -55,23 +53,9 @@ const EditOrderRequest = (props) => {
                 orderType: orderType.current,
                 orderid: orderState[0].related_order_id
             };
-            props.closeModal()
-            // console.log(orderState)
-
-            fetchPost(`/api/new-order`, data)
-            .then(_ => {
-                const message = {
-                    message: "notification",
-                    receivers: [{ id: orderState[0].emp_id, notif: "oR" }],
-                    data: undefined
-                }
-                webSocket.send(JSON.stringify(message))
-            })
-            .catch(ex => {
-                console.log(ex);
-            })
+            props.closeModal();
+            onSendClick(data)
         }
-
     }
     const handleAddClick = () => {
         setOrderState(prev => [...prev, {
@@ -110,11 +94,11 @@ const EditOrderRequest = (props) => {
         setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, place: value } : material));
     }, []);
     const handleChange = useCallback((name, value, materialid, sync = false, op) => {
-        if (!sync)
+    if (!sync)
             setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
         else
             setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, [name]: op === 'inc' ? material[name] + 1 : material[name] - 1 } : material))
-    }, [])
+    }, []);
     const handleModelSelection = useCallback((model, materialid) => {
         setOrderState(prev => prev.map(material => material.id === materialid
             ? {
@@ -153,10 +137,9 @@ const EditOrderRequest = (props) => {
                     <span onClick={props.handleBackClick} style={{ float: "left", marginLeft: "10px", cursor: "pointer" }}>
                         <IoIosArrowBack size="3rem" />
                     </span>
-                    <span onClick={handleSendClick} 
-                        style={{ float: "right", cursor: "pointer",backgroundColor: 'rgb(244, 180, 0)',color:'white',padding: '10px 20px', margin: '10px 20px' }}>
-                        Gönder
-                    </span>
+                    <div onClick={handleSendClick} style={{ float: "right" }} className="send-order">
+                        Göndər
+                    </div>
                 </div>
             }
             {orderState.length !== 0 &&
@@ -188,13 +171,12 @@ const EditOrderRequest = (props) => {
                                     place={row.assignment_name}
                                     key={row.id}
                                     materialName={row.title}
-                                    materialid={row.materialid}
+                                    materialid={row.id}
                                     className={row.className}
                                     handleRowDelete={handleRowDelete}
                                     count={row.count}
                                     additionalInfo={row.additionalInfo}
-                                    department={row.department}
-                                    tesvir={row.description}
+                                    tesvir={row.tesvir}
                                     setPlaceList={props.setPlaceList}
                                     placeList={placeList}
                                     code={row.product_id}
