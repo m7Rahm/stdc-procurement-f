@@ -171,9 +171,7 @@ const ListItem = (props) => {
           if (respJ[0].result === "success") {
             const message = {
               message: "notification",
-              receivers: respJ
-                .filter(receiver => receiver.receiver_id)
-                .map(receiver => ({ id: receiver.receiver_id, notif: "oO" })),
+              receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
               data: undefined
             }
             webSocket.send(JSON.stringify(message))

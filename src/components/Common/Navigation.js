@@ -20,9 +20,9 @@ const Navigation = (props, ref) => {
     useEffect(() => {
         const handleInAppEvent = event => {
             const { docType, tranid, categoryid } = event.detail;
-            const key = `${categoryid}-${docType}`
+            const key = `${categoryid}-${docType}`;
             if (props.menuNavRefs.current[key]) {
-                const prev = Number(props.menuNavRefs[key]);
+                const prev = Number(props.menuNavRefs.current[key].innerHTML);
                 if (prev - 1 > 0)
                     props.menuNavRefs.current[key].innerHTML = prev - 1;
                 else
