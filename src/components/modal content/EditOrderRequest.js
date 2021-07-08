@@ -155,7 +155,7 @@ const EditOrderRequest = (props) => {
                     </span>
                     <span onClick={handleSendClick} 
                         style={{ float: "right", cursor: "pointer",backgroundColor: 'rgb(244, 180, 0)',color:'white',padding: '10px 20px', margin: '10px 20px' }}>
-                        Gönder
+                        Göndər
                     </span>
                 </div>
             }

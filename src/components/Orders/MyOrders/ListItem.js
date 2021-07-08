@@ -219,8 +219,8 @@ const ListItem = (props) => {
                 : ""
 
   const getColor = (deadline, date) => {
-    const newDate = '20' + date.split('/')[2].split(' ')[0] + '-' + date.split('/')[1] + '-' + date.split('/')[0]
-    if (Date.parse(deadline) < Date.parse(newDate))
+    // const newDate = '20' + date.split('/')[2].split(' ')[0] + '-' + date.split('/')[1] + '-' + date.split('/')[0]
+    if (Date.parse(deadline) < Date.parse(new Date()))
       return "red"
   }
   return (
