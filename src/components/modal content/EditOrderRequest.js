@@ -46,7 +46,7 @@ const EditOrderRequest = (props) => {
         else {
             const data = {
                 mats: orderState.map(material =>
-                    [material.materialid, material.title, material.count, material.placeid, material.assignment_name, material.additionalInfo, material.tesvir]
+                    [material.materialid, material.title, material.count, material.assignment_id, material.assignment_name, material.additionalInfo, material.tesvir]
                 ),
                 returned: 1,
                 ordNumb: ordNumb,
@@ -54,6 +54,7 @@ const EditOrderRequest = (props) => {
                 orderid: orderState[0].related_order_id
             };
             props.closeModal();
+            console.log(data.mats)
             onSendClick(data)
         }
     }
@@ -79,22 +80,18 @@ const EditOrderRequest = (props) => {
             ? {
                 ...material,
                 materialId: null,
-                materialName: value,
-                approx_price: '',
+                title: value,
                 code: '',
-                department: '',
-                isAmortisized: '',
-                percentage: ''
             }
             : material
         )
         );
     }, []);
     const handlePlaceSearch = useCallback((value, materialid) => {
-        setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, place: value } : material));
+        setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, assignment_name: value } : material));
     }, []);
     const handleChange = useCallback((name, value, materialid, sync = false, op) => {
-    if (!sync)
+        if (!sync)
             setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
         else
             setOrderState(prev => prev.map(material => material.id === materialid ? { ...material, [name]: op === 'inc' ? material[name] + 1 : material[name] - 1 } : material))
@@ -115,7 +112,7 @@ const EditOrderRequest = (props) => {
             ? {
                 ...material,
                 assignment_name: place.name,
-                placeid: place.id
+                assignment_id: place.id
             }
             : material
         ));
