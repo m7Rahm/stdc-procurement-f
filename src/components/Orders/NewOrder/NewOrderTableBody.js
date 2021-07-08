@@ -119,7 +119,9 @@ const NewOrderTableBody = (props) => {
                 key={material.id}
                 materialid={material.id}
                 className={material.class}
+                materialName={material.materialName}
                 structure={structure}
+                code={material.code}
                 handleRowDelete={handleRowDelete}
                 count={material.count}
                 additionalInfo={material.additionalInfo}

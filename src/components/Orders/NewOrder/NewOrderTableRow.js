@@ -105,7 +105,6 @@ const NewOrderTableRow = (props) => {
         })
     }, 500)
   }
-
   return (
     <li ref={rowRef} id={materialid} className={className}>
       <div>{props.index + 1}</div>
