@@ -164,6 +164,7 @@ const EditOrderRequest = (props) => {
                             orderState.map((row, index) =>
                                 <NewOrderTableRow
                                     index={index}
+                                    disabled={view !== "returned"}
                                     orderType={orderType.current}
                                     place={row.assignment_name}
                                     key={row.id}

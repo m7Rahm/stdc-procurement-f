@@ -112,6 +112,7 @@ const NewOrderTableRow = (props) => {
       <div style={{ position: 'relative' }}>
         <InputSearchList
           listid="modelListRef"
+          disabled={props.disabled}
           defaultValue={props.materialName}
           placeholder="Məhsul"
           inputRef={modelInputRef}
@@ -128,6 +129,7 @@ const NewOrderTableRow = (props) => {
         <input
           type="text"
           placeholder="Kod"
+          disabled={props.disabled}
           defaultValue={props.code}
           ref={codeRef}
           name="model"
@@ -138,22 +140,24 @@ const NewOrderTableRow = (props) => {
       {/* Say */}
       <div style={{ maxWidth: '140px' }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
-          <FaMinus cursor="pointer" onClick={() => { if (count > 1) handleAmountChangeButtons('dec') }} color="#ffae00" style={{ margin: '0px 3px' }} />
+          {!props.disabled && <FaMinus cursor="pointer" onClick={() => { if (count > 1) handleAmountChangeButtons('dec') }} color="#ffae00" style={{ margin: '0px 3px' }} />}
           <input
             name="count"
+            disabled={props.disabled}
             style={{ width: '40px', textAlign: 'center', padding: '0px 2px', margin: '0px 5px', flex: 1 }}
             type="text"
             onBlur={handleAmountFocusLose}
             onChange={handleAmountChange}
             value={count}
           />
-          <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ margin: '0px 3px' }} />
+          {!props.disabled && <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ margin: '0px 3px' }} />}
         </div>
       </div>
       {/* Ölçü vahidi */}
       <div style={{ maxWidth: '140px' }}>
         <select
           name="unit"
+          disabled={props.disabled}
           value={props.unit}
           onChange={handleChange}
         >
@@ -171,6 +175,7 @@ const NewOrderTableRow = (props) => {
           defaultValue={props.place}
           placeholder="Istifadə yeri"
           text="name"
+          disabled={props.disabled}
           name="place"
           listid="placeListRef"
           inputRef={placeInputRef}
@@ -187,6 +192,7 @@ const NewOrderTableRow = (props) => {
           style={{ width: '100%' }}
           placeholder="Link və ya əlavə məlumat"
           name="additionalInfo"
+          disabled={props.disabled}
           value={additionalInfo}
           type="text"
           onChange={handleChange}
@@ -199,12 +205,13 @@ const NewOrderTableRow = (props) => {
           placeholder="Təsvir"
           name="tesvir"
           value={tesvir}
+          disabled={props.disabled}
           type="text"
           onChange={handleChange}
         />
       </div>
       <div>
-        <FaTrashAlt cursor="pointer" onClick={e => handleRowDelete(rowRef)} title="Sil" color="#ff4a4a" />
+        {!props.disabled && <FaTrashAlt cursor="pointer" onClick={e => handleRowDelete(rowRef)} title="Sil" color="#ff4a4a" />}
       </div>
     </li>
   )

@@ -60,7 +60,7 @@ const EditOrder = (props) => {
                 edit: 1,
                 ordNumb: orderContent[0].ord_numb,
                 orderType: orderContent[0].order_type,
-                orderid: orderContent[0].order_id
+                orderid: orderContent[0].related_order_id || orderContent[0].order_id
             };
             props.setSending(true);
             props.setModalContent(prev => ({ ...prev, visible: false }));
