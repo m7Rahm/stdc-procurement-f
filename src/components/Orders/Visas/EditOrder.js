@@ -71,7 +71,6 @@ const EditOrder = (props) => {
                         receivers: [{ id: orderContent[0].sender_id, notif: "oR" }],
                         data: undefined
                     }
-                    props.operationStateRef.current.style.animation = "visibility-hide 500ms ease-in-out both";
                     props.setVisa(prev => prev.map((row, index) => index === 0 ? ({ ...row, result: 2, act_date_time: "Indicə" }) : row))
                     props.setSending(false);
                     webSocket.send(JSON.stringify(message))

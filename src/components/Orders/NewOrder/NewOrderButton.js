@@ -12,7 +12,6 @@ const NewOrder = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null);
   const [sending, setSending] = useState(undefined);
-  const operationStateRef = useRef(null);
   const [choices, setChoices] = useState({
     serviceType: 0, lastDate: new Date(),
     materials: [{
@@ -115,7 +114,7 @@ const NewOrder = (props) => {
         handleOrderSelect={handleOrderSelect}
         setIsModalVisible={setIsModalVisible}
       />
-      {sending !== undefined && <OperationStateLite ref={operationStateRef} state={sending} setState={setSending} text="Sifariş göndərilir.." />}
+      {sending !== undefined && <OperationStateLite state={sending} setState={setSending} text="Sifariş göndərilir.." />}
       {
         isModalVisible !== 0 &&
         <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
@@ -131,7 +130,6 @@ const NewOrder = (props) => {
                 setOrders: props.setOrders,
                 modalList: modalList,
                 setSending,
-                operationStateRef,
                 canSeeOtherOrders: props.canSeeOtherOrders
               }}
               minimizeHandler={minimizeHandler}

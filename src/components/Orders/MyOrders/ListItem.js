@@ -13,13 +13,11 @@ import EditOrderRequest from "../../modal content/EditOrderRequest"
 import { TokenContext } from "../../../App"
 import { WebSocketContext } from "../../../pages/SelectModule"
 import useFetch from "../../../hooks/useFetch"
-import { Suspense } from "react"
 import Chat from "../../Misc/Chat"
 import ReturnedOrderCards from "./ReturnedOrderCards"
 const FinishOrder = lazy(() => import("../../modal content/FinishOrder"))
 const ParticipantsModal = lazy(() => import("../../modal content/Participants"))
 const StatusModal = lazy(() => import("../../modal content/Status"))
-const Modal = lazy(() => import("../../Misc/Modal"))
 const Hybrid = (props) => <>
   <StatusModal id={props.id} />
   <ParticipantsModal id={props.id} />
@@ -147,12 +145,8 @@ const ListItem = (props) => {
   const tokenContext = useContext(TokenContext);
   const webSocket = useContext(WebSocketContext);
   const token = tokenContext[0].token;
-  const { referer, setOrders, status, participants, date, deadline, id, number, empid } = props;
-  const [modalState, setModalState] = useState({ visible: false, content: null, childProps: {}, title: "Sifariş №" });
+  const { referer, setOrders, status, participants, date, deadline, id, number, empid, setModalState } = props;
 
-  const handleClose = () => {
-    setModalState(prev => ({ ...prev, visible: false }));
-  }
   const onParticipantsClick = () => {
     const childProps = { id }
     setModalState(prev => ({ ...prev, visible: true, content: Hybrid, childProps: childProps, number: number }))
@@ -171,8 +165,8 @@ const ListItem = (props) => {
   const fetchPost = useFetch("POST");
   const onInfoClick = () => {
     const onSendClick = (data) => {
-      const reqData = data;
-      fetchPost("/api/new-order", reqData)
+      props.setSending(true)
+      fetchPost("/api/new-order", data)
         .then(respJ => {
           if (respJ[0].result === "success") {
             const message = {
@@ -183,12 +177,21 @@ const ListItem = (props) => {
               data: undefined
             }
             webSocket.send(JSON.stringify(message))
+            props.setSending(false);
+            const event = new CustomEvent("inAppEvent", {
+              detail: { tranid: data.orderid, docType: 0, categoryid: 2 }
+            });
+            window.dispatchEvent(event)
             setOrders(prev => {
               const newList = prev.orders.filter(order => order.id !== id);
               setModalState(prev => ({ ...prev, visible: false }))
               return ({ orders: newList, count: newList.count })
             });
           }
+        })
+        .catch(() => {
+          props.setSending(false)
+          props.setOperationStateText({ text: "Xəta baş verdi" })
         })
     }
 
@@ -199,7 +202,6 @@ const ListItem = (props) => {
       id: id,
       onSendClick
     }
-    // setModalState(prev => ({ ...prev, visible: true, content: OrderContentWithChat, childProps, number: number }))
     setModalState(prev => ({ ...prev, visible: true, content: PreviousOrders, childProps, number: number, style: referer === "returned" ? { minWidth: "auto", width: "600px" } : undefined }))
   }
   const icon = status === 0
@@ -229,20 +231,6 @@ const ListItem = (props) => {
         <div style={{ width: "30px", fontWeight: "520", color: "#505050", textAlign: "center" }}>{props.index + 1}</div>
         <div style={{ width: "80px", textAlign: "center" }}>
           {icon}
-          <Suspense fallback="">
-            {
-              modalState.visible &&
-              <Modal
-                childProps={modalState.childProps}
-                changeModalState={handleClose}
-                number={modalState.number}
-                title={modalState.title}
-                style={modalState.style}
-              >
-                {modalState.content}
-              </Modal>
-            }
-          </Suspense>
         </div>
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left" }}>{date}</div>
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left", color: getColor(deadline, date) }}>{deadline}</div>

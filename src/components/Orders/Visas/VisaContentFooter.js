@@ -114,7 +114,6 @@ const VisaContentFooter = (props) => {
                                         action: 2,
                                         setModalContent: props.setModalContent,
                                         setSending: props.setSending,
-                                        operationStateRef: props.operationStateRef,
                                         backgroundColor: '#F4B400',
                                         setVisa: props.setVisa,
                                         orderContent: props.orderContent,

@@ -70,7 +70,6 @@ const OrderContentProtected = (props) => {
 				setVisa={setVisa}
 				setModalContent={setModalContent}
 				setSending={props.setSending}
-				operationStateRef={props.operationStateRef}
 				setOperationStateText={props.setOperationStateText}
 				forwardType={forwardType}
 			/>
