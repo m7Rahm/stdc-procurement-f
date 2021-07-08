@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { IoIosAdd, IoIosArrowBack } from 'react-icons/io';
 import OperationResult from '../Misc/OperationResult';
 import useFetch from '../../hooks/useFetch';
 import NewOrderTableRow from '../Orders/NewOrder/NewOrderTableRow';
+import { WebSocketContext } from '../../pages/SelectModule';
 
 const EditOrderRequest = (props) => {
     const { version, onSendClick, view } = props;
@@ -12,6 +13,8 @@ const EditOrderRequest = (props) => {
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const [placeList, setPlaceList] = useState([]);
     const fetchGet = useFetch("GET");
+    const fetchPost = useFetch('POST')
+    const webSocket = useContext(WebSocketContext);
     const orderType = useRef(undefined);
     useEffect(() => {
         fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
@@ -34,13 +37,41 @@ const EditOrderRequest = (props) => {
             .then(respJ => setPlaceList(respJ))
             .catch(ex => console.log(ex))
     }, [fetchGet])
-    const handleSendClick = () => {
-        const error = orderState.find(material => material.title.trim() === "")
-        if (!error) {
 
-        }
-        else
+    const handleSendClick = () => {
+        if (orderState.find(material => material.title.trim() === "")) {
             setOperationResult({ visible: true, desc: "Məhsul seçimi düzgün deyil" })
+        }
+        else if(orderState.find(material => material.assignment_name.trim() === "")){
+            setOperationResult({ visible: true, desc: "Istifadə yeri düzgün göstərilməmişdir" })
+        }
+        else{
+            const data = {
+                mats: orderState.map(material =>
+                    [material.material_id, material.title, material.count, material.assignment_id, material.assignment_name, material.material_comment, material.description]
+                ),
+                returned: 1,
+                ordNumb: ordNumb,
+                orderType: orderType.current,
+                orderid: orderState[0].related_order_id
+            };
+            props.closeModal()
+            // console.log(orderState)
+
+            fetchPost(`/api/new-order`, data)
+            .then(_ => {
+                const message = {
+                    message: "notification",
+                    receivers: [{ id: orderState[0].emp_id, notif: "oR" }],
+                    data: undefined
+                }
+                webSocket.send(JSON.stringify(message))
+            })
+            .catch(ex => {
+                console.log(ex);
+            })
+        }
+
     }
     const handleAddClick = () => {
         setOrderState(prev => [...prev, {
@@ -117,9 +148,16 @@ const EditOrderRequest = (props) => {
     }, [])
     return (
         <>
-            {props.navBack && <span onClick={props.handleBackClick} style={{ float: "left", marginLeft: "10px", cursor: "pointer" }}>
-                <IoIosArrowBack size="3rem" />
-            </span>
+            {props.navBack &&
+                <div>
+                    <span onClick={props.handleBackClick} style={{ float: "left", marginLeft: "10px", cursor: "pointer" }}>
+                        <IoIosArrowBack size="3rem" />
+                    </span>
+                    <span onClick={handleSendClick} 
+                        style={{ float: "right", cursor: "pointer",backgroundColor: 'rgb(244, 180, 0)',color:'white',padding: '10px 20px', margin: '10px 20px' }}>
+                        Gönder
+                    </span>
+                </div>
             }
             {orderState.length !== 0 &&
                 <div className="modal-content-new-order">
