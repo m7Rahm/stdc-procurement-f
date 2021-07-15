@@ -60,7 +60,7 @@ const VisaContentFooter = (props) => {
                 }
                 <div className="accept-decline-container">
                     {
-                        canDecline &&
+                        canDecline && current.forward_type <=2 &&
                         <div
                             onClick={
                                 hoc(AcceptDecline,
@@ -81,7 +81,7 @@ const VisaContentFooter = (props) => {
                         </div>
                     }
                     {
-                        canApprove &&
+                        canApprove && current.forward_type <=2 &&
                         <div
                             onClick={
                                 hoc(AcceptDecline,
@@ -102,7 +102,7 @@ const VisaContentFooter = (props) => {
                         </div>
                     }
                     {
-                        canReturn && current.forward_type !== 4 &&
+                        canReturn && current.forward_type === 1 &&
                         <div
                             onClick={
                                 hoc(EditOrder,
@@ -132,11 +132,21 @@ const VisaContentFooter = (props) => {
                         current.forward_type === 3 &&
                         <div
                             onClick={
-                                hoc(ForwardDocLayout, { handleSendClick: handleForwardOrder })
+                                hoc(AcceptDecline,
+                                    {
+                                        handleModalClose: setIsModalOpen,
+                                        tranid: current.id,
+                                        setOperationResult: setOperationResult,
+                                        action: 1,
+                                        setSending: props.setSending,
+                                        setOperationStateText: props.setOperationStateText,
+                                        backgroundColor: 'rgb(15, 157, 88)'
+                                    }
+                                )
                             }
                             style={{ background: '#00a3e4' }}
                         >
-                            Əlavə struktur cəlb et
+                            Anbara yönəlt
                         </div>
                     }
                 </div>

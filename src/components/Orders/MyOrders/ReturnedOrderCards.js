@@ -7,8 +7,8 @@ function ReturnedOrderCards(props) {
     return (
         <div style={{ cursor: "pointer" }} id={props.orderid} onClick={props.handleCardClick}>
             <div
-                className="order-card"
-                style={{ left: "0px" }}
+                className={props.isLast === true ? 'blink order-card' :' order-card'}
+                style={{ left: "0px", backgroundColor: props.isLast === true ? 'rgba(64, 168, 196,1)' : '' }}
             >
                 <div className="order-card-info-wrapper"
                     style={{ display: 'flex', flexDirection: 'column' }}

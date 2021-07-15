@@ -190,12 +190,14 @@ div.direction[name="back"]:active {
     clear: both;
 }
 
-/* .participantsR>li:first-of-type {
-    background-color: #D93404;
-    color: white;
-    font-weight: 600;
-    overflow: hidden;
-} */
+.blink{
+    animation: fadein 0.5s ease-in-out 1 alternate;
+    animation-iteration-count: infinite;
+}
+@keyframes fadein{
+    from { background-color: rgba(64, 168, 180,0.6); }
+    to { background-color: rgba(64, 168, 180,0.9); }
+}
 
 .participantsR {
     padding: 0px;

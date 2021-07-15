@@ -11,10 +11,7 @@ const VisaContentMaterials = (props) => {
 	const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
 	const { emp_version_id, order_type } = props.orderContent[0];
 	let orders = [];
-	if (forwardType === 3)
-		orders = orderContent.filter(material => material.techizatci_id === userData.userInfo.structureid)
-	else
-		orders = orderContent
+	orders = orderContent
 	return (
 		orders.length !== 0 &&
 		<>
@@ -38,7 +35,9 @@ const VisaContentMaterials = (props) => {
 					}
 					<div>Əlavə məlumat</div>
 					<div style={{ maxWidth: '140px' }}>Təsviri</div>
-					<div style={{ width: '50px', flex: 'none' }}></div>
+					{forwardType >= 4 &&
+						<div style={{ maxWidth: '140px' }}>Qalıq</div>}
+					<div style={{ width: '90px', flex: 'none' }}></div>
 				</li>
 				{
 					orders.map((material, index) =>
@@ -116,6 +115,13 @@ const TableRow = (props) => {
 		canProceed.current[order_material_id] = true;
 		setDisabled(true)
 	}
+
+	const [remainder, setRemainder] = useState(0)
+
+	const inputChangeHandler = (e) => {
+		const value = e.target.value;
+		setRemainder(value)
+	}
 	return (
 		<li>
 			<div>{index + 1}</div>
@@ -142,15 +148,20 @@ const TableRow = (props) => {
 				</div>
 			}
 			<div>
-				<span style={{ width: '100%' }} >
+				<span style={{ maxWidth: '150px' }} >
 					{material_comment}
 				</span>
 			</div>
 			<div>
-				<span style={{ width: '100%' }} >
+				<span style={{ maxWidth: '150px' }} >
 					{description}
 				</span>
 			</div>
+			{forwardType >= 4 &&
+				<div>
+					<input style={{ width: '70%', maxWidth: '150px' }} onChange={inputChangeHandler} defaultValue={remainder}></input>
+				</div>
+			}
 			<div style={{ minWidth: '50px', flex: 'none' }}>
 				{
 					canEdit && order_type === 1 && result === 0 && canInfluence &&
