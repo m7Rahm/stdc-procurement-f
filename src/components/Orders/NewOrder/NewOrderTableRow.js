@@ -204,7 +204,7 @@ const NewOrderTableRow = (props) => {
           style={{ width: '100%' }}
           placeholder="Təsvir"
           name="tesvir"
-          value={tesvir}
+          value={tesvir || ""}
           disabled={props.disabled}
           type="text"
           onChange={handleChange}

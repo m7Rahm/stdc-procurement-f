@@ -26,6 +26,7 @@ const EditOrder = (props) => {
             count: material.amount,
             isService: 0,
             place: material.mat_ass,
+            placeid: material.mat_ass_id,
             unit: '1',
             tesvir: material.description
         }))
@@ -60,7 +61,8 @@ const EditOrder = (props) => {
                 edit: 1,
                 ordNumb: orderContent[0].ord_numb,
                 orderType: orderContent[0].order_type,
-                orderid: orderContent[0].related_order_id || orderContent[0].order_id
+                orderid: orderContent[0].related_order_id || orderContent[0].order_id,
+                currentOrderid: orderContent[0].order_id
             };
             props.setSending(true);
             props.setModalContent(prev => ({ ...prev, visible: false }));
@@ -83,7 +85,8 @@ const EditOrder = (props) => {
     }
     const handleRowDelete = useCallback((rowRef) => {
         rowRef.current.classList.add("delete-row");
-        rowRef.current.addEventListener('animationend', () => setChoices(prev => prev.filter(material => material.id !== rowRef.current.id)))
+        // eslint-disable-next-line
+        rowRef.current.addEventListener('animationend', () => setChoices(prev => prev.filter(material => material.id != rowRef.current.id)))
     }, []);
     const searchByMaterialName = useCallback((value, materialid) => {
         setChoices(prev => prev.map(material => material.id === materialid

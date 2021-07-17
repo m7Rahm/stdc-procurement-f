@@ -1,14 +1,7 @@
 .checkbox-label {
   position: relative;
   cursor: pointer;
-  .custom-checkbox {
-    position: relative;
-    border-radius: 50%;
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #c5c7cd;
-  }
+  margin: 0px 20px;
   input[type="radio"] {
     display: none;
     &:checked {
@@ -21,6 +14,16 @@
 .new-order-content {
   height: 100%;
   background-color: white;
+}
+.custom-checkbox {
+  position: relative;
+  border-radius: 50%;
+  clear: both;
+  display: inline-block;
+  width: 18px;
+  cursor: pointer;
+  height: 18px;
+  border: 2px solid #c5c7cd;
 }
 
 .cont1{

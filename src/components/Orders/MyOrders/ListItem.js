@@ -218,8 +218,7 @@ const ListItem = (props) => {
                 ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20" />
                 : ""
 
-  const getColor = (deadline, date) => {
-    // const newDate = '20' + date.split('/')[2].split(' ')[0] + '-' + date.split('/')[1] + '-' + date.split('/')[0]
+  const getColor = (deadline) => {
     if (Date.parse(deadline) < Date.parse(new Date()))
       return "red"
   }
@@ -234,7 +233,7 @@ const ListItem = (props) => {
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left", color: getColor(deadline, date) }}>{deadline}</div>
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
         <div style={{ width: "40%", textAlign: "left", position: "relative" }}>
-          <input defaultValue={participants.replace(/,\s*$/, "")} disabled={true} style={{ width: "90%", borderStyle: 'hidden', textAlign: 'justify' }} />
+          <input defaultValue={participants.slice(0, -2)} disabled={true} style={{ width: "90%", borderStyle: 'hidden', textAlign: 'justify' }} />
           <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ float: "left", marginRight: "10px" }} color="gray" />
           <div className="fadingText"></div>
         </div>

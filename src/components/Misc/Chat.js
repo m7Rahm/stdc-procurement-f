@@ -91,7 +91,7 @@ const Chat = (props) => {
                                 const firstFromBottom = all.findIndex(message => message.approxOffset >= 250);
                                 const indexEnd = firstFromBottom !== -1 ? firstFromBottom + 1 : all.length
                                 const visible = all.slice(0, indexEnd);
-                                if (all.length >= totalCount){
+                                if (all.length >= totalCount) {
                                     observer.unobserve(entry.target)
                                 }
                                 setMessages({ count: totalCount, all, visible, height: all.length * 50, start: 0, end: indexEnd, lastKnownIndex: 0 });
@@ -110,7 +110,7 @@ const Chat = (props) => {
                                                 : messages[index].user_id === prev.all[prev.all.length - 1].user_id
                                         }));
                                     const newState = [...prev.all, ...all];
-                                    if (newState.length >= totalCount){
+                                    if (newState.length >= totalCount) {
                                         observer.unobserve(entry.target)
                                     }
                                     return { ...prev, count: totalCount, all: newState, height: prev.height + all.length * 50 }
@@ -224,7 +224,7 @@ const Chat = (props) => {
             <div className="chat-footer" style={{ maxWidth: '1206px' }} >
                 <textarea ref={messageBoxRef} placeholder="Mesaj daxil edin..." onKeyDown={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
                 <span style={{ width: '60px' }}>
-                    <IoMdSend size="30" cursor="pointer" onClick={() => sendMessage(0)} />
+                    <IoMdSend color="#919191" size="30" cursor="pointer" onClick={() => sendMessage(0)} />
                 </span>
             </div>
         </>

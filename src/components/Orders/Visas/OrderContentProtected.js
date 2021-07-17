@@ -1,16 +1,28 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import Modal from '../../Misc/Modal'
 import VisaContentMaterials from '../../Common/VisaContentMaterials'
 import VisaContentHeader from './VisaContentHeader'
 import { WebSocketContext } from '../../../pages/SelectModule'
+import Chat from '../../Misc/Chat';
+import useFetch from '../../../hooks/useFetch';
 const OrderContentProtected = (props) => {
 	const { current, canProceed, setVisa, footerComponent: Component } = props;
 	const forwardType = current[0].forward_type;
 	const webSocket = useContext(WebSocketContext);
 	const [modalContent, setModalContent] = useState({ visible: false, content: null });
+	const orderid = current[0].order_id;
 	const handleModalClose = () => {
 		setModalContent(prev => ({ ...prev, visible: false }));
 	}
+	const fetchPost = useFetch("POST");
+	const fetchGet = useFetch("GET");
+	const sendMessage = useCallback((data) => {
+		const apiData = { ...data, docType: 10 };
+		return fetchPost(`/api/send-message`, apiData)
+	}, [fetchPost]);
+	const fetchMessages = useCallback((from = 0) =>
+		fetchGet(`/api/messages/${orderid}?from=${from}&replyto=0&doctype=${10}`)
+		, [orderid, fetchGet]);
 	const handleEditClick = (content) => {
 		setModalContent({ visible: true, content, title: "Sifariş № ", number: current[0].ord_numb });
 	}
@@ -35,7 +47,7 @@ const OrderContentProtected = (props) => {
 	}
 	return (
 		current &&
-		<>
+		<div style={{ padding: "20px" }}>
 			<>
 				{
 					modalContent.visible &&
@@ -73,7 +85,13 @@ const OrderContentProtected = (props) => {
 				setOperationStateText={props.setOperationStateText}
 				forwardType={forwardType}
 			/>
-		</>
+			<Chat
+				loadMessages={fetchMessages}
+				documentid={orderid}
+				documentType={10}
+				sendMessage={sendMessage}
+			/>
+		</div>
 	)
 }
 export default OrderContentProtected

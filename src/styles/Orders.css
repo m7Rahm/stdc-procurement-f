@@ -277,8 +277,7 @@ div.direction[name="back"]:active {
 
 .order-card {
     box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2);
-    width: 270px;
-    height: 250px;
+    height: 150px;
     background-color: #e8e8e8;
     border-radius: 7%;
     margin-left: auto;
@@ -291,7 +290,6 @@ div.direction[name="back"]:active {
 }
 
 .order-card-wrapper:hover {
-    transform: scale(1.05);
     cursor: pointer;
     box-shadow: 0px 0px 12px 1px rgba(0, 0, 0, 0.2);
 }
@@ -334,9 +332,40 @@ div.direction[name="back"]:active {
 
 .order-card-info-wrapper {
     position: relative;
+    align-items: center;
     text-decoration-color: white;
 }
-
+div.first-page-container{
+    display: flex;
+    padding-top: 3rem;
+    justify-content: center;
+}
+div.first-page-container input[type="radio"]{
+    height: 18px;
+    width: 18px;
+    border: none;
+}
+div.first-page-container>div:first-of-type label{
+    font-size: 18px;
+}
+div.first-page-container>div:first-of-type{
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    flex-direction: column;
+    justify-content: center;
+}
+div.first-page-container>div:first-of-type>div:first-of-type{
+    display: flex;
+    /* align-items: center; */
+    justify-content: space-evenly;
+}
+div.new-ord-nav-container {
+    overflow: hidden;
+    gap: 20px;
+    display: flex;
+    justify-content: center;
+}
 div.my-orders-footer {
     position: fixed;
     bottom: 0;
@@ -598,7 +627,7 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
 
 .protex-order-header-container {
     overflow: hidden;
-    margin: 35px 50px;
+    margin: 35px 0px;
 }
 
 .protex-order-header-container>div>h1 {
@@ -634,45 +663,32 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     color: #ffb362;
 }
 
-.order-table-protex+div.review-container {
-    margin: 20px 0px;
-    padding: 20px
-}
-
-.order-table-protex+div.review-container>textarea {
-    display: block;
-    border-color: gray;
-    width: 100%;
-    clear: both;
-    border-radius: 3px;
-    min-height: 50px;
-}
-
-.order-table-protex+div.review-container>div {
-    margin-top: 50px;
-    color: white;
-    cursor: pointer;
-    float: right;
-    border-radius: 2px;
-    background-color: teal;
-    padding: 10px 20px;
-    min-width: 170px;
-}
-
 .order-table-protex {
     margin-top: 20px;
+    width: 100%;
+    color: white;
 }
-
-.order-table-protex>li {
+.order-table-protex>thead>tr{
     max-height: none;
+    border-bottom-left-radius: 0px;
+    background-image: linear-gradient(to bottom, #3C8DAD, gray);
 }
-
-.order-table-protex>li>div {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+.order-table-protex>thead>tr>td{
+    padding: 1rem;
 }
-
+.order-table-protex tr>td:nth-of-type(2){
+    max-width: 300px;
+}
+.order-table-protex>tbody>tr>td{
+    padding: 10px;
+    color: rgb(83, 82, 82);
+}
+.order-table-protex>tbody>tr{
+    background-color: #f3f3f3;
+}
+.order-table-protex>tbody>tr:nth-of-type(2n){
+    background-color: #e9e9e9;
+}
 .order-table-protex>li>div>span {
     text-align: left;
 }

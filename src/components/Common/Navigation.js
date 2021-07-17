@@ -188,6 +188,7 @@ const Navigation = (props, ref) => {
                             ? "/contracts?"
                             : "/payments?"
         const { tran_id: tranid, doc_number: docNumber } = notification;
+
         let link = module + subModule + `i=${tranid}&r=${notification.init_id}`
         if (notification.category_id === 10) {
             link = "/other?i=" + tranid + "&dt=" + notification.doc_type
@@ -216,7 +217,15 @@ const Navigation = (props, ref) => {
         setProfileData({ visible: true })
     }
     const onNotificationClick = (notif) => {
-        if (!notif.is_read)
+        if (!notif.is_read) {
+            const key = `${notif.category_id}-${notif.doc_type}`;
+            if (props.menuNavRefs.current[key]) {
+                const prev = Number(props.menuNavRefs.current[key].innerHTML);
+                if (prev - 1 > 0)
+                    props.menuNavRefs.current[key].innerHTML = prev - 1;
+                else
+                    props.menuNavRefs.current[key].style.display = "none"
+            }
             fetchNotifications(`/api/update-notifcation-state/${notif.id}`)
                 .then(respJ => {
                     if (respJ.length === 0)
@@ -227,6 +236,7 @@ const Navigation = (props, ref) => {
                         })
                 })
                 .catch(ex => console.log(ex))
+        }
         pushHistory(notif)
     }
     return (

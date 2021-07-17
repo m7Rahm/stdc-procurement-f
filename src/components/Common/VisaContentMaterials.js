@@ -25,36 +25,40 @@ const VisaContentMaterials = (props) => {
 					operationDesc={operationResult.desc}
 				/>
 			}
-			<ul className="new-order-table order-table-protex">
-				<li>
-					<div>#</div>
-					<div style={{ textAlign: 'left' }}>Məhsul</div>
-					<div style={{ maxWidth: '140px' }}>Kod</div>
-					<div style={{ maxWidth: '140px' }}>Say</div>
-					<div style={{ maxWidth: '140px' }}>İstifadə yeri</div>
+			<table className="order-table-protex" >
+				<thead>
+					<tr>
+						<td>#</td>
+						<td style={{ textAlign: 'left', maxWidth: "300px" }}>Məhsul</td>
+						<td style={{ maxWidth: '140px' }}>Kod</td>
+						<td style={{ maxWidth: '140px' }}>Say</td>
+						<td style={{ maxWidth: '140px' }}>İstifadə yeri</td>
+						{
+							((forwardType === 3 || forwardType === 5) && order_type === 1) &&
+							<td style={{ maxWidth: '140px' }}>Məbləğ</td>
+						}
+						<td>Əlavə məlumat</td>
+						<td style={{ maxWidth: '140px' }}>Təsviri</td>
+						<td style={{ width: '50px', flex: 'none' }}></td>
+					</tr>
+				</thead>
+				<tbody>
 					{
-						((forwardType === 3 || forwardType === 5) && order_type === 1) &&
-						<div style={{ maxWidth: '140px' }}>Məbləğ</div>
+						orders.map((material, index) =>
+							<TableRow
+								index={index}
+								setOperationResult={setOperationResult}
+								key={material.order_material_id}
+								canProceed={canProceed}
+								empVersion={emp_version_id}
+								userData={userData}
+								forwardType={forwardType}
+								material={material}
+							/>
+						)
 					}
-					<div>Əlavə məlumat</div>
-					<div style={{ maxWidth: '140px' }}>Təsviri</div>
-					<div style={{ width: '50px', flex: 'none' }}></div>
-				</li>
-				{
-					orders.map((material, index) =>
-						<TableRow
-							index={index}
-							setOperationResult={setOperationResult}
-							key={material.order_material_id}
-							canProceed={canProceed}
-							empVersion={emp_version_id}
-							userData={userData}
-							forwardType={forwardType}
-							material={material}
-						/>
-					)
-				}
-			</ul>
+				</tbody>
+			</table>
 			<div className="sender-comment">{orders[0].sender_comment}</div>
 		</>
 	)
@@ -117,41 +121,41 @@ const TableRow = (props) => {
 		setDisabled(true)
 	}
 	return (
-		<li>
-			<div>{index + 1}</div>
-			<div style={{ textAlign: 'left' }}>
+		<tr>
+			<td>{index + 1}</td>
+			<td style={{ textAlign: 'left' }}>
 				{material_name || title}
-			</div>
-			<div style={{ textAlign: 'left', maxWidth: "140px" }}>
+			</td>
+			<td style={{ textAlign: 'left', maxWidth: "140px" }}>
 				{product_id}
-			</div>
-			<div style={{ maxWidth: '140px' }}>
+			</td>
+			<td style={{ maxWidth: '140px' }}>
 				<div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
 					<div style={{ width: '40px', textAlign: 'center', padding: '0px 2px', margin: 'auto', flex: 1 }}>
 						{amount}
 					</div>
 				</div>
-			</div>
-			<div style={{ maxWidth: "140px" }}>
+			</td>
+			<td style={{ maxWidth: "140px" }}>
 				{mat_ass}
-			</div>
+			</td>
 			{
 				((forwardType === 3 || forwardType === 5) && order_type === 1) &&
-				<div style={{ maxWidth: '140px' }}>
+				<td style={{ maxWidth: '140px' }}>
 					<input disabled={disabled} defaultValue={total} ref={servicePriceRef} />
-				</div>
+				</td>
 			}
-			<div>
+			<td>
 				<span style={{ width: '100%' }} >
 					{material_comment}
 				</span>
-			</div>
-			<div>
+			</td>
+			<td>
 				<span style={{ width: '100%' }} >
 					{description}
 				</span>
-			</div>
-			<div style={{ minWidth: '50px', flex: 'none' }}>
+			</td>
+			<td style={{ minWidth: '50px', flex: 'none' }}>
 				{
 					canEdit && order_type === 1 && result === 0 && canInfluence &&
 					<>
@@ -165,7 +169,7 @@ const TableRow = (props) => {
 						}
 					</>
 				}
-			</div>
-		</li>
+			</td>
+		</tr>
 	)
 }

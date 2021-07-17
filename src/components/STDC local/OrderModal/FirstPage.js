@@ -4,48 +4,28 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import "./OrderModal.scss"
 
 const FirstPage = (props) => {
-
-    const updateServiceType = (e) => {
-        const value = e.target.value
-        props.setChoices(prevState => ({ ...prevState, serviceType: +value }))
+    // props.choices.serviceType === 0
+    const updateServiceType = (val) => {
+        props.setChoices(prevState => ({ ...prevState, serviceType: val }))
     }
-
     return (
         <>
-            <div style={{ justifyContent: "center" }} className="flex flex-js-c px-14 mb-10 cont1">
-                <div className="flex pr-10">
-                    <label className="checkbox-label">
-                        <input
-                            type="radio"
-                            name="servis"
-                            value={1}
-                            checked={props.choices.serviceType === 1}
-                            onChange={(e) => updateServiceType(e)}
-                        />
-                        <span className="custom-checkbox"></span>
-                    </label>
-                    <p className=" ml-4 text-md">Xidmət</p>
-                </div>
-
-                <div className="flex pl-10">
-                    <label className="checkbox-label">
-                        <input
-                            type="radio"
-                            name="servis"
-                            value={0}
-                            checked={props.choices.serviceType === 0}
-                            onChange={(e) => updateServiceType(e)}
-                        />
-                        <span className="custom-checkbox"></span>
-                    </label>
-                    <p className=" ml-4 text-md">Mal-material</p>
+            <div className="first-page-container">
+                <div>
+                    <div>
+                        <span style={{ backgroundColor: props.choices.serviceType === 1 ? "green" : "" }} className="custom-checkbox" onClick={() => updateServiceType(1)} />
+                        <span style={{ backgroundColor: props.choices.serviceType === 0 ? "green" : "" }} className="custom-checkbox" onClick={() => updateServiceType(0)} />
+                    </div>
+                    <div>
+                        <label className="checkbox-label"> Xidmət</label>
+                        <label className="checkbox-label">Mal-material</label>
+                    </div>
                 </div>
             </div>
             <div className="form-group">
                 <label htmlFor="" className="form-label mb-2 text-md">
                     Son Tarix
                 </label>
-
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
                         disableToolbar

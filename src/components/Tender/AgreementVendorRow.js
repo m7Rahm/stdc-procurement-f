@@ -41,9 +41,7 @@ const AgreementVendorRow = (props) => {
     }
     const handleRowDelete = () => {
         rowRef.current.classList.add('delete-row');
-        rowRef.current.addEventListener('animationend',
-            () => setAgreementVendors(prev => prev.filter(row => row.key !== vendor.key))
-        )
+        rowRef.current.addEventListener('animationend', () => setAgreementVendors(prev => prev.filter(row => row.key !== vendor.key)))
     }
     const workSector = workSectors.find(sector => sector.val === vendor.sphere) ? workSectors.find(sector => sector.val === vendor.sphere).text : '';
     return (

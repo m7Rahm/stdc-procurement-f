@@ -13,6 +13,8 @@
 
 :root {
   --primary-color-accept: rgb(15, 157, 88);
+  --primary-color-blue-stdc: rgb(64, 168, 196);
+  --primary-color-yellow-stdc: rgb(255, 174, 0);
   --primary-color-decline: rgb(217, 52, 4);
   --primary-color-yellow: rgb(244, 180, 0);
 }
@@ -1154,7 +1156,6 @@ input.assignment-input:focus+ul.structures-list {
 .new-order-table>li>div:not(:first-of-type):not(:last-of-type) {
   flex: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 
@@ -1164,7 +1165,10 @@ input.assignment-input:focus+ul.structures-list {
   overflow: hidden;
   background-image: linear-gradient(to bottom, royalblue, #195db6);
 }
-
+.new-order-table>li:first-of-type>div>p{
+  width: 100%;
+  text-align: center;
+}
 .new-order-table>li>div:last-of-type, .new-order-table>li>div:first-of-type {
   display: flex;
   align-items: center;
@@ -2544,6 +2548,7 @@ div.message {
   border-radius: 5px;
   color: white;
   padding: 6px;
+  overflow-wrap: break-word;
   position: relative;
   background-color: rgb(38, 45, 49);
 }
@@ -2589,31 +2594,41 @@ div.chat-footer {
   display: flex;
   bottom: 0;
   z-index: 0;
-  padding-bottom: 10px;
+  padding: 1rem;
   /* padding-right: 60px; */
   /* margin-right: 60px; */
   margin-top: 10px !important;
-  height: 50px;
+  height: 4rem;
+  gap: 0.5rem;
+  border: 1px solid gainsboro;
+  background-color: #f0f0f0;
   align-items: center
 }
 
 div.chat-footer textarea {
-  padding: 8px;
-  background-image: linear-gradient(to right, rgba(230, 160, 21, 0.1), rgba(220, 220, 220, 0.596));
-  max-height: 38px;
-  transition: all 1200ms;
+  padding: 0.5rem;
+  background-color: white;
+  transition: all 400ms;
+  border: none;
+  height: 42px;
+  display: block;
   caret-color: steelblue;
   /* overflow: hidden; */
 }
 
 div.chat-footer textarea:focus {
   outline: none;
+  box-shadow: 0px 0px 2px 1px gainsboro;
 }
 
 div.chat-container>div:first-of-type::-webkit-scrollbar {
   width: 8px;
 }
-
+div.chat-footer svg {
+  opacity: 0.9;
+  margin-right: 0.5rem;
+  float: right;
+}
 div.uploaded-files {
   overflow: hidden;
   padding: 5px;

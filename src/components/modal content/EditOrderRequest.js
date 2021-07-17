@@ -73,7 +73,8 @@ const EditOrderRequest = (props) => {
     }
     const handleRowDelete = (rowRef) => {
         rowRef.current.classList.add("delete-row");
-        rowRef.current.addEventListener('animationend', () => setOrderState(prev => prev.materials.filter(material => material.id !== rowRef.current.id)))
+        // eslint-disable-next-line
+        rowRef.current.addEventListener('animationend', () => setOrderState(prev => prev.filter(material => material.id != rowRef.current.id)))
     }
     const searchByMaterialName = useCallback((value, materialid) => {
         setOrderState(prev => prev.map(material => material.id === materialid
@@ -134,9 +135,10 @@ const EditOrderRequest = (props) => {
                     <span onClick={props.handleBackClick} style={{ float: "left", marginLeft: "10px", cursor: "pointer" }}>
                         <IoIosArrowBack size="3rem" />
                     </span>
-                    <div onClick={handleSendClick} style={{ float: "right" }} className="send-order">
+                    {view === "returned" && <div onClick={handleSendClick} style={{ float: "right" }} className="send-order">
                         Göndər
                     </div>
+                    }
                 </div>
             }
             {orderState.length !== 0 &&

@@ -24,7 +24,8 @@ const NewOrderTableBody = (props) => {
   }, [fetchGet])
   const handleRowDelete = (rowRef) => {
     rowRef.current.classList.add("delete-row");
-    rowRef.current.addEventListener('animationend', () => setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.id !== rowRef.current.id) })))
+    // eslint-disable-next-line
+    rowRef.current.addEventListener('animationend', () => setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.id != rowRef.current.id) })))
   }
   const searchByMaterialName = useCallback((value, materialid) => {
     setChoices(prev => ({
@@ -100,13 +101,13 @@ const NewOrderTableBody = (props) => {
       <ul className="new-order-table">
         <li>
           <div>#</div>
-          <div>Məhsul</div>
-          <div style={{ width: '170px', maxWidth: '235px' }}>Kod</div>
-          <div style={{ maxWidth: '120px' }}>Say</div>
-          <div style={{ width: '170px', maxWidth: '150px' }}>Ölçü vahidi</div>
-          <div>İstifadə yeri</div>
-          <div>Əlavə məlumat</div>
-          <div>Təsvir</div>
+          <div><p>Məhsul</p></div>
+          <div style={{ width: '170px', maxWidth: '235px' }}><p>Kod</p></div>
+          <div style={{ maxWidth: '120px' }}><p>Say</p></div>
+          <div style={{ width: '170px', maxWidth: '150px' }}><p>Ölçü vahidi</p></div>
+          <div><p>İstifadə yeri</p></div>
+          <div><p>Əlavə məlumat</p></div>
+          <div><p>Təsvir</p></div>
           <div> <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} /></div>
         </li>
         {
