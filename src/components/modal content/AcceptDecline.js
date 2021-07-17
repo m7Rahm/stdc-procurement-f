@@ -17,7 +17,7 @@ const AcceptDecline = (props) => {
                 .then(respJ => {
                     if (respJ.length !== 0 && respJ[0].operation_result === 'success') {
                         const [{ origin_emp_id: originid }, ...rest] = respJ
-                        const receivers = rest.map(receiver => receiver.receiver)
+                        const receivers = rest.map(receiver => receiver.id)
                         props.handleModalClose({
                             id: tranid,
                             act_date_time: "Biraz öncə",

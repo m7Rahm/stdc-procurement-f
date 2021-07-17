@@ -55,7 +55,8 @@ const App = () => {
         history.replace('/login')
       }
     }
-  }, [location, history, token.token])
+  }, [location, history, token.token]);
+
   return (
     <TokenContext.Provider value={[token, setToken, logout]}>
       <Switch>

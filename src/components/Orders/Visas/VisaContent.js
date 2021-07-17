@@ -26,6 +26,7 @@ const VisaContent = (props) => {
                     if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
                         setVisa(respJ);
+                        // console.log(respJ)
                     }
                     else
                         setVisa(undefined)

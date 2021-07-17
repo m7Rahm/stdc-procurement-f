@@ -36,14 +36,8 @@ const OrderContentProtected = (props) => {
 		setModalContent(prev => ({ ...prev, visible: false }))
 		setVisa(prev => prev.map((row, index) => index === 0 ? ({ ...row, ...updatedCtnt }) : row));
 	}
-	const forwardDoc = (receivers) => {
-		setModalContent({ visible: false, content: null })
-		const message = JSON.stringify({
-			message: "notification",
-			receivers: receivers.map(receiver => ({ id: receiver.id, notif: "oO" })),
-			data: undefined
-		})
-		webSocket.send(message)
+	const setRemainder = (id, value) => {
+		setVisa(prev => prev.map((row, index) => row.order_material_id === id ? ({ ...row, in_warehouse_amount: value }) : row));
 	}
 	return (
 		current &&
@@ -69,13 +63,13 @@ const OrderContentProtected = (props) => {
 			</>
 			<VisaContentMaterials
 				orderContent={current}
+				setRemainder={setRemainder}
 				canProceed={canProceed}
 				forwardType={forwardType}
 			/>
 			<Component
 				current={current[0]}
 				canProceed={canProceed}
-				forwardDoc={forwardDoc}
 				handleEditClick={handleEditClick}
 				updateContent={updateContent}
 				orderContent={current}

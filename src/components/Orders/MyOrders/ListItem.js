@@ -120,13 +120,14 @@ const PreviousOrders = (props) => {
             gap: '12px',
             justifyContent: "space-evenly"
           }} >
-          {Object.keys(versions).map(orderid =>
+          {Object.keys(versions).map((orderid,index) =>
             <ReturnedOrderCards
               key={orderid}
               orderid={orderid}
               handleCardClick={handleCardClick}
               order={versions[orderid]}
               full_name={versions[orderid][0].full_name}
+              isLast={index===(Object.keys(versions).length-1) ? true : false}              
             />
           )}
         </div>
