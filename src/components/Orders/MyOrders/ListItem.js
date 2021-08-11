@@ -233,9 +233,9 @@ const ListItem = (props) => {
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left" }}>{date}</div>
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left", color: getColor(deadline, date) }}>{deadline}</div>
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
-        <div style={{ width: "40%", textAlign: "left", position: "relative" }}>
-          <input defaultValue={participants.slice(0, -2)} disabled={true} style={{ width: "90%", borderStyle: 'hidden', textAlign: 'justify' }} />
-          <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ float: "left", marginRight: "10px" }} color="gray" />
+        <div style={{ width: "40%", textAlign: "left", position: "relative", paddingLeft: "30px" }}>
+          <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ position: "absolute", left: "0px" }} color="gray" />
+          <input defaultValue={participants.slice(0, -2)} disabled={true} style={{ width: "100%", borderStyle: 'hidden', textAlign: 'justify' }} />
           <div className="fadingText"></div>
         </div>
         <div style={{ width: "60px" }}>

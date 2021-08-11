@@ -2,7 +2,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react'
 import useFetch from '../../hooks/useFetch';
 import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
-    const { handleSendClick, textareaVisible = true } = props;
+    const { handleSendClick, textareaVisible = true, filterDepartments } = props;
     const [empList, setEmpList] = useState([]);
     const [receivers, setReceivers] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -14,28 +14,34 @@ const ForwardDocLayout = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted)
-            fetchGet('/api/emplist')
-                .then(respJ => {
-                    if (mounted) {
-                        empListRef.current = respJ;
-                        setEmpList(respJ);
-                    }
-                })
-                .catch(err => console.log(err));
-        return () => { mounted = false }
-    }, [fetchGet]);
-    useLayoutEffect(() => {
-        let mounted = true;
-        if (mounted)
             fetchGet('/api/departments')
                 .then(respJ => {
                     if (mounted) {
-                        setDepartments(respJ)
+                        let departments = respJ;
+                        if(filterDepartments)
+                            departments = departments.filter(dep => filterDepartments.indexOf(dep.id) !== -1)
+                        setDepartments(departments)
                     }
                 })
                 .catch(err => console.log(err));
         return () => mounted = false
-    }, [fetchGet]);
+    }, [fetchGet, filterDepartments]);
+    useLayoutEffect(() => {
+        let mounted = true;
+        if (mounted)
+            fetchGet('/api/emplist')
+                .then(respJ => {
+                    if (mounted) {
+                        let employees = respJ;
+                        if(filterDepartments)
+                            employees = employees.filter(emp => filterDepartments.indexOf(emp.structure_dependency_id) !== -1)
+                        empListRef.current = employees;
+                        setEmpList(employees);
+                    }
+                })
+                .catch(err => console.log(err));
+        return () => { mounted = false }
+    }, [fetchGet, filterDepartments]);
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
         const searchResult = empListRef.current.filter(emp => {
@@ -53,8 +59,7 @@ const ForwardDocLayout = (props) => {
     }
     const handleSelectChange = (employee) => {
         const res = receivers.find(emp => emp.id === employee.id);
-        const newReceivers = !res ? [...receivers, employee] : receivers.filter(emp => emp.id !== employee.id);
-        setReceivers(newReceivers);
+        setReceivers(prev => !res ? [...receivers, employee] : prev);
         setSearchQuery('');
     }
     return (

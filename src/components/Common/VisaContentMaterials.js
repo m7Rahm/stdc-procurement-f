@@ -28,7 +28,10 @@ const VisaContentMaterials = (props) => {
 						<td style={{ maxWidth: '140px' }}>Təsviri</td>
 						{
 							forwardType >= 4 &&
-							<td>Qalıq</td>
+							<>
+								<td style={{ maxWidth: "100px" }}>Qalıq</td>
+								<td>Çatışmayan</td>
+							</>
 						}
 					</tr>
 				</thead>
@@ -112,9 +115,12 @@ const TableRow = (props) => {
 			</td>
 			{
 				forwardType >= 4 &&
-				<td>
-					<input style={{ border: "none" }} disabled={!canInfluence || forwardType !== 4} value={inWarehouseAmount} onChange={inputChangeHandler} />
-				</td>
+				<>
+					<td style={{ maxWidth: "100px" }}>
+						<input style={{ border: "none", width: "100%" }} disabled={!canInfluence || forwardType !== 4} value={inWarehouseAmount} onChange={inputChangeHandler} />
+					</td>
+					<td>{inWarehouseAmount > amount ? 0 : amount - inWarehouseAmount}</td>
+				</>
 			}
 		</tr>
 	)
