@@ -741,3 +741,10 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     background-color: #1a73e8;
     color: white;
 }
+
+.priceTags {
+    padding: 0 10px;
+    border: 1px solid white;
+    background-color: rgb(64, 168, 196);
+    color:white;
+}
