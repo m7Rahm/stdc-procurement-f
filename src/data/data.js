@@ -21,6 +21,15 @@ export const newOrderInitial = {
     ordNumb: '',
     orderType: 0
 }
+
+export const newOfferInitial = [{
+    name: "",
+    count: 0,
+    note: "",
+    price: 0,
+    total: 0
+}]
+
 export const serverAddress = "http://172.16.3.64"
 export const serverPort = 54321
 export const months = [

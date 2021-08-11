@@ -12,13 +12,13 @@ function PriceOffers(props) {
     const modalRef = useRef(null);
     const [modalList, setModalList] = useState(null)
     const [isModalVisible, setIsModalVisible] = useState(0);
-    const [choices, setChoices] = useState({
+    const [choices, setChoices] = useState([{
         name: "",
         count: 0,
         note: "",
         price: 0,
         total: 0
-    })
+    }])
 
     const handleClick = () => {
         setIsModalVisible(true);
@@ -33,13 +33,13 @@ function PriceOffers(props) {
             void modalRef.current.offsetHeight; /* trigger reflow */
             modalRef.current.style.animation = null;
         }
-        setChoices({
+        setChoices([{
             name: "",
             count: 0,
             note: "",
             price: 0,
             total: 0
-        })
+        }])
     }
 
     const handleCloseModal = () => {

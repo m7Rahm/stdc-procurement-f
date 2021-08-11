@@ -1,9 +1,14 @@
 import React from 'react'
+import NewOfferTableBody from './NewOfferTableBody'
 
-function OfferModal() {
+function OfferModal(props) {
     return (
         <div>
-            Modal
+            {/* <NewOfferTableBody
+                orderInfo={0,""}
+                choices={props.choices}
+                setChoices={props.setChoices}
+            /> */}
         </div>
     )
 }
