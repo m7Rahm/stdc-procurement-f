@@ -23,6 +23,7 @@ export const newOrderInitial = {
 }
 
 export const newOfferInitial = [{
+    id: Date.now(),
     name: "",
     count: 0,
     note: "",

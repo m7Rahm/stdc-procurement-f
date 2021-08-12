@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
 import { Suspense } from 'react'
-import { AiOutlinePlus } from 'react-icons/ai'
+import { FcPlus } from 'react-icons/fc'
 import "../../styles/Orders.css"
 import Modal from '../../components/Misc/Modal'
 import OfferModal from './OfferModal'
@@ -13,6 +13,7 @@ function PriceOffers(props) {
     const [modalList, setModalList] = useState(null)
     const [isModalVisible, setIsModalVisible] = useState(0);
     const [choices, setChoices] = useState([{
+        id: Date.now(),
         name: "",
         count: 0,
         note: "",
@@ -34,6 +35,7 @@ function PriceOffers(props) {
             modalRef.current.style.animation = null;
         }
         setChoices([{
+            id: Date.now(),
             name: "",
             count: 0,
             note: "",
@@ -59,16 +61,16 @@ function PriceOffers(props) {
         modalRef.current.style.width = "40rem";
         setModalList(prev => {
             if (prev.all.length === 0) {
-                const current = { 'id': Date.now(), 'value': [choices.name, choices.count, choices.note, choices.price, choices.total], name: 0 }
+                const current = { 'id': Date.now(), 'value': choices, name: 0 }
                 return { all: [current], current: current }
             } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-                const current = { 'id': Date.now(), 'value': [choices.name, choices.count, choices.note, choices.price, choices.total], name: prev.all[prev.all.length - 1].name + 1 }
+                const current = { 'id': Date.now(), 'value': choices, name: prev.all[prev.all.length - 1].name + 1 }
                 return { all: [...prev.all, current], current: current }
             } else {
                 return {
                     all: prev.all.map(order =>
                         order.id === modalList.current.id ?
-                            { ...order, 'value': [choices.name, choices.count, choices.note, choices.price, choices.total] }
+                            { ...order, 'value': choices }
                             : order
                     ), current: null
                 }
@@ -78,21 +80,21 @@ function PriceOffers(props) {
     }
 
     const handleOfferSelect = (offerId) => {
-        const properties = modalList.all.find(emp => emp.name === offerId)
-        console.log(properties)
-        console.log(offerId)
+        // console.log(offerId)
+        const properties = modalList.all.find(emp => emp.id === offerId)
+        console.log('properties\n', properties)
         setIsModalVisible(1);
         setModalList(prevState => ({ ...prevState, current: properties }))
-        setChoices({ name: properties.value[0], count: properties.value[1], note: properties[2], price: properties.value[3], total: properties.value[4]}) //, id: properties.id })
-      }
-      console.log(modalList)
+        setChoices(properties.value)
+    }
+    console.log(modalList)
     return (
         <div style={{ padding: "200px", paddingLeft: '250px' }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '30px' }}>
                 {modalList && modalList.all.map((modal, index) =>
-                    <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.name)} style={{cursor:'pointer'}}>{"Teklif " + (index + 1)}</div>
+                    <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Teklif " + (index + 1)}</div>
                 )}
-                <AiOutlinePlus onClick={handleClick} />
+                <FcPlus size='20' onClick={handleClick} />
             </div>
             <VisaContentMaterials
                 orderContent={current}

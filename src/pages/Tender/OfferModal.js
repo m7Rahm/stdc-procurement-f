@@ -4,11 +4,11 @@ import NewOfferTableBody from './NewOfferTableBody'
 function OfferModal(props) {
     return (
         <div>
-            {/* <NewOfferTableBody
+            <NewOfferTableBody
                 orderInfo={0,""}
                 choices={props.choices}
                 setChoices={props.setChoices}
-            /> */}
+            />
         </div>
     )
 }
