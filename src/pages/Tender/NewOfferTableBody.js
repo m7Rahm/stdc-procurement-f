@@ -7,7 +7,14 @@ import { newOfferInitial } from '../../data/data';
 const NewOfferTableBody = (props) => {
   const fetchGet = useFetch("GET");
   const handleAddClick = () => {
-    props.setChoices(prev => ([...prev, ...newOfferInitial]))
+    props.setChoices(prev=> [...prev, {
+      id: Date.now(),
+      name: "",
+      count: 0,
+      note: "",
+      price: 0,
+      total: 0
+  }])
   }
   const { orderType, structure } = props.orderInfo;
 
@@ -28,7 +35,7 @@ const NewOfferTableBody = (props) => {
   const handleRowDelete = (rowRef) => {
     rowRef.current.classList.add("delete-row");
     // eslint-disable-next-line
-    rowRef.current.addEventListener('animationend', () => setChoices(prev => ([prev.filter(material => material.id != rowRef.current.id)])))
+    rowRef.current.addEventListener('animationend', () => setChoices(prev => prev.filter(material => material.id != rowRef.current.id)))
   }
   // const searchByMaterialName = useCallback((value, materialid) => {
   //   setChoices(prev => ({
@@ -112,6 +119,9 @@ const NewOfferTableBody = (props) => {
   }, [setChoices])
 
   console.log(props.choices)
+  // props.choices.map(offer=>{
+  //   console.log(offer.id)
+  // })
   return (
     <>
       <ul className="new-order-table">
