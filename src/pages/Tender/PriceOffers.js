@@ -80,14 +80,12 @@ function PriceOffers(props) {
     }
 
     const handleOfferSelect = (offerId) => {
-        // console.log(offerId)
         const properties = modalList.all.find(emp => emp.id === offerId)
-        console.log('properties\n', properties)
         setIsModalVisible(1);
         setModalList(prevState => ({ ...prevState, current: properties }))
         setChoices(properties.value)
     }
-    console.log(modalList)
+    // console.log(modalList)
     return (
         <div style={{ padding: "200px", paddingLeft: '250px' }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '30px' }}>
@@ -114,7 +112,7 @@ function PriceOffers(props) {
                 <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
                     <Suspense fallback="">
                         <Modal
-                            minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
+                            minimizable={true} style={{ width: "60rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
                             title={modalList.current !== null ? "Teklif " + (modalList.current.name + 1) : "Yeni Teklif"}
                             ref={modalRef}
                             childProps={{

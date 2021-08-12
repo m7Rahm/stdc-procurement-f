@@ -12,8 +12,10 @@ function NewOfferTableRow(props) {
     const [models, setModels] = useState([]);
     const modelInputRef = useRef(null);
     const timeoutRef = useRef(null);
+    const sumRef = useRef(null);
     const fetchGet = useFetch("GET");
-    const fetchPost = useFetch("POST")
+    const fetchPost = useFetch("POST");
+    const [total, setTotal] = useState(0);
 
 
     const handleAmountChangeButtons = (action) => {
@@ -24,6 +26,11 @@ function NewOfferTableRow(props) {
         const value = e.target.value;
         const name = e.target.name;
         props.handleChange(name, value, offerid)
+    }
+
+    const handleTotalChange = (e) => {
+        const value = e.target.value;
+        setTotal(value);
     }
 
     const handleAmountChange = (e) => {
@@ -52,6 +59,22 @@ function NewOfferTableRow(props) {
                 />
             </div>
 
+            {/* <div style={{ position: 'relative' }}>
+                <InputSearchList
+                    listid="modelListRef"
+                    disabled={props.disabled}
+                    defaultValue={props.offerName}
+                    placeholder="Məhsul"
+                    inputRef={modelInputRef}
+                    listRef={modelListRef}
+                    name="model"
+                    text="title"
+                    items={models}
+                    handleInputChange={handleInputSearch}
+                    handleItemClick={setModel}
+                />
+            </div> */}
+
             {/*Say*/}
             <div style={{ maxWidth: '140px' }}>
                 <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
@@ -79,6 +102,34 @@ function NewOfferTableRow(props) {
                     value={additionalInfo}
                     type="text"
                     onChange={handleChange}
+                />
+            </div>
+
+            {/*Qiymet*/}
+            <div>
+                <input
+                    style={{ width: '100%' }}
+                    placeholder="0"
+                    name="price"
+                    disabled={props.disabled}
+                    value={props.price}
+                    type="number"
+                    onChange={handleChange}
+                />
+            </div>
+
+
+            {/*Cem*/}
+            <div ref={sumRef}>
+                <input
+                    style={{ width: '100%' }}
+                    placeholder="0"
+                    name="cem"
+                    disabled={props.disabled}
+                    value={props.price * props.count}
+                    defaultValue={0}
+                    type="number"
+                    onChange={handleTotalChange}
                 />
             </div>
 
