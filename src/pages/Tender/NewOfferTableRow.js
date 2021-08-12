@@ -1,19 +1,18 @@
 import React, { useRef, useState } from 'react'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import InputSearchList from '../../components/Misc/InputSearchList'
-import { productUnit } from '../../data/data'
+// eslint-disable-next-line
 import useFetch from '../../hooks/useFetch'
 
 
 function NewOfferTableRow(props) {
     const rowRef = useRef(null);
-    const { orderType, offerid, additionalInfo, count, handleRowDelete } = props;
+    const { offerid, additionalInfo, count, handleRowDelete } = props;
     const modelListRef = useRef(null);
+
+    // eslint-disable-next-line
     const [models, setModels] = useState([]);
     const modelInputRef = useRef(null);
-    const timeoutRef = useRef(null);
-    const fetchGet = useFetch("GET");
-    const fetchPost = useFetch("POST");
     const [total, setTotal] = useState(props.count*props.price);
 
 
@@ -63,6 +62,7 @@ function NewOfferTableRow(props) {
 
     const handleInputSearch = (e) => {
         const value = e.target.value;
+        // eslint-disable-next-line
         let valueWithoutE = value.replace(/e/gi, '[eə]')
             .replace(/ch?/gi, '[cç]')
             .replace(/o/gi, '[oö]')

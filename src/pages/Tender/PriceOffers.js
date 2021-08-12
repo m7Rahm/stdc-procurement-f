@@ -7,7 +7,7 @@ import Modal from '../../components/Misc/Modal'
 import OfferModal from './OfferModal'
 
 function PriceOffers(props) {
-    const { current, canProceed, forwardType, setRemainder, setVisa } = props;
+    const { current, canProceed, forwardType, setRemainder } = props;
     // const [priceOffers, setPriceOffers] = useState([])
     const modalRef = useRef(null);
     const [modalList, setModalList] = useState(null)

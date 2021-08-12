@@ -3,7 +3,7 @@ import ReadyOfferCard from '../../components/VisaCards/ReadyOfferCard'
 import CardsList from '../../components/HOC/CardsList'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
 import OrdersSearchHOC from '../../components/Search/OrdersSearchHOC'
-import AgreementContent from '../../components/Tender/AgreementContent'
+// import AgreementContent from '../../components/Tender/AgreementContent'
 import { optionsReadyOrders } from '../../data/data'
 import useFetch from '../../hooks/useFetch'
 import PriceOffers from './PriceOffers'
@@ -33,8 +33,10 @@ const Orders = () => {
             setActive(prev => ({ ...prev, id }))
         }
     }, [id])
+    // eslint-disable-next-line
     const [active, setActive] = useState(activeInit);
     const searchStateRef = useRef({ result: 0 });
+    // eslint-disable-next-line
     const [initData, setInitData] = useState(init);
     const fetchPost = useFetch("POST");
     const updateListContent = useCallback((data) => fetchPost('/api/get-ready-orders', data), [fetchPost])

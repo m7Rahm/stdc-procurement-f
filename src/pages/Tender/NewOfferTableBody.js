@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, {useCallback } from 'react'
 import NewOfferTableRow from './NewOfferTableRow'
+
+// eslint-disable-next-line
 import useFetch from '../../hooks/useFetch';
 import { IoIosAdd } from 'react-icons/io'
-import { newOfferInitial } from '../../data/data';
 
 const NewOfferTableBody = (props) => {
-  const fetchGet = useFetch("GET");
+  // const fetchGet = useFetch("GET");
   const handleAddClick = () => {
     props.setChoices(prev=> [...prev, {
       id: Date.now(),
