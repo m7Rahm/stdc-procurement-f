@@ -1,5 +1,6 @@
 import React from 'react'
 import NewOfferTableBody from './NewOfferTableBody'
+import '../../styles/Orders.css'
 
 function OfferModal(props) {
     return (
@@ -9,6 +10,7 @@ function OfferModal(props) {
                 choices={props.choices}
                 setChoices={props.setChoices}
             />
+            <div className="priceTags saveButton">Yadda saxla</div>
         </div>
     )
 }

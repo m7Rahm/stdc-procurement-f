@@ -12,33 +12,70 @@ function NewOfferTableRow(props) {
     const [models, setModels] = useState([]);
     const modelInputRef = useRef(null);
     const timeoutRef = useRef(null);
-    const sumRef = useRef(null);
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
-    const [total, setTotal] = useState(0);
+    const [total, setTotal] = useState(props.count*props.price);
 
 
     const handleAmountChangeButtons = (action) => {
         props.handleChange("count", undefined, offerid, true, action)
+        if(action==='inc'){
+            setTotal(props.price*(props.count+1))
+        }else  setTotal(props.price*(props.count-1))
+
     }
 
     const handleChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
+        if(name==="price"){
+            setTotal(value*props.count)
+        }
         props.handleChange(name, value, offerid)
     }
 
     const handleTotalChange = (e) => {
         const value = e.target.value;
         setTotal(value);
+        handleAmountChange2(value);
     }
 
     const handleAmountChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
         if (value === '' || Number(value) > 0) {
+            setTotal(value*props.price)
             props.handleChange(name, value, offerid)
         }
+    }
+
+    const handleAmountChange2 = (value) => {
+        if (props.price !== 0 || Number(props.price) > 0) {
+            props.handleChange("count", Math.floor(value/props.price), offerid)
+        }
+    }
+
+    const setModel = (_, model) => {
+        props.handleModelSelection(model, offerid)
+        modelInputRef.current.value = model.name;
+        modelListRef.current.style.display = "none";
+      }
+
+    const handleInputSearch = (e) => {
+        const value = e.target.value;
+        let valueWithoutE = value.replace(/e/gi, '[eə]')
+            .replace(/ch?/gi, '[cç]')
+            .replace(/o/gi, '[oö]')
+            .replace(/i/gi, '[iı]')
+            .replace(/gh?/gi, '[gğ]')
+            .replace(/sh?/gi, '[sş]')
+            .replace(/u/gi, '[uü]');
+        props.searchByMaterialName(value, offerid)
+        // fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}`)
+        //     .then(respJ => {
+        //         setModels(respJ)
+        //     })
+        //     .catch(ex => console.log(ex))
     }
 
     return (
@@ -46,7 +83,7 @@ function NewOfferTableRow(props) {
             <div>{props.index + 1}</div>
 
             {/*Ad*/}
-            <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
+            {/* <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
                 <input
                     type="text"
                     placeholder="Kod"
@@ -57,9 +94,9 @@ function NewOfferTableRow(props) {
                     autoComplete="off"
                 // onChange={searchByCode}
                 />
-            </div>
+            </div> */}
 
-            {/* <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }}>
                 <InputSearchList
                     listid="modelListRef"
                     disabled={props.disabled}
@@ -73,7 +110,7 @@ function NewOfferTableRow(props) {
                     handleInputChange={handleInputSearch}
                     handleItemClick={setModel}
                 />
-            </div> */}
+            </div>
 
             {/*Say*/}
             <div style={{ maxWidth: '140px' }}>
@@ -120,14 +157,13 @@ function NewOfferTableRow(props) {
 
 
             {/*Cem*/}
-            <div ref={sumRef}>
+            <div>
                 <input
                     style={{ width: '100%' }}
                     placeholder="0"
                     name="cem"
                     disabled={props.disabled}
-                    value={props.price * props.count}
-                    defaultValue={0}
+                    value={total}
                     type="number"
                     onChange={handleTotalChange}
                 />

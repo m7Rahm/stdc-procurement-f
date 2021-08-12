@@ -31,23 +31,30 @@ const NewOfferTableBody = (props) => {
     // eslint-disable-next-line
     rowRef.current.addEventListener('animationend', () => setChoices(prev => prev.filter(material => material.id != rowRef.current.id)))
   }
-  // const searchByMaterialName = useCallback((value, materialid) => {
-  //   setChoices(prev => ({
-  //     ...prev, materials: prev.materials.map(material => material.id === materialid
-  //       ? {
-  //         ...material,
-  //         materialId: null,
-  //         materialName: value,
-  //         approx_price: '',
-  //         code: '',
-  //         department: '',
-  //         isAmortisized: '',
-  //         percentage: ''
-  //       }
-  //       : material
-  //     )
-  //   }));
-  // }, [setChoices]);
+
+  const searchByMaterialName = useCallback((value, offerid) => {
+    setChoices(prev => (prev.map(offer => offer.id === offerid
+        ? {
+          ...offer,
+          offerId: null,
+          offerName: value
+        }
+        : offer
+      )
+    ));
+  }, [setChoices]);
+
+  const handleModelSelection = useCallback((model, offerid) => {
+    setChoices(prev => (prev.map(offer => offer.id === offerid
+        ? {
+          ...offer,
+          offerId: offer.id,
+          offerName: offer.name
+        }
+        : offer
+      )
+    ));
+  }, [setChoices]);
 
 
   const handleChange = useCallback((name, value, offerid, sync = false, op) => {
@@ -85,7 +92,8 @@ const NewOfferTableBody = (props) => {
                   count={offer.count}
                   additionalInfo={offer.note}
                   handleChange={handleChange}
-                  // searchByMaterialName={searchByMaterialName}
+                  handleModelSelection={handleModelSelection}
+                  searchByMaterialName={searchByMaterialName}
                 />
               )
             })

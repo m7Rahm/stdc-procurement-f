@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
 import { Suspense } from 'react'
-import { FcPlus } from 'react-icons/fc'
+import { BsPlus } from 'react-icons/bs'
 import "../../styles/Orders.css"
 import Modal from '../../components/Misc/Modal'
 import OfferModal from './OfferModal'
@@ -92,7 +92,7 @@ function PriceOffers(props) {
                 {modalList && modalList.all.map((modal, index) =>
                     <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Teklif " + (index + 1)}</div>
                 )}
-                <FcPlus size='20' onClick={handleClick} />
+                <BsPlus size='40' onClick={handleClick} />
             </div>
             <VisaContentMaterials
                 orderContent={current}
@@ -102,9 +102,9 @@ function PriceOffers(props) {
             />
 
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingTop: '30px' }}>
-                <div className="priceTags">ASJD</div>
-                <div className="priceTags">Yonelt</div>
-                <div className="priceTags">Techiz</div>
+                <div className="priceButtons">ASJD</div>
+                <div className="priceButtons">Yonelt</div>
+                <div className="priceButtons">Techiz</div>
             </div>
 
             {
