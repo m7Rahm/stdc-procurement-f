@@ -37,8 +37,8 @@ const NewOfferTableBody = (props) => {
     setChoices(prev => (prev.map(offer => offer.id === offerid
         ? {
           ...offer,
-          offerId: null,
-          offerName: value
+          id: null,
+          name: value
         }
         : offer
       )
@@ -49,8 +49,8 @@ const NewOfferTableBody = (props) => {
     setChoices(prev => (prev.map(offer => offer.id === offerid
         ? {
           ...offer,
-          offerId: offer.id,
-          offerName: offer.name
+          id: model.id,
+          name: model.name
         }
         : offer
       )

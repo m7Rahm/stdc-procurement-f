@@ -49,8 +49,8 @@ function NewOfferTableRow(props) {
     }
 
     const handleAmountChange2 = (value) => {
-        if (props.price !== 0 || Number(props.price) > 0) {
-            props.handleChange("count", Math.floor(value/props.price), offerid)
+        if (props.count !== 0 || Number(props.count) > 0) {
+            props.handleChange("price", Math.floor(value/props.count), offerid)
         }
     }
 

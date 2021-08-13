@@ -744,7 +744,7 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
 }
 
 .priceTags {
-    padding: 12px 15px;
+    padding: 10px 12px;
     border: 1px solid white;
     background-color: rgb(64, 168, 196);
     color:white;
@@ -753,8 +753,12 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     height:fit-content;
 }
 
+.priceTags:hover{
+    background-color: rgb(64,168,129);
+}
+
 .priceButtons {
-    padding: 12px 15px;
+    padding: 15px 18px;
     border: 1px solid white;
     background-color: rgb(64, 168, 196);
     color:white;
@@ -767,4 +771,45 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     padding: 10px;
     float:right;
     margin:20px;
+}
+
+.saveButton:hover{
+    background-color: rgb(64,168,129);
+}
+
+.priceButtons:hover{
+    background-color: rgb(64,168,129);
+}
+
+.fileUpload{
+    background-color: white;
+    outline: 2px dashed #92b0b3;
+    outline-offset: -6px;
+    width:20rem;
+    height: 15rem;
+    text-align:center;
+    padding-top: 30px;
+    background-color: #c8dadf;
+    /* float:right; */
+}
+
+.fileUpload > span{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+.fileDrop{
+    background-color: white;
+}
+
+.modalInput{
+    border:none;
+    border-bottom: 2px solid gray;
+    margin:7px;
+    margin-left: 10rem;
+}
+
+.modalInput:focus{
+    outline:none !important;
 }

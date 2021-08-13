@@ -92,7 +92,7 @@ function PriceOffers(props) {
                 {modalList && modalList.all.map((modal, index) =>
                     <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Teklif " + (index + 1)}</div>
                 )}
-                <BsPlus size='40' onClick={handleClick} />
+                <BsPlus size='40' onClick={handleClick} style={{cursor:'pointer'}}/>
             </div>
             <VisaContentMaterials
                 orderContent={current}
