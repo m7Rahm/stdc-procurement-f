@@ -23,7 +23,7 @@ function OfferModal(props) {
                 choices={props.choices}
                 setChoices={props.setChoices}
             />
-            <div className="priceTags saveButton">Yadda saxla</div>
+            <div className="priceTags saveButton" onClick={props.saveClickHandler}>Yadda saxla</div>
             <MyDropzone />
         </div>
     )

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
 import { Suspense } from 'react'
 import { BsPlus } from 'react-icons/bs'
@@ -6,6 +6,8 @@ import "../../styles/Orders.css"
 // import Modal from '../../components/Misc/Modal'
 import OfferModal from './OfferModal'
 import ModalAdvanced from './ModalAdvanced'
+import useFetch from '../../hooks/useFetch'
+import { WebSocketContext } from '../SelectModule'
 
 function PriceOffers(props) {
     const { current, canProceed, forwardType, setRemainder } = props;
@@ -22,6 +24,9 @@ function PriceOffers(props) {
         price: 0,
         total: 0
     }])
+
+    const fetchPost = useFetch("POST");
+    const webSocket = useContext(WebSocketContext)
 
     const handleClick = () => {
         setIsModalVisible(true);
@@ -94,7 +99,16 @@ function PriceOffers(props) {
         setModalList(prevState => ({ ...prevState, current: properties }))
         setChoices(properties.value)
     }
-    // console.log(modalList)
+
+    const saveClickHandler = () => {
+        const data = choices;
+        fetchPost('api/', data)
+            .then(respJ => {
+
+            }).catch(ex => console.log(ex))
+        setIsModalVisible(0);
+    }
+
     return (
         <div style={{ padding: "4rem 1rem", flex: 1 }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
@@ -120,29 +134,8 @@ function PriceOffers(props) {
                 isModalVisible !== 0 &&
                 <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
                     <Suspense fallback="">
-                        {/* <Modal
-                            minimizable={true} style={{ width: "60rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
-                            title={modalList.current !== null ? "Təklif " + (modalList.current.name + 1) : "Yeni Təklif"}
-                            ref={modalRef}
-                            childProps={{
-                                choices: choices,
-                                setChoices: setChoices,
-                                setIsModalVisible: handleCloseModal,
-                                // setOrders: props.setOrders,
-                                modalList: modalList,
-                                // setSending,
-                                // canSeeOtherOrders: props.canSeeOtherOrders
-                            }}
-                            minimizeHandler={minimizeHandler}
-                            changeModalState={handleCloseModal}
-                        // wrapperRef={props.wrapperRef}
-                        >
-                            {OfferModal}
-                        </Modal> */}
-
                         <div>
                             <ModalAdvanced
-                                // ref={modalRef}
                                 activeModalRef={activeModalRef}
                                 show={isModalVisible}
                                 changeModalState={handleCloseModal}
@@ -153,27 +146,25 @@ function PriceOffers(props) {
                                     setChoices={setChoices}
                                     setIsModalVisible={handleCloseModal}
                                     modalList={modalList}
+                                    saveClickHandler={saveClickHandler}
                                 />
                             </ModalAdvanced>
 
                             <ModalAdvanced
-                                // ref={modalRef}
                                 activeModalRef={activeModalRef}
                                 show={isModalVisible}
                                 changeModalState={handleCloseModal}
                                 minimizeHandler={minimizeHandler}
-                            // style={{top:'10rem', left:'44rem'}}
                             >
                                 <OfferModal
                                     choices={choices}
                                     setChoices={setChoices}
                                     setIsModalVisible={handleCloseModal}
                                     modalList={modalList}
+                                    saveClickHandler={saveClickHandler}
                                 />
                             </ModalAdvanced>
                         </div>
-
-
                     </Suspense>
                 </div>
             }
