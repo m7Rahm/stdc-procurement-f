@@ -41,11 +41,7 @@ function PriceOffers(props) {
                 : { ...prevState, current: null }
             return newList;
         })
-        if (modalRef.current) {
-            modalRef.current.style.animation = "none";
-            void modalRef.current.offsetHeight; /* trigger reflow */
-            modalRef.current.style.animation = null;
-        }
+
         setChoices([{
             id: Date.now(),
             name: "",
@@ -143,38 +139,37 @@ function PriceOffers(props) {
                             {OfferModal}
                         </Modal> */}
 
-                        {isModalVisible !== 0 &&
-                            <div>
-                                <Modal
-                                    ref={modalRef}
-                                    show={isModalVisible}
-                                    changeModalState={handleCloseModal}
-                                    minimizeHandler={minimizeHandler}
-                                >
-                                    <OfferModal
-                                        choices={choices}
-                                        setChoices={setChoices}
-                                        setIsModalVisible={handleCloseModal}
-                                        modalList={modalList}
-                                    />
-                                </Modal>
+                        <div>
+                            <Modal
+                                ref={modalRef}
+                                show={isModalVisible}
+                                changeModalState={handleCloseModal}
+                                minimizeHandler={minimizeHandler}
+                            >
+                                <OfferModal
+                                    choices={choices}
+                                    setChoices={setChoices}
+                                    setIsModalVisible={handleCloseModal}
+                                    modalList={modalList}
+                                />
+                            </Modal>
 
-                                <Modal
-                                    ref={modalRef}
-                                    show={isModalVisible}
-                                    changeModalState={handleCloseModal}
-                                    minimizeHandler={minimizeHandler}
-                                // style={{top:'10rem', left:'44rem'}}
-                                >
-                                    <OfferModal
-                                        choices={choices}
-                                        setChoices={setChoices}
-                                        setIsModalVisible={handleCloseModal}
-                                        modalList={modalList}
-                                    />
-                                </Modal>
-                            </div>
-                        }
+                            <Modal
+                                ref={modalRef}
+                                show={isModalVisible}
+                                changeModalState={handleCloseModal}
+                                minimizeHandler={minimizeHandler}
+                            // style={{top:'10rem', left:'44rem'}}
+                            >
+                                <OfferModal
+                                    choices={choices}
+                                    setChoices={setChoices}
+                                    setIsModalVisible={handleCloseModal}
+                                    modalList={modalList}
+                                />
+                            </Modal>
+                        </div>
+
 
                     </Suspense>
                 </div>
