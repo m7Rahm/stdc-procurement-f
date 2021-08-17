@@ -813,3 +813,45 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
 .modalInput:focus{
     outline:none !important;
 }
+
+.modalWrapper{
+    z-index: 3;
+    position: fixed;
+    left: 40rem;
+    top: 8rem;
+    width: 60rem;
+    height: 30rem;
+    box-shadow: 10px 5px 5px rgb(220,220,220);
+    background-color: rgb(241, 243, 243);
+
+}
+
+.modalTitle{
+    /* z-index: 3;
+    /* position: fixed;
+    left: 40rem;
+    top: 8rem;
+    width: 60rem; */
+    /* box-shadow: 10px 5px 5px rgb(220,220,220); */
+    height: 25px; 
+    background-color: black;
+    color:white;
+    border-radius: 7px 7px 0px 0px;
+}
+
+.priceModal {
+    /* z-index: 3;
+    position: fixed;
+    left: 40rem;
+    top: 10rem;
+    width: 60rem;
+    height: 30rem; */
+    /* box-shadow: 10px 5px 5px rgb(220,220,220); */
+    padding-top: 40px;
+    overflow: auto;
+    border-radius: 0px 0px 7px 7px;
+}
+  
+.hidden{
+    display: none !important;
+}

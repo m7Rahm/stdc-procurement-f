@@ -3,8 +3,9 @@ import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
 import { Suspense } from 'react'
 import { BsPlus } from 'react-icons/bs'
 import "../../styles/Orders.css"
-import Modal from '../../components/Misc/Modal'
+// import Modal from '../../components/Misc/Modal'
 import OfferModal from './OfferModal'
+import Modal from './Modal'
 
 function PriceOffers(props) {
     const { current, canProceed, forwardType, setRemainder } = props;
@@ -23,6 +24,17 @@ function PriceOffers(props) {
 
     const handleClick = () => {
         setIsModalVisible(true);
+        if (modalRef.current) {
+            // const newTop = (parseInt(modalRef.current.style.top.substring(0,2))+2)+"rem"
+            // console.log(newTop)
+            console.log(modalRef.current.style.top)
+            console.log(window.getComputedStyle(modalRef.current).getPropertyValue("top"))
+            console.log((parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 10) + "px")
+            modalRef.current.style.top = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 15) + "px";
+            modalRef.current.style.left = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("left").substring(0, 3)) + 15) + "px";
+            // console.log((parseInt(modalRef.current.style.top.substring(0,2))+2)+"rem")
+        }
+
         setModalList(prevState => {
             const newList = prevState === null ?
                 { all: [], current: null }
@@ -58,7 +70,7 @@ function PriceOffers(props) {
     }
 
     const minimizeHandler = () => {
-        modalRef.current.style.width = "40rem";
+        // modalRef.current.style.width = "40rem";
         setModalList(prev => {
             if (prev.all.length === 0) {
                 const current = { 'id': Date.now(), 'value': choices, name: 0 }
@@ -90,9 +102,9 @@ function PriceOffers(props) {
         <div style={{ padding: "200px", paddingLeft: '250px' }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '30px' }}>
                 {modalList && modalList.all.map((modal, index) =>
-                    <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Teklif " + (index + 1)}</div>
+                    <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Təklif " + (index + 1)}</div>
                 )}
-                <BsPlus size='40' onClick={handleClick} style={{cursor:'pointer'}}/>
+                <BsPlus size='40' onClick={handleClick} style={{ cursor: 'pointer' }} />
             </div>
             <VisaContentMaterials
                 orderContent={current}
@@ -103,17 +115,17 @@ function PriceOffers(props) {
 
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingTop: '30px' }}>
                 <div className="priceButtons">ASJD</div>
-                <div className="priceButtons">Yonelt</div>
-                <div className="priceButtons">Techiz</div>
+                <div className="priceButtons">Yönəlt</div>
+                <div className="priceButtons">Təchiz</div>
             </div>
 
             {
                 isModalVisible !== 0 &&
                 <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
                     <Suspense fallback="">
-                        <Modal
+                        {/* <Modal
                             minimizable={true} style={{ width: "60rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}
-                            title={modalList.current !== null ? "Teklif " + (modalList.current.name + 1) : "Yeni Teklif"}
+                            title={modalList.current !== null ? "Təklif " + (modalList.current.name + 1) : "Yeni Təklif"}
                             ref={modalRef}
                             childProps={{
                                 choices: choices,
@@ -129,7 +141,41 @@ function PriceOffers(props) {
                         // wrapperRef={props.wrapperRef}
                         >
                             {OfferModal}
-                        </Modal>
+                        </Modal> */}
+
+                        {isModalVisible !== 0 &&
+                            <div>
+                                <Modal
+                                    ref={modalRef}
+                                    show={isModalVisible}
+                                    changeModalState={handleCloseModal}
+                                    minimizeHandler={minimizeHandler}
+                                >
+                                    <OfferModal
+                                        choices={choices}
+                                        setChoices={setChoices}
+                                        setIsModalVisible={handleCloseModal}
+                                        modalList={modalList}
+                                    />
+                                </Modal>
+
+                                <Modal
+                                    ref={modalRef}
+                                    show={isModalVisible}
+                                    changeModalState={handleCloseModal}
+                                    minimizeHandler={minimizeHandler}
+                                // style={{top:'10rem', left:'44rem'}}
+                                >
+                                    <OfferModal
+                                        choices={choices}
+                                        setChoices={setChoices}
+                                        setIsModalVisible={handleCloseModal}
+                                        modalList={modalList}
+                                    />
+                                </Modal>
+                            </div>
+                        }
+
                     </Suspense>
                 </div>
             }

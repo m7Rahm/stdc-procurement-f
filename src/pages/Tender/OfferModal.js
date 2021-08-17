@@ -8,14 +8,14 @@ import '../../styles/Orders.css'
 function OfferModal(props) {
     return (
         <div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom:'20px' }}>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <input placeholder={'Voen'} className="modalInput"></input>
-                    <input placeholder={'Yeri'} className="modalInput"></input>
+                    <input placeholder={'Şirkət'} className="modalInput"></input>
+                    <input placeholder={'VÖEN'} className="modalInput"></input>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <input placeholder={'Gibberish'} className="modalInput" ></input>
-                    <input placeholder={'Gibberish2'} className="modalInput" ></input>
+                    <input placeholder={'Rahman1'} className="modalInput" ></input>
+                    <input placeholder={'Rahman2'} className="modalInput" ></input>
                 </div>
             </div>
             <NewOfferTableBody
@@ -25,7 +25,7 @@ function OfferModal(props) {
                 setChoices={props.setChoices}
             />
             <div className="priceTags saveButton">Yadda saxla</div>
-            <MyDropzone />
+            {/* <MyDropzone /> */}
         </div>
     )
 }
