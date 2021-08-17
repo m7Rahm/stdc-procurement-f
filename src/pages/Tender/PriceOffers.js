@@ -5,7 +5,7 @@ import { BsPlus } from 'react-icons/bs'
 import "../../styles/Orders.css"
 // import Modal from '../../components/Misc/Modal'
 import OfferModal from './OfferModal'
-import Modal from './Modal'
+import ModalAdvanced from './ModalAdvanced'
 
 function PriceOffers(props) {
     const { current, canProceed, forwardType, setRemainder } = props;
@@ -13,6 +13,7 @@ function PriceOffers(props) {
     const modalRef = useRef(null);
     const [modalList, setModalList] = useState(null)
     const [isModalVisible, setIsModalVisible] = useState(0);
+    const activeModalRef = useRef(0);
     const [choices, setChoices] = useState([{
         id: Date.now(),
         name: "",
@@ -95,8 +96,8 @@ function PriceOffers(props) {
     }
     // console.log(modalList)
     return (
-        <div style={{ padding: "200px", paddingLeft: '250px' }}>
-            <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '30px' }}>
+        <div style={{ padding: "4rem 1rem", flex: 1 }}>
+            <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
                 {modalList && modalList.all.map((modal, index) =>
                     <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Təklif " + (index + 1)}</div>
                 )}
@@ -140,8 +141,9 @@ function PriceOffers(props) {
                         </Modal> */}
 
                         <div>
-                            <Modal
-                                ref={modalRef}
+                            <ModalAdvanced
+                                // ref={modalRef}
+                                activeModalRef={activeModalRef}
                                 show={isModalVisible}
                                 changeModalState={handleCloseModal}
                                 minimizeHandler={minimizeHandler}
@@ -152,10 +154,11 @@ function PriceOffers(props) {
                                     setIsModalVisible={handleCloseModal}
                                     modalList={modalList}
                                 />
-                            </Modal>
+                            </ModalAdvanced>
 
-                            <Modal
-                                ref={modalRef}
+                            <ModalAdvanced
+                                // ref={modalRef}
+                                activeModalRef={activeModalRef}
                                 show={isModalVisible}
                                 changeModalState={handleCloseModal}
                                 minimizeHandler={minimizeHandler}
@@ -167,7 +170,7 @@ function PriceOffers(props) {
                                     setIsModalVisible={handleCloseModal}
                                     modalList={modalList}
                                 />
-                            </Modal>
+                            </ModalAdvanced>
                         </div>
 
 

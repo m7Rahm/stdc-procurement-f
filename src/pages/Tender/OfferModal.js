@@ -19,8 +19,7 @@ function OfferModal(props) {
                 </div>
             </div>
             <NewOfferTableBody
-                // eslint-disable-next-line
-                orderInfo={0, ""}
+                orderInfo={{ orderType: 0, structure: "" }}
                 choices={props.choices}
                 setChoices={props.setChoices}
             />

@@ -1,15 +1,19 @@
-import '../../styles/Orders.css'
 import React, { useRef } from 'react'
 import { IoMdClose } from 'react-icons/io'
 import { VscChromeMinimize } from "react-icons/vsc"
 
-const Modal = React.forwardRef((props, ref) => {
-
+const ModalAdvanced = React.forwardRef((props, ref) => {
     const mousePositionRef = useRef({ x: null, y: null });
     const modalContentRef = useRef(null);
-
     const handleDragStart = (e) => {
+        if(props.activeModalRef.current)
+            props.activeModalRef.current.style.zIndex = "0";
+        // props.zIndex.current = props.zIndex.current + 1;
         mousePositionRef.current = { x: e.clientX, y: e.clientY };
+        const elem = ref ? ref.current : modalContentRef.current;
+        props.activeModalRef.current = elem;
+        props.activeModalRef.current.style.zIndex = "3";
+        // elem.style.zIndex = props.zIndex.current;
         e.preventDefault();
         document.onmouseup = endDrag
         document.onmousemove = handleDragModal;
@@ -29,7 +33,7 @@ const Modal = React.forwardRef((props, ref) => {
     }
 
     return (
-        <div ref={ref} className={props.show !== 0.5 ? "modalWrapper" : "modalWrapper hidden"} style={props.style}>
+        <div ref={ref || modalContentRef} className={props.show !== 0.5 ? "modalWrapper" : "modalWrapper hidden"} style={props.style}>
             <div className="modalTitle"
                 onMouseDown={handleDragStart}
             >
@@ -46,4 +50,4 @@ const Modal = React.forwardRef((props, ref) => {
     );
 });
 
-export default Modal;
+export default ModalAdvanced;
