@@ -24,7 +24,7 @@ function OfferModal(props) {
                 setChoices={props.setChoices}
             />
             <div className="priceTags saveButton">Yadda saxla</div>
-            {/* <MyDropzone /> */}
+            <MyDropzone />
         </div>
     )
 }

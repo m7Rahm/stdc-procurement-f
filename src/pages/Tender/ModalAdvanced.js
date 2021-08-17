@@ -6,14 +6,12 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
     const mousePositionRef = useRef({ x: null, y: null });
     const modalContentRef = useRef(null);
     const handleDragStart = (e) => {
-        if(props.activeModalRef.current)
-            props.activeModalRef.current.style.zIndex = "0";
-        // props.zIndex.current = props.zIndex.current + 1;
+        if (props.activeModalRef.current)
+            props.activeModalRef.current.style.zIndex = "1";
         mousePositionRef.current = { x: e.clientX, y: e.clientY };
         const elem = ref ? ref.current : modalContentRef.current;
         props.activeModalRef.current = elem;
         props.activeModalRef.current.style.zIndex = "3";
-        // elem.style.zIndex = props.zIndex.current;
         e.preventDefault();
         document.onmouseup = endDrag
         document.onmousemove = handleDragModal;
@@ -31,9 +29,15 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
         document.onmousemove = null;
         document.onmouseup = null;
     }
-
+    const handleClick = () => {
+        const elem = ref ? ref.current : modalContentRef.current;
+        if (props.activeModalRef.current)
+            props.activeModalRef.current.style.zIndex = "1";
+        props.activeModalRef.current = elem;
+        props.activeModalRef.current.style.zIndex = "3";
+    }
     return (
-        <div ref={ref || modalContentRef} className={props.show !== 0.5 ? "modalWrapper" : "modalWrapper hidden"} style={props.style}>
+        <div ref={ref || modalContentRef} onClick={handleClick} className={props.show !== 0.5 ? "modalWrapper" : "modalWrapper hidden"} style={props.style}>
             <div className="modalTitle"
                 onMouseDown={handleDragStart}
             >
