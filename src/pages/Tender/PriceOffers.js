@@ -11,7 +11,6 @@ import { WebSocketContext } from '../SelectModule'
 
 function PriceOffers(props) {
     const { current, canProceed, forwardType, setRemainder } = props;
-    // const [priceOffers, setPriceOffers] = useState([])
     const modalRef = useRef(null);
     const [modalList, setModalList] = useState(null)
     const [isModalVisible, setIsModalVisible] = useState(0);
@@ -22,22 +21,25 @@ function PriceOffers(props) {
         count: 0,
         note: "",
         price: 0,
-        total: 0
+        total: 0,
+        alternative:0,
     }])
 
+    const [selectedModals, setSelectedModals] = useState([])
     const fetchPost = useFetch("POST");
     const webSocket = useContext(WebSocketContext)
-
+    // console.log(choices);
     const handleClick = () => {
+
         setIsModalVisible(true);
         if (modalRef.current) {
-            // const newTop = (parseInt(modalRef.current.style.top.substring(0,2))+2)+"rem"
-            // console.log(newTop)
-            console.log(modalRef.current.style.top)
-            console.log(window.getComputedStyle(modalRef.current).getPropertyValue("top"))
-            console.log((parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 10) + "px")
             modalRef.current.style.top = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 15) + "px";
             modalRef.current.style.left = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("left").substring(0, 3)) + 15) + "px";
+            // const newTop = (parseInt(modalRef.current.style.top.substring(0,2))+2)+"rem"
+            // console.log(newTop)
+            // console.log(modalRef.current.style.top)
+            // console.log(window.getComputedStyle(modalRef.current).getPropertyValue("top"))
+            // console.log((parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 10) + "px")
             // console.log((parseInt(modalRef.current.style.top.substring(0,2))+2)+"rem")
         }
 
@@ -54,7 +56,8 @@ function PriceOffers(props) {
             count: 0,
             note: "",
             price: 0,
-            total: 0
+            total: 0,
+            alternative:0
         }])
     }
 
@@ -98,17 +101,29 @@ function PriceOffers(props) {
         setIsModalVisible(1);
         setModalList(prevState => ({ ...prevState, current: properties }))
         setChoices(properties.value)
+
+
+        setSelectedModals(prev => {
+            if (selectedModals.find(emp => emp.id === offerId))
+                return prev.map(modal=> modal.id === offerId ?
+                    [...modal,properties.value]
+                    : modal)
+            else return [ ...prev, [properties.value] ] 
+        })
     }
 
-    const saveClickHandler = () => {
-        const data = choices;
-        fetchPost('api/', data)
-            .then(respJ => {
+    // console.log(selectedModals)
 
+    const saveClickHandler = () => {
+        const data = choices.map((choice,index)=>[null,choice.name,index===0?choice.id:null,choice.count,choice.total,choice.alternative,choice.note]);
+        console.log(data)
+        fetchPost('/api/update-price-offer', data)
+            .then(respJ => {
+                
             }).catch(ex => console.log(ex))
         setIsModalVisible(0);
     }
-
+    // console.log(choices)
     return (
         <div style={{ padding: "4rem 1rem", flex: 1 }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
@@ -134,22 +149,26 @@ function PriceOffers(props) {
                 isModalVisible !== 0 &&
                 <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
                     <Suspense fallback="">
-                        <div>
-                            <ModalAdvanced
-                                activeModalRef={activeModalRef}
-                                show={isModalVisible}
-                                changeModalState={handleCloseModal}
-                                minimizeHandler={minimizeHandler}
-                            >
-                                <OfferModal
-                                    choices={choices}
-                                    setChoices={setChoices}
-                                    setIsModalVisible={handleCloseModal}
-                                    modalList={modalList}
-                                    saveClickHandler={saveClickHandler}
-                                />
-                            </ModalAdvanced>
 
+                        {/* {selectedModals.map((modal,index)=>{ return( */}
+                        <ModalAdvanced
+                            activeModalRef={activeModalRef}
+                            show={isModalVisible}
+                            changeModalState={handleCloseModal}
+                            minimizeHandler={minimizeHandler}
+                        >
+                            <OfferModal
+                                choices={choices}
+                                setChoices={setChoices}
+                                setIsModalVisible={handleCloseModal}
+                                modalList={modalList}
+                                saveClickHandler={saveClickHandler}
+                                orderContent={current}
+                            />
+                        </ModalAdvanced>
+                        {/* )})} */}
+
+                        {/* 
                             <ModalAdvanced
                                 activeModalRef={activeModalRef}
                                 show={isModalVisible}
@@ -162,9 +181,9 @@ function PriceOffers(props) {
                                     setIsModalVisible={handleCloseModal}
                                     modalList={modalList}
                                     saveClickHandler={saveClickHandler}
+                                    orderContent={current}
                                 />
-                            </ModalAdvanced>
-                        </div>
+                            </ModalAdvanced> */}
                     </Suspense>
                 </div>
             }

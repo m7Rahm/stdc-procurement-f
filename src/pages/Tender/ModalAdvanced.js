@@ -41,9 +41,9 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
             <div className="modalTitle"
                 onMouseDown={handleDragStart}
             >
-                <div style={{ float: 'left', paddingLeft: '15px', paddingTop: '5px', fontWeight: 'bold' }} >Təklif</div>
-                <IoMdClose className="modal-close-button" onClick={props.changeModalState} size='18' style={{ verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
-                <VscChromeMinimize className="modal-close-button" onClick={props.minimizeHandler} size='18' style={{ verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
+                <div style={{ float: 'left', paddingLeft: '15px', paddingTop: '10px', fontWeight: 'bold' }} >Təklif</div>
+                <IoMdClose className="modal-close-button" onClick={props.changeModalState} size='28' style={{        paddingTop:'10px', verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
+                <VscChromeMinimize className="modal-close-button" onClick={props.minimizeHandler} size='28' style={{ paddingTop:'10px', verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
 
             </div>
 

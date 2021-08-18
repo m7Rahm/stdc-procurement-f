@@ -2654,25 +2654,17 @@ div.chat-container {
 }
 
 .modalTitle{
-  /* z-index: 3;
-  /* position: fixed;
-  left: 40rem;
-  top: 8rem;
-  width: 60rem; */
-  /* box-shadow: 10px 5px 5px rgb(220,220,220); */
-  height: 25px; 
+  height: 35px; 
   background-color: black;
   color:white;
 }
 
+.modalTitle>div>div{
+  padding-top: 10px;
+  vertical-align: middle;
+}
+
 .priceModal {
-  /* z-index: 3;
-  position: fixed;
-  left: 40rem;
-  top: 10rem;
-  width: 60rem;
-  height: 30rem; */
-  /* box-shadow: 10px 5px 5px rgb(220,220,220); */
   padding-top: 40px;
   overflow: auto;
   border-radius: 0px 0px 7px 7px;

@@ -14,7 +14,8 @@ const NewOfferTableBody = (props) => {
       count: 0,
       note: "",
       price: 0,
-      total: 0
+      total: 0,
+      alternative: 0,
   }])
   }
   const { orderType, structure } = props.orderInfo;
@@ -37,7 +38,6 @@ const NewOfferTableBody = (props) => {
     setChoices(prev => (prev.map(offer => offer.id === offerid
         ? {
           ...offer,
-          id: null,
           name: value
         }
         : offer
@@ -50,7 +50,7 @@ const NewOfferTableBody = (props) => {
         ? {
           ...offer,
           id: model.id,
-          name: model.name
+          name: model.title
         }
         : offer
       )

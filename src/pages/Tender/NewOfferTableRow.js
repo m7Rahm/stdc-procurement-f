@@ -9,6 +9,7 @@ function NewOfferTableRow(props) {
     const rowRef = useRef(null);
     const { offerid, additionalInfo, count, handleRowDelete } = props;
     const modelListRef = useRef(null);
+    const fetchGet = useFetch("GET")
 
     // eslint-disable-next-line
     const [models, setModels] = useState([]);
@@ -20,6 +21,7 @@ function NewOfferTableRow(props) {
         props.handleChange("count", undefined, offerid, true, action)
         if(action==='inc'){
             setTotal(props.price*(props.count+1))
+            props.handleChange('total',props.price*(props.count+1),offerid)
         }else  setTotal(props.price*(props.count-1))
 
     }
@@ -29,6 +31,7 @@ function NewOfferTableRow(props) {
         const name = e.target.name;
         if(name==="price"){
             setTotal(value*props.count)
+            props.handleChange('total',value*props.count,offerid)
         }
         props.handleChange(name, value, offerid)
     }
@@ -36,6 +39,7 @@ function NewOfferTableRow(props) {
     const handleTotalChange = (e) => {
         const value = e.target.value;
         setTotal(value);
+        props.handleChange('total',value,offerid)
         handleAmountChange2(value);
     }
 
@@ -55,8 +59,8 @@ function NewOfferTableRow(props) {
     }
 
     const setModel = (_, model) => {
-        props.handleModelSelection(model, offerid)
-        modelInputRef.current.value = model.name;
+        props.handleModelSelection(model, offerid);
+        modelInputRef.current.value = model.title;
         modelListRef.current.style.display = "none";
       }
 
@@ -71,11 +75,11 @@ function NewOfferTableRow(props) {
             .replace(/sh?/gi, '[sş]')
             .replace(/u/gi, '[uü]');
         props.searchByMaterialName(value, offerid)
-        // fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${orderType}`)
-        //     .then(respJ => {
-        //         setModels(respJ)
-        //     })
-        //     .catch(ex => console.log(ex))
+        fetchGet(`/api/material-by-title?title=${encodeURIComponent(valueWithoutE)}&orderType=${0}`)
+            .then(respJ => {
+                setModels(respJ)
+            })
+            .catch(ex => console.log(ex))
     }
 
     return (
@@ -99,7 +103,7 @@ function NewOfferTableRow(props) {
             <div style={{ position: 'relative' }}>
                 <InputSearchList
                     listid="modelListRef"
-                    disabled={props.disabled}
+                    // disabled={props.disabled}
                     defaultValue={props.offerName}
                     placeholder="Məhsul"
                     inputRef={modelInputRef}

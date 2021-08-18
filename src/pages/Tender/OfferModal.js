@@ -19,7 +19,7 @@ function OfferModal(props) {
                 </div>
             </div>
             <NewOfferTableBody
-                orderInfo={{ orderType: 0, structure: "" }}
+                orderInfo={{ orderType: props.orderContent[0].orderType, structure: "" }}
                 choices={props.choices}
                 setChoices={props.setChoices}
             />
