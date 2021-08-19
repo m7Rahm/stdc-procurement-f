@@ -29,7 +29,7 @@ const ProductHistory = (props) => {
             .catch(ex => console.log(ex))
     }, [fetchPost, productid, subGlCategory]);
     const navigateToContract = (id) => {
-        window.location.href = `${serverAddress}:${serverPort}/contracts/express-contracts?i=${id}`
+        window.location.href = `${serverAddress}${serverPort}/contracts/express-contracts?i=${id}`
     }
     const handleSearch = () => {
         if ((/^\d{4}([-])\d{2}\1\d{2}$/gi.test(searchStateRef.current.dateTo) || searchStateRef.current.dateTo === "")

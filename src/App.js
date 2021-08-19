@@ -38,14 +38,14 @@ const App = () => {
   const logout = () => {
     setToken({ token: '', userData: {} })
     localStorage.removeItem('token');
-    window.location.replace(`${serverAddress}:${serverPort}/?from=procurement&action=logout`)
+    window.location.replace(`${serverAddress}${serverPort}/?from=procurement&action=logout`)
   }
   // localStorage.removeItem("token")
   useEffect(() => {
     if (/from=(.*)/.test(location.search)) {
       if (location.search.match(/from=(.*)&/)[1] === 'warehouse' && location.search.match(/action=(.*)/)[1] === 'login') {
         if (token.token)
-          window.location.replace(`${serverAddress}:${serverPort}/login?token=${token.token}`)
+          window.location.replace(`${serverAddress}${serverPort}/login?token=${token.token}`)
         else
           history.replace('/login')
       }
