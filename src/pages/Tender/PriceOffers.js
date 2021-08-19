@@ -22,8 +22,11 @@ function PriceOffers(props) {
         note: "",
         price: 0,
         total: 0,
-        alternative:0,
-    }])
+        alternative: 0,
+    }]
+    )
+
+    const [offerInfo,setOfferInfo] = useState([])
 
     const [selectedModals, setSelectedModals] = useState([])
     const fetchPost = useFetch("POST");
@@ -57,7 +60,7 @@ function PriceOffers(props) {
             note: "",
             price: 0,
             total: 0,
-            alternative:0
+            alternative: 0
         }])
     }
 
@@ -105,25 +108,24 @@ function PriceOffers(props) {
 
         setSelectedModals(prev => {
             if (selectedModals.find(emp => emp.id === offerId))
-                return prev.map(modal=> modal.id === offerId ?
-                    [...modal,properties.value]
+                return prev.map(modal => modal.id === offerId ?
+                    [...modal, properties.value]
                     : modal)
-            else return [ ...prev, [properties.value] ] 
+            else return [...prev, [properties.value]]
         })
     }
 
     // console.log(selectedModals)
 
     const saveClickHandler = () => {
-        const data = choices.map((choice,index)=>[null,choice.name,index===0?choice.id:null,choice.count,choice.total,choice.alternative,choice.note]);
+        const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
         console.log(data)
         fetchPost('/api/update-price-offer', data)
             .then(respJ => {
-                
+
             }).catch(ex => console.log(ex))
         setIsModalVisible(0);
     }
-    // console.log(choices)
     return (
         <div style={{ padding: "4rem 1rem", flex: 1 }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
@@ -160,6 +162,8 @@ function PriceOffers(props) {
                             <OfferModal
                                 choices={choices}
                                 setChoices={setChoices}
+                                offerInfo={offerInfo}
+                                setOfferInfo={setOfferInfo}
                                 setIsModalVisible={handleCloseModal}
                                 modalList={modalList}
                                 saveClickHandler={saveClickHandler}
