@@ -9,6 +9,7 @@ import { WebSocketContext } from '../SelectModule'
 import '../../styles/styles.scss'
 
 function OfferModal(props) {
+    const [choices, setChoices] = useState([])
 
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
@@ -16,7 +17,7 @@ function OfferModal(props) {
     const davamText = whichPage.page === 2 ? "Yadda saxla" : "Davam";
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
     const webSocket = useContext(WebSocketContext)
-
+    // console.log(props.choices)
 
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
@@ -79,7 +80,7 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-            props.saveClickHandler();
+            // saveClickHandler();
         }
     };
 
@@ -124,8 +125,8 @@ function OfferModal(props) {
                     <div style={{ marginTop: '40px' }}>
                         <NewOfferTableBody
                             orderInfo={{ orderType: props.orderContent[0].orderType, structure: "" }}
-                            choices={props.choices}
-                            setChoices={props.setChoices}
+                            choices={choices}
+                            setChoices={setChoices}
                         />
                         <MyDropzone />
                     </div>

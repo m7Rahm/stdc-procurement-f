@@ -9,8 +9,9 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
         if (props.activeModalRef.current)
             props.activeModalRef.current.style.zIndex = "1";
         mousePositionRef.current = { x: e.clientX, y: e.clientY };
-        const elem = ref ? ref.current : modalContentRef.current;
-        props.activeModalRef.current = elem;
+        // const elem = ref ? ref.current : modalContentRef.current;
+        // props.activeModalRef.current = elem;
+        props.activeModalRef.current = modalContentRef.current;
         props.activeModalRef.current.style.zIndex = "3";
         e.preventDefault();
         document.onmouseup = endDrag
@@ -18,7 +19,8 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
     }
     const handleDragModal = (e) => {
         e.preventDefault();
-        const elem = ref ? ref.current : modalContentRef.current
+        const elem = props.activeModalRef.current;
+        // console.log(props.activeModalRef)
         elem.style.top = `${elem.offsetTop - mousePositionRef.current.y + e.clientY}px`
         elem.style.left = `${elem.offsetLeft - mousePositionRef.current.x + e.clientX}px`
         mousePositionRef.current.x = e.clientX;
@@ -29,15 +31,18 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
         document.onmousemove = null;
         document.onmouseup = null;
     }
-    const handleClick = () => {
-        const elem = ref ? ref.current : modalContentRef.current;
+    const handleClick = (e) => {
+        // console.log("capture")
+        // const elem = ref ? ref.current : modalContentRef.current;
+        // if (props.activeModalRef.current)
         if (props.activeModalRef.current)
             props.activeModalRef.current.style.zIndex = "1";
-        props.activeModalRef.current = elem;
+        // props.activeModalRef.current = elem;
+        props.activeModalRef.current = e.currentTarget;
         props.activeModalRef.current.style.zIndex = "3";
     }
     return (
-        <div ref={ref || modalContentRef} onClick={handleClick} className={props.show !== 0.5 ? "modalWrapper" : "modalWrapper hidden"} style={props.style}>
+        <div ref={modalContentRef} onClick={handleClick} className={props.show !== 0.5 ? "modalWrapper" : "modalWrapper hidden"} style={props.style}>
             <div className="modalTitle"
                 onMouseDown={handleDragStart}
             >

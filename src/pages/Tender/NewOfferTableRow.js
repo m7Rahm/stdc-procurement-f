@@ -83,7 +83,7 @@ function NewOfferTableRow(props) {
     }
 
     return (
-        <li ref={rowRef} id={offerid}>
+        <li ref={rowRef} id={offerid} className={props.classname}>
             <div>{props.index + 1}</div>
 
             {/*Ad*/}
