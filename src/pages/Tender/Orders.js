@@ -42,7 +42,8 @@ const Orders = () => {
     const updateListContent = useCallback((data) => fetchPost('/api/get-ready-orders', data), [fetchPost])
 
 
-    const [visa, setVisa] = useState([{act_date_time: null,
+    const [visa, setVisa] = useState([{
+        act_date_time: null,
         amount: 1,
         assignment: 257,
         can_influence: true,
@@ -74,12 +75,13 @@ const Orders = () => {
         sender_comment: "",
         sender_id: 32,
         seq: 2,
-        stat: true}]);
+        stat: true
+    }]);
 
 
-	const setRemainder = (id, value) => {
-		setVisa(prev => prev.map((row, index) => row.order_material_id === id ? ({ ...row, in_warehouse_amount: value }) : row));
-	}
+    const setRemainder = (id, value) => {
+        setVisa(prev => prev.map((row, index) => row.order_material_id === id ? ({ ...row, in_warehouse_amount: value }) : row));
+    }
 
 
 

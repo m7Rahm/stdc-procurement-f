@@ -10,7 +10,15 @@ import '../../styles/styles.scss'
 
 function OfferModal(props) {
     console.log(props.orderContent)
-    const [choices, setChoices] = useState(props.orderContent.length!==0 ? props.orderContent.map(m=>({name: m.material_name,count:m.amount})) : [])
+    const [choices, setChoices] = useState(props.orderContent.length !== 0 ? props.orderContent.map(m => ({
+        id: Date.now(),
+        name: m.material_name,
+        count: m.amount,
+        note: "",
+        price: 0,
+        total: 0,
+        alternative: 0,
+    })) : [])
     // const [choices,setChoices] = useState([])
 
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });

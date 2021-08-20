@@ -83,12 +83,12 @@ function PriceOffers(props) {
 
     const handleOfferSelect = (offerId) => {
         const properties = modalList.all.find(emp => emp.id === offerId)
-        setModalList(prev=>({
-            all:prev.all,
-            actives:prev.actives.map(modal=>
-                modal.id===offerId?
-                {...modal,state:1 }:
-                modal)
+        setModalList(prev => ({
+            all: prev.all,
+            actives: prev.actives.map(modal =>
+                modal.id === offerId ?
+                    { ...modal, state: 1 } :
+                    modal)
         }))
     }
 
@@ -115,7 +115,7 @@ function PriceOffers(props) {
 
             {
                 modalList.actives.map(modal => {
-                    {/* const choice = choices.find(choice => choice.id === modal.id) */}
+                    {/* const choice = choices.find(choice => choice.id === modal.id) */ }
                     return (
                         <div key={modal.id} style={{ visibility: modal.state === 0.5 ? "hidden" : "" }}>
                             <Suspense fallback="">

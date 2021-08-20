@@ -14,24 +14,24 @@ function NewOfferTableRow(props) {
     // eslint-disable-next-line
     const [models, setModels] = useState([]);
     const modelInputRef = useRef(null);
-    const [total, setTotal] = useState(props.count*props.price);
+    const [total, setTotal] = useState(props.count * props.price);
 
 
     const handleAmountChangeButtons = (action) => {
         props.handleChange("count", undefined, offerid, true, action)
-        if(action==='inc'){
-            setTotal(props.price*(props.count+1))
-            props.handleChange('total',props.price*(props.count+1),offerid)
-        }else  setTotal(props.price*(props.count-1))
+        if (action === 'inc') {
+            setTotal(props.price * (props.count + 1))
+            props.handleChange('total', props.price * (props.count + 1), offerid)
+        } else setTotal(props.price * (props.count - 1))
 
     }
 
     const handleChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
-        if(name==="price"){
-            setTotal(value*props.count)
-            props.handleChange('total',value*props.count,offerid)
+        if (name === "price") {
+            setTotal(value * props.count)
+            props.handleChange('total', value * props.count, offerid)
         }
         props.handleChange(name, value, offerid)
     }
@@ -39,7 +39,7 @@ function NewOfferTableRow(props) {
     const handleTotalChange = (e) => {
         const value = e.target.value;
         setTotal(value);
-        props.handleChange('total',value,offerid)
+        props.handleChange('total', value, offerid)
         handleAmountChange2(value);
     }
 
@@ -47,14 +47,14 @@ function NewOfferTableRow(props) {
         const value = e.target.value;
         const name = e.target.name;
         if (value === '' || Number(value) > 0) {
-            setTotal(value*props.price)
+            setTotal(value * props.price)
             props.handleChange(name, value, offerid)
         }
     }
 
     const handleAmountChange2 = (value) => {
         if (props.count !== 0 || Number(props.count) > 0) {
-            props.handleChange("price", Math.floor(value/props.count), offerid)
+            props.handleChange("price", Math.floor(value / props.count), offerid)
         }
     }
 
@@ -62,7 +62,7 @@ function NewOfferTableRow(props) {
         props.handleModelSelection(model, offerid);
         modelInputRef.current.value = model.title;
         modelListRef.current.style.display = "none";
-      }
+    }
 
     const handleInputSearch = (e) => {
         const value = e.target.value;

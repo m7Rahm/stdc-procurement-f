@@ -20,7 +20,7 @@ const NewOfferTableBody = (props) => {
       price: 0,
       total: 0,
       alternative: 0,
-      classname:'new-row',
+      classname: 'new-row',
     }])
   }
 
