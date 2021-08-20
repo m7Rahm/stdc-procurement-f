@@ -1,16 +1,12 @@
-import React, { useCallback, useState, useRef, useContext } from 'react'
+import React, { useCallback, useState, useRef } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 
 import NewOfferTableBody from './NewOfferTableBody'
-import '../../styles/Orders.css'
-import useFetch from '../../hooks/useFetch'
-import { WebSocketContext } from '../SelectModule'
 import '../../styles/styles.scss'
 
 function OfferModal(props) {
-    console.log(props.orderContent)
-    const [choices, setChoices] = useState(props.orderContent.length !== 0 ? props.orderContent.map(m => ({
+    const [choices, setChoices] = useState(props.orderContent.map(m => ({
         id: Date.now(),
         name: m.material_name,
         count: m.amount,
@@ -18,15 +14,13 @@ function OfferModal(props) {
         price: 0,
         total: 0,
         alternative: 0,
-    })) : [])
-    // const [choices,setChoices] = useState([])
+    })))
 
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
-    const fetchPost = useFetch("POST");
     const davamText = whichPage.page === 2 ? "Yadda saxla" : "Davam";
+    // eslint-disable-next-line
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
-    const webSocket = useContext(WebSocketContext)
     const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
 
     // console.log(props.choices)
@@ -34,6 +28,8 @@ function OfferModal(props) {
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
         // props.modalWrapperRef.current.style.overflow = "hidden";
+        props.activeModalRef.current.style.height = "20rem";
+        props.activeModalRef.current.style.width = "40rem";
         const animationendEventListener = () => {
             actPageRef.current.removeEventListener(
                 "animationend",
@@ -55,10 +51,11 @@ function OfferModal(props) {
         );
     };
     const forwardClickHandler = () => {
+        props.activeModalRef.current.style.height = "30rem";
+        props.activeModalRef.current.style.width = "60rem";
         if (davamText === "Davam") {
             const continueNext = () => {
                 actPageRef.current.style.animationName = "slide_davam_current";
-                // props.modalWrapperRef.current.style.overflow = "hidden";
                 const animationendEventListener = () => {
                     if (actPageRef.current.style.animationName === "slide_davam_next") {
                         // props.modalWrapperRef.current.style.overflow = "visible";
@@ -69,7 +66,7 @@ function OfferModal(props) {
                         );
                     }
                     setWhichPage(prevState => {
-                        if (prevState.page == 1) {
+                        if (prevState.page === 1) {
                             actPageRef.current.style.animationName = "slide_davam_next"
                             // props.modalWrapperRef.current.style.width = prevState.page === 1 ? "90%" : "40rem";
                             return {
@@ -129,11 +126,9 @@ function OfferModal(props) {
                 ref={actPageRef}
             >
                 {whichPage.page === 1 ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '40px', marginTop: '30px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input>
-                            <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input>
-                        </div>
+                    <div style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
+                        <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input>
+                        <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input>
                         {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
                             <input placeholder={'Rahman1'} className="modalInput" ></input>
                             <input placeholder={'Rahman2'} className="modalInput" ></input>
@@ -164,19 +159,9 @@ const MyDropzone = () => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
 
-    const filesNames = useRef(<p></p>)
-
-    // const onDrop = useCallback(acceptedFiles => {
-    //     // Do something with the files
-    //     const req = request.post('/upload')
-    //     acceptedFiles.forEach(file => {
-    //       req.attach(file.name, file)
-    //     })
-    //     req.end(callback)    
-    // }, [])
+    const filesNames = useRef()
 
     const onDrop = useCallback(acceptedFiles => {
-        console.log(filesNames)
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>
                 <p>{file.name}</p>
@@ -187,7 +172,7 @@ const MyDropzone = () => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
     return (
-        <div {...getRootProps()}>
+        <div style={{ padding: "2rem" }} {...getRootProps()}>
             <input {...getInputProps()} />
             {
                 isDragActive ?
@@ -199,8 +184,8 @@ const MyDropzone = () => {
                         <p>Drop the files here ...</p>
                     </div> :
                     <div className="fileUpload">
-                        <BsUpload size='60' />
-                        <p >Drag 'n' drop some files here, or click to select files</p>
+                        <BsUpload size='30' />
+                        <p>Fayl əlavə etmək üçün buraya klikləyin və ya sürüşdürün</p>
                         <ul>
                             {filesNames.current}
                         </ul>

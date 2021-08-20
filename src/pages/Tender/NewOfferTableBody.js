@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import NewOfferTableRow from './NewOfferTableRow'
 
 // eslint-disable-next-line
@@ -23,25 +23,15 @@ const NewOfferTableBody = (props) => {
       classname: 'new-row',
     }])
   }
-
+  // eslint-disable-next-line
   const saveClickHandler = () => {
     const data = props.choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
     fetchPost('/api/update-price-offer', data)
       .then(respJ => {
 
       }).catch(ex => console.log(ex))
-    // setIsModalVisible(0);
   }
-
   const { orderType, structure } = props.orderInfo;
-
-  // GET PLACES
-  // useEffect(() => {
-  //   fetchGet(`/api/assignments`)
-  //     .then(respJ => setPlaceList(respJ))
-  //     .catch(ex => console.log(ex))
-  // }, [fetchGet])
-
   const handleRowDelete = (rowRef) => {
     rowRef.current.classList.add("delete-row");
     // eslint-disable-next-line
