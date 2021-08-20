@@ -14,6 +14,8 @@ import Orders from "./Tender/Orders";
 import "../styles/Tender.css"
 import NewAgreement from "./Tender/NewAgreement";
 import Agreements from "./Orders/Agreements";
+import NotificationBar from "./Tender/NotificationBar";
+import NotifButton from "./Tender/NotifButton";
 const routes = [
     {
         text: "Sifarişlər",
@@ -65,7 +67,9 @@ const Tender = (props) => {
         loadingIndicatorRef.current.classList.add("load-to-start");
         props.leftNavRef.current.style.display = "block";
     }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef])
+const zulfuqar = "notificaton geldi"
     return (
+        <>
         <Switch>
             {
                 routes.map(route =>
@@ -75,7 +79,11 @@ const Tender = (props) => {
                 )
             }
             <Redirect to={`${path}/orders/:docid?`} />
+           
         </Switch>
+        <NotificationBar notifText={zulfuqar}/>
+        <NotifButton/>
+        </>
     )
 }
 

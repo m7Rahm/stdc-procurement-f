@@ -7,6 +7,7 @@ import './styles/App.css';
 import { modules } from './data/data';
 import Loading from './components/Misc/Loading';
 import { serverAddress, serverPort } from "./data/data"
+import NotificationBar from './pages/Tender/NotificationBar';
 
 const Login = React.lazy(() => import('./pages/Login'));
 

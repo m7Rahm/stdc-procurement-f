@@ -2641,6 +2641,9 @@ div.chat-container {
   padding-top: 30px;
   background-color: #c8dadf;
   /* float:right; */
+  
+  margin-left: auto; 
+  margin-right: auto;
 }
 
 .fileUpload > span{
@@ -2676,6 +2679,7 @@ div.chat-container {
 }
 
 .priceModal {
+  position: relative;
   padding-top: 40px;
   overflow: auto;
   border-radius: 0px 0px 7px 7px;
