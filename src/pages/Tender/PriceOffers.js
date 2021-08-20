@@ -24,12 +24,10 @@ function PriceOffers(props) {
     const [isModalVisible, setIsModalVisible] = useState(0);
     const activeModalRef = useRef(0);
     const [choices, setChoices] = useState([])
-
     const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
 
     const [selectedModals, setSelectedModals] = useState([])
     const fetchPost = useFetch("POST");
-    console.log(choices, modalList)
     const webSocket = useContext(WebSocketContext)
     const handleClick = () => {
         setIsModalVisible(true);
@@ -38,18 +36,16 @@ function PriceOffers(props) {
             modalRef.current.style.top = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 15) + "px";
             modalRef.current.style.left = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("left").substring(0, 3)) + 15) + "px";
         }
+        // console.log(modalRef.current);
         const id = Date.now();
         setModalList(prev => {
             return {
-                all: [...prev.all, { id: id, name: "" }],
-                actives: [...prev.actives, { id: id, name: "" }]
+                all: [...prev.all, { id: id, name: "", state: 1 }],
+                actives: [...prev.actives, { id: id, name: "", state: 1 }]
             }
         })
-        const newCh = { [id]: { ...newChoice, id: Date.now() } }
-        setChoices(prev => {
-            prev.push(newCh);
-            return [...prev]
-        })
+        const newCh = { id, state: { ...newChoice, id: Date.now() } };
+        setChoices(prev => [...prev, newCh])
 
         // setModalList(prev => {
         //     if (prev.all.length === 0) {
@@ -75,16 +71,6 @@ function PriceOffers(props) {
         //         : { ...prevState, current: null }
         //     return newList;
         // })
-
-        setChoices([{
-            id: Date.now(),
-            name: "",
-            count: 0,
-            note: "",
-            price: 0,
-            total: 0,
-            alternative: 0
-        }])
     }
 
     const minimizeHandler = () => {
@@ -179,24 +165,23 @@ function PriceOffers(props) {
             </div>
 
             {
-                isModalVisible !== 0 &&
-                <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
+                modalList.actives.map(modal =>
+                (<div key={modal.id} style={{ visibility: modal.state === 0.5 ? "hidden" : "" }}>
                     <Suspense fallback="">
-
                         {/* {selectedModals.map((modal,index)=>{ return( */}
                         <ModalAdvanced
                             activeModalRef={activeModalRef}
-                            show={isModalVisible}
+                            show={modal.state}
+                            ref={modalRef}
                             changeModalState={handleCloseModal}
                             minimizeHandler={minimizeHandler}
                         >
                             <OfferModal
-                                choices={choices}
+                                choices={choices.find(choice => choice.id === modal.id).state}
                                 setChoices={setChoices}
                                 offerInfo={offerInfo}
                                 setOfferInfo={setOfferInfo}
                                 setIsModalVisible={handleCloseModal}
-                                modalList={modalList}
                                 saveClickHandler={saveClickHandler}
                                 orderContent={current}
                                 handleInfoChange={handleInfoChange}
@@ -206,6 +191,7 @@ function PriceOffers(props) {
 
                     </Suspense>
                 </div>
+                ))
             }
         </div>
     )
