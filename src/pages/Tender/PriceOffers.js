@@ -104,6 +104,7 @@ function PriceOffers(props) {
         setOfferInfo(prev => ({ ...prev, [name]: value }))
     }
 
+    console.log(current)
     return (
         <div style={{ padding: "4rem 1rem", flex: 1 }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
@@ -120,9 +121,7 @@ function PriceOffers(props) {
             />
 
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingTop: '30px' }}>
-                <div className="priceButtons">ASJD</div>
                 <div className="priceButtons">Yönəlt</div>
-                <div className="priceButtons">Təchiz</div>
             </div>
 
             {
