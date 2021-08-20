@@ -15,11 +15,9 @@ function PriceOffers(props) {
     const [modalList, setModalList] = useState({ all: [], actives: [] })
     const [isModalVisible, setIsModalVisible] = useState(0);
     const activeModalRef = useRef(0);
-    const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
 
-    const [selectedModals, setSelectedModals] = useState([])
-    const fetchPost = useFetch("POST");
-    const webSocket = useContext(WebSocketContext)
+    // const fetchPost = useFetch("POST");
+    // const webSocket = useContext(WebSocketContext)
     const handleClick = () => {
         setIsModalVisible(true);
 
@@ -27,7 +25,6 @@ function PriceOffers(props) {
             activeModalRef.current.style.top = (parseInt(window.getComputedStyle(activeModalRef.current).getPropertyValue("top").substring(0, 3)) + 15) + "px";
             activeModalRef.current.style.left = (parseInt(window.getComputedStyle(activeModalRef.current).getPropertyValue("left").substring(0, 3)) + 15) + "px";
         }
-        // console.log(modalRef.current);
         const id = Date.now();
         setModalList(prev => {
             return {
@@ -95,14 +92,6 @@ function PriceOffers(props) {
         }))
     }
 
-    // console.log(selectedModals)
-
-
-    const handleInfoChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setOfferInfo(prev => ({ ...prev, [name]: value }))
-    }
 
     console.log(current)
     return (
@@ -130,7 +119,6 @@ function PriceOffers(props) {
                     return (
                         <div key={modal.id} style={{ visibility: modal.state === 0.5 ? "hidden" : "" }}>
                             <Suspense fallback="">
-                                {/* {selectedModals.map((modal,index)=>{ return( */}
                                 <ModalAdvanced
                                     modalid={modal.id}
                                     activeModalRef={activeModalRef}
@@ -140,15 +128,8 @@ function PriceOffers(props) {
                                     minimizeHandler={minimizeHandler}
                                 >
                                     <OfferModal
-                                        // choices={choice.state}
-                                        // choiceid={choice.id}
-                                        // setChoices={setChoices}
-                                        offerInfo={offerInfo}
-                                        setOfferInfo={setOfferInfo}
                                         setIsModalVisible={handleCloseModal}
-                                        // saveClickHandler={saveClickHandler}
                                         orderContent={current}
-                                        handleInfoChange={handleInfoChange}
                                     />
                                 </ModalAdvanced>
                                 {/* )})} */}

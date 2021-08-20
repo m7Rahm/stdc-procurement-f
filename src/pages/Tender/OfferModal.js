@@ -9,7 +9,9 @@ import { WebSocketContext } from '../SelectModule'
 import '../../styles/styles.scss'
 
 function OfferModal(props) {
-    const [choices, setChoices] = useState([])
+    console.log(props.orderContent)
+    const [choices, setChoices] = useState(props.orderContent.length!==0 ? props.orderContent.map(m=>({name: m.material_name,count:m.amount})) : [])
+    // const [choices,setChoices] = useState([])
 
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
@@ -17,6 +19,8 @@ function OfferModal(props) {
     const davamText = whichPage.page === 2 ? "Yadda saxla" : "Davam";
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
     const webSocket = useContext(WebSocketContext)
+    const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
+
     // console.log(props.choices)
 
     const backClickHandler = (e) => {
@@ -84,6 +88,12 @@ function OfferModal(props) {
         }
     };
 
+    const handleInfoChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setOfferInfo(prev => ({ ...prev, [name]: value }))
+    }
+
 
     return (
         <div>
@@ -113,8 +123,8 @@ function OfferModal(props) {
                 {whichPage.page === 1 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '40px', marginTop: '30px' }}>
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <input placeholder={'Şirkət'} className="modalInput" name="company" value={props.offerInfo.company} onChange={props.handleInfoChange}></input>
-                            <input placeholder={'VÖEN'} className="modalInput" name='voen' value={props.offerInfo.voen} onChange={props.handleInfoChange}></input>
+                            <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input>
+                            <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input>
                         </div>
                         {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
                             <input placeholder={'Rahman1'} className="modalInput" ></input>
