@@ -2585,11 +2585,11 @@ div.chat-container {
 }
 @keyframes modal-open {
   from {
-    transform: scale(0.9);
+    transform: scale(0.95) translate(-50%,10%);
     opacity: 0.1;
   }
   to {
-    transform: scale(1);
+    transform: scale(1) translate(-50%,10%);
     opacity: 1;
   }
 }

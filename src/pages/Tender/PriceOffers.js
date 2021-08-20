@@ -8,49 +8,73 @@ import OfferModal from './OfferModal'
 import ModalAdvanced from './ModalAdvanced'
 import useFetch from '../../hooks/useFetch'
 import { WebSocketContext } from '../SelectModule'
-
+const newChoice = {
+    id: Date.now(),
+    name: "",
+    count: 0,
+    note: "",
+    price: 0,
+    total: 0,
+    alternative: 0,
+}
 function PriceOffers(props) {
     const { current, canProceed, forwardType, setRemainder } = props;
     const modalRef = useRef(null);
-    const [modalList, setModalList] = useState(null)
+    const [modalList, setModalList] = useState({ all: [], actives: [] })
     const [isModalVisible, setIsModalVisible] = useState(0);
     const activeModalRef = useRef(0);
-    const [choices, setChoices] = useState([{
-        id: Date.now(),
-        name: "",
-        count: 0,
-        note: "",
-        price: 0,
-        total: 0,
-        alternative: 0,
-    }]
-    )
+    const [choices, setChoices] = useState([])
 
-    const [offerInfo,setOfferInfo] = useState({company:"",voen:""})
+    const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
 
     const [selectedModals, setSelectedModals] = useState([])
     const fetchPost = useFetch("POST");
+    console.log(choices, modalList)
     const webSocket = useContext(WebSocketContext)
     const handleClick = () => {
-
         setIsModalVisible(true);
+
         if (modalRef.current) {
             modalRef.current.style.top = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 15) + "px";
             modalRef.current.style.left = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("left").substring(0, 3)) + 15) + "px";
-            // const newTop = (parseInt(modalRef.current.style.top.substring(0,2))+2)+"rem"
-            // console.log(newTop)
-            // console.log(modalRef.current.style.top)
-            // console.log(window.getComputedStyle(modalRef.current).getPropertyValue("top"))
-            // console.log((parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 10) + "px")
-            // console.log((parseInt(modalRef.current.style.top.substring(0,2))+2)+"rem")
         }
-
-        setModalList(prevState => {
-            const newList = prevState === null ?
-                { all: [], current: null }
-                : { ...prevState, current: null }
-            return newList;
+        const id = Date.now();
+        setModalList(prev => {
+            return {
+                all: [...prev.all, { id: id, name: "" }],
+                actives: [...prev.actives, { id: id, name: "" }]
+            }
         })
+        const newCh = { [id]: { ...newChoice, id: Date.now() } }
+        setChoices(prev => {
+            prev.push(newCh);
+            return [...prev]
+        })
+
+        // setModalList(prev => {
+        //     if (prev.all.length === 0) {
+        //         const current = { 'id': Date.now(), 'value': choices, name: 0 }
+        //         return { all: [current], current: current }
+        //     } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
+        //         const current = { 'id': Date.now(), 'value': choices, name: prev.all[prev.all.length - 1].name + 1 }
+        //         return { all: [...prev.all, current], current: current }
+        //     } else {
+        //         return {
+        //             all: prev.all.map(order =>
+        //                 order.id === modalList.current.id ?
+        //                     { ...order, 'value': choices }
+        //                     : order
+        //             ), current: null
+        //         }
+        //     }
+        // })
+
+        // setModalList(prevState => {
+        //     const newList = prevState === null ?
+        //         { all: [], current: null }
+        //         : { ...prevState, current: null }
+        //     return newList;
+        // })
 
         setChoices([{
             id: Date.now(),
@@ -61,6 +85,28 @@ function PriceOffers(props) {
             total: 0,
             alternative: 0
         }])
+    }
+
+    const minimizeHandler = () => {
+        // modalRef.current.style.width = "40rem";
+        // setModalList(prev => {
+        //     if (prev.all.length === 0) {
+        //         const current = { 'id': Date.now(), 'value': choices, name: 0 }
+        //         return { all: [current], current: current }
+        //     } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
+        //         const current = { 'id': Date.now(), 'value': choices, name: prev.all[prev.all.length - 1].name + 1 }
+        //         return { all: [...prev.all, current], current: current }
+        //     } else {
+        //         return {
+        //             all: prev.all.map(order =>
+        //                 order.id === modalList.current.id ?
+        //                     { ...order, 'value': choices }
+        //                     : order
+        //             ), current: null
+        //         }
+        //     }
+        // })
+        setIsModalVisible(0.5);
     }
 
     const handleCloseModal = () => {
@@ -74,28 +120,6 @@ function PriceOffers(props) {
                 return newModals;
             });
         }
-    }
-
-    const minimizeHandler = () => {
-        // modalRef.current.style.width = "40rem";
-        setModalList(prev => {
-            if (prev.all.length === 0) {
-                const current = { 'id': Date.now(), 'value': choices, name: 0 }
-                return { all: [current], current: current }
-            } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-                const current = { 'id': Date.now(), 'value': choices, name: prev.all[prev.all.length - 1].name + 1 }
-                return { all: [...prev.all, current], current: current }
-            } else {
-                return {
-                    all: prev.all.map(order =>
-                        order.id === modalList.current.id ?
-                            { ...order, 'value': choices }
-                            : order
-                    ), current: null
-                }
-            }
-        })
-        setIsModalVisible(0.5);
     }
 
     const handleOfferSelect = (offerId) => {
@@ -130,7 +154,7 @@ function PriceOffers(props) {
     const handleInfoChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setOfferInfo(prev=>({...prev,[name]:value}))
+        setOfferInfo(prev => ({ ...prev, [name]: value }))
     }
 
     return (
@@ -179,7 +203,7 @@ function PriceOffers(props) {
                             />
                         </ModalAdvanced>
                         {/* )})} */}
-                        
+
                     </Suspense>
                 </div>
             }

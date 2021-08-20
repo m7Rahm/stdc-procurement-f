@@ -41,7 +41,6 @@ function OfferModal(props) {
             false
         );
     };
-    console.log(whichPage)
     const forwardClickHandler = () => {
         if (davamText === "Davam") {
             const continueNext = () => {
