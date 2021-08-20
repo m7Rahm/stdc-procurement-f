@@ -2571,17 +2571,28 @@ div.chat-container {
 .modalWrapper{
   z-index: 3;
   position: fixed;
-  left: 40rem;
+  left: 50%;
+  transform: translate(-50%,10%);
   top: 8rem;
   border-radius: 7px;
   overflow: hidden;
   width: 60rem;
   /* height: 30rem; */
+  animation: modal-open 200ms ease both;
   box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
   background-color: rgb(241, 243, 243);
 
 }
-
+@keyframes modal-open {
+  from {
+    transform: scale(0.9);
+    opacity: 0.1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 .priceTags {
   padding: 10px 12px;
   border: 1px solid white;

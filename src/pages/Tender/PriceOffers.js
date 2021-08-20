@@ -26,12 +26,11 @@ function PriceOffers(props) {
     }]
     )
 
-    const [offerInfo,setOfferInfo] = useState([])
+    const [offerInfo,setOfferInfo] = useState({company:"",voen:""})
 
     const [selectedModals, setSelectedModals] = useState([])
     const fetchPost = useFetch("POST");
     const webSocket = useContext(WebSocketContext)
-    // console.log(choices);
     const handleClick = () => {
 
         setIsModalVisible(true);
@@ -126,6 +125,14 @@ function PriceOffers(props) {
             }).catch(ex => console.log(ex))
         setIsModalVisible(0);
     }
+
+
+    const handleInfoChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setOfferInfo(prev=>({...prev,[name]:value}))
+    }
+
     return (
         <div style={{ padding: "4rem 1rem", flex: 1 }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
@@ -168,26 +175,11 @@ function PriceOffers(props) {
                                 modalList={modalList}
                                 saveClickHandler={saveClickHandler}
                                 orderContent={current}
+                                handleInfoChange={handleInfoChange}
                             />
                         </ModalAdvanced>
                         {/* )})} */}
-
-                        {/* 
-                            <ModalAdvanced
-                                activeModalRef={activeModalRef}
-                                show={isModalVisible}
-                                changeModalState={handleCloseModal}
-                                minimizeHandler={minimizeHandler}
-                            >
-                                <OfferModal
-                                    choices={choices}
-                                    setChoices={setChoices}
-                                    setIsModalVisible={handleCloseModal}
-                                    modalList={modalList}
-                                    saveClickHandler={saveClickHandler}
-                                    orderContent={current}
-                                />
-                            </ModalAdvanced> */}
+                        
                     </Suspense>
                 </div>
             }

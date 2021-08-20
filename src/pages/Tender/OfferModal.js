@@ -41,7 +41,7 @@ function OfferModal(props) {
             false
         );
     };
-
+    console.log(whichPage)
     const forwardClickHandler = () => {
         if (davamText === "Davam") {
             const continueNext = () => {
@@ -57,7 +57,7 @@ function OfferModal(props) {
                         );
                     }
                     setWhichPage(prevState => {
-                        if (actPageRef.current.style.animationName === "slide_davam_current" && prevState.page < 3) {
+                        if (prevState.page == 1) {
                             actPageRef.current.style.animationName = "slide_davam_next"
                             // props.modalWrapperRef.current.style.width = prevState.page === 1 ? "90%" : "40rem";
                             return {
@@ -75,13 +75,6 @@ function OfferModal(props) {
             if (whichPage.page === 2) {
                 let errorMessage = "";
                 let details = ""
-                const unAssignedMaterials = props.choices.materials.filter(material => !material.place);
-                if (props.choices.materials.length === 0 || props.choices.materials.find(material => !material.materialName))
-                    errorMessage = "Sifarişə məhsul əlavə edin"
-                else if (unAssignedMaterials.length !== 0) {
-                    details = unAssignedMaterials.reduce((prev, curr) => prev += `<div>${curr.materialName}</div>`, "")
-                    errorMessage = "İstifadə yeri göstərilməmişdir";
-                }
                 if (errorMessage !== "")
                     setOperationResult({ visible: true, desc: errorMessage, details: details })
                 else continueNext()
@@ -91,13 +84,6 @@ function OfferModal(props) {
         }
     };
 
-    const handleInfoChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        props.setOfferInfo([{[name]:value}])
-    }
-
-    console.log(props.offerInfo)
 
     return (
         <div>
@@ -127,8 +113,8 @@ function OfferModal(props) {
                 {whichPage.page === 1 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '40px', marginTop: '30px' }}>
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <input placeholder={'Şirkət'} className="modalInput" name="company" value={props.offerInfo.company} onChange={handleInfoChange}></input>
-                            <input placeholder={'VÖEN'} className="modalInput" name='voen' value={props.offerInfo.voen} onChange={handleInfoChange}></input>
+                            <input placeholder={'Şirkət'} className="modalInput" name="company" value={props.offerInfo.company} onChange={props.handleInfoChange}></input>
+                            <input placeholder={'VÖEN'} className="modalInput" name='voen' value={props.offerInfo.voen} onChange={props.handleInfoChange}></input>
                         </div>
                         {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
                             <input placeholder={'Rahman1'} className="modalInput" ></input>
