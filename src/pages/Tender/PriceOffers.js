@@ -46,31 +46,6 @@ function PriceOffers(props) {
         })
         const newCh = { id, state: { ...newChoice, id: Date.now() } };
         setChoices(prev => [...prev, newCh])
-
-        // setModalList(prev => {
-        //     if (prev.all.length === 0) {
-        //         const current = { 'id': Date.now(), 'value': choices, name: 0 }
-        //         return { all: [current], current: current }
-        //     } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-        //         const current = { 'id': Date.now(), 'value': choices, name: prev.all[prev.all.length - 1].name + 1 }
-        //         return { all: [...prev.all, current], current: current }
-        //     } else {
-        //         return {
-        //             all: prev.all.map(order =>
-        //                 order.id === modalList.current.id ?
-        //                     { ...order, 'value': choices }
-        //                     : order
-        //             ), current: null
-        //         }
-        //     }
-        // })
-
-        // setModalList(prevState => {
-        //     const newList = prevState === null ?
-        //         { all: [], current: null }
-        //         : { ...prevState, current: null }
-        //     return newList;
-        // })
     }
 
     const minimizeHandler = () => {
@@ -95,17 +70,27 @@ function PriceOffers(props) {
         setIsModalVisible(0.5);
     }
 
-    const handleCloseModal = () => {
+    const handleCloseModal = (modalid) => {
         setIsModalVisible(0);
-        if (modalList.current !== null) {
-            setModalList(prevState => {
-                const res = prevState.all.find(emp => emp.id === prevState.current.id);
-                const newModals = !res ?
-                    { all: [...prevState.all, prevState.current], current: prevState.current }
-                    : { all: prevState.all.filter(emp => emp.id !== prevState.current.id), current: null };
-                return newModals;
-            });
-        }
+
+        // if (modalList.current !== null) {
+        //     setModalList(prevState => {
+        //         const res = prevState.all.find(emp => emp.id === prevState.current.id);
+        //         const newModals = !res ?
+        //             { all: [...prevState.all, prevState.current], current: prevState.current }
+        //             : { all: prevState.all.filter(emp => emp.id !== prevState.current.id), current: null };
+        //         return newModals;
+        //     });
+        // }
+
+        setModalList(prev => {
+            const res = prev.all.filter(old => old.id === modalid);
+            const res2 = prev.actives.filter(old => old.id === modalid);
+            return {
+                all: [...res, { state: 0.5 }],
+                actives: [...res2,{state:0.5}]
+                }
+        })
     }
 
     const handleOfferSelect = (offerId) => {
@@ -170,6 +155,7 @@ function PriceOffers(props) {
                     <Suspense fallback="">
                         {/* {selectedModals.map((modal,index)=>{ return( */}
                         <ModalAdvanced
+                            modalid={modal.id}
                             activeModalRef={activeModalRef}
                             show={modal.state}
                             ref={modalRef}
