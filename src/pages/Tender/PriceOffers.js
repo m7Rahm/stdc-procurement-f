@@ -19,7 +19,7 @@ const newChoice = {
 }
 function PriceOffers(props) {
     const { current, canProceed, forwardType, setRemainder } = props;
-    const modalRef = useRef(null);
+    // const modalRef = useRef(null);
     const [modalList, setModalList] = useState({ all: [], actives: [] })
     const [isModalVisible, setIsModalVisible] = useState(0);
     const activeModalRef = useRef(0);
@@ -32,9 +32,9 @@ function PriceOffers(props) {
     const handleClick = () => {
         setIsModalVisible(true);
 
-        if (modalRef.current) {
-            modalRef.current.style.top = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("top").substring(0, 3)) + 15) + "px";
-            modalRef.current.style.left = (parseInt(window.getComputedStyle(modalRef.current).getPropertyValue("left").substring(0, 3)) + 15) + "px";
+        if (activeModalRef.current) {
+            activeModalRef.current.style.top = (parseInt(window.getComputedStyle(activeModalRef.current).getPropertyValue("top").substring(0, 3)) + 15) + "px";
+            activeModalRef.current.style.left = (parseInt(window.getComputedStyle(activeModalRef.current).getPropertyValue("left").substring(0, 3)) + 15) + "px";
         }
         // console.log(modalRef.current);
         const id = Date.now();
@@ -172,7 +172,7 @@ function PriceOffers(props) {
                         <ModalAdvanced
                             activeModalRef={activeModalRef}
                             show={modal.state}
-                            ref={modalRef}
+                            // ref={modalRef}
                             changeModalState={handleCloseModal}
                             minimizeHandler={minimizeHandler}
                         >
