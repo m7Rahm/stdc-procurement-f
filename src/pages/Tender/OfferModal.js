@@ -9,7 +9,6 @@ import { WebSocketContext } from '../SelectModule'
 import '../../styles/styles.scss'
 
 function OfferModal(props) {
-    console.log(props.orderContent)
     const [choices, setChoices] = useState(props.orderContent.length !== 0 ? props.orderContent.map(m => ({
         id: Date.now(),
         name: m.material_name,
@@ -19,7 +18,6 @@ function OfferModal(props) {
         total: 0,
         alternative: 0,
     })) : [])
-    // const [choices,setChoices] = useState([])
 
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
@@ -28,8 +26,6 @@ function OfferModal(props) {
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
     const webSocket = useContext(WebSocketContext)
     const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
-
-    // console.log(props.choices)
 
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
@@ -92,7 +88,12 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-            // saveClickHandler();
+            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
+            // console.log(data)
+            fetchPost('/api/update-price-offer', data)
+                .then(respJ => {
+
+                }).catch(ex => console.log(ex))
         }
     };
 
@@ -152,7 +153,7 @@ function OfferModal(props) {
                     <div></div>
                 )}
             </div>
-            {/* <div className="priceTags saveButton" onClick={props.saveClickHandler}>Yadda saxla</div> */}
+            <div className="priceTags saveButton" onClick={forwardClickHandler}>Yadda saxla</div>
         </div>
     )
 }

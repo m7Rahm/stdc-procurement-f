@@ -16,8 +16,6 @@ function PriceOffers(props) {
     const [isModalVisible, setIsModalVisible] = useState(0);
     const activeModalRef = useRef(0);
 
-    // const fetchPost = useFetch("POST");
-    // const webSocket = useContext(WebSocketContext)
     const handleClick = () => {
         setIsModalVisible(true);
 
@@ -32,29 +30,9 @@ function PriceOffers(props) {
                 actives: [...prev.actives, { id: id, name: "", state: 1 }]
             }
         })
-        // const newCh = { id, state: [{ ...newChoice, id: Date.now() }] };
-        // setChoices(prev => [...prev, newCh])
     }
 
     const minimizeHandler = (modalid) => {
-        // modalRef.current.style.width = "40rem";
-        // setModalList(prev => {
-        //     if (prev.all.length === 0) {
-        //         const current = { 'id': Date.now(), 'value': choices, name: 0 }
-        //         return { all: [current], current: current }
-        //     } else if (modalList.current === null || !modalList.all.find(modal => modal.id === modalList.current.id)) {
-        //         const current = { 'id': Date.now(), 'value': choices, name: prev.all[prev.all.length - 1].name + 1 }
-        //         return { all: [...prev.all, current], current: current }
-        //     } else {
-        //         return {
-        //             all: prev.all.map(order =>
-        //                 order.id === modalList.current.id ?
-        //                     { ...order, 'value': choices }
-        //                     : order
-        //             ), current: null
-        //         }
-        //     }
-        // })
         setModalList(prev => ({
             all: prev.all.map(modal =>
                 modal.id === modalid ?

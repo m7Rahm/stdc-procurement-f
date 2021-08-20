@@ -1,9 +1,8 @@
 import React, { useRef, useState } from 'react'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import InputSearchList from '../../components/Misc/InputSearchList'
-// eslint-disable-next-line
 import useFetch from '../../hooks/useFetch'
-
+import {SiMercedes} from 'react-icons/si'
 
 function NewOfferTableRow(props) {
     const rowRef = useRef(null);
@@ -176,6 +175,9 @@ function NewOfferTableRow(props) {
             <div>
                 <FaTrashAlt cursor="pointer" onClick={e => handleRowDelete(rowRef)} title="Sil" color="#ff4a4a" />
             </div>
+            {/* <div>
+                <SiMercedes title="Alternativ"/>
+            </div> */}
 
         </li>
     )
