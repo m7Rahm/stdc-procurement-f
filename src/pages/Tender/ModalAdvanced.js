@@ -7,7 +7,7 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
     const modalContentRef = useRef(null);
     const handleDragStart = (e) => {
         if (props.activeModalRef.current)
-            props.activeModalRef.current.style.zIndex = "1";
+            props.activeModalRef.current.style.zIndex = "2";
         mousePositionRef.current = { x: e.clientX, y: e.clientY };
         // const elem = ref ? ref.current : modalContentRef.current;
         // props.activeModalRef.current = elem;
@@ -36,23 +36,24 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
         // const elem = ref ? ref.current : modalContentRef.current;
         // if (props.activeModalRef.current)
         if (props.activeModalRef.current)
-            props.activeModalRef.current.style.zIndex = "1";
+            props.activeModalRef.current.style.zIndex = "2";
         // props.activeModalRef.current = elem;
         props.activeModalRef.current = e.currentTarget;
         props.activeModalRef.current.style.zIndex = "3";
     }
     return (
-        <div ref={modalContentRef} onClick={handleClick} className={props.show !== 0.5 ? "modalWrapper" : "modalWrapper hidden"} style={props.style}>
+        <div ref={(elem) => {
+            modalContentRef.current = elem;
+            props.activeModalRef.current = elem
+        }} onClick={handleClick} className={props.show !== 0.5 ? "modalWrapper" : "modalWrapper hidden"} style={props.style}>
             <div className="modalTitle"
                 onMouseDown={handleDragStart}
             >
                 <div style={{ float: 'left', paddingLeft: '15px', paddingTop: '10px', fontWeight: 'bold' }} >Təklif</div>
                 <IoMdClose className="modal-close-button" onClick={() => props.changeModalState(props.modalid)} size='28' style={{ paddingTop: '10px', verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
                 <VscChromeMinimize className="modal-close-button" onClick={() => props.minimizeHandler(props.modalid)} size='28' style={{ paddingTop: '10px', verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
-
             </div>
-
-            <div className={"priceModal"}>
+            <div className="priceModal">
                 <div className="modal-container" >{props.children}</div>
             </div>
         </div>

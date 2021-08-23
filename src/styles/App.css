@@ -1096,7 +1096,7 @@ div.forwarded-people-container:hover {
   padding: 0px;
   z-index: 3;
   animation: modal-show 0.5s ease-in-out both;
-  transition: min-width, width  600ms, min-height 600ms;
+  transition: min-width, width 600ms, min-height 600ms;
 }
 
 input.assignment-input {
@@ -1165,10 +1165,12 @@ input.assignment-input:focus+ul.structures-list {
   overflow: hidden;
   background-image: linear-gradient(to bottom, royalblue, #195db6);
 }
-.new-order-table>li:first-of-type>div>p{
+
+.new-order-table>li:first-of-type>div>p {
   width: 100%;
   text-align: center;
 }
+
 .new-order-table>li>div:last-of-type, .new-order-table>li>div:first-of-type {
   display: flex;
   align-items: center;
@@ -2568,120 +2570,121 @@ div.chat-container {
   margin-top: 20px !important;
 }
 
-.modalWrapper{
+.modalWrapper {
   z-index: 3;
   position: fixed;
   left: 50%;
-  transform: translate(-50%,10%);
+  transform: translate(-50%, 10%);
   top: 8rem;
   border-radius: 7px;
   overflow: hidden;
-  width: 60rem;
-  /* height: 30rem; */
+  width: 40rem;
+  height: 20rem;
   animation: modal-open 200ms ease both;
   box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
   background-color: rgb(241, 243, 243);
-
+  transition: height 500ms, min-width, width 500ms;
 }
+
 @keyframes modal-open {
   from {
-    transform: scale(0.95) translate(-50%,10%);
+    transform: scale(0.95) translate(-50%, 10%);
     opacity: 0.1;
   }
   to {
-    transform: scale(1) translate(-50%,10%);
+    transform: scale(1) translate(-50%, 10%);
     opacity: 1;
   }
 }
+
 .priceTags {
   padding: 10px 12px;
   border: 1px solid white;
   background-color: rgb(64, 168, 196);
-  color:white;
+  color: white;
   cursor: pointer;
-  width:fit-content;
-  height:fit-content;
+  width: fit-content;
+  height: fit-content;
 }
 
-.priceTags:hover{
-  background-color: rgb(64,168,129);
+.priceTags:hover {
+  background-color: rgb(64, 168, 129);
 }
 
 .priceButtons {
   padding: 15px 18px;
   border: 1px solid white;
   background-color: rgb(64, 168, 196);
-  color:white;
+  color: white;
   cursor: pointer;
-  width:fit-content;
-  height:fit-content;
+  width: fit-content;
+  height: fit-content;
 }
 
 .saveButton {
   padding: 10px;
-  float:right;
-  margin:20px;
+  float: right;
+  margin: 20px;
 }
 
-.saveButton:hover{
-  background-color: rgb(64,168,129);
+.saveButton:hover {
+  background-color: rgb(64, 168, 129);
 }
 
-.priceButtons:hover{
-  background-color: rgb(64,168,129);
+.priceButtons:hover {
+  background-color: rgb(64, 168, 129);
 }
 
-.fileUpload{
+.fileUpload {
   background-color: white;
   outline: 2px dashed #92b0b3;
-  outline-offset: -6px;
-  width:20rem;
-  height: 15rem;
-  text-align:center;
-  padding-top: 30px;
+  outline-offset: 6px;
+  width: 100%;
+  /* padding: 2rem; */
+  height: 4rem;
+  text-align: center;
+  cursor: pointer;
   background-color: #c8dadf;
-  /* float:right; */
 }
 
-.fileUpload > span{
-  display: inline-block;
-  vertical-align: middle;
-  line-height: normal;
+.fileUpload>p {
+ margin: 0px;
 }
 
-.fileDrop{
+.fileDrop {
   background-color: white;
 }
 
-.modalInput{
-  border:none;
+.modalInput {
+  border: none;
+  /* flex: 1; */
+  width: 200px;
   border-bottom: 2px solid gray;
-  margin:7px;
-  margin-left: 10rem;
 }
 
-.modalInput:focus{
-  outline:none !important;
+.modalInput:focus {
+  outline: none !important;
 }
 
-.modalTitle{
-  height: 35px; 
+.modalTitle {
+  height: 35px;
   background-color: black;
-  color:white;
+  color: white;
 }
 
-.modalTitle>div>div{
+.modalTitle>div>div {
   padding-top: 10px;
   vertical-align: middle;
 }
 
 .priceModal {
-  padding-top: 40px;
+  padding-top: 2rem;
   overflow: auto;
+  height: 100%;
   border-radius: 0px 0px 7px 7px;
 }
 
-.hidden{
+.hidden {
   display: none !important;
 }
 
@@ -2741,11 +2744,13 @@ div.chat-footer textarea:focus {
 div.chat-container>div:first-of-type::-webkit-scrollbar {
   width: 8px;
 }
+
 div.chat-footer svg {
   opacity: 0.9;
   margin-right: 0.5rem;
   float: right;
 }
+
 div.uploaded-files {
   overflow: hidden;
   padding: 5px;
