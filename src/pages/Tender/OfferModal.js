@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react'
+import React, { useCallback, useState, useRef,useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 
@@ -16,7 +16,7 @@ function OfferModal(props) {
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
     const [vendors, setVendors] = useState([]);
-    const [vendorList, setVendorList] = useState(['asd','fds','asf'])
+    const [vendorList, setVendorList] = useState([])
 
     const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
         id: m.id,
@@ -29,11 +29,11 @@ function OfferModal(props) {
         color: 0xd2e * (i + 1) / props.orderContent.length
     })))
 
-    // useEffect(() => {
-    //     fetchGet(`/api/assignments`)
-    //         .then(respJ => setVendorList(respJ))
-    //         .catch(ex => console.log(ex))
-    // }, [fetchGet])
+    useEffect(() => {
+        fetchGet(`/api/vendors`)
+            .then(respJ => setVendorList(respJ))
+            .catch(ex => console.log(ex))
+    }, [fetchGet])
 
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
@@ -131,6 +131,7 @@ function OfferModal(props) {
         handleVendorSearch2(value)
     }
 
+    console.log(vendors)
     const setVendor = (_, vendor) => {
         handleVendorSelection(vendor)
         vendorInputRef.current.value = vendor.name;
@@ -182,7 +183,7 @@ function OfferModal(props) {
                         <div style={{ position: 'relative' }}>
                             <InputSearchList
                                 placeholder="Vendor"
-                                text="vendor"
+                                text="company"
                                 name="vendor"
                                 listid="vendorListRef"
                                 inputRef={vendorInputRef}
