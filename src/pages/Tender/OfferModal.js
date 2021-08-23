@@ -1,27 +1,51 @@
-import React, { useCallback, useState, useRef, useContext } from 'react'
+import React, { useCallback, useState, useRef } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 
 import NewOfferTableBody from './NewOfferTableBody'
-import '../../styles/Orders.css'
-import useFetch from '../../hooks/useFetch'
-import { WebSocketContext } from '../SelectModule'
 import '../../styles/styles.scss'
+import useFetch from '../../hooks/useFetch'
+import InputSearchList from '../../components/Misc/InputSearchList'
 
 function OfferModal(props) {
-    const [choices, setChoices] = useState([])
+    const fetchPost = useFetch("POST");
+    const fetchGet = useFetch("GET")
+
+    const modalid = props.modalid;
+
+    const vendorInputRef = useRef(null);
+    const vendorListRef = useRef(null);
+    const [vendors, setVendors] = useState([]);
+    const [vendorList, setVendorList] = useState(['asd','fds','asf'])
+
+    const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
+        id: m.id,
+        name: m.material_name,
+        count: m.amount,
+        note: "",
+        price: 0,
+        total: 0,
+        alternative: 0,
+        color: 0xd2e * (i + 1) / props.orderContent.length
+    })))
+
+    // useEffect(() => {
+    //     fetchGet(`/api/assignments`)
+    //         .then(respJ => setVendorList(respJ))
+    //         .catch(ex => console.log(ex))
+    // }, [fetchGet])
 
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
-    const fetchPost = useFetch("POST");
     const davamText = whichPage.page === 2 ? "Yadda saxla" : "Davam";
+    // eslint-disable-next-line
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
-    const webSocket = useContext(WebSocketContext)
-    // console.log(props.choices)
-
+    const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
         // props.modalWrapperRef.current.style.overflow = "hidden";
+        props.activeModalRef.current.style.height = "20rem";
+        props.activeModalRef.current.style.width = "40rem";
         const animationendEventListener = () => {
             actPageRef.current.removeEventListener(
                 "animationend",
@@ -43,10 +67,11 @@ function OfferModal(props) {
         );
     };
     const forwardClickHandler = () => {
+        props.activeModalRef.current.style.height = "30rem";
+        props.activeModalRef.current.style.width = "60rem";
         if (davamText === "Davam") {
             const continueNext = () => {
                 actPageRef.current.style.animationName = "slide_davam_current";
-                // props.modalWrapperRef.current.style.overflow = "hidden";
                 const animationendEventListener = () => {
                     if (actPageRef.current.style.animationName === "slide_davam_next") {
                         // props.modalWrapperRef.current.style.overflow = "visible";
@@ -57,7 +82,7 @@ function OfferModal(props) {
                         );
                     }
                     setWhichPage(prevState => {
-                        if (prevState.page == 1) {
+                        if (prevState.page === 1) {
                             actPageRef.current.style.animationName = "slide_davam_next"
                             // props.modalWrapperRef.current.style.width = prevState.page === 1 ? "90%" : "40rem";
                             return {
@@ -80,9 +105,50 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-            // saveClickHandler();
+            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
+            // console.log(data)
+            fetchPost('/api/update-price-offer', data)
+                .then(respJ => {
+
+                }).catch(ex => console.log(ex))
         }
     };
+
+    const handleInfoChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setOfferInfo(prev => ({ ...prev, [name]: value }))
+    }
+
+    const handleVendorSearch = (e) => {
+        const value = e.target.value;
+        const charArray = value.split("");
+        const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
+        const regExp = new RegExp(`${reg}`, "gi");
+        setOfferInfo(prev => ({ ...prev, company: value }))
+        const searchResult = vendorList.filter(vendor => regExp.test(vendor.name));
+        setVendors(searchResult);
+        handleVendorSearch2(value)
+    }
+
+    const setVendor = (_, vendor) => {
+        handleVendorSelection(vendor)
+        vendorInputRef.current.value = vendor.name;
+        vendorListRef.current.style.display = "none";
+    }
+
+    const handleVendorSearch2 = useCallback((value) => {
+        setOfferInfo(prev => ({
+            ...prev, company: value
+        }))
+    }, [setOfferInfo]);
+
+
+    const handleVendorSelection = useCallback((vendor) => {
+        setOfferInfo(prev => ({
+            ...prev, company: vendor.name
+        }))
+    }, [setOfferInfo]);
 
 
     return (
@@ -111,11 +177,23 @@ function OfferModal(props) {
                 ref={actPageRef}
             >
                 {whichPage.page === 1 ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '40px', marginTop: '30px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <input placeholder={'Şirkət'} className="modalInput" name="company" value={props.offerInfo.company} onChange={props.handleInfoChange}></input>
-                            <input placeholder={'VÖEN'} className="modalInput" name='voen' value={props.offerInfo.voen} onChange={props.handleInfoChange}></input>
+                    <div style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
+                        {/* <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input> */}
+                        <div style={{ position: 'relative' }}>
+                            <InputSearchList
+                                placeholder="Vendor"
+                                text="vendor"
+                                name="vendor"
+                                listid="vendorListRef"
+                                inputRef={vendorInputRef}
+                                listRef={vendorListRef}
+                                handleInputChange={handleVendorSearch}
+                                items={vendors}
+                                handleItemClick={setVendor}
+                                style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+                            />
                         </div>
+                        <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input>
                         {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
                             <input placeholder={'Rahman1'} className="modalInput" ></input>
                             <input placeholder={'Rahman2'} className="modalInput" ></input>
@@ -126,6 +204,7 @@ function OfferModal(props) {
                         <NewOfferTableBody
                             orderInfo={{ orderType: props.orderContent[0].orderType, structure: "" }}
                             choices={choices}
+                            initialMaterials={props.orderContent}
                             setChoices={setChoices}
                         />
                         <MyDropzone />
@@ -134,7 +213,6 @@ function OfferModal(props) {
                     <div></div>
                 )}
             </div>
-            {/* <div className="priceTags saveButton" onClick={props.saveClickHandler}>Yadda saxla</div> */}
         </div>
     )
 }
@@ -146,19 +224,9 @@ const MyDropzone = () => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
 
-    const filesNames = useRef(<p></p>)
-
-    // const onDrop = useCallback(acceptedFiles => {
-    //     // Do something with the files
-    //     const req = request.post('/upload')
-    //     acceptedFiles.forEach(file => {
-    //       req.attach(file.name, file)
-    //     })
-    //     req.end(callback)    
-    // }, [])
+    const filesNames = useRef()
 
     const onDrop = useCallback(acceptedFiles => {
-        console.log(filesNames)
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>
                 <p>{file.name}</p>
@@ -169,7 +237,7 @@ const MyDropzone = () => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
     return (
-        <div {...getRootProps()}>
+        <div style={{ padding: "2rem" }} {...getRootProps()}>
             <input {...getInputProps()} />
             {
                 isDragActive ?
@@ -181,8 +249,8 @@ const MyDropzone = () => {
                         <p>Drop the files here ...</p>
                     </div> :
                     <div className="fileUpload">
-                        <BsUpload size='60' />
-                        <p >Drag 'n' drop some files here, or click to select files</p>
+                        <BsUpload size='30' />
+                        <p>Fayl əlavə etmək üçün buraya klikləyin və ya sürüşdürün</p>
                         <ul>
                             {filesNames.current}
                         </ul>

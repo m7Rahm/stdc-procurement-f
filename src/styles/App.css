@@ -42,10 +42,9 @@ div.priorities-list:hover {
   background-color: rgba(220, 220, 220, 0.5);
 }
 
-div.priorities-list ul {
+ul.priorities-list {
   position: absolute;
   right: 0;
-  top: 34px;
   padding: 6px 0px;
   box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
   border-radius: 3px;
@@ -56,24 +55,26 @@ div.priorities-list ul {
   transition: transform 300ms;
 }
 
-div.priorities-list ul.visible {
+ul.priorities-list.visible {
   transform: scale(1);
 }
 
-div.priorities-list ul.visible>li {
+ul.priorities-list.visible>li {
   color: rgb(74, 74, 74);
 }
 
-div.priorities-list ul>li {
+ul.priorities-list>li {
   color: white;
+  cursor: pointer;
   height: 2.5rem;
   padding-top: 13px;
+  white-space: nowrap;
   padding-left: 24px;
   padding-right: 58px;
   line-height: 1rem;
 }
 
-div.priorities-list ul>li:hover {
+ul.priorities-list>li:hover {
   background-color: rgb(245, 245, 245);
 }
 
@@ -296,6 +297,12 @@ nav>ul>li {
   display: flex;
   flex-flow: column wrap;
   background-color: whitesmoke;
+}
+
+i {
+  color: #ffaa00;
+  font-weight: bold;
+  font-size: inherit;
 }
 
 .side-bar>ul>li {
@@ -1096,7 +1103,7 @@ div.forwarded-people-container:hover {
   padding: 0px;
   z-index: 3;
   animation: modal-show 0.5s ease-in-out both;
-  transition: min-width, width  600ms, min-height 600ms;
+  transition: min-width, width 600ms, min-height 600ms;
 }
 
 input.assignment-input {
@@ -1165,10 +1172,12 @@ input.assignment-input:focus+ul.structures-list {
   overflow: hidden;
   background-image: linear-gradient(to bottom, royalblue, #195db6);
 }
-.new-order-table>li:first-of-type>div>p{
+
+.new-order-table>li:first-of-type>div>p {
   width: 100%;
   text-align: center;
 }
+
 .new-order-table>li>div:last-of-type, .new-order-table>li>div:first-of-type {
   display: flex;
   align-items: center;
@@ -2568,132 +2577,122 @@ div.chat-container {
   margin-top: 20px !important;
 }
 
-.modalWrapper{
-  z-index: 3;
-  position: fixed;
-  left: 50%;
-  transform: translate(-50%,10%);
-  top: 8rem;
-  border-radius: 7px;
-  overflow: hidden;
-  width: 60rem;
-  /* height: 30rem; */
-  animation: modal-open 200ms ease both;
-  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.1);
-  background-color: rgb(241, 243, 243);
-
-}
-@keyframes modal-open {
-  from {
-    transform: scale(0.95) translate(-50%,10%);
-    opacity: 0.1;
-  }
-  to {
-    transform: scale(1) translate(-50%,10%);
-    opacity: 1;
-  }
-}
-.priceTags {
-  padding: 10px 12px;
-  border: 1px solid white;
-  background-color: rgb(64, 168, 196);
-  color:white;
-  cursor: pointer;
-  width:fit-content;
-  height:fit-content;
-}
-
-.priceTags:hover{
-  background-color: rgb(64,168,129);
-}
-
-.priceButtons {
-  padding: 15px 18px;
-  border: 1px solid white;
-  background-color: rgb(64, 168, 196);
-  color:white;
-  cursor: pointer;
-  width:fit-content;
-  height:fit-content;
-}
-
-.saveButton {
-  padding: 10px;
-  float:right;
-  margin:20px;
-}
-
-.saveButton:hover{
-  background-color: rgb(64,168,129);
-}
-
-.priceButtons:hover{
-  background-color: rgb(64,168,129);
-}
-
-.fileUpload{
-  background-color: white;
-  outline: 2px dashed #92b0b3;
-  outline-offset: -6px;
-  width:20rem;
-  height: 15rem;
-  text-align:center;
-  padding-top: 30px;
-  background-color: #c8dadf;
-  /* float:right; */
-  
-  margin-left: auto; 
-  margin-right: auto;
-}
-
-.fileUpload > span{
-  display: inline-block;
-  vertical-align: middle;
-  line-height: normal;
-}
-
-.fileDrop{
-  background-color: white;
-}
-
-.modalInput{
-  border:none;
-  border-bottom: 2px solid gray;
-  margin:7px;
-  margin-left: 10rem;
-}
-
-.modalInput:focus{
-  outline:none !important;
-}
-
-.modalTitle{
-  height: 35px; 
-  background-color: black;
-  color:white;
-}
-
-.modalTitle>div>div{
-  padding-top: 10px;
-  vertical-align: middle;
-}
-
-.priceModal {
-  position: relative;
-  padding-top: 40px;
-  overflow: auto;
-  border-radius: 0px 0px 7px 7px;
-}
-
-.hidden{
-  display: none !important;
-}
-
 div.chat-container>div:first-of-type {
   max-height: 300px;
   overflow: auto;
   scrollbar-color: gray white;
   scrollbar-width: thin;
+}
+
+div.direction {
+  width: 150px;
+}
+
+div.direction[name="forward"] {
+  background-color: #27ae60;
+}
+
+@keyframes slide_geri_next {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide_geri_current {
+  from {
+    transform: translateX(0px);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes slide_davam_current {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(-120%);
+  }
+}
+
+@keyframes slide_davam_next {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+.order-table-protex {
+  margin-top: 20px;
+  width: 100%;
+  color: white;
+  box-shadow: 0px 0px 10px 3px gray;
+  border-collapse: collapse;
+}
+
+.order-table-protex>thead>tr {
+  max-height: none;
+  border-bottom-left-radius: 0px;
+  background-image: linear-gradient(to bottom, #3C8DAD, gray);
+}
+
+.order-table-protex>thead>tr>td {
+  padding: 1rem;
+}
+
+.order-table-protex tr>td:nth-of-type(2) {
+  max-width: 300px;
+}
+
+.order-table-protex>tbody>tr>td {
+  padding: 10px;
+  color: rgb(83, 82, 82);
+}
+
+.order-table-protex>tbody>tr {
+  background-color: #f3f3f3;
+}
+
+.order-table-protex>tbody>tr:nth-of-type(2n) {
+  background-color: #e9e9e9;
+}
+
+.order-table-protex>li>div>span {
+  text-align: left;
+}
+
+.order-table-protex>li:first-of-type {
+  border-bottom-left-radius: 0px;
+  background-image: linear-gradient(to bottom, #3C8DAD, gray);
+}
+
+.order-table-protex>li>div:not(:first-of-type) {
+  flex: 1;
+}
+
+div.direction[name="forward"]:active {
+  background-color: #187940;
+}
+
+div.new-ord-nav-container {
+  overflow: hidden;
+  gap: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+div.direction[name="back"] {
+  background-color: #eb5757;
+}
+
+div.direction[name="back"]:active {
+  background-color: #9c2929;
 }
 
 div.doc-number-container>input {
@@ -2745,11 +2744,13 @@ div.chat-footer textarea:focus {
 div.chat-container>div:first-of-type::-webkit-scrollbar {
   width: 8px;
 }
+
 div.chat-footer svg {
   opacity: 0.9;
   margin-right: 0.5rem;
   float: right;
 }
+
 div.uploaded-files {
   overflow: hidden;
   padding: 5px;
