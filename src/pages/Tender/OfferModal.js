@@ -16,7 +16,7 @@ function OfferModal(props) {
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
     const [vendors, setVendors] = useState([]);
-    const [vendorList, setVendorList] = useState([])
+    const [vendorList, setVendorList] = useState(['asd','fds','asf'])
 
     const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
         id: m.id,
@@ -128,32 +128,27 @@ function OfferModal(props) {
         setOfferInfo(prev => ({ ...prev, company: value }))
         const searchResult = vendorList.filter(vendor => regExp.test(vendor.name));
         setVendors(searchResult);
-        handleVendorSearch2(value, modalid)
+        handleVendorSearch2(value)
     }
 
     const setVendor = (_, vendor) => {
-        handleVendorSelection(vendor, modalid)
+        handleVendorSelection(vendor)
         vendorInputRef.current.value = vendor.name;
         vendorListRef.current.style.display = "none";
     }
 
-    const handleVendorSearch2 = useCallback((value, modalid) => {
-        // setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid ? { ...material, place: value } : material) }))
-    }, [setChoices]);
+    const handleVendorSearch2 = useCallback((value) => {
+        setOfferInfo(prev => ({
+            ...prev, company: value
+        }))
+    }, [setOfferInfo]);
 
 
-    const handleVendorSelection = useCallback((place, modalid) => {
-        // setChoices(prev => ({
-        //     ...prev, materials: prev.materials.map(material => material.id === materialid
-        //         ? {
-        //             ...material,
-        //             place: place.name,
-        //             placeid: place.id
-        //         }
-        //         : material
-        //     )
-        // }));
-    }, [setChoices]);
+    const handleVendorSelection = useCallback((vendor) => {
+        setOfferInfo(prev => ({
+            ...prev, company: vendor.name
+        }))
+    }, [setOfferInfo]);
 
 
     return (
@@ -195,7 +190,7 @@ function OfferModal(props) {
                                 handleInputChange={handleVendorSearch}
                                 items={vendors}
                                 handleItemClick={setVendor}
-                                style={{ width: '150px', maxWidth: ' 200px'}}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+                                style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
                             />
                         </div>
                         <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input>
