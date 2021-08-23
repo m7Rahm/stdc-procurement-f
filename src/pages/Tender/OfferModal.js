@@ -121,7 +121,7 @@ function OfferModal(props) {
         const charArray = value.split("");
         const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
         const regExp = new RegExp(`${reg}`, "gi");
-        setOfferInfo(prev => ({ ...prev, company: value }))
+        setOfferInfo(prev => ({ ...prev, name: value }))
         const searchResult = vendorList.filter(vendor => regExp.test(vendor.name));
         setVendors(searchResult);
         handleVendorSearch2(value)
@@ -129,21 +129,22 @@ function OfferModal(props) {
 
     const setVendor = (_, vendor) => {
         handleVendorSelection(vendor)
+        setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen }))
         vendorInputRef.current.value = vendor.name;
-        codeRef.current.value = vendor.id;
+        codeRef.current.value = vendor.voen;
         vendorListRef.current.style.display = "none";
     }
 
     const handleVendorSearch2 = useCallback((value) => {
         setOfferInfo(prev => ({
-            ...prev, company: value
+            ...prev, name: value
         }))
     }, [setOfferInfo]);
 
 
     const handleVendorSelection = useCallback((vendor) => {
         setOfferInfo(prev => ({
-            ...prev, company: vendor.name
+            ...prev, name: vendor.name, voen: vendor.voen
         }))
     }, [setOfferInfo]);
 
@@ -184,6 +185,7 @@ function OfferModal(props) {
                                 inputRef={vendorInputRef}
                                 listRef={vendorListRef}
                                 handleInputChange={handleVendorSearch}
+                                defaultValue={offerInfo.name}
                                 items={vendors}
                                 handleItemClick={setVendor}
                                 style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
@@ -196,6 +198,7 @@ function OfferModal(props) {
                                 ref={codeRef}
                                 name="vendor"
                                 autoComplete="off"
+                                defaultValue={offerInfo.voen}
                             // onChange={searchByCode}
                             />
                         </div>
