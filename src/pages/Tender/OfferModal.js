@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 
@@ -6,6 +6,7 @@ import NewOfferTableBody from './NewOfferTableBody'
 import '../../styles/styles.scss'
 import useFetch from '../../hooks/useFetch'
 import InputSearchList from '../../components/Misc/InputSearchList'
+import { TokenContext } from '../../App'
 
 function OfferModal(props) {
     const fetchPost = useFetch("POST");
@@ -16,6 +17,11 @@ function OfferModal(props) {
     const codeRef = useRef(null);
     const [vendors, setVendors] = useState([]);
     const [vendorList, setVendorList] = useState([])
+
+    const [files, setFiles] = useState(null);
+
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0].token;
 
     const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
         id: m.id,
@@ -107,15 +113,31 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
-            // console.log(data)
-            fetchPost('/api/update-price-offer', data)
-                .then(respJ => {
 
-                }).catch(ex => console.log(ex))
+            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
+            const vendorInfo = [offerInfo.id, offerInfo.name, offerInfo.voen]
+
+            const formData = new FormData();
+            formData.append("mats", JSON.stringify(data));
+            formData.append("vendorInfo", JSON.stringify(vendorInfo))
+            formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
+            formData.append("files", files)
+
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                },
+                body: formData
+            };
+
+            fetch('http://172.16.3.64/api/update-price-offer', requestOptions)
+                .then(response => response.json())
+                .then(data => console.log(data));
         }
     };
 
+    console.log(files)
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         const charArray = value.split("");
@@ -211,7 +233,9 @@ function OfferModal(props) {
                             initialMaterials={props.orderContent}
                             setChoices={setChoices}
                         />
-                        <MyDropzone />
+                        <MyDropzone
+                            files={files}
+                            setFiles={setFiles} />
                     </div>
                 ) : (
                     <div></div>
@@ -224,13 +248,15 @@ function OfferModal(props) {
 export default OfferModal
 
 
-const MyDropzone = () => {
+const MyDropzone = (props) => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
 
     const filesNames = useRef()
 
     const onDrop = useCallback(acceptedFiles => {
+        // console.log(acceptedFiles)
+        props.setFiles(acceptedFiles)
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>
                 <p>{file.name}</p>

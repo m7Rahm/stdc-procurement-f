@@ -9,7 +9,6 @@ const InputSearchList = (props) => {
         if (relatedTargetid === null || relatedTargetid !== props.listid)
             props.listRef.current.style.display = 'none'
     }
-    console.log(props.items)
     return (
         <>
             <input
