@@ -17,8 +17,14 @@ function NewOfferTableRow(props) {
     const [models, setModels] = useState([]);
     const modelInputRef = useRef(null);
     const [total, setTotal] = useState(props.count * props.price);
-
-
+    const priorityRef = useRef(null);
+    const handleFocusLose = (e) => {
+        const relatedTarget = e.relatedTarget;
+        if ((!relatedTarget || !relatedTarget.classList.contains("priority")) && priorityRef.current) {
+            priorityRef.current.classList.add(table["close-priority-list"])
+            priorityRef.current.addEventListener("animationend", () => setExpandDetails(false), false);
+        }
+    }
     const handleAmountChangeButtons = (action) => {
         props.handleChange("count", undefined, rowid, true, action)
         if (action === 'inc') {
@@ -163,18 +169,19 @@ function NewOfferTableRow(props) {
             <div style={{ position: "relative" }}>
                 {
                     !props.alternative
-                        ? <MdExpandMore size="20" cursor="pointer" onClick={() => setExpandDetails(true)} color="#ff4a4a" />
+                        ? <MdExpandMore size="20" onBlur={handleFocusLose} cursor="pointer" tabIndex={props.index} onClick={() => setExpandDetails(true)} color="#ff4a4a" />
                         : <FaTrashAlt cursor="pointer" onClick={() => handleRowDelete(rowRef)} color="#ff4a4a" />
                 }
                 {expandDetails &&
-                    <ul className={table["priorities-list"]} style={{ top: "20px", zIndex: "3" }}>
+                    <ul ref={priorityRef} className={table["priorities-list"]} style={{ top: "20px", zIndex: "3" }}>
                         <li
                             className="priority"
                             style={{ padding: "13px 26px", width: "fit-content" }}
-                            // onBlur={handleFocusLose}
+                            onBlur={handleFocusLose}
                             tabIndex="1"
+                            id={rowid}
                             title="Alternativ əlavə et"
-                            onClick={(e) => { }}
+                            onClickCapture={props.handleAddClick}
                         >
                             Alternativ <BsArrowsAngleExpand style={{ position: "absolute", left: "0.5rem" }} />
                         </li>

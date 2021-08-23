@@ -20,7 +20,7 @@ const NewOfferTableBody = (props) => {
         newState.splice(index + 1, 0, {
           id: Date.now(),
           name: "",
-          count: 0,
+          count: prev[index].color,
           note: "",
           price: 0,
           total: 0,
@@ -126,6 +126,7 @@ const NewOfferTableBody = (props) => {
                 index={index}
                 alternative={material.alternative}
                 color={material.color}
+                handleAddClick={handleAddClick}
                 orderType={orderType}
                 key={material.id}
                 rowid={material.id}
