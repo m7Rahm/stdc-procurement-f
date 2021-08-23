@@ -31,7 +31,7 @@ export const newOfferInitial = [{
     total: 0
 }]
 
-export const serverAddress = "http://172.16.3.64"
+export const serverAddress = "https://172.16.3.64"
 export const serverPort = ""
 export const months = [
     {
