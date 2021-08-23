@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react'
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
 import { Suspense } from 'react'
 import { BsPlus } from 'react-icons/bs'
-import "../../styles/Orders.css"
 // import Modal from '../../components/Misc/Modal'
 import OfferModal from './OfferModal'
 import ModalAdvanced from './ModalAdvanced'
@@ -34,10 +33,10 @@ function PriceOffers(props) {
         setModalList(prev => prev.map(modal => modal.id === offerId ? { ...modal, state: 1 } : modal))
     }
     return (
-        <div style={{ padding: "4rem 1rem", flex: 1 }}>
+        <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1 }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
                 {modalList.map((modal, index) => <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Təklif " + (index + 1)}</div>)}
-                <BsPlus size='40' onClick={handleClick} style={{ cursor: 'pointer' }} />
+                <BsPlus size='30' onClick={handleClick} style={{ cursor: 'pointer' }} />
             </div>
             <VisaContentMaterials
                 orderContent={current}
@@ -45,7 +44,6 @@ function PriceOffers(props) {
                 canProceed={canProceed}
                 forwardType={forwardType}
             />
-
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingTop: '30px' }}>
                 <div className="priceButtons">Yönəlt</div>
             </div>

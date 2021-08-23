@@ -1,5 +1,5 @@
 import React from "react"
-
+import table from "../../styles/Table.module.css"
 const InputSearchList = (props) => {
     const handleFocus = () => {
         props.listRef.current.style.display = 'block'
@@ -23,7 +23,7 @@ const InputSearchList = (props) => {
                 autoComplete="off"
                 onChange={props.handleInputChange}
             />
-            <ul id={props.listid} tabIndex="0" ref={props.listRef} style={props.style} className="material-model-list">
+            <ul id={props.listid} tabIndex="0" ref={props.listRef} style={props.style} className={table["material-model-list"]}>
                 {
                     props.items.map(item => {
                         const inputVal = props.inputRef.current.value

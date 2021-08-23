@@ -18,15 +18,15 @@ function OfferModal(props) {
     const [vendors, setVendors] = useState([]);
     const [vendorList, setVendorList] = useState([])
 
-
-    const [choices, setChoices] = useState(props.orderContent.map(m => ({
-        id: Date.now(),
+    const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
+        id: m.id,
         name: m.material_name,
         count: m.amount,
         note: "",
         price: 0,
         total: 0,
         alternative: 0,
+        color: 0xd2e * (i + 1) / props.orderContent.length
     })))
 
     // useEffect(() => {
@@ -41,7 +41,6 @@ function OfferModal(props) {
     // eslint-disable-next-line
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
     const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
-
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
         // props.modalWrapperRef.current.style.overflow = "hidden";
@@ -210,6 +209,7 @@ function OfferModal(props) {
                         <NewOfferTableBody
                             orderInfo={{ orderType: props.orderContent[0].orderType, structure: "" }}
                             choices={choices}
+                            initialMaterials={props.orderContent}
                             setChoices={setChoices}
                         />
                         <MyDropzone />

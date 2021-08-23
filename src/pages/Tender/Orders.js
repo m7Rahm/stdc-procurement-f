@@ -76,7 +76,43 @@ const Orders = () => {
         sender_id: 32,
         seq: 2,
         stat: true
-    }]);
+    },
+    {
+        act_date_time: null,
+        amount: 12,
+        assignment: 257,
+        can_influence: true,
+        comment: "",
+        date_time: "17/07/21 10:45",
+        description: "",
+        emp_version_id: 32,
+        executer_id: null,
+        forward_type: 2,
+        full_name: "Rəhman Mustafayev",
+        id: 212,
+        in_warehouse_amount: 0,
+        is_deleted: false,
+        is_read: true,
+        mat_ass: "STDC",
+        mat_ass_id: 1,
+        material_comment: "",
+        material_id: 1373,
+        material_name: "Adidas",
+        ord_numb: "32-0",
+        order_id: 7,
+        order_material_id: 9,
+        order_type: 0,
+        priority: 0,
+        product_id: "900411372",
+        receiver_id: 31,
+        related_order_id: null,
+        result: 0,
+        sender_comment: "",
+        sender_id: 32,
+        seq: 2,
+        stat: true
+    }
+    ]);
 
 
     const setRemainder = (id, value) => {
