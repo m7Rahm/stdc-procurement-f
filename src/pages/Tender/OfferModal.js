@@ -11,8 +11,6 @@ function OfferModal(props) {
     const fetchPost = useFetch("POST");
     const fetchGet = useFetch("GET")
 
-    const modalid = props.modalid;
-
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
     const codeRef = useRef(null);
@@ -32,7 +30,10 @@ function OfferModal(props) {
 
     useEffect(() => {
         fetchGet(`/api/vendors`)
-            .then(respJ => setVendorList(respJ))
+            .then(respJ => {
+                setVendorList(respJ)
+                setVendors(respJ)
+            })
             .catch(ex => console.log(ex))
     }, [fetchGet])
 
@@ -115,12 +116,6 @@ function OfferModal(props) {
         }
     };
 
-    const handleInfoChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setOfferInfo(prev => ({ ...prev, [name]: value }))
-    }
-
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         const charArray = value.split("");
@@ -132,7 +127,6 @@ function OfferModal(props) {
         handleVendorSearch2(value)
     }
 
-    // console.log(vendors)
     const setVendor = (_, vendor) => {
         handleVendorSelection(vendor)
         vendorInputRef.current.value = vendor.name;
@@ -181,8 +175,6 @@ function OfferModal(props) {
             >
                 {whichPage.page === 1 ? (
                     <div style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
-                        {/* <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input> */}
-                        {/* <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input> */}
                         <div style={{ position: 'relative' }}>
                             <InputSearchList
                                 placeholder="Vendor"
@@ -204,7 +196,7 @@ function OfferModal(props) {
                                 ref={codeRef}
                                 name="vendor"
                                 autoComplete="off"
-                                // onChange={searchByCode}
+                            // onChange={searchByCode}
                             />
                         </div>
                     </div>
