@@ -64,6 +64,7 @@ function PriceOffers(props) {
                                     setIsModalVisible={handleCloseModal}
                                     orderContent={current}
                                     activeModalRef={activeModalRef}
+                                    modalid={modal.id}
                                 />
                             </ModalAdvanced>
                         </Suspense>

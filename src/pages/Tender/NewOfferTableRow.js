@@ -3,7 +3,6 @@ import { BsArrowsAngleExpand } from 'react-icons/bs'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import { MdExpandMore } from "react-icons/md"
 import InputSearchList from '../../components/Misc/InputSearchList'
-// eslint-disable-next-line
 import useFetch from '../../hooks/useFetch'
 import table from "../../styles/Table.module.css"
 

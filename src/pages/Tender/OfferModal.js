@@ -4,8 +4,20 @@ import { BsUpload } from 'react-icons/bs'
 
 import NewOfferTableBody from './NewOfferTableBody'
 import '../../styles/styles.scss'
+import useFetch from '../../hooks/useFetch'
+import InputSearchList from '../../components/Misc/InputSearchList'
 
 function OfferModal(props) {
+    const fetchPost = useFetch("POST");
+    const fetchGet = useFetch("GET")
+
+    const modalid = props.modalid;
+
+    const vendorInputRef = useRef(null);
+    const vendorListRef = useRef(null);
+    const [vendors, setVendors] = useState([]);
+    const [vendorList, setVendorList] = useState([])
+
     const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
         id: m.id,
         name: m.material_name,
@@ -16,6 +28,12 @@ function OfferModal(props) {
         alternative: 0,
         color: 0xd2e * (i + 1) / props.orderContent.length
     })))
+
+    // useEffect(() => {
+    //     fetchGet(`/api/assignments`)
+    //         .then(respJ => setVendorList(respJ))
+    //         .catch(ex => console.log(ex))
+    // }, [fetchGet])
 
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
@@ -87,7 +105,12 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-            // saveClickHandler();
+            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
+            // console.log(data)
+            fetchPost('/api/update-price-offer', data)
+                .then(respJ => {
+
+                }).catch(ex => console.log(ex))
         }
     };
 
@@ -96,6 +119,41 @@ function OfferModal(props) {
         const value = e.target.value;
         setOfferInfo(prev => ({ ...prev, [name]: value }))
     }
+
+    const handleVendorSearch = (e) => {
+        const value = e.target.value;
+        const charArray = value.split("");
+        const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
+        const regExp = new RegExp(`${reg}`, "gi");
+        setOfferInfo(prev => ({ ...prev, company: value }))
+        const searchResult = vendorList.filter(vendor => regExp.test(vendor.name));
+        setVendors(searchResult);
+        handleVendorSearch2(value, modalid)
+    }
+
+    const setVendor = (_, vendor) => {
+        handleVendorSelection(vendor, modalid)
+        vendorInputRef.current.value = vendor.name;
+        vendorListRef.current.style.display = "none";
+    }
+
+    const handleVendorSearch2 = useCallback((value, modalid) => {
+        // setChoices(prev => ({ ...prev, materials: prev.materials.map(material => material.id === materialid ? { ...material, place: value } : material) }))
+    }, [setChoices]);
+
+
+    const handleVendorSelection = useCallback((place, modalid) => {
+        // setChoices(prev => ({
+        //     ...prev, materials: prev.materials.map(material => material.id === materialid
+        //         ? {
+        //             ...material,
+        //             place: place.name,
+        //             placeid: place.id
+        //         }
+        //         : material
+        //     )
+        // }));
+    }, [setChoices]);
 
 
     return (
@@ -125,7 +183,21 @@ function OfferModal(props) {
             >
                 {whichPage.page === 1 ? (
                     <div style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
-                        <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input>
+                        {/* <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input> */}
+                        <div style={{ position: 'relative' }}>
+                            <InputSearchList
+                                placeholder="Vendor"
+                                text="vendor"
+                                name="vendor"
+                                listid="vendorListRef"
+                                inputRef={vendorInputRef}
+                                listRef={vendorListRef}
+                                handleInputChange={handleVendorSearch}
+                                items={vendors}
+                                handleItemClick={setVendor}
+                                style={{ width: '150px', maxWidth: ' 200px'}}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+                            />
+                        </div>
                         <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input>
                         {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
                             <input placeholder={'Rahman1'} className="modalInput" ></input>
@@ -146,7 +218,6 @@ function OfferModal(props) {
                     <div></div>
                 )}
             </div>
-            {/* <div className="priceTags saveButton" onClick={props.saveClickHandler}>Yadda saxla</div> */}
         </div>
     )
 }
