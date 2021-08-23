@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef,useEffect } from 'react'
+import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 
@@ -15,6 +15,7 @@ function OfferModal(props) {
 
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
+    const codeRef = useRef(null);
     const [vendors, setVendors] = useState([]);
     const [vendorList, setVendorList] = useState([])
 
@@ -40,7 +41,7 @@ function OfferModal(props) {
     const davamText = whichPage.page === 2 ? "Yadda saxla" : "Davam";
     // eslint-disable-next-line
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
-    const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
+    const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
         // props.modalWrapperRef.current.style.overflow = "hidden";
@@ -131,10 +132,11 @@ function OfferModal(props) {
         handleVendorSearch2(value)
     }
 
-    console.log(vendors)
+    // console.log(vendors)
     const setVendor = (_, vendor) => {
         handleVendorSelection(vendor)
         vendorInputRef.current.value = vendor.name;
+        codeRef.current.value = vendor.id;
         vendorListRef.current.style.display = "none";
     }
 
@@ -180,10 +182,11 @@ function OfferModal(props) {
                 {whichPage.page === 1 ? (
                     <div style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
                         {/* <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input> */}
+                        {/* <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input> */}
                         <div style={{ position: 'relative' }}>
                             <InputSearchList
                                 placeholder="Vendor"
-                                text="company"
+                                text="name"
                                 name="vendor"
                                 listid="vendorListRef"
                                 inputRef={vendorInputRef}
@@ -194,11 +197,16 @@ function OfferModal(props) {
                                 style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
                             />
                         </div>
-                        <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input>
-                        {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <input placeholder={'Rahman1'} className="modalInput" ></input>
-                            <input placeholder={'Rahman2'} className="modalInput" ></input>
-                        </div> */}
+                        <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
+                            <input
+                                type="name"
+                                placeholder="VOEN"
+                                ref={codeRef}
+                                name="vendor"
+                                autoComplete="off"
+                                // onChange={searchByCode}
+                            />
+                        </div>
                     </div>
                 ) : whichPage.page === 2 ? (
                     <div style={{ marginTop: '40px' }}>
