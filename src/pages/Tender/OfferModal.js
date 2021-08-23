@@ -7,6 +7,7 @@ import '../../styles/styles.scss'
 import useFetch from '../../hooks/useFetch'
 import InputSearchList from '../../components/Misc/InputSearchList'
 import { TokenContext } from '../../App'
+import { forEach } from 'lodash'
 
 function OfferModal(props) {
     const fetchPost = useFetch("POST");
@@ -37,6 +38,7 @@ function OfferModal(props) {
     useEffect(() => {
         fetchGet(`/api/vendors`)
             .then(respJ => {
+                console.log(respJ)
                 setVendorList(respJ)
                 setVendors(respJ)
             })
@@ -114,14 +116,16 @@ function OfferModal(props) {
             } else continueNext()
         } else {
 
-            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
-            const vendorInfo = [offerInfo.id, offerInfo.name, offerInfo.voen]
-
+            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
+            const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
+        
             const formData = new FormData();
             formData.append("mats", JSON.stringify(data));
             formData.append("vendorInfo", JSON.stringify(vendorInfo))
             formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
-            formData.append("files", files)
+            files?.forEach(file=>formData.append("files",file))
+            
+                
 
             const requestOptions = {
                 method: 'POST',
@@ -131,13 +135,12 @@ function OfferModal(props) {
                 body: formData
             };
 
-            fetch('http://172.16.3.64/api/update-price-offer', requestOptions)
+            fetch('http://172.16.3.64/api/create-price-offer', requestOptions)
                 .then(response => response.json())
                 .then(data => console.log(data));
         }
     };
 
-    console.log(files)
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         const charArray = value.split("");
@@ -151,7 +154,7 @@ function OfferModal(props) {
 
     const setVendor = (_, vendor) => {
         handleVendorSelection(vendor)
-        setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen }))
+        setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen,id:vendor.id }))
         vendorInputRef.current.value = vendor.name;
         codeRef.current.value = vendor.voen;
         vendorListRef.current.style.display = "none";
@@ -166,7 +169,7 @@ function OfferModal(props) {
 
     const handleVendorSelection = useCallback((vendor) => {
         setOfferInfo(prev => ({
-            ...prev, name: vendor.name, voen: vendor.voen
+            ...prev, name: vendor.name, voen: vendor.voen, id:vendor.id
         }))
     }, [setOfferInfo]);
 
