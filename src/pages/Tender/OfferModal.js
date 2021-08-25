@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 
@@ -6,17 +6,22 @@ import NewOfferTableBody from './NewOfferTableBody'
 import '../../styles/styles.scss'
 import useFetch from '../../hooks/useFetch'
 import InputSearchList from '../../components/Misc/InputSearchList'
+import { TokenContext } from '../../App'
 
 function OfferModal(props) {
     const fetchPost = useFetch("POST");
     const fetchGet = useFetch("GET")
-    // const modalid = props.modalid;
 
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
     const codeRef = useRef(null);
     const [vendors, setVendors] = useState([]);
     const [vendorList, setVendorList] = useState([])
+
+    const [files, setFiles] = useState(null);
+
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0].token;
 
     const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
         id: m.id,
@@ -31,7 +36,11 @@ function OfferModal(props) {
 
     useEffect(() => {
         fetchGet(`/api/vendors`)
-            .then(respJ => setVendorList(respJ))
+            .then(respJ => {
+                console.log(respJ)
+                setVendorList(respJ)
+                setVendors(respJ)
+            })
             .catch(ex => console.log(ex))
     }, [fetchGet])
 
@@ -105,50 +114,61 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
-            // console.log(data)
-            fetchPost('/api/update-price-offer', data)
-                .then(respJ => {
 
-                }).catch(ex => console.log(ex))
+            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
+            const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
+
+            const formData = new FormData();
+            formData.append("mats", JSON.stringify(data));
+            formData.append("vendorInfo", JSON.stringify(vendorInfo))
+            formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
+            files?.forEach(file => formData.append("files", file))
+
+
+
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                },
+                body: formData
+            };
+
+            fetch('http://172.16.3.64/api/create-price-offer', requestOptions)
+                .then(response => response.json())
+                .then(data => console.log(data));
         }
     };
-
-    const handleInfoChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setOfferInfo(prev => ({ ...prev, [name]: value }))
-    }
 
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         const charArray = value.split("");
         const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
         const regExp = new RegExp(`${reg}`, "gi");
-        setOfferInfo(prev => ({ ...prev, company: value }))
+        setOfferInfo(prev => ({ ...prev, name: value }))
         const searchResult = vendorList.filter(vendor => regExp.test(vendor.name));
         setVendors(searchResult);
         handleVendorSearch2(value)
     }
 
-    // console.log(vendors)
     const setVendor = (_, vendor) => {
         handleVendorSelection(vendor)
+        setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id }))
         vendorInputRef.current.value = vendor.name;
-        codeRef.current.value = vendor.id;
+        codeRef.current.value = vendor.voen;
         vendorListRef.current.style.display = "none";
     }
 
     const handleVendorSearch2 = useCallback((value) => {
         setOfferInfo(prev => ({
-            ...prev, company: value
+            ...prev, name: value
         }))
     }, [setOfferInfo]);
 
 
     const handleVendorSelection = useCallback((vendor) => {
         setOfferInfo(prev => ({
-            ...prev, company: vendor.name
+            ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id
         }))
     }, [setOfferInfo]);
 
@@ -180,8 +200,6 @@ function OfferModal(props) {
             >
                 {whichPage.page === 1 ? (
                     <div style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
-                        {/* <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input> */}
-                        {/* <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input> */}
                         <div style={{ position: 'relative' }}>
                             <InputSearchList
                                 placeholder="Vendor"
@@ -191,6 +209,7 @@ function OfferModal(props) {
                                 inputRef={vendorInputRef}
                                 listRef={vendorListRef}
                                 handleInputChange={handleVendorSearch}
+                                defaultValue={offerInfo.name}
                                 items={vendors}
                                 handleItemClick={setVendor}
                                 style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
@@ -203,6 +222,7 @@ function OfferModal(props) {
                                 ref={codeRef}
                                 name="vendor"
                                 autoComplete="off"
+                                defaultValue={offerInfo.voen}
                             // onChange={searchByCode}
                             />
                         </div>
@@ -215,7 +235,9 @@ function OfferModal(props) {
                             initialMaterials={props.orderContent}
                             setChoices={setChoices}
                         />
-                        <MyDropzone />
+                        <MyDropzone
+                            files={files}
+                            setFiles={setFiles} />
                     </div>
                 ) : (
                     <div></div>
@@ -228,19 +250,21 @@ function OfferModal(props) {
 export default OfferModal
 
 
-const MyDropzone = () => {
+const MyDropzone = (props) => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
 
     const filesNames = useRef()
-
+    const setFiles = props.setFiles;
     const onDrop = useCallback(acceptedFiles => {
+        // console.log(acceptedFiles)
+        setFiles(acceptedFiles)
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>
                 <p>{file.name}</p>
             </li>
         ))
-    }, [])
+    }, [setFiles])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
