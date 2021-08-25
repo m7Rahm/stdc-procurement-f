@@ -49,8 +49,8 @@ const SelectModule = () => {
 	const loadingIndicatorRef = useRef(null);
 	useEffect(() => {
 		let mounted = true;
-		if (token) {
-			const webSocket = new WebSocket("wss://172.16.3.64:54321");
+		if (token && navigator.onLine) {
+			const webSocket = new WebSocket("ws://172.16.3.64:12345");
 			webSocket.onopen = () => {
 				const id = userData.userInfo.id;
 				const data = {

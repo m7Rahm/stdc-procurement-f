@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import ReadyOfferCard from '../../components/VisaCards/ReadyOfferCard'
 import CardsList from '../../components/HOC/CardsList'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
@@ -28,11 +28,11 @@ const Orders = () => {
         activeInit.ordNumb = state.on;
         activeInit.departmentName = state.dn
     }
-    useEffect(() => {
-        if (Number(id) && !window.history.state.bo) {
-            setActive(prev => ({ ...prev, id }))
-        }
-    }, [id])
+    // useEffect(() => {
+    //     if (Number(id) && !window.history.state.bo) {
+    //         setActive(prev => ({ ...prev, id }))
+    //     }
+    // }, [id])
     // eslint-disable-next-line
     const [active, setActive] = useState(activeInit);
     const searchStateRef = useRef({ result: 0 });
