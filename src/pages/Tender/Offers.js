@@ -39,7 +39,17 @@ function Offers(props) {
     }
 
     const handleCloseModal = (modalid) => {
-        setModalList(prev => prev.filter(old => old.id !== modalid))
+        setModalList(prev => {
+            const modal = prev.find(modal => modal.id === modalid);
+            if (modal) {
+                if (modal.fetched) {
+                    return prev.map(old => old.id !== modalid ? old : { ...old, state: 0 })
+                }
+                else
+                    return prev.filter(old => old.id !== modalid)
+            }
+            return prev
+        })
     }
 
     const handleOfferSelect = (offerId) => {
@@ -64,7 +74,6 @@ function Offers(props) {
                                 minimizeHandler={minimizeHandler}
                             >
                                 <OfferModal
-                                    setIsModalVisible={handleCloseModal}
                                     orderContent={props.visa}
                                     activeModalRef={activeModalRef}
                                     modalid={modal.id}

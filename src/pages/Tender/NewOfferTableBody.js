@@ -11,11 +11,11 @@ const NewOfferTableBody = (props) => {
   const fetchPost = useFetch("POST");
   const setChoices = props.setChoices;
   const priorityRef = useRef({ style: { display: 'none' } })
-  const handleAddClick = (e) => {
-    const id = e.target.id;
+  const handleAddClick = (id) => {
+    console.log(id)
     setChoices(prev => {
       const newState = [...prev];
-      const index = newState.findIndex(material => material.material_id.toString() === id);
+      const index = newState.findIndex(material => material.material_id === id);
       if (index !== -1) {
         newState.splice(index + 1, 0, {
           id: Date.now(),
@@ -107,7 +107,7 @@ const NewOfferTableBody = (props) => {
             <ul className="priorities-list" style={{ top: "20px", zIndex: "3" }} ref={priorityRef}>
               {
                 props.initialMaterials.map((material, index) =>
-                  <li className="priority" key={material.id} id={material.material_id} style={{ padding: "13px 26px" }} onBlur={handleFocusLose} tabIndex={index} onClick={handleAddClick} >{material.title}</li>
+                  <li className="priority" key={material.id} id={material.id} style={{ padding: "13px 26px" }} onBlur={handleFocusLose} tabIndex={index} onClick={() => handleAddClick(material.material_id)} >{material.title}</li>
                 )
               }
             </ul>
@@ -126,6 +126,7 @@ const NewOfferTableBody = (props) => {
                 key={material.id}
                 rowid={material.id}
                 price={material.price}
+                materialid={material.material_id}
                 offerName={material.name}
                 structure={structure}
                 handleRowDelete={handleRowDelete}

@@ -23,7 +23,6 @@ function OfferModal(props) {
 
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
-
     const [choices, setChoices] = useState(props.fetched ? [] : props.orderContent.map((m, i) => ({
         id: v4(),
         material_id: m.material_id,
@@ -36,7 +35,6 @@ function OfferModal(props) {
         alternative: 0,
         color: 0xd2e * (i + 1) / props.orderContent.length
     })))
-
     useEffect(() => {
         fetchGet(`/api/vendors`)
             .then(respJ => {
