@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import OperationResult from '../Misc/OperationResult'
 
 const VisaContentMaterials = (props) => {
-	const { forwardType, canProceed, orderContent } = props;
+	const { forwardType, orderContent } = props;
 	const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
 	const { emp_version_id } = props.orderContent[0];
 	let orders = orderContent;
+	// console.log(orders)
 	return (
 		orders.length !== 0 &&
 		<>
@@ -42,7 +43,6 @@ const VisaContentMaterials = (props) => {
 								index={index}
 								setOperationResult={setOperationResult}
 								key={material.order_material_id}
-								canProceed={canProceed}
 								empVersion={emp_version_id}
 								setRemainder={props.setRemainder}
 								forwardType={forwardType}

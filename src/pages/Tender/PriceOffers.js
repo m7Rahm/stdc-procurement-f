@@ -1,17 +1,26 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
 import { Suspense } from 'react'
 import { BsPlus } from 'react-icons/bs'
 // import Modal from '../../components/Misc/Modal'
 import OfferModal from './OfferModal'
 import ModalAdvanced from './ModalAdvanced'
+import useFetch from '../../hooks/useFetch'
 
 function PriceOffers(props) {
-    const { current, canProceed, forwardType, setRemainder } = props;
+    const { id } = props;
     // const modalRef = useRef(null);
+    const [visa, setVisa] = useState([]);
+    const fetchGet = useFetch("GET");
+    useEffect(() => {
+        fetchGet(`/api/order-req-data?numb=""&vers=${id}`)
+            .then(respJ => {
+                setVisa(respJ.map(material => ({...material, order_material_id: material.material_id, mat_ass: material.assignment_name })))
+            })
+            .catch(ex => console.log(ex))
+    }, [id, fetchGet])
     const [modalList, setModalList] = useState([])
     const activeModalRef = useRef(0);
-
     const handleClick = () => {
         if (activeModalRef.current) {
             activeModalRef.current.style.top = (parseInt(window.getComputedStyle(activeModalRef.current).getPropertyValue("top").substring(0, 3)) + 15) + "px";
@@ -33,16 +42,15 @@ function PriceOffers(props) {
         setModalList(prev => prev.map(modal => modal.id === offerId ? { ...modal, state: 1 } : modal))
     }
     return (
+        visa.length !== 0 &&
         <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1 }}>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
                 {modalList.map((modal, index) => <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Təklif " + (index + 1)}</div>)}
                 <BsPlus size='30' onClick={handleClick} style={{ cursor: 'pointer' }} />
             </div>
             <VisaContentMaterials
-                orderContent={current}
-                setRemainder={setRemainder}
-                canProceed={canProceed}
-                forwardType={forwardType}
+                orderContent={visa}
+                forwardType={1}
             />
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingTop: '30px' }}>
                 <div className="priceButtons">Yönəlt</div>
@@ -62,7 +70,7 @@ function PriceOffers(props) {
                             >
                                 <OfferModal
                                     setIsModalVisible={handleCloseModal}
-                                    orderContent={current}
+                                    orderContent={visa}
                                     activeModalRef={activeModalRef}
                                     modalid={modal.id}
                                 />

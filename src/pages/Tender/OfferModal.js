@@ -10,8 +10,7 @@ import InputSearchList from '../../components/Misc/InputSearchList'
 function OfferModal(props) {
     const fetchPost = useFetch("POST");
     const fetchGet = useFetch("GET")
-
-    const modalid = props.modalid;
+    // const modalid = props.modalid;
 
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
@@ -204,7 +203,7 @@ function OfferModal(props) {
                                 ref={codeRef}
                                 name="vendor"
                                 autoComplete="off"
-                                // onChange={searchByCode}
+                            // onChange={searchByCode}
                             />
                         </div>
                     </div>
