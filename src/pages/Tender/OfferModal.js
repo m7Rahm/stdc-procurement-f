@@ -18,7 +18,7 @@ function OfferModal(props) {
     const codeRef = useRef(null);
     const [vendors, setVendors] = useState([]);
     const [vendorList, setVendorList] = useState([])
-
+    const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
     const [files, setFiles] = useState(null);
 
     const tokenContext = useContext(TokenContext);
@@ -48,6 +48,7 @@ function OfferModal(props) {
         if (props.fetched)
             fetchGet(`/api/price-offers/${props.modalid}`)
                 .then(respJ => {
+                    console.log(respJ)
                     setChoices(respJ.map((m, i) => ({
                         id: m.id,
                         material_id: m.material_id,
@@ -59,6 +60,7 @@ function OfferModal(props) {
                         alternative: 0,
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
+                    setOfferInfo({name:respJ[0].vendor_name,voen:respJ[0].voen})
                 })
                 .catch(ex => console.log(ex))
     }, [fetchGet, props.modalid, props.fetched])
@@ -67,7 +69,6 @@ function OfferModal(props) {
     const davamText = whichPage.page === 2 ? "Yadda saxla" : "Davam";
     // eslint-disable-next-line
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
-    const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
         // props.modalWrapperRef.current.style.overflow = "hidden";
