@@ -7,7 +7,7 @@ import '../../styles/styles.scss'
 import useFetch from '../../hooks/useFetch'
 import InputSearchList from '../../components/Misc/InputSearchList'
 import { TokenContext } from '../../App'
-
+import { v4 } from "uuid"
 function OfferModal(props) {
     const fetchGet = useFetch("GET")
     // console.log(props.orderContent)
@@ -25,7 +25,7 @@ function OfferModal(props) {
     const token = tokenContext[0].token;
 
     const [choices, setChoices] = useState(props.fetched ? [] : props.orderContent.map((m, i) => ({
-        id: m.material_id,
+        id: v4(),
         material_id: m.material_id,
         name: m.title,
         count: m.amount,
@@ -50,7 +50,6 @@ function OfferModal(props) {
         if (props.fetched)
             fetchGet(`/api/price-offers/${props.modalid}`)
                 .then(respJ => {
-                    console.log(respJ)
                     setChoices(respJ.map((m, i) => ({
                         id: m.id,
                         material_id: m.material_id,
@@ -60,7 +59,7 @@ function OfferModal(props) {
                         price: m.total / m.count,
                         total: m.total,
                         alternative: 0,
-                        color: 0xd2e * (i + 1) / props.orderContent.length
+                        color: 0xd2e * (i + 1) / respJ.length
                     })))
                 })
                 .catch(ex => console.log(ex))
@@ -135,7 +134,6 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-
             const data = choices.map((choice, index) => [choice.fetched ? choice.id : null, choice.name, choice.material_id, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
             const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
             console.log(data)
@@ -144,7 +142,7 @@ function OfferModal(props) {
             formData.append("vendorInfo", JSON.stringify(vendorInfo))
             formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
             files?.forEach(file => formData.append("files", file))
-            formData.append("orderid",props.orderid)
+            formData.append("orderid", props.orderid)
             console.log(props.orderid)
 
 

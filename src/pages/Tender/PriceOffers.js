@@ -14,11 +14,10 @@ function PriceOffers(props) {
             })
             .catch(ex => console.log(ex))
     }, [id, fetchGet])
-    console.log(visa)
     return (
         visa.length !== 0 &&
         <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1 }}>
-            <Offers visa={visa} orderid={id}/>
+            <Offers visa={visa} orderid={id} />
             <VisaContentMaterials
                 orderContent={visa}
                 forwardType={1}

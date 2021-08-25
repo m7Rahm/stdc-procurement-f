@@ -15,7 +15,7 @@ const NewOfferTableBody = (props) => {
     const id = e.target.id;
     setChoices(prev => {
       const newState = [...prev];
-      const index = newState.findIndex(material => material.id.toString() === id);
+      const index = newState.findIndex(material => material.material_id.toString() === id);
       if (index !== -1) {
         newState.splice(index + 1, 0, {
           id: Date.now(),
@@ -107,7 +107,7 @@ const NewOfferTableBody = (props) => {
             <ul className="priorities-list" style={{ top: "20px", zIndex: "3" }} ref={priorityRef}>
               {
                 props.initialMaterials.map((material, index) =>
-                  <li className="priority" key={material.id} id={material.id} style={{ padding: "13px 26px" }} onBlur={handleFocusLose} tabIndex={index} onClick={handleAddClick} >{material.title}</li>
+                  <li className="priority" key={material.id} id={material.material_id} style={{ padding: "13px 26px" }} onBlur={handleFocusLose} tabIndex={index} onClick={handleAddClick} >{material.title}</li>
                 )
               }
             </ul>

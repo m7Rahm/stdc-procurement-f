@@ -39,6 +39,7 @@ ul.potential-vendors {
     background-color: rgb(64, 168, 196);
     color: white;
     cursor: pointer;
+    margin-left: 0.5rem;
     border-radius: 5px;
 }
 

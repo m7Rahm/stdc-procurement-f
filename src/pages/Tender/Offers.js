@@ -8,7 +8,6 @@ import OfferModal from './OfferModal'
 function Offers(props) {
     const fetchGet = useFetch("GET")
     const [modalList, setModalList] = useState([])
-    let oldModals = null;
 
     useEffect(() => {
         fetchGet(`/api/price-offers?orderid=${props.orderid}`)
@@ -23,7 +22,7 @@ function Offers(props) {
                 })))
             })
             .catch(ex => console.log(ex))
-    },[props.orderid])
+    }, [props.orderid, fetchGet])
 
     const activeModalRef = useRef(0);
     const handleClick = () => {
@@ -47,7 +46,6 @@ function Offers(props) {
         setModalList(prev => prev.map(modal => modal.id === offerId ? { ...modal, state: 1 } : modal))
     }
 
-    // console.log(modalList)
     return (
         <div>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
