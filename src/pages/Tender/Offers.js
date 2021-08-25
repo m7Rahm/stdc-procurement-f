@@ -8,7 +8,6 @@ import OfferModal from './OfferModal'
 function Offers(props) {
     const fetchGet = useFetch("GET")
     const [modalList, setModalList] = useState([])
-    let oldModals = null;
 
     useEffect(() => {
         fetchGet(`/api/price-offers?orderid=${props.orderid}`)
@@ -23,7 +22,7 @@ function Offers(props) {
                 })))
             })
             .catch(ex => console.log(ex))
-    },[props.orderid])
+    }, [props.orderid, fetchGet])
 
     const activeModalRef = useRef(0);
     const handleClick = () => {
@@ -40,14 +39,23 @@ function Offers(props) {
     }
 
     const handleCloseModal = (modalid) => {
-        setModalList(prev => prev.filter(old => old.id !== modalid))
+        setModalList(prev => {
+            const modal = prev.find(modal => modal.id === modalid);
+            if (modal) {
+                if (modal.fetched) {
+                    return prev.map(old => old.id !== modalid ? old : { ...old, state: 0 })
+                }
+                else
+                    return prev.filter(old => old.id !== modalid)
+            }
+            return prev
+        })
     }
 
     const handleOfferSelect = (offerId) => {
         setModalList(prev => prev.map(modal => modal.id === offerId ? { ...modal, state: 1 } : modal))
     }
 
-    // console.log(modalList)
     return (
         <div>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
@@ -66,7 +74,6 @@ function Offers(props) {
                                 minimizeHandler={minimizeHandler}
                             >
                                 <OfferModal
-                                    setIsModalVisible={handleCloseModal}
                                     orderContent={props.visa}
                                     activeModalRef={activeModalRef}
                                     modalid={modal.id}
