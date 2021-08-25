@@ -25,7 +25,7 @@ function OfferModal(props) {
 
     const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
         id: m.id,
-        name: m.material_name,
+        name: m.title,
         count: m.amount,
         note: "",
         price: 0,
@@ -37,7 +37,6 @@ function OfferModal(props) {
     useEffect(() => {
         fetchGet(`/api/vendors`)
             .then(respJ => {
-                console.log(respJ)
                 setVendorList(respJ)
                 setVendors(respJ)
             })
@@ -257,7 +256,6 @@ const MyDropzone = (props) => {
     const filesNames = useRef()
     const setFiles = props.setFiles;
     const onDrop = useCallback(acceptedFiles => {
-        // console.log(acceptedFiles)
         setFiles(acceptedFiles)
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>

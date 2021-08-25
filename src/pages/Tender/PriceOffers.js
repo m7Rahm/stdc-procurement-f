@@ -15,7 +15,7 @@ function PriceOffers(props) {
     useEffect(() => {
         fetchGet(`/api/order-req-data?numb=""&vers=${id}`)
             .then(respJ => {
-                setVisa(respJ.map(material => ({...material, order_material_id: material.material_id, mat_ass: material.assignment_name })))
+                setVisa(respJ.map(material => ({ ...material, order_material_id: material.material_id, mat_ass: material.assignment_name })))
             })
             .catch(ex => console.log(ex))
     }, [id, fetchGet])
