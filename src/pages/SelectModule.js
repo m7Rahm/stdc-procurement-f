@@ -13,6 +13,7 @@ import Navigation from "../components/Common/Navigation";
 // import PaymentLayout from "../components/Exports/PaymentLayout";
 import Loading from "../components/Misc/Loading";
 import Notification from "../components/Common/Notification";
+import { indexOf } from "lodash";
 const Contracts = lazy(() => import("./Contracts"));
 const Orders = lazy(() => import("./Orders"));
 const Tender = lazy(() => import("./Tender"));
@@ -43,21 +44,34 @@ const availableModules = [
     component: Tender,
   },
 ];
+let key = 0;
 const SelectModule = () => {
   const [notifications, setNotifications] = useState([]);
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
-  const clickHandler = () => {
-    setNotifications([
-      ...notifications.slice(-2),
-      {
-        content: `bla +${getRandomInt(10)}`,
-        link: "#",
-        key: "3",
-      },
-    ]);
+  const buttonHandler = (e) => {
+    const target = e.target;
+    setNotifications((prev) =>
+      prev.filter((notification) => notification.key != target.id)
+    );
   };
+  function clickHandler() {
+    key = key + 1;
+    setNotifications((prev) => {
+      const newState = [
+        ...prev.slice(-3),
+        {
+          content: `bla +${key}`,
+          link: "#",
+          key: `${key}`,
+        },
+      ];
+      console.log(newState[0]);
+
+      return newState;
+    });
+  }
 
   const tokenContext = useContext(TokenContext);
   const token = tokenContext[0].token;
@@ -107,11 +121,13 @@ const SelectModule = () => {
       backgroundRef.current.style.display = backgroundDisplay;
     }
   };
+
   return (
     <WebSocketContext.Provider value={webSocket}>
       <Notification
         notifications={notifications}
         setNotifications={setNotifications}
+        buttonHandler={buttonHandler}
       />
       <Switch>
         <Route exact path="/">
