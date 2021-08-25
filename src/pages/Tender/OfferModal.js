@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
+import {AiFillFileText} from 'react-icons/ai'
 
 import NewOfferTableBody from './NewOfferTableBody'
 import '../../styles/styles.scss'
@@ -10,9 +11,6 @@ import { TokenContext } from '../../App'
 import { v4 } from "uuid"
 function OfferModal(props) {
     const fetchGet = useFetch("GET")
-    // console.log(props.orderContent)
-    // console.log()
-
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
     const codeRef = useRef(null);
@@ -48,7 +46,6 @@ function OfferModal(props) {
         if (props.fetched)
             fetchGet(`/api/price-offers/${props.modalid}`)
                 .then(respJ => {
-                    console.log(respJ)
                     setChoices(respJ.map((m, i) => ({
                         id: m.id,
                         material_id: m.material_id,
@@ -60,8 +57,10 @@ function OfferModal(props) {
                         alternative: 0,
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
-                    setOfferInfo({name:respJ[0].vendor_name,voen:respJ[0].voen})
-                })
+                    setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
+                    setFiles(prev => ({ ...prev, files: respJ[0].files }))
+                }
+                )
                 .catch(ex => console.log(ex))
     }, [fetchGet, props.modalid, props.fetched])
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
@@ -71,7 +70,6 @@ function OfferModal(props) {
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
-        // props.modalWrapperRef.current.style.overflow = "hidden";
         props.activeModalRef.current.style.height = "20rem";
         props.activeModalRef.current.style.width = "40rem";
         const animationendEventListener = () => {
@@ -82,7 +80,6 @@ function OfferModal(props) {
             );
             setWhichPage((prevState) => {
                 actPageRef.current.style.animationName = "slide_geri_next"
-                // props.modalWrapperRef.current.style.width = prevState.page === 3 ? "90%" : "40rem";
                 return prevState.page > 1 ? {
                     page: prevState.page - 1,
                 } : prevState;
@@ -94,6 +91,7 @@ function OfferModal(props) {
             false
         );
     };
+
     const forwardClickHandler = () => {
         props.activeModalRef.current.style.height = "30rem";
         props.activeModalRef.current.style.width = "60rem";
@@ -102,7 +100,6 @@ function OfferModal(props) {
                 actPageRef.current.style.animationName = "slide_davam_current";
                 const animationendEventListener = () => {
                     if (actPageRef.current.style.animationName === "slide_davam_next") {
-                        // props.modalWrapperRef.current.style.overflow = "visible";
                         actPageRef.current.removeEventListener(
                             "animationend",
                             animationendEventListener,
@@ -112,7 +109,6 @@ function OfferModal(props) {
                     setWhichPage(prevState => {
                         if (prevState.page === 1) {
                             actPageRef.current.style.animationName = "slide_davam_next"
-                            // props.modalWrapperRef.current.style.width = prevState.page === 1 ? "90%" : "40rem";
                             return {
                                 page: prevState.page + 1,
                             }
@@ -135,16 +131,18 @@ function OfferModal(props) {
         } else {
             const data = choices.map((choice, index) => [choice.fetched ? choice.id : null, choice.name, choice.material_id, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
             const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
-            console.log(data)
             const formData = new FormData();
             formData.append("mats", JSON.stringify(data));
             formData.append("vendorInfo", JSON.stringify(vendorInfo))
             formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
+            if (props.fetched)
+                formData.append("id", props.modalid)
+            else
+                formData.append("orderid", props.orderid)
+
             files?.forEach(file => formData.append("files", file))
-            formData.append("orderid", props.orderid)
-            console.log(props.orderid)
 
-
+            if (!props.fetched) props.handleCloseModal(props.modalid)
 
             const requestOptions = {
                 method: 'POST',
@@ -154,9 +152,25 @@ function OfferModal(props) {
                 body: formData
             };
 
-            fetch('http://172.16.3.64/api/create-price-offer', requestOptions)
-                .then(response => response.json())
-                .then(data => console.log(data));
+            if (props.fetched)
+                fetch('http://172.16.3.64/api/update-price-offer', requestOptions)
+                    .then(response => response.json())
+            else
+                fetch('http://172.16.3.64/api/create-price-offer', requestOptions)
+                    .then(response => response.json())
+                    .then(data => {
+                        props.setModalList(prev => prev.map(m =>
+                            m.id === props.modalid ? {
+                                ...m,
+                                id: data[0].offer_id,
+                                name: offerInfo.name,
+                                state: 0,
+                                fetched: true,
+                            }
+                                : m
+                        ))
+                    });
+
         }
     };
 
@@ -272,7 +286,6 @@ export default OfferModal
 const MyDropzone = (props) => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
-
     const filesNames = useRef()
     const setFiles = props.setFiles;
     const onDrop = useCallback(acceptedFiles => {
@@ -283,9 +296,9 @@ const MyDropzone = (props) => {
             </li>
         ))
     }, [setFiles])
+    console.log(props.files.files.split(','))
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
-
     return (
         <div style={{ padding: "2rem" }} {...getRootProps()}>
             <input {...getInputProps()} />
@@ -301,9 +314,13 @@ const MyDropzone = (props) => {
                     <div className="fileUpload">
                         <BsUpload size='30' />
                         <p>Fayl əlavə etmək üçün buraya klikləyin və ya sürüşdürün</p>
+                        {props.files && props.files?.files !== "" ?
                         <ul>
-                            {filesNames.current}
+                            {props.files.files.split(',').map(file=>
+                                <a key={file} href={"http://172.16.3.64/original/"+file}><AiFillFileText size={40}/></a>     
+                            )}
                         </ul>
+                        : <></>}
                     </div>
             }
         </div>
