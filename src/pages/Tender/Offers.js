@@ -12,8 +12,6 @@ function Offers(props) {
     useEffect(() => {
         fetchGet(`/api/price-offers?orderid=${props.orderid}`)
             .then(respJ => {
-                // console.log(respJ)
-                // oldModals = respJ;
                 setModalList(respJ.map((modal) => ({
                     ...modal,
                     name: "",
@@ -79,6 +77,8 @@ function Offers(props) {
                                     modalid={modal.id}
                                     fetched={modal.fetched}
                                     orderid={props.orderid}
+                                    handleCloseModal={handleCloseModal}
+                                    setModalList={setModalList}
                                 />
                             </ModalAdvanced>
                         </Suspense>

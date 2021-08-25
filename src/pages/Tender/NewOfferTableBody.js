@@ -8,7 +8,6 @@ import { IoIosAdd } from 'react-icons/io'
 
 const NewOfferTableBody = (props) => {
 
-  const fetchPost = useFetch("POST");
   const setChoices = props.setChoices;
   const priorityRef = useRef({ style: { display: 'none' } })
   const handleAddClick = (id) => {
