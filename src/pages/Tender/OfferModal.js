@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
-import {AiFillFileText} from 'react-icons/ai'
+import { AiFillFileText } from 'react-icons/ai'
 
 import NewOfferTableBody from './NewOfferTableBody'
 import '../../styles/styles.scss'
@@ -58,7 +58,7 @@ function OfferModal(props) {
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
                     setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
-                    setFiles(prev => ({ ...prev, files: respJ[0].files }))
+                    setFiles(prev => ({ ...prev, files: respJ[0].files, fetched: true }))
                 }
                 )
                 .catch(ex => console.log(ex))
@@ -296,7 +296,8 @@ const MyDropzone = (props) => {
             </li>
         ))
     }, [setFiles])
-    console.log(props.files.files.split(','))
+
+    console.log(props.files)
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
     return (
@@ -315,12 +316,12 @@ const MyDropzone = (props) => {
                         <BsUpload size='30' />
                         <p>Fayl əlavə etmək üçün buraya klikləyin və ya sürüşdürün</p>
                         {props.files && props.files?.files !== "" ?
-                        <ul>
-                            {props.files.files.split(',').map(file=>
-                                <a key={file} href={"http://172.16.3.64/original/"+file}><AiFillFileText size={40}/></a>     
-                            )}
-                        </ul>
-                        : <></>}
+                            <ul>
+                                {props.files.files?.split(',').map(file =>
+                                    <a key={file} href={"http://172.16.3.64/original/" + file}><AiFillFileText size={40} /></a>
+                                )}
+                            </ul>
+                            : <></>}
                     </div>
             }
         </div>
