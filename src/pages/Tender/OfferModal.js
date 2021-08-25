@@ -9,8 +9,9 @@ import InputSearchList from '../../components/Misc/InputSearchList'
 import { TokenContext } from '../../App'
 
 function OfferModal(props) {
-    const fetchPost = useFetch("POST");
     const fetchGet = useFetch("GET")
+    // console.log(props.orderContent)
+    // console.log()
 
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
@@ -23,13 +24,15 @@ function OfferModal(props) {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
 
-    const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
-        id: m.id,
+    const [choices, setChoices] = useState(props.fetched ? [] : props.orderContent.map((m, i) => ({
+        id: m.material_id,
+        material_id: m.material_id,
         name: m.title,
         count: m.amount,
         note: "",
         price: 0,
         total: 0,
+        fetched: false,
         alternative: 0,
         color: 0xd2e * (i + 1) / props.orderContent.length
     })))
@@ -43,6 +46,25 @@ function OfferModal(props) {
             .catch(ex => console.log(ex))
     }, [fetchGet])
 
+    useEffect(() => {
+        if (props.fetched)
+            fetchGet(`/api/price-offers/${props.modalid}`)
+                .then(respJ => {
+                    console.log(respJ)
+                    setChoices(respJ.map((m, i) => ({
+                        id: m.id,
+                        material_id: m.material_id,
+                        name: m.title,
+                        count: m.count,
+                        note: m.note,
+                        price: m.total / m.count,
+                        total: m.total,
+                        alternative: 0,
+                        color: 0xd2e * (i + 1) / props.orderContent.length
+                    })))
+                })
+                .catch(ex => console.log(ex))
+    }, [fetchGet, props.modalid, props.fetched])
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
     const davamText = whichPage.page === 2 ? "Yadda saxla" : "Davam";
@@ -114,14 +136,16 @@ function OfferModal(props) {
             } else continueNext()
         } else {
 
-            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
+            const data = choices.map((choice, index) => [choice.fetched ? choice.id : null, choice.name, choice.material_id, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
             const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
-
+            console.log(data)
             const formData = new FormData();
             formData.append("mats", JSON.stringify(data));
             formData.append("vendorInfo", JSON.stringify(vendorInfo))
             formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
             files?.forEach(file => formData.append("files", file))
+            formData.append("orderid",props.orderid)
+            console.log(props.orderid)
 
 
 
@@ -170,7 +194,6 @@ function OfferModal(props) {
             ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id
         }))
     }, [setOfferInfo]);
-
 
     return (
         <div>
