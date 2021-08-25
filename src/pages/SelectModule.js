@@ -46,6 +46,17 @@ const availableModules = [
 ];
 let key = 0;
 const SelectModule = () => {
+	const tokenContext = useContext(TokenContext);
+	const token = tokenContext[0].token;
+	const userData = tokenContext[0].userData;
+	const navigationRef = useRef(null);
+	const menuNavRefs = useRef({});
+	const [menuData, setMenuData] = useState({ url: "", routes: [] })
+	const [webSocket, setWebSocket] = useState(null);
+	const leftPaneRef = useRef(null);
+	const backgroundRef = useRef(null);
+	const leftNavIconRef = useRef(null);
+	const loadingIndicatorRef = useRef(null);
   const [notifications, setNotifications] = useState([]);
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -72,134 +83,126 @@ const SelectModule = () => {
       return newState;
     });
   }
-
-  const tokenContext = useContext(TokenContext);
-  const token = tokenContext[0].token;
-  const userData = tokenContext[0].userData;
-  const navigationRef = useRef(null);
-  const menuNavRefs = useRef({});
-  const [menuData, setMenuData] = useState({ url: "", routes: [] });
-  const [webSocket, setWebSocket] = useState(null);
-  const leftPaneRef = useRef(null);
-  const backgroundRef = useRef(null);
-  const leftNavIconRef = useRef(null);
-  const loadingIndicatorRef = useRef(null);
-  useEffect(() => {
-    let mounted = true;
-    if (token) {
-      const webSocket = new WebSocket("ws://172.16.3.64:12345");
-      webSocket.onopen = () => {
-        const id = userData.userInfo.id;
-        const data = {
-          message: "recognition",
-          userid: id, // todo: get from session
-        };
-        webSocket.send(JSON.stringify(data));
-        if (mounted) setWebSocket(webSocket);
-      };
-      return () => {
-        webSocket.close();
-        setWebSocket(null);
-        mounted = false;
-        console.log("connection closed");
-      };
-    }
-  }, [token, userData]);
-  const routes = availableModules.filter((availableModule) =>
-    userData.modules.find((module) => module.text === availableModule.label)
-  );
-  const warehouseVisible = userData.modules.find(
-    (module) => module.text === "Warehouse"
-  )
-    ? true
-    : false;
-  const handleNavClick = () => {
-    if (leftPaneRef.current) {
-      leftPaneRef.current.classList.toggle("left-side-pane-open");
-      const backgroundDisplay =
-        backgroundRef.current.style.display === "none" ? "block" : "none";
-      backgroundRef.current.style.display = backgroundDisplay;
-    }
-  };
-
-  return (
-    <WebSocketContext.Provider value={webSocket}>
-      <Notification
-        notifications={notifications}
-        setNotifications={setNotifications}
-        buttonHandler={buttonHandler}
+	useEffect(() => {
+   
+		let mounted = true;
+		if (token && navigator.onLine) {
+			const webSocket = new WebSocket("ws://172.16.3.64:12345");
+			webSocket.onopen = () => {
+				const id = userData.userInfo.id;
+				const data = {
+					message: "recognition",
+					userid: id // todo: get from session
+				}
+				webSocket.send(JSON.stringify(data));
+				if (mounted)
+					setWebSocket(webSocket);
+			}
+			return () => {
+				webSocket.close();
+				setWebSocket(null);
+				mounted = false;
+				console.log("connection closed");
+			}
+		}
+	}, [token, userData]);
+	const routes = availableModules.filter(availableModule => userData.modules.find(module => module.text === availableModule.label));
+	const warehouseVisible = userData.modules.find(module => module.text === "Warehouse") ? true : false;
+	const handleNavClick = () => {
+		if (leftPaneRef.current) {
+			leftPaneRef.current.classList.toggle("left-side-pane-open");
+			const backgroundDisplay = backgroundRef.current.style.display === "none" ? "block" : "none"
+			backgroundRef.current.style.display = backgroundDisplay
+		}
+	}
+	return (
+		<WebSocketContext.Provider value={webSocket}>
+      <Notification clickHandler={clickHandler} 
+      buttonHandler={buttonHandler}
+      notifications={notifications}
+      setNotifications={setNotifications}
       />
-      <Switch>
-        <Route exact path="/">
-          <div className="splash-screen">
-            <div className="module-select">
-              {routes.map((module) => (
-                <Link key={module.link} to={module.link}>
-                  <div className="module-card">{module.text}</div>
-                </Link>
-              ))}
-              {warehouseVisible && (
-                <a href="http://192.168.0.182:62447">
-                  <div className="module-card">Anbar</div>
-                </a>
-              )}
-            </div>
-          </div>
-        </Route>
-        {webSocket && (
-          <>
-            <>
-              <Navigation
-                handleNavClick={handleNavClick}
-                routes={routes}
-                webSocket={webSocket}
-                token={token}
-                userData={userData}
-                menuNavRefs={menuNavRefs}
-                ref={loadingIndicatorRef}
-                leftNavRef={leftNavIconRef}
-                navigationRef={navigationRef}
-                tokenContext={tokenContext}
-              />
-              <div
-                onClick={handleNavClick}
-                ref={backgroundRef}
-                style={{
-                  position: "fixed",
-                  height: "100%",
-                  width: "100%",
-                  top: 0,
-                  left: 0,
-                  display: "none",
-                  background: "rgba(0, 0, 0, 0.6)",
-                  zIndex: 2,
-                }}
-              ></div>
-            </>
-            <Switch>
-              {routes.map((route) => (
-                <Route key={route.link} path={route.link}>
-                  <LeftSidePane
-                    url={menuData.url}
-                    links={menuData.routes}
-                    ref={leftPaneRef}
-                    refs={menuNavRefs}
-                    backgroundRef={backgroundRef}
-                    handleNavClick={handleNavClick}
-                  />
-                  <Suspense fallback={<Loading />}>
-                    <route.component
-                      handleNavClick={handleNavClick}
-                      menuData={menuData}
-                      navigationRef={navigationRef}
-                      loadingIndicatorRef={loadingIndicatorRef}
-                      leftNavRef={leftNavIconRef}
-                      setMenuData={setMenuData}
-                    />
-                  </Suspense>
-                </Route>
-              ))}
-              {/* <Suspense fallback={<Loading />} >
+			<Switch>
+				<Route exact path="/">
+					<div className="splash-screen">
+						<div className="module-select">
+							{
+								routes.map(module =>
+									<Link key={module.link} to={module.link}>
+										<div className="module-card">
+											{module.text}
+										</div>
+									</Link>
+								)
+							}
+							{
+								warehouseVisible &&
+								<a href="http://192.168.0.182:62447">
+									<div className="module-card">
+										Anbar
+									</div>
+								</a>
+							}
+						</div>
+					</div>
+				</Route>
+				{
+					webSocket &&
+					<>
+						<>
+							<Navigation
+								handleNavClick={handleNavClick}
+								routes={routes}
+								webSocket={webSocket}
+								token={token}
+								userData={userData}
+								menuNavRefs={menuNavRefs}
+								ref={loadingIndicatorRef}
+								leftNavRef={leftNavIconRef}
+								navigationRef={navigationRef}
+								tokenContext={tokenContext}
+							/>
+							<div
+								onClick={handleNavClick}
+								ref={backgroundRef}
+								style={{
+									position: "fixed",
+									height: "100%",
+									width: "100%",
+									top: 0,
+									left: 0,
+									display: "none",
+									background: "rgba(0, 0, 0, 0.6)",
+									zIndex: 2
+								}}>
+							</div>
+						</>
+						<Switch>
+							{
+								routes.map(route =>
+									<Route key={route.link} path={route.link} >
+										<LeftSidePane
+											url={menuData.url}
+											links={menuData.routes}
+											ref={leftPaneRef}
+											refs={menuNavRefs}
+											backgroundRef={backgroundRef}
+											handleNavClick={handleNavClick}
+										/>
+										<Suspense fallback={<Loading />} >
+											<route.component
+												handleNavClick={handleNavClick}
+												menuData={menuData}
+												navigationRef={navigationRef}
+												loadingIndicatorRef={loadingIndicatorRef}
+												leftNavRef={leftNavIconRef}
+												setMenuData={setMenuData}
+											/>
+										</Suspense>
+									</Route>
+								)
+							}
+							{/* <Suspense fallback={<Loading />} >
 								<Route key="exports" path="/exports" >
 									<PaymentLayout
 										handleNavClick={handleNavClick}
@@ -213,7 +216,7 @@ const SelectModule = () => {
               <Redirect to="/" />
             </Switch>
           </>
-        )}
+        }
       </Switch>
       <button
         style={{ width: "100px", bakcgroundColor: "red", height: "10px" }}

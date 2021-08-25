@@ -36,9 +36,11 @@ ul.potential-vendors {
 
 .priceTags {
     padding: 10px 12px;
+    margin: 0px 2px;
     background-color: rgb(64, 168, 196);
     color: white;
     cursor: pointer;
+    margin-left: 0.5rem;
     border-radius: 5px;
 }
 

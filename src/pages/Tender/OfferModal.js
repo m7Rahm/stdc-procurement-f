@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react'
+import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 
@@ -6,41 +6,69 @@ import NewOfferTableBody from './NewOfferTableBody'
 import '../../styles/styles.scss'
 import useFetch from '../../hooks/useFetch'
 import InputSearchList from '../../components/Misc/InputSearchList'
-
+import { TokenContext } from '../../App'
+import { v4 } from "uuid"
 function OfferModal(props) {
-    const fetchPost = useFetch("POST");
     const fetchGet = useFetch("GET")
-
-    const modalid = props.modalid;
+    // console.log(props.orderContent)
+    // console.log()
 
     const vendorInputRef = useRef(null);
     const vendorListRef = useRef(null);
+    const codeRef = useRef(null);
     const [vendors, setVendors] = useState([]);
-    const [vendorList, setVendorList] = useState(['asd','fds','asf'])
+    const [vendorList, setVendorList] = useState([])
+    const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
+    const [files, setFiles] = useState(null);
 
-    const [choices, setChoices] = useState(props.orderContent.map((m, i) => ({
-        id: m.id,
-        name: m.material_name,
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0].token;
+    const [choices, setChoices] = useState(props.fetched ? [] : props.orderContent.map((m, i) => ({
+        id: v4(),
+        material_id: m.material_id,
+        name: m.title,
         count: m.amount,
         note: "",
         price: 0,
         total: 0,
+        fetched: false,
         alternative: 0,
         color: 0xd2e * (i + 1) / props.orderContent.length
     })))
+    useEffect(() => {
+        fetchGet(`/api/vendors`)
+            .then(respJ => {
+                setVendorList(respJ)
+                setVendors(respJ)
+            })
+            .catch(ex => console.log(ex))
+    }, [fetchGet])
 
-    // useEffect(() => {
-    //     fetchGet(`/api/assignments`)
-    //         .then(respJ => setVendorList(respJ))
-    //         .catch(ex => console.log(ex))
-    // }, [fetchGet])
-
+    useEffect(() => {
+        if (props.fetched)
+            fetchGet(`/api/price-offers/${props.modalid}`)
+                .then(respJ => {
+                    console.log(respJ)
+                    setChoices(respJ.map((m, i) => ({
+                        id: m.id,
+                        material_id: m.material_id,
+                        name: m.title,
+                        count: m.count,
+                        note: m.note,
+                        price: m.total / m.count,
+                        total: m.total,
+                        alternative: 0,
+                        color: 0xd2e * (i + 1) / respJ.length
+                    })))
+                    setOfferInfo({name:respJ[0].vendor_name,voen:respJ[0].voen})
+                })
+                .catch(ex => console.log(ex))
+    }, [fetchGet, props.modalid, props.fetched])
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
     const actPageRef = useRef(null);
     const davamText = whichPage.page === 2 ? "Yadda saxla" : "Davam";
     // eslint-disable-next-line
     const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
-    const [offerInfo, setOfferInfo] = useState({ company: "", voen: "" })
     const backClickHandler = (e) => {
         actPageRef.current.style.animationName = "slide_geri_current";
         // props.modalWrapperRef.current.style.overflow = "hidden";
@@ -105,27 +133,39 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-            const data = choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
-            // console.log(data)
-            fetchPost('/api/update-price-offer', data)
-                .then(respJ => {
+            const data = choices.map((choice, index) => [choice.fetched ? choice.id : null, choice.name, choice.material_id, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
+            const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
+            console.log(data)
+            const formData = new FormData();
+            formData.append("mats", JSON.stringify(data));
+            formData.append("vendorInfo", JSON.stringify(vendorInfo))
+            formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
+            files?.forEach(file => formData.append("files", file))
+            formData.append("orderid", props.orderid)
+            console.log(props.orderid)
 
-                }).catch(ex => console.log(ex))
+
+
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                },
+                body: formData
+            };
+
+            fetch('http://172.16.3.64/api/create-price-offer', requestOptions)
+                .then(response => response.json())
+                .then(data => console.log(data));
         }
     };
-
-    const handleInfoChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setOfferInfo(prev => ({ ...prev, [name]: value }))
-    }
 
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         const charArray = value.split("");
         const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
         const regExp = new RegExp(`${reg}`, "gi");
-        setOfferInfo(prev => ({ ...prev, company: value }))
+        setOfferInfo(prev => ({ ...prev, name: value }))
         const searchResult = vendorList.filter(vendor => regExp.test(vendor.name));
         setVendors(searchResult);
         handleVendorSearch2(value)
@@ -133,23 +173,24 @@ function OfferModal(props) {
 
     const setVendor = (_, vendor) => {
         handleVendorSelection(vendor)
+        setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id }))
         vendorInputRef.current.value = vendor.name;
+        codeRef.current.value = vendor.voen;
         vendorListRef.current.style.display = "none";
     }
 
     const handleVendorSearch2 = useCallback((value) => {
         setOfferInfo(prev => ({
-            ...prev, company: value
+            ...prev, name: value
         }))
     }, [setOfferInfo]);
 
 
     const handleVendorSelection = useCallback((vendor) => {
         setOfferInfo(prev => ({
-            ...prev, company: vendor.name
+            ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id
         }))
     }, [setOfferInfo]);
-
 
     return (
         <div>
@@ -178,26 +219,32 @@ function OfferModal(props) {
             >
                 {whichPage.page === 1 ? (
                     <div style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
-                        {/* <input placeholder={'Şirkət'} className="modalInput" name="company" value={offerInfo.company} onChange={handleInfoChange}></input> */}
                         <div style={{ position: 'relative' }}>
                             <InputSearchList
                                 placeholder="Vendor"
-                                text="vendor"
+                                text="name"
                                 name="vendor"
                                 listid="vendorListRef"
                                 inputRef={vendorInputRef}
                                 listRef={vendorListRef}
                                 handleInputChange={handleVendorSearch}
+                                defaultValue={offerInfo.name}
                                 items={vendors}
                                 handleItemClick={setVendor}
                                 style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
                             />
                         </div>
-                        <input placeholder={'VÖEN'} className="modalInput" name='voen' value={offerInfo.voen} onChange={handleInfoChange}></input>
-                        {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <input placeholder={'Rahman1'} className="modalInput" ></input>
-                            <input placeholder={'Rahman2'} className="modalInput" ></input>
-                        </div> */}
+                        <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
+                            <input
+                                type="name"
+                                placeholder="VOEN"
+                                ref={codeRef}
+                                name="vendor"
+                                autoComplete="off"
+                                defaultValue={offerInfo.voen}
+                            // onChange={searchByCode}
+                            />
+                        </div>
                     </div>
                 ) : whichPage.page === 2 ? (
                     <div style={{ marginTop: '40px' }}>
@@ -207,7 +254,9 @@ function OfferModal(props) {
                             initialMaterials={props.orderContent}
                             setChoices={setChoices}
                         />
-                        <MyDropzone />
+                        <MyDropzone
+                            files={files}
+                            setFiles={setFiles} />
                     </div>
                 ) : (
                     <div></div>
@@ -220,19 +269,20 @@ function OfferModal(props) {
 export default OfferModal
 
 
-const MyDropzone = () => {
+const MyDropzone = (props) => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
 
     const filesNames = useRef()
-
+    const setFiles = props.setFiles;
     const onDrop = useCallback(acceptedFiles => {
+        setFiles(acceptedFiles)
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>
                 <p>{file.name}</p>
             </li>
         ))
-    }, [])
+    }, [setFiles])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 

@@ -11,16 +11,17 @@ const NewOfferTableBody = (props) => {
   const fetchPost = useFetch("POST");
   const setChoices = props.setChoices;
   const priorityRef = useRef({ style: { display: 'none' } })
-  const handleAddClick = (e) => {
-    const id = e.target.id;
+  const handleAddClick = (id) => {
+    console.log(id)
     setChoices(prev => {
       const newState = [...prev];
-      const index = newState.findIndex(material => material.id.toString() === id);
+      const index = newState.findIndex(material => material.material_id === id);
       if (index !== -1) {
         newState.splice(index + 1, 0, {
           id: Date.now(),
           name: "",
-          count: prev[index].color,
+          material_id: "",
+          count: prev[index].count,
           note: "",
           price: 0,
           total: 0,
@@ -31,6 +32,7 @@ const NewOfferTableBody = (props) => {
       }
       else newState.push({
         id: Date.now(),
+        material_id: "",
         name: "",
         count: 0,
         note: "",
@@ -43,14 +45,7 @@ const NewOfferTableBody = (props) => {
       return newState
     })
   }
-  // eslint-disable-next-line
-  const saveClickHandler = () => {
-    const data = props.choices.map((choice, index) => [null, choice.name, index === 0 ? choice.id : null, choice.count, choice.total, choice.alternative, choice.note]);
-    fetchPost('/api/update-price-offer', data)
-      .then(respJ => {
 
-      }).catch(ex => console.log(ex))
-  }
   const { orderType, structure } = props.orderInfo;
   const handleRowDelete = (rowRef) => {
     const id = rowRef.current.id;
@@ -112,7 +107,7 @@ const NewOfferTableBody = (props) => {
             <ul className="priorities-list" style={{ top: "20px", zIndex: "3" }} ref={priorityRef}>
               {
                 props.initialMaterials.map((material, index) =>
-                  <li className="priority" key={material.id} id={material.id} style={{ padding: "13px 26px" }} onBlur={handleFocusLose} tabIndex={index} onClick={handleAddClick} >{material.material_name}</li>
+                  <li className="priority" key={material.id} id={material.id} style={{ padding: "13px 26px" }} onBlur={handleFocusLose} tabIndex={index} onClick={() => handleAddClick(material.material_id)} >{material.title}</li>
                 )
               }
             </ul>
@@ -131,6 +126,7 @@ const NewOfferTableBody = (props) => {
                 key={material.id}
                 rowid={material.id}
                 price={material.price}
+                materialid={material.material_id}
                 offerName={material.name}
                 structure={structure}
                 handleRowDelete={handleRowDelete}

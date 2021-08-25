@@ -26,7 +26,7 @@ const Notifications = (props) => {
           notification={notification}
         />
       ))}
-      ;
+      
     </div>
   );
 };

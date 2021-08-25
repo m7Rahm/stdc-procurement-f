@@ -61,7 +61,7 @@ function NewOfferTableRow(props) {
 
     const handleAmountChange2 = (value) => {
         if (props.count !== 0 || Number(props.count) > 0) {
-            props.handleChange("price", Math.floor(value / props.count), rowid)
+            props.handleChange("price", value / props.count, rowid)
         }
     }
 
@@ -180,7 +180,7 @@ function NewOfferTableRow(props) {
                             tabIndex="1"
                             id={rowid}
                             title="Alternativ əlavə et"
-                            onClickCapture={props.handleAddClick}
+                            onClickCapture={() => props.handleAddClick(props.materialid)}
                         >
                             Alternativ <BsArrowsAngleExpand style={{ position: "absolute", left: "0.5rem" }} />
                         </li>

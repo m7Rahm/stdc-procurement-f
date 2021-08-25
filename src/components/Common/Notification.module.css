@@ -1,6 +1,6 @@
 .notification_wrapper{
     overflow:hidden;
-    height: 500px;
+    height: fit-content;
     width: 350px;
     position: fixed;
     display: block;
