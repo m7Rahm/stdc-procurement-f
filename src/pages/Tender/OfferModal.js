@@ -44,7 +44,7 @@ function OfferModal(props) {
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
                     setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
-                    setFiles(prev => ({ ...prev, files: respJ[0].files, fetched: true }))
+                    setFiles(prev => ([ ...prev,{ files: respJ[0].files, fetched: true }]))
                 })
                 .catch(ex => console.log(ex))
     }, [fetchGet, props.modalid, props.fetched])
@@ -293,6 +293,7 @@ const MyDropzone = (props) => {
     const filesNames = useRef()
     const setFiles = props.setFiles;
     const onDrop = useCallback(acceptedFiles => {
+        console.log(props.files)
         setFiles(prev => [...prev, acceptedFiles])
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>
@@ -322,7 +323,7 @@ const MyDropzone = (props) => {
                             <ul>
                                 {props.files.files?.split(',').map(file =>
                                     <a key={file} href={"http://172.16.3.64/original/" + file}>
-                                        <div className={"deleteButton"} style={{ backgroundColor: 'red' }} onClick={console.log("asd")}></div>
+                                        <div className={"deleteButton"} style={{ backgroundColor: 'red' }} onClick={console.log("")}></div>
                                         <AiFillFileText size={40} />
                                     </a>
                                 )}
