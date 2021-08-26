@@ -80,45 +80,35 @@ function OfferModal(props) {
     };
 
     const forwardClickHandler = () => {
-        props.activeModalRef.current.style.height = "30rem";
-        props.activeModalRef.current.style.width = "60rem";
-       
-
-        
         if (davamText === "Davam") {
-            console.log(offerInfo.name.value)
-           
-           
             const continueNext = () => {
-                if(vendorInputRef.current.value===""){
-                    setWhichPage(prevState => {
-                        return prevState
-                    })
-                }
-                else{
-                actPageRef.current.style.animationName = "slide_davam_current";
-                const animationendEventListener = () => {
-                    if (actPageRef.current.style.animationName === "slide_davam_next") {
-                        actPageRef.current.removeEventListener(
-                            "animationend",
-                            animationendEventListener,
-                            false
-                        );
+                if (vendorInputRef.current.value !== "") {
+                    props.activeModalRef.current.style.width = "60rem";
+                    props.activeModalRef.current.style.height = "30rem";
+                    actPageRef.current.style.animationName = "slide_davam_current";
+                    const animationendEventListener = () => {
+                        if (actPageRef.current.style.animationName === "slide_davam_next") {
+                            actPageRef.current.removeEventListener(
+                                "animationend",
+                                animationendEventListener,
+                                false
+                            );
+                        }
+                        setWhichPage(prevState => {
+                            if (prevState.page === 1) {
+                                actPageRef.current.style.animationName = "slide_davam_next"
+                                return {
+                                    page: prevState.page + 1,
+                                }
+                            } else return prevState
+                        });
                     }
-                    setWhichPage(prevState => {
-                        if (prevState.page === 1) {
-                            actPageRef.current.style.animationName = "slide_davam_next"
-                            return {
-                                page: prevState.page + 1,
-                            }
-                        } else return prevState
-                    });
+                    actPageRef.current.addEventListener(
+                        "animationend",
+                        animationendEventListener,
+                        false
+                    );
                 }
-                actPageRef.current.addEventListener(
-                    "animationend",
-                    animationendEventListener,
-                    false
-                );}
             }
             if (whichPage.page === 2) {
                 let errorMessage = "";
@@ -126,7 +116,7 @@ function OfferModal(props) {
                 if (errorMessage !== "")
                     setOperationResult({ visible: true, desc: errorMessage, details: details })
                 else continueNext()
-            } else continueNext()
+            }else continueNext()
         } else {
             const data = choices.map((choice, index) => [choice.fetched ? choice.id : null, choice.name, choice.material_id, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
             const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
@@ -236,7 +226,7 @@ const VendorSelection = props => {
     const [vendorList, setVendorList] = useState([])
     const [vendors, setVendors] = useState([]);
     const { setOfferInfo, offerInfo, modalContentContainerRef } = props
-    const vendorInputRef=props.vendorInputRef
+    const vendorInputRef = props.vendorInputRef
     const vendorListRef = useRef(null);
     const codeRef = useRef(null);
     const fetchGet = useFetch("GET");
