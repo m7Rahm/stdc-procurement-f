@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 import { AiFillFileText } from 'react-icons/ai'
-
+import table from "../../styles/Table.module.css"
 import NewOfferTableBody from './NewOfferTableBody'
 import '../../styles/styles.scss'
 import useFetch from '../../hooks/useFetch'
@@ -45,7 +45,7 @@ function OfferModal(props) {
                     })))
                     setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
                     setFiles(respJ[0].files.split(',').map(f => ({
-                        name:f, fetched: true
+                        name: f, fetched: true
                     })))
                 })
                 .catch(ex => console.log(ex))
@@ -143,7 +143,7 @@ function OfferModal(props) {
             else
                 formData.append("orderid", props.orderid)
 
-            files?.filter(file=>file.fetched!==true).forEach(file => formData.append("files", file))
+            files?.filter(file => file.fetched !== true).forEach(file => formData.append("files", file))
 
 
             if (!props.fetched) props.handleCloseModal(props.modalid)
@@ -306,7 +306,6 @@ const MyDropzone = (props) => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
     const setFiles = props.setFiles;
-    console.log(props.files)
     const onDrop = acceptedFiles => {
         setFiles(prev => [...prev, ...acceptedFiles])
     }
@@ -316,14 +315,14 @@ const MyDropzone = (props) => {
     return (
         <>
             {props.files &&
-                <ul>
+                <div className={table["files-container"]}>
                     {props.files.map(file =>
                         <a key={file.name} rel="noreferrer" target="_blank" href={"http://172.16.3.64/original/" + file.name}>
                             <div className={"deleteButton"} style={{ backgroundColor: 'red' }}></div>
                             <AiFillFileText size={40} />
                         </a>
                     )}
-                </ul>
+                </div>
             }
             <div style={{ padding: "1rem" }} {...getRootProps()}>
                 <input {...getInputProps()} />

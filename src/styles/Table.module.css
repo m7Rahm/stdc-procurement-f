@@ -73,6 +73,11 @@ ul.priorities-list>li:hover {
         transform: scale(1);
     }
 }
+.files-container{
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: center;
+}
 @keyframes scale-down {
     0% {
         transform: scale(1);
