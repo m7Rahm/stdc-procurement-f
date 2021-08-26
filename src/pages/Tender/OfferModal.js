@@ -269,7 +269,7 @@ const VendorSelection = props => {
                     defaultValue={offerInfo.name}
                     items={vendors}
                     handleItemClick={setVendor}
-                    style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+                    // style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
                 />
             </div>
             <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
