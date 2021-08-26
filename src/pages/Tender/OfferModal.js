@@ -17,7 +17,7 @@ function OfferModal(props) {
     const [vendors, setVendors] = useState([]);
     const [vendorList, setVendorList] = useState([])
     const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
-    const [files, setFiles] = useState(null);
+    const [files, setFiles] = useState([]);
 
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -58,7 +58,8 @@ function OfferModal(props) {
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
                     setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
-                    setFiles(prev => ({ ...prev, files: respJ[0].files, fetched: true }))
+                    setFiles(prev => ([...prev, { files: respJ[0].files, fetched: true }]))
+                    console.log("respJ",respJ)
                 }
                 )
                 .catch(ex => console.log(ex))
@@ -135,8 +136,12 @@ function OfferModal(props) {
             formData.append("mats", JSON.stringify(data));
             formData.append("vendorInfo", JSON.stringify(vendorInfo))
             formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
-            if (props.fetched)
+            if (props.fetched) {
                 formData.append("id", props.modalid)
+                formData.append("fileString", JSON.stringify(files.filter(file =>
+                    file.fetched === true
+                ).map(f => f.files)))
+            }
             else
                 formData.append("orderid", props.orderid)
 
@@ -256,7 +261,6 @@ function OfferModal(props) {
                                 name="vendor"
                                 autoComplete="off"
                                 defaultValue={offerInfo.voen}
-                            // onChange={searchByCode}
                             />
                         </div>
                     </div>
@@ -289,7 +293,7 @@ const MyDropzone = (props) => {
     const filesNames = useRef()
     const setFiles = props.setFiles;
     const onDrop = useCallback(acceptedFiles => {
-        setFiles(acceptedFiles)
+        setFiles(prev => [...prev, acceptedFiles])
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>
                 <p>{file.name}</p>
@@ -318,7 +322,10 @@ const MyDropzone = (props) => {
                         {props.files && props.files?.files !== "" ?
                             <ul>
                                 {props.files.files?.split(',').map(file =>
-                                    <a key={file} href={"http://172.16.3.64/original/" + file}><AiFillFileText size={40} /></a>
+                                    <a key={file} href={"http://172.16.3.64/original/" + file}>
+                                        <div className={"deleteButton"} style={{ backgroundColor: 'red' }} onClick={console.log("asd")}></div>
+                                        <AiFillFileText size={40} />
+                                    </a>
                                 )}
                             </ul>
                             : <></>}
