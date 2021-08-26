@@ -26,17 +26,18 @@ const InputSearchList = (props) => {
             <ul id={props.listid} tabIndex="0" ref={props.listRef} style={props.style} className={table["material-model-list"]}>
                 {
                     props.items.map(item => {
-                        const inputVal = props.inputRef.current ? props.inputRef.current.value : ""
+                        let inputVal = props.inputRef.current ? props.inputRef.current.value : ""
                             .replace(/e/gi, 'eə')
                             .replace(/ch?/gi, 'cç')
                             .replace(/i/gi, 'iı')
                             .replace(/gh?/gi, 'gğ')
                             .replace(/sh?/gi, 'sş')
                             .replace(/u/gi, 'uü')
-                            .replace(/o/gi, 'oö');
-                        // const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-                        // const title = item[props.text].replace(strRegExp, (text) => `<i>${text}</i>`);
-                        return <li key={item.id} dangerouslySetInnerHTML={{ __html: item[props.text] }} onClick={(e) => props.handleItemClick(e, item)}></li>
+                            .replace(/o/gi, 'oö')
+                        inputVal = inputVal.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+                        const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+                        const title = item[props.text].replace(strRegExp, (text) => `<i>${text}</i>`);
+                        return <li key={item.id} dangerouslySetInnerHTML={{ __html: title }} onClick={(e) => props.handleItemClick(e, item)}></li>
                     })
                 }
             </ul>

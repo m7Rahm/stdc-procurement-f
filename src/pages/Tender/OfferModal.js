@@ -116,7 +116,7 @@ function OfferModal(props) {
                 if (errorMessage !== "")
                     setOperationResult({ visible: true, desc: errorMessage, details: details })
                 else continueNext()
-            }else continueNext()
+            } else continueNext()
         } else {
             const data = choices.map((choice, index) => [choice.fetched ? choice.id : null, choice.name, choice.material_id, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
             const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
