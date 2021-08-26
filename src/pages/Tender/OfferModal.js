@@ -43,10 +43,12 @@ function OfferModal(props) {
                         alternative: 0,
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
-                    setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
-                    setFiles(respJ[0].files.split(',').map(f => ({
-                        name: f, fetched: true
-                    })))
+                    console.log(respJ)
+                    setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen, id: respJ[0].vendor_id })
+                    if (respJ[0].files !== "")
+                        setFiles(respJ[0].files.split(',').map(f => ({
+                            name: f, fetched: true
+                        })))
                 })
                 .catch(ex => console.log(ex))
     }, [fetchGet, props.modalid, props.fetched])
