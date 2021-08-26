@@ -13,7 +13,7 @@ function OfferModal(props) {
     const fetchGet = useFetch("GET")
     const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
     const [files, setFiles] = useState([]);
-
+    const vendorInputRef = useRef(null);
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const [choices, setChoices] = useState(props.fetched ? [] : props.orderContent.map((m, i) => ({
@@ -82,8 +82,20 @@ function OfferModal(props) {
     const forwardClickHandler = () => {
         props.activeModalRef.current.style.height = "30rem";
         props.activeModalRef.current.style.width = "60rem";
+       
+
+        
         if (davamText === "Davam") {
+            console.log(offerInfo.name.value)
+           
+           
             const continueNext = () => {
+                if(vendorInputRef.current.value===""){
+                    setWhichPage(prevState => {
+                        return prevState
+                    })
+                }
+                else{
                 actPageRef.current.style.animationName = "slide_davam_current";
                 const animationendEventListener = () => {
                     if (actPageRef.current.style.animationName === "slide_davam_next") {
@@ -106,7 +118,7 @@ function OfferModal(props) {
                     "animationend",
                     animationendEventListener,
                     false
-                );
+                );}
             }
             if (whichPage.page === 2) {
                 let errorMessage = "";
@@ -196,6 +208,7 @@ function OfferModal(props) {
                         modalContentContainerRef={props.modalContentContainerRef}
                         setOfferInfo={setOfferInfo}
                         offerInfo={offerInfo}
+                        vendorInputRef={vendorInputRef}
                     />
                     : whichPage.page === 2 ? (
                         <div style={{ marginTop: '40px' }}>
@@ -223,7 +236,7 @@ const VendorSelection = props => {
     const [vendorList, setVendorList] = useState([])
     const [vendors, setVendors] = useState([]);
     const { setOfferInfo, offerInfo, modalContentContainerRef } = props
-    const vendorInputRef = useRef(null);
+    const vendorInputRef=props.vendorInputRef
     const vendorListRef = useRef(null);
     const codeRef = useRef(null);
     const fetchGet = useFetch("GET");
