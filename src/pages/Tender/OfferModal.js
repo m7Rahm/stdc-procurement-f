@@ -128,8 +128,9 @@ function OfferModal(props) {
             }
             else
                 formData.append("orderid", props.orderid)
+                
+            files[0]?.forEach(file => formData.append("files", file))
 
-            files?.forEach(file => formData.append("files", file))
 
             if (!props.fetched) props.handleCloseModal(props.modalid)
 
@@ -226,7 +227,6 @@ const VendorSelection = props => {
     const fetchGet = useFetch("GET");
     useEffect(() => {
         const containerRef = modalContentContainerRef.current;
-        console.log(containerRef)
         containerRef.style.overflow = "visible"
         fetchGet(`/api/vendors`)
             .then(respJ => {
