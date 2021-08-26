@@ -8,7 +8,7 @@ import OfferModal from './OfferModal'
 function Offers(props) {
     const fetchGet = useFetch("GET")
     const [modalList, setModalList] = useState([])
-
+    const modalContentContainerRef = useRef(null);
     useEffect(() => {
         fetchGet(`/api/price-offers?orderid=${props.orderid}`)
             .then(respJ => {
@@ -68,6 +68,7 @@ function Offers(props) {
                                 modalid={modal.id}
                                 activeModalRef={activeModalRef}
                                 show={modal.state}
+                                contentRef={modalContentContainerRef}
                                 changeModalState={handleCloseModal}
                                 minimizeHandler={minimizeHandler}
                             >
@@ -77,6 +78,7 @@ function Offers(props) {
                                     modalid={modal.id}
                                     fetched={modal.fetched}
                                     orderid={props.orderid}
+                                    modalContentContainerRef={modalContentContainerRef}
                                     handleCloseModal={handleCloseModal}
                                     setModalList={setModalList}
                                 />

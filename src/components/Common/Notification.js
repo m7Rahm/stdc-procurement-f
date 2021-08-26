@@ -1,4 +1,3 @@
-import { indexOf } from "lodash";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import classes from "./Notification.module.css";
@@ -26,7 +25,7 @@ const Notifications = (props) => {
           notification={notification}
         />
       ))}
-      
+
     </div>
   );
 };

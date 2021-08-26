@@ -14,7 +14,7 @@ ul.potential-vendors {
     transform: translate(-50%, 10%);
     top: 8rem;
     border-radius: 7px;
-    overflow: hidden;
+    overflow: visible;
     width: 40rem;
     height: 20rem;
     animation: modal-open 200ms ease both;
@@ -104,8 +104,22 @@ ul.potential-vendors {
 
 .modalTitle {
     height: 35px;
-    background-color: black;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    background-image: linear-gradient(to bottom, #333, #555);
     color: white;
+}
+
+.input-ribbon input {
+    padding: 1rem;
+    border: none;
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    transition: box-shadow 200ms;
+}
+
+.input-ribbon input:focus {
+    box-shadow: 0px 0px 10px 3px rgb(64, 168, 196);
 }
 
 .modalTitle>div>div {
