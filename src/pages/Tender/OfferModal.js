@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 import { AiFillFileText } from 'react-icons/ai'
@@ -44,7 +44,9 @@ function OfferModal(props) {
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
                     setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
-                    setFiles(prev => ([ ...prev,{ files: respJ[0].files, fetched: true }]))
+                    setFiles(respJ[0].files.split(',').map(f => ({
+                        name:f, fetched: true
+                    })))
                 })
                 .catch(ex => console.log(ex))
     }, [fetchGet, props.modalid, props.fetched])
@@ -122,14 +124,14 @@ function OfferModal(props) {
             formData.append("orderType", JSON.stringify(props.orderContent[0].order_type))
             if (props.fetched) {
                 formData.append("id", props.modalid)
-                formData.append("fileString", JSON.stringify(files.filter(file =>
+                formData.append("fileString", files.filter(file =>
                     file.fetched === true
-                ).map(f => f.files)))
+                ).map(f => f.name).join(','))
             }
             else
                 formData.append("orderid", props.orderid)
-                
-            files[0]?.forEach(file => formData.append("files", file))
+
+            files?.filter(file=>file.fetched!==true).forEach(file => formData.append("files", file))
 
 
             if (!props.fetched) props.handleCloseModal(props.modalid)
@@ -269,10 +271,10 @@ const VendorSelection = props => {
                     defaultValue={offerInfo.name}
                     items={vendors}
                     handleItemClick={setVendor}
-                    style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+                // style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
                 />
             </div>
-            <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
+            <div style={{ position: 'relative' }}>
                 <input
                     type="name"
                     placeholder="VOEN"
@@ -290,47 +292,43 @@ const VendorSelection = props => {
 const MyDropzone = (props) => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
-    const filesNames = useRef()
     const setFiles = props.setFiles;
-    const onDrop = useCallback(acceptedFiles => {
-        console.log(props.files)
-        setFiles(prev => [...prev, acceptedFiles])
-        filesNames.current = acceptedFiles.map((file, index) => (
-            <li key={index}>
-                <p>{file.name}</p>
-            </li>
-        ))
-    }, [setFiles])
+    console.log(props.files)
+    const onDrop = acceptedFiles => {
+        setFiles(prev => [...prev, ...acceptedFiles])
+    }
 
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
     return (
-        <div style={{ padding: "2rem" }} {...getRootProps()}>
-            <input {...getInputProps()} />
-            {
-                isDragActive ?
-                    <div
-                        className={hovered ? 'fileUpload fileDrop' : 'fileUpload'}
-                        onMouseEnter={toggleHover}
-                        onMouseLeave={toggleHover}>
-                        <BsUpload size='60' />
-                        <p>Drop the files here ...</p>
-                    </div> :
-                    <div className="fileUpload">
-                        <BsUpload size='30' />
-                        <p>Fayl əlavə etmək üçün buraya klikləyin və ya sürüşdürün</p>
-                        {props.files && props.files?.files !== "" ?
-                            <ul>
-                                {props.files.files?.split(',').map(file =>
-                                    <a key={file} href={"http://172.16.3.64/original/" + file}>
-                                        <div className={"deleteButton"} style={{ backgroundColor: 'red' }} onClick={console.log("")}></div>
-                                        <AiFillFileText size={40} />
-                                    </a>
-                                )}
-                            </ul>
-                            : <></>}
-                    </div>
+        <>
+            {props.files &&
+                <ul>
+                    {props.files.map(file =>
+                        <a key={file.name} rel="noreferrer" target="_blank" href={"http://172.16.3.64/original/" + file.name}>
+                            <div className={"deleteButton"} style={{ backgroundColor: 'red' }}></div>
+                            <AiFillFileText size={40} />
+                        </a>
+                    )}
+                </ul>
             }
-        </div>
+            <div style={{ padding: "1rem" }} {...getRootProps()}>
+                <input {...getInputProps()} />
+                {
+                    isDragActive ?
+                        <div
+                            className={hovered ? 'fileUpload fileDrop' : 'fileUpload'}
+                            onMouseEnter={toggleHover}
+                            onMouseLeave={toggleHover}>
+                            <BsUpload size='60' />
+                            <p>Drop the files here ...</p>
+                        </div> :
+                        <div className="fileUpload">
+                            <BsUpload size='30' />
+                            <p>Fayl əlavə etmək üçün buraya klikləyin və ya sürüşdürün</p>
+                        </div>
+                }
+            </div>
+        </>
     )
 }
