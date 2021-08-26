@@ -11,11 +11,6 @@ import { TokenContext } from '../../App'
 import { v4 } from "uuid"
 function OfferModal(props) {
     const fetchGet = useFetch("GET")
-    const vendorInputRef = useRef(null);
-    const vendorListRef = useRef(null);
-    const codeRef = useRef(null);
-    const [vendors, setVendors] = useState([]);
-    const [vendorList, setVendorList] = useState([])
     const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
     const [files, setFiles] = useState([]);
 
@@ -34,15 +29,6 @@ function OfferModal(props) {
         color: 0xd2e * (i + 1) / props.orderContent.length
     })))
     useEffect(() => {
-        fetchGet(`/api/vendors`)
-            .then(respJ => {
-                setVendorList(respJ)
-                setVendors(respJ)
-            })
-            .catch(ex => console.log(ex))
-    }, [fetchGet])
-
-    useEffect(() => {
         if (props.fetched)
             fetchGet(`/api/price-offers/${props.modalid}`)
                 .then(respJ => {
@@ -58,10 +44,8 @@ function OfferModal(props) {
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
                     setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
-                    setFiles(prev => ([...prev, { files: respJ[0].files, fetched: true }]))
-                    console.log("respJ",respJ)
-                }
-                )
+                    setFiles(prev => ({ ...prev, files: respJ[0].files, fetched: true }))
+                })
                 .catch(ex => console.log(ex))
     }, [fetchGet, props.modalid, props.fetched])
     const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
@@ -179,38 +163,6 @@ function OfferModal(props) {
         }
     };
 
-    const handleVendorSearch = (e) => {
-        const value = e.target.value;
-        const charArray = value.split("");
-        const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
-        const regExp = new RegExp(`${reg}`, "gi");
-        setOfferInfo(prev => ({ ...prev, name: value }))
-        const searchResult = vendorList.filter(vendor => regExp.test(vendor.name));
-        setVendors(searchResult);
-        handleVendorSearch2(value)
-    }
-
-    const setVendor = (_, vendor) => {
-        handleVendorSelection(vendor)
-        setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id }))
-        vendorInputRef.current.value = vendor.name;
-        codeRef.current.value = vendor.voen;
-        vendorListRef.current.style.display = "none";
-    }
-
-    const handleVendorSearch2 = useCallback((value) => {
-        setOfferInfo(prev => ({
-            ...prev, name: value
-        }))
-    }, [setOfferInfo]);
-
-
-    const handleVendorSelection = useCallback((vendor) => {
-        setOfferInfo(prev => ({
-            ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id
-        }))
-    }, [setOfferInfo]);
-
     return (
         <div>
             <div className="new-ord-nav-container" >
@@ -236,49 +188,27 @@ function OfferModal(props) {
                 className="page-container"
                 ref={actPageRef}
             >
-                {whichPage.page === 1 ? (
-                    <div style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
-                        <div style={{ position: 'relative' }}>
-                            <InputSearchList
-                                placeholder="Vendor"
-                                text="name"
-                                name="vendor"
-                                listid="vendorListRef"
-                                inputRef={vendorInputRef}
-                                listRef={vendorListRef}
-                                handleInputChange={handleVendorSearch}
-                                defaultValue={offerInfo.name}
-                                items={vendors}
-                                handleItemClick={setVendor}
-                                style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+                {whichPage.page === 1
+                    ? <VendorSelection
+                        modalContentContainerRef={props.modalContentContainerRef}
+                        setOfferInfo={setOfferInfo}
+                        offerInfo={offerInfo}
+                    />
+                    : whichPage.page === 2 ? (
+                        <div style={{ marginTop: '40px' }}>
+                            <NewOfferTableBody
+                                orderInfo={{ orderType: props.orderContent[0].orderType, structure: "" }}
+                                choices={choices}
+                                initialMaterials={props.orderContent}
+                                setChoices={setChoices}
                             />
+                            <MyDropzone
+                                files={files}
+                                setFiles={setFiles} />
                         </div>
-                        <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
-                            <input
-                                type="name"
-                                placeholder="VOEN"
-                                ref={codeRef}
-                                name="vendor"
-                                autoComplete="off"
-                                defaultValue={offerInfo.voen}
-                            />
-                        </div>
-                    </div>
-                ) : whichPage.page === 2 ? (
-                    <div style={{ marginTop: '40px' }}>
-                        <NewOfferTableBody
-                            orderInfo={{ orderType: props.orderContent[0].orderType, structure: "" }}
-                            choices={choices}
-                            initialMaterials={props.orderContent}
-                            setChoices={setChoices}
-                        />
-                        <MyDropzone
-                            files={files}
-                            setFiles={setFiles} />
-                    </div>
-                ) : (
-                    <div></div>
-                )}
+                    ) : (
+                        <div></div>
+                    )}
             </div>
         </div>
     )
@@ -286,6 +216,76 @@ function OfferModal(props) {
 
 export default OfferModal
 
+const VendorSelection = props => {
+    const [vendorList, setVendorList] = useState([])
+    const [vendors, setVendors] = useState([]);
+    const { setOfferInfo, offerInfo, modalContentContainerRef } = props
+    const vendorInputRef = useRef(null);
+    const vendorListRef = useRef(null);
+    const codeRef = useRef(null);
+    const fetchGet = useFetch("GET");
+    useEffect(() => {
+        const containerRef = modalContentContainerRef.current;
+        console.log(containerRef)
+        containerRef.style.overflow = "visible"
+        fetchGet(`/api/vendors`)
+            .then(respJ => {
+                setVendorList(respJ)
+                setVendors(respJ)
+            })
+            .catch(ex => console.log(ex))
+        return () => {
+            containerRef.style.overflow = "auto";
+        }
+    }, [fetchGet, modalContentContainerRef])
+
+    const handleVendorSearch = (e) => {
+        const value = e.target.value;
+        const charArray = value.split("");
+        const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
+        const regExp = new RegExp(`${reg}`, "gi");
+        setOfferInfo(prev => ({ ...prev, name: value }))
+        const searchResult = vendorList.filter(vendor => regExp.test(vendor.name));
+        setVendors(searchResult);
+    }
+
+    const setVendor = (_, vendor) => {
+        setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id }))
+        vendorInputRef.current.value = vendor.name;
+        codeRef.current.value = vendor.voen;
+        vendorListRef.current.style.display = "none";
+    }
+    return (
+        <div className="input-ribbon" style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
+            <div style={{ position: 'relative' }}>
+                <InputSearchList
+                    placeholder="Vendor"
+                    text="name"
+                    name="vendor"
+                    listid="vendorListRef"
+                    inputRef={vendorInputRef}
+                    listRef={vendorListRef}
+                    handleInputChange={handleVendorSearch}
+                    defaultValue={offerInfo.name}
+                    items={vendors}
+                    handleItemClick={setVendor}
+                    style={{ width: '150px', maxWidth: ' 200px' }}//, outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+                />
+            </div>
+            <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
+                <input
+                    type="name"
+                    placeholder="VOEN"
+                    ref={codeRef}
+                    name="vendor"
+                    autoComplete="off"
+                    defaultValue={offerInfo.voen}
+                // onChange={searchByCode}
+                />
+            </div>
+        </div>
+    )
+}
 
 const MyDropzone = (props) => {
     const [hovered, setHovered] = useState(false);
@@ -301,7 +301,6 @@ const MyDropzone = (props) => {
         ))
     }, [setFiles])
 
-    console.log(props.files)
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
     return (

@@ -1,40 +1,49 @@
-import React, { useState, useEffect, useContext, useRef, lazy, Suspense } from "react";
+import React, {
+	useState,
+	useEffect,
+	useContext,
+	useRef,
+	lazy,
+	Suspense,
+} from "react";
 import { Link, Switch, Route, Redirect } from "react-router-dom";
 import { TokenContext } from "../App";
-import LeftSidePane from "../components/Common/LeftSidePane"
+import LeftSidePane from "../components/Common/LeftSidePane";
 import Navigation from "../components/Common/Navigation";
 // import PaymentLayout from "../components/Exports/PaymentLayout";
-import Loading from "../components/Misc/Loading"
+import Loading from "../components/Misc/Loading";
+import Notification from "../components/Common/Notification";
 const Contracts = lazy(() => import("./Contracts"));
-const Orders = lazy(() => import("./Orders"))
-const Tender = lazy(() => import("./Tender"))
-const Admin = lazy(() => import("./AdminPage"))
+const Orders = lazy(() => import("./Orders"));
+const Tender = lazy(() => import("./Tender"));
+const Admin = lazy(() => import("./AdminPage"));
 const availableModules = [
 	{
 		text: "Sifarişlər",
 		label: "Orders",
 		link: "/orders",
-		component: Orders
+		component: Orders,
 	},
 	{
 		text: "Admin",
 		label: "Admin",
 		link: "/admin",
-		component: Admin
+		component: Admin,
 	},
 	{
 		text: "Müqavilələr",
 		label: "Contracts",
 		link: "/contracts",
-		component: Contracts
+		component: Contracts,
 	},
 	{
 		text: "Tender",
 		label: "Tender",
 		link: "/tender",
-		component: Tender
-	}
-]
+		component: Tender,
+	},
+];
+let key = 0;
 const SelectModule = () => {
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0].token;
@@ -47,7 +56,31 @@ const SelectModule = () => {
 	const backgroundRef = useRef(null);
 	const leftNavIconRef = useRef(null);
 	const loadingIndicatorRef = useRef(null);
+	const [notifications, setNotifications] = useState([]);
+	const buttonHandler = (e) => {
+		const target = e.target;
+		setNotifications((prev) =>
+			prev.filter((notification) => notification.key !== target.id)
+		);
+	};
+	function clickHandler() {
+		key = key + 1;
+		setNotifications((prev) => {
+			const newState = [
+				...prev.slice(-3),
+				{
+					content: `bla +${key}`,
+					link: "#",
+					key: `${key}`,
+				},
+			];
+			console.log(newState[0]);
+
+			return newState;
+		});
+	}
 	useEffect(() => {
+
 		let mounted = true;
 		if (token && navigator.onLine) {
 			const webSocket = new WebSocket("ws://172.16.3.64:12345");
@@ -80,6 +113,11 @@ const SelectModule = () => {
 	}
 	return (
 		<WebSocketContext.Provider value={webSocket}>
+			<Notification clickHandler={clickHandler}
+				buttonHandler={buttonHandler}
+				notifications={notifications}
+				setNotifications={setNotifications}
+			/>
 			<Switch>
 				<Route exact path="/">
 					<div className="splash-screen">
@@ -176,8 +214,14 @@ const SelectModule = () => {
 					</>
 				}
 			</Switch>
+			<button
+				style={{ width: "100px", bakcgroundColor: "red", height: "10px" }}
+				onClick={clickHandler}
+			>
+				asdasf
+			</button>
 		</WebSocketContext.Provider>
-	)
-}
-export default SelectModule
+	);
+};
+export default SelectModule;
 export const WebSocketContext = React.createContext();

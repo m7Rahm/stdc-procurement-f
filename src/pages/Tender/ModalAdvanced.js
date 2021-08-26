@@ -53,7 +53,7 @@ const ModalAdvanced = React.forwardRef((props, ref) => {
                 <IoMdClose className="modal-close-button" onClick={() => props.changeModalState(props.modalid)} size='28' style={{ paddingTop: '10px', verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
                 <VscChromeMinimize className="modal-close-button" onClick={() => props.minimizeHandler(props.modalid)} size='28' style={{ paddingTop: '10px', verticalAlign: 'baseline', float: 'right', cursor: "default" }} />
             </div>
-            <div className="priceModal">
+            <div ref={props.contentRef} className="priceModal">
                 <div className="modal-container" >{props.children}</div>
             </div>
         </div>
