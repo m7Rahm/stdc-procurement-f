@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 import { AiFillFileText } from 'react-icons/ai'
@@ -128,7 +128,7 @@ function OfferModal(props) {
             }
             else
                 formData.append("orderid", props.orderid)
-                
+
             files[0]?.forEach(file => formData.append("files", file))
 
 
@@ -292,44 +292,46 @@ const MyDropzone = (props) => {
     const toggleHover = () => setHovered(!hovered);
     const filesNames = useRef()
     const setFiles = props.setFiles;
-    const onDrop = useCallback(acceptedFiles => {
+    const onDrop = acceptedFiles => {
         setFiles(prev => [...prev, acceptedFiles])
         filesNames.current = acceptedFiles.map((file, index) => (
             <li key={index}>
                 <p>{file.name}</p>
             </li>
         ))
-    }, [setFiles])
+    }
 
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
     return (
-        <div style={{ padding: "2rem" }} {...getRootProps()}>
-            <input {...getInputProps()} />
-            {
-                isDragActive ?
-                    <div
-                        className={hovered ? 'fileUpload fileDrop' : 'fileUpload'}
-                        onMouseEnter={toggleHover}
-                        onMouseLeave={toggleHover}>
-                        <BsUpload size='60' />
-                        <p>Drop the files here ...</p>
-                    </div> :
-                    <div className="fileUpload">
-                        <BsUpload size='30' />
-                        <p>Fayl əlavə etmək üçün buraya klikləyin və ya sürüşdürün</p>
-                        {props.files && props.files?.files !== "" ?
-                            <ul>
-                                {props.files.files?.split(',').map(file =>
-                                    <a key={file} href={"http://172.16.3.64/original/" + file}>
-                                        <div className={"deleteButton"} style={{ backgroundColor: 'red' }} onClick={console.log("asd")}></div>
-                                        <AiFillFileText size={40} />
-                                    </a>
-                                )}
-                            </ul>
-                            : <></>}
-                    </div>
+        <>
+            {props.files && props.files?.files !== "" &&
+                <ul>
+                    {props.files.files?.split(',').map(file =>
+                        <a key={file} rel="noreferrer" target="_blank" href={"http://172.16.3.64/original/" + file}>
+                            <div className={"deleteButton"} style={{ backgroundColor: 'red' }}></div>
+                            <AiFillFileText size={40} />
+                        </a>
+                    )}
+                </ul>
             }
-        </div>
+            <div style={{ padding: "1rem" }} {...getRootProps()}>
+                <input {...getInputProps()} />
+                {
+                    isDragActive ?
+                        <div
+                            className={hovered ? 'fileUpload fileDrop' : 'fileUpload'}
+                            onMouseEnter={toggleHover}
+                            onMouseLeave={toggleHover}>
+                            <BsUpload size='60' />
+                            <p>Drop the files here ...</p>
+                        </div> :
+                        <div className="fileUpload">
+                            <BsUpload size='30' />
+                            <p>Fayl əlavə etmək üçün buraya klikləyin və ya sürüşdürün</p>
+                        </div>
+                }
+            </div>
+        </>
     )
 }
