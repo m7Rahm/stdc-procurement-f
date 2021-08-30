@@ -1,11 +1,11 @@
 .notification_wrapper{
     overflow:hidden;
-    height: fit-content;
     width: 350px;
     position: fixed;
     display: block;
-    z-index:1000;
-    
+    z-index:3;
+    top: 0;
+    transition: all 500ms;   
 }
 .notification_bar{
     border-radius: 15px;
@@ -51,4 +51,26 @@
 }
 .display_hide{
     display:none;
+}
+@keyframes fadeout {
+    from{transform:translateX(0)}
+    to{transform:translateX(-350px)}
+}
+@keyframes fadein {
+    from{opacity:0;}
+    to{opacity:1}
+}
+@keyframes initialanimation{
+    from{margin-top:50px}
+    to{margin-top:0px}
+}
+.fadeoutanimation{
+    animation: fadeout 400ms ease-in;
+  
+}
+.fadeinanimation{
+    animation: fadein 200ms;
+}
+.initialanimation{
+    animation: initialanimation 200ms;
 }

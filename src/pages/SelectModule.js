@@ -6,13 +6,14 @@ import React, {
 	lazy,
 	Suspense,
 } from "react";
+
 import { Link, Switch, Route, Redirect } from "react-router-dom";
 import { TokenContext } from "../App";
 import LeftSidePane from "../components/Common/LeftSidePane";
 import Navigation from "../components/Common/Navigation";
 // import PaymentLayout from "../components/Exports/PaymentLayout";
 import Loading from "../components/Misc/Loading";
-import Notification from "../components/Common/Notification";
+import Notifications from "../components/Common/Notification";
 const Contracts = lazy(() => import("./Contracts"));
 const Orders = lazy(() => import("./Orders"));
 const Tender = lazy(() => import("./Tender"));
@@ -57,6 +58,7 @@ const SelectModule = () => {
 	const leftNavIconRef = useRef(null);
 	const loadingIndicatorRef = useRef(null);
 	const [notifications, setNotifications] = useState([]);
+	const notificationsRef = useRef({});
 	const buttonHandler = (e) => {
 		const target = e.target;
 		setNotifications((prev) =>
@@ -65,19 +67,19 @@ const SelectModule = () => {
 	};
 	function clickHandler() {
 		key = key + 1;
+		
 		setNotifications((prev) => {
 			const newState = [
-				...prev.slice(-3),
+				...prev,
 				{
-					content: `bla +${key}`,
+					content: `untitled +${key}`,
 					link: "#",
 					key: `${key}`,
 				},
 			];
-			console.log(newState[0]);
-
 			return newState;
 		});
+	
 	}
 	useEffect(() => {
 
@@ -113,8 +115,10 @@ const SelectModule = () => {
 	}
 	return (
 		<WebSocketContext.Provider value={webSocket}>
-			<Notification clickHandler={clickHandler}
+			<Notifications 
+				clickHandler={clickHandler}
 				buttonHandler={buttonHandler}
+				notificationsRef={notificationsRef}
 				notifications={notifications}
 				setNotifications={setNotifications}
 			/>
