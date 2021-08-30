@@ -11,7 +11,7 @@ import { TokenContext } from '../../App'
 import { v4 } from "uuid"
 import DeleteDocButton from '../../components/Common/DeleteDocButton'
 import { Gif } from '@material-ui/icons'
- 
+
 
 function OfferModal(props) {
     const fetchGet = useFetch("GET")
@@ -213,13 +213,13 @@ function OfferModal(props) {
                                 initialMaterials={props.orderContent}
                                 setChoices={setChoices}
                             />
-                            
+
                             <>
-                            
-                            <MyDropzone
-                                files={files}
-                                setFiles={setFiles} />
-                                </>
+
+                                <MyDropzone
+                                    files={files}
+                                    setFiles={setFiles} />
+                            </>
                         </div>
                     ) : (
                         <div></div>
@@ -312,26 +312,26 @@ const MyDropzone = (props) => {
         setFiles(prev => [...prev, ...acceptedFiles])
     }
     const deleteDocHandler = e => {
-       
+
         const target = e.target
-       
-        setFiles(prev => prev.filter((file)=> file.name!==target.id))
+
+        setFiles(prev => prev.filter((file) => file.name !== target.id))
     }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
     return (
         <>
-       
+
             {props.files &&
                 <div className={table["files-container"]}>
                     {props.files.map(file =>
-                    <div key={file.name}>
-                         <DeleteDocButton deleteDocHandler={deleteDocHandler} id={file.name}/>
-                        <a key={file.name} rel="noreferrer" target="_blank" href={"http://172.16.3.64/original/" + file.name}>
-                         
-                        
-                            <AiFillFileText size={40} />
-                        </a>
+                        <div key={file.name}>
+                            <DeleteDocButton deleteDocHandler={deleteDocHandler} id={file.name} />
+                            <a key={file.name} rel="noreferrer" target="_blank" href={"http://172.16.3.64/original/" + file.name}>
+
+
+                                <AiFillFileText size={40} />
+                            </a>
                         </div>
                     )}
                 </div>
