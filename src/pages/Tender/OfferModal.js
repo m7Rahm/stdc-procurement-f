@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone'
 import { BsUpload } from 'react-icons/bs'
 import { AiFillFileText } from 'react-icons/ai'
 import table from "../../styles/Table.module.css"
+import '../../styles/Tender.css'
 import NewOfferTableBody from './NewOfferTableBody'
 import '../../styles/styles.scss'
 import useFetch from '../../hooks/useFetch'
@@ -325,8 +326,8 @@ const MyDropzone = (props) => {
             {props.files &&
                 <div className={table["files-container"]}>
                     {props.files.map(file =>
-                        <div key={file.name}>
-                            <DeleteDocButton deleteDocHandler={deleteDocHandler} id={file.name} />
+                        <div className={"files"} key={file.name}>
+                            <DeleteDocButton  deleteDocHandler={deleteDocHandler} id={file.name} />
                             <a key={file.name} rel="noreferrer" target="_blank" href={"http://172.16.3.64/original/" + file.name}>
 
 
