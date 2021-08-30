@@ -10,7 +10,6 @@ import InputSearchList from '../../components/Misc/InputSearchList'
 import { TokenContext } from '../../App'
 import { v4 } from "uuid"
 import DeleteDocButton from '../../components/Common/DeleteDocButton'
-import { Gif } from '@material-ui/icons'
 
 
 function OfferModal(props) {

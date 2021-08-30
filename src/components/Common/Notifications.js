@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { MdClose } from "react-icons/md";
 import { Link } from "react-router-dom";
 import classes from "./Notification.module.css";
 const Notifications = (props) => {
@@ -9,8 +10,8 @@ const Notifications = (props) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  
-     if (props.notifications.length >= 1) {
+
+    if (props.notifications.length >= 1) {
       timeoutRef.current = setTimeout(function () {
         const key = props.notifications[0].key;
         const elem = props.notificationsRef.current[key];
@@ -26,25 +27,23 @@ const Notifications = (props) => {
             classes["fadeoutanimation"]
           );
         }
-        
+
         elem.addEventListener(
           "animationend",
           () => {
-            if(props.notifications.length>1){
-            const key2 = props.notifications[1].key;
-            const elem2 = props.notificationsRef.current[key2];
+            if (props.notifications.length > 1) {
+              const key2 = props.notifications[1].key;
+              const elem2 = props.notificationsRef.current[key2];
 
-            elem2.classList.replace(
-              classes["fadeinanimation"],
-              classes["initialanimation"]
-            );
+              elem2.classList.replace(
+                classes["fadeinanimation"],
+                classes["initialanimation"]
+              );
             }
             setNotifications((prev) => prev.filter((_, index) => index !== 0));
           },
           false
         );
-        
-        
       }, 2000);
     }
   });
@@ -73,13 +72,17 @@ const Notification = (props) => {
       ref={(elem) => (props.notificationsRef.current[props.id] = elem)}
       className={`${classes.notification_bar} ${classes.fadeinanimation} `}
     >
-      <Link to={"#"}className={classes.text}>{props.notification.content}</Link>
+      <div>
+        <Link to={"#"} className={classes.text}>
+          {props.notification.content}
+        </Link>
+      </div>
       <div
         className={classes.exit_button}
         onClick={props.buttonHandler}
         id={props.id}
       >
-        X
+        <MdClose size="20" />
       </div>
     </div>
   );

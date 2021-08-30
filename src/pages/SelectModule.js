@@ -13,7 +13,7 @@ import LeftSidePane from "../components/Common/LeftSidePane";
 import Navigation from "../components/Common/Navigation";
 // import PaymentLayout from "../components/Exports/PaymentLayout";
 import Loading from "../components/Misc/Loading";
-import Notifications from "../components/Common/Notification";
+import Notifications from "../components/Common/Notifications";
 const Contracts = lazy(() => import("./Contracts"));
 const Orders = lazy(() => import("./Orders"));
 const Tender = lazy(() => import("./Tender"));
