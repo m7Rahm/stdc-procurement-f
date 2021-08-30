@@ -9,6 +9,10 @@ import useFetch from '../../hooks/useFetch'
 import InputSearchList from '../../components/Misc/InputSearchList'
 import { TokenContext } from '../../App'
 import { v4 } from "uuid"
+import DeleteDocButton from '../../components/Common/DeleteDocButton'
+import { Gif } from '@material-ui/icons'
+ 
+
 function OfferModal(props) {
     const fetchGet = useFetch("GET")
     const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
@@ -44,10 +48,12 @@ function OfferModal(props) {
                         alternative: 0,
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
-                    setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen })
-                    setFiles(respJ[0].files.split(',').map(f => ({
-                        name: f, fetched: true
-                    })))
+                    console.log(respJ)
+                    setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen, id: respJ[0].vendor_id })
+                    if (respJ[0].files !== "")
+                        setFiles(respJ[0].files.split(',').map(f => ({
+                            name: f, fetched: true
+                        })))
                 })
                 .catch(ex => console.log(ex))
     }, [fetchGet, props.modalid, props.fetched])
@@ -207,9 +213,13 @@ function OfferModal(props) {
                                 initialMaterials={props.orderContent}
                                 setChoices={setChoices}
                             />
+                            
+                            <>
+                            
                             <MyDropzone
                                 files={files}
                                 setFiles={setFiles} />
+                                </>
                         </div>
                     ) : (
                         <div></div>
@@ -293,6 +303,7 @@ const VendorSelection = props => {
     )
 }
 
+
 const MyDropzone = (props) => {
     const [hovered, setHovered] = useState(false);
     const toggleHover = () => setHovered(!hovered);
@@ -300,18 +311,28 @@ const MyDropzone = (props) => {
     const onDrop = acceptedFiles => {
         setFiles(prev => [...prev, ...acceptedFiles])
     }
-
+    const deleteDocHandler = e => {
+       
+        const target = e.target
+       
+        setFiles(prev => prev.filter((file)=> file.name!==target.id))
+    }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
     return (
         <>
+       
             {props.files &&
                 <div className={table["files-container"]}>
                     {props.files.map(file =>
+                    <div key={file.name}>
+                         <DeleteDocButton deleteDocHandler={deleteDocHandler} id={file.name}/>
                         <a key={file.name} rel="noreferrer" target="_blank" href={"http://172.16.3.64/original/" + file.name}>
-                            <div className={"deleteButton"} style={{ backgroundColor: 'red' }}></div>
+                         
+                        
                             <AiFillFileText size={40} />
                         </a>
+                        </div>
                     )}
                 </div>
             }
