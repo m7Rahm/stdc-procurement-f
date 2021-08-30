@@ -66,10 +66,7 @@ const SelectModule = () => {
 		const key = target.id;
 		const elem = notificationsRef.current[key];
 		elem.classList.add(classes["fadeoutanimation"]);
-		elem.addEventListener(
-			"animationend",
-			() => setNotifications((prev) => prev.filter((notification) => notification.key !== target.id)), false
-		)
+		elem.addEventListener("animationend", () => setNotifications((prev) => prev.filter((notification) => notification.key !== target.id)), false)
 	};
 	const createNewNotification = (content = '', link) => {
 		setNotifications((prev) => {
