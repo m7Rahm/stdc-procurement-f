@@ -21,7 +21,6 @@ function OfferModal(props) {
     const vendorInputRef = useRef(null);
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
-
     const [choices, setChoices] = useState(props.fetched ? [] : props.orderContent.map((m, i) => ({
         id: v4(),
         material_id: m.material_id,
@@ -141,7 +140,6 @@ function OfferModal(props) {
             else
                 formData.append("orderid", props.orderid)
             files?.filter(file => file.fetched !== true).forEach(file => formData.append("files", file))
-            if (!props.fetched) props.handleCloseModal(props.modalid)
             const requestOptions = {
                 method: 'POST',
                 headers: {
