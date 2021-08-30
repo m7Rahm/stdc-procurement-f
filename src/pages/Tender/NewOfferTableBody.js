@@ -11,7 +11,6 @@ const NewOfferTableBody = (props) => {
   const setChoices = props.setChoices;
   const priorityRef = useRef({ style: { display: 'none' } })
   const handleAddClick = (id) => {
-    console.log(id)
     setChoices(prev => {
       const newState = [...prev];
       const index = newState.findIndex(material => material.material_id === id);

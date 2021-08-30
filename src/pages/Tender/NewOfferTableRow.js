@@ -91,7 +91,7 @@ function NewOfferTableRow(props) {
     return (
         <li ref={rowRef} id={rowid} className={props.classname}>
             <div style={{ position: "relative" }}>
-                <div style={{ backgroundImage: `linear-gradient(to right, #${props.color.toString(16)}, transparent)` }} className={table["material-color-indicator"]}></div>
+                <div style={{ backgroundImage: `linear-gradient(to right, #${Math.trunc(props.color).toString(16)}, transparent)` }} className={table["material-color-indicator"]}></div>
                 {props.index + 1}
             </div>
             <div style={{ position: 'relative' }} className={table["input-container"]}>

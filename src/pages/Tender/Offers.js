@@ -53,11 +53,10 @@ function Offers(props) {
     const handleOfferSelect = (offerId) => {
         setModalList(prev => prev.map(modal => modal.id === offerId ? { ...modal, state: 1 } : modal))
     }
-
     return (
         <div>
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
-                {modalList.map((modal, index) => <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{"Təklif " + (index + 1)}</div>)}
+                {modalList.map((modal, index) => <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{`${modal.vendor_name || ""} ${!modal.fetched ? "(Yeni)" : ""}`}</div>)}
                 <BsPlus size='30' onClick={handleClick} style={{ cursor: 'pointer' }} />
             </div>
             {
@@ -68,6 +67,7 @@ function Offers(props) {
                                 modalid={modal.id}
                                 activeModalRef={activeModalRef}
                                 show={modal.state}
+                                headerText={modal.vendor_name}
                                 contentRef={modalContentContainerRef}
                                 changeModalState={handleCloseModal}
                                 minimizeHandler={minimizeHandler}

@@ -16,6 +16,7 @@ function OfferModal(props) {
     const vendorInputRef = useRef(null);
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
+
     const [choices, setChoices] = useState(props.fetched ? [] : props.orderContent.map((m, i) => ({
         id: v4(),
         material_id: m.material_id,
@@ -132,12 +133,8 @@ function OfferModal(props) {
             }
             else
                 formData.append("orderid", props.orderid)
-
             files?.filter(file => file.fetched !== true).forEach(file => formData.append("files", file))
-
-
             if (!props.fetched) props.handleCloseModal(props.modalid)
-
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -145,7 +142,6 @@ function OfferModal(props) {
                 },
                 body: formData
             };
-
             if (props.fetched)
                 fetch('http://172.16.3.64/api/update-price-offer', requestOptions)
                     .then(response => response.json())
@@ -197,7 +193,10 @@ function OfferModal(props) {
                     ? <VendorSelection
                         modalContentContainerRef={props.modalContentContainerRef}
                         setOfferInfo={setOfferInfo}
+                        activeModalRef={props.activeModalRef}
                         offerInfo={offerInfo}
+                        modalid={props.modalid}
+                        setModalList={props.setModalList}
                         vendorInputRef={vendorInputRef}
                     />
                     : whichPage.page === 2 ? (
@@ -225,7 +224,7 @@ export default OfferModal
 const VendorSelection = props => {
     const [vendorList, setVendorList] = useState([])
     const [vendors, setVendors] = useState([]);
-    const { setOfferInfo, offerInfo, modalContentContainerRef } = props
+    const { setOfferInfo, offerInfo, modalContentContainerRef, modalid } = props
     const vendorInputRef = props.vendorInputRef
     const vendorListRef = useRef(null);
     const codeRef = useRef(null);
@@ -255,6 +254,8 @@ const VendorSelection = props => {
     }
 
     const setVendor = (_, vendor) => {
+        // activeModalRef.current.querySelector("#header-bar").innerHTML = vendor.name;
+        props.setModalList(prev => prev.map(modal => modal.id === modalid ? ({ ...modal, vendor_name: vendor.name }) : modal))
         setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id }))
         vendorInputRef.current.value = vendor.name;
         codeRef.current.value = vendor.voen;
