@@ -14,6 +14,7 @@ import Navigation from "../components/Common/Navigation";
 // import PaymentLayout from "../components/Exports/PaymentLayout";
 import Loading from "../components/Misc/Loading";
 import Notifications from "../components/Common/Notifications";
+import { v4 } from "uuid"
 const Contracts = lazy(() => import("./Contracts"));
 const Orders = lazy(() => import("./Orders"));
 const Tender = lazy(() => import("./Tender"));
@@ -44,7 +45,6 @@ const availableModules = [
 		component: Tender,
 	},
 ];
-let key = 0;
 const SelectModule = () => {
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0].token;
@@ -59,30 +59,25 @@ const SelectModule = () => {
 	const loadingIndicatorRef = useRef(null);
 	const [notifications, setNotifications] = useState([]);
 	const notificationsRef = useRef({});
-	const buttonHandler = (e) => {
-		const target = e.target;
-		setNotifications((prev) =>
-			prev.filter((notification) => notification.key !== target.id)
+	const closeNotification = (e) => {
+		const target = e.currentTarget;
+		setNotifications((prev) => prev.filter((notification) => notification.key !== target.id)
 		);
 	};
-	function clickHandler() {
-		key = key + 1;
-		
+	const createNewNotification = (content = '', link) => {
 		setNotifications((prev) => {
 			const newState = [
 				...prev,
 				{
-					content: `untitled +${key}`,
-					link: "#",
-					key: `${key}`,
+					content: content,
+					link: link,
+					key: v4(),
 				},
 			];
 			return newState;
 		});
-	
 	}
 	useEffect(() => {
-
 		let mounted = true;
 		if (token && navigator.onLine) {
 			const webSocket = new WebSocket("ws://172.16.3.64:12345");
@@ -115,117 +110,102 @@ const SelectModule = () => {
 	}
 	return (
 		<WebSocketContext.Provider value={webSocket}>
-			<Notifications 
-				clickHandler={clickHandler}
-				buttonHandler={buttonHandler}
-				notificationsRef={notificationsRef}
-				notifications={notifications}
-				setNotifications={setNotifications}
-			/>
-			<Switch>
-				<Route exact path="/">
-					<div className="splash-screen">
-						<div className="module-select">
-							{
-								routes.map(module =>
-									<Link key={module.link} to={module.link}>
+			<NotificationContext.Provider value={createNewNotification}>
+				<Notifications
+					closeNotification={closeNotification}
+					notificationsRef={notificationsRef}
+					notifications={notifications}
+					setNotifications={setNotifications}
+				/>
+				<Switch>
+					<Route exact path="/">
+						<div className="splash-screen">
+							<div className="module-select">
+								{
+									routes.map(module =>
+										<Link key={module.link} to={module.link}>
+											<div className="module-card">
+												{module.text}
+											</div>
+										</Link>
+									)
+								}
+								{
+									warehouseVisible &&
+									<a href="http://192.168.0.182:62447">
 										<div className="module-card">
-											{module.text}
+											Anbar
 										</div>
-									</Link>
-								)
-							}
-							{
-								warehouseVisible &&
-								<a href="http://192.168.0.182:62447">
-									<div className="module-card">
-										Anbar
-									</div>
-								</a>
-							}
-						</div>
-					</div>
-				</Route>
-				{
-					webSocket &&
-					<>
-						<>
-							<Navigation
-								handleNavClick={handleNavClick}
-								routes={routes}
-								webSocket={webSocket}
-								token={token}
-								userData={userData}
-								menuNavRefs={menuNavRefs}
-								ref={loadingIndicatorRef}
-								leftNavRef={leftNavIconRef}
-								navigationRef={navigationRef}
-								tokenContext={tokenContext}
-							/>
-							<div
-								onClick={handleNavClick}
-								ref={backgroundRef}
-								style={{
-									position: "fixed",
-									height: "100%",
-									width: "100%",
-									top: 0,
-									left: 0,
-									display: "none",
-									background: "rgba(0, 0, 0, 0.6)",
-									zIndex: 2
-								}}>
+									</a>
+								}
 							</div>
-						</>
-						<Switch>
-							{
-								routes.map(route =>
-									<Route key={route.link} path={route.link} >
-										<LeftSidePane
-											url={menuData.url}
-											links={menuData.routes}
-											ref={leftPaneRef}
-											refs={menuNavRefs}
-											backgroundRef={backgroundRef}
-											handleNavClick={handleNavClick}
-										/>
-										<Suspense fallback={<Loading />} >
-											<route.component
+						</div>
+					</Route>
+					{
+						webSocket &&
+						<>
+							<>
+								<Navigation
+									handleNavClick={handleNavClick}
+									routes={routes}
+									webSocket={webSocket}
+									token={token}
+									userData={userData}
+									menuNavRefs={menuNavRefs}
+									ref={loadingIndicatorRef}
+									leftNavRef={leftNavIconRef}
+									navigationRef={navigationRef}
+									tokenContext={tokenContext}
+								/>
+								<div
+									onClick={handleNavClick}
+									ref={backgroundRef}
+									style={{
+										position: "fixed",
+										height: "100%",
+										width: "100%",
+										top: 0,
+										left: 0,
+										display: "none",
+										background: "rgba(0, 0, 0, 0.6)",
+										zIndex: 2
+									}}>
+								</div>
+							</>
+							<Switch>
+								{
+									routes.map(route =>
+										<Route key={route.link} path={route.link} >
+											<LeftSidePane
+												url={menuData.url}
+												links={menuData.routes}
+												ref={leftPaneRef}
+												refs={menuNavRefs}
+												backgroundRef={backgroundRef}
 												handleNavClick={handleNavClick}
-												menuData={menuData}
-												navigationRef={navigationRef}
-												loadingIndicatorRef={loadingIndicatorRef}
-												leftNavRef={leftNavIconRef}
-												setMenuData={setMenuData}
 											/>
-										</Suspense>
-									</Route>
-								)
-							}
-							{/* <Suspense fallback={<Loading />} >
-								<Route key="exports" path="/exports" >
-									<PaymentLayout
-										handleNavClick={handleNavClick}
-										menuData={menuData}
-										loadingIndicatorRef={loadingIndicatorRef}
-										leftNavRef={leftNavIconRef}
-										setMenuData={setMenuData}
-									/>
-								</Route>
-							</Suspense> */}
-							<Redirect to="/" />
-						</Switch>
-					</>
-				}
-			</Switch>
-			<button
-				style={{ width: "100px", bakcgroundColor: "red", height: "10px" }}
-				onClick={clickHandler}
-			>
-				asdasf
-			</button>
+											<Suspense fallback={<Loading />} >
+												<route.component
+													handleNavClick={handleNavClick}
+													menuData={menuData}
+													navigationRef={navigationRef}
+													loadingIndicatorRef={loadingIndicatorRef}
+													leftNavRef={leftNavIconRef}
+													setMenuData={setMenuData}
+												/>
+											</Suspense>
+										</Route>
+									)
+								}
+								<Redirect to="/" />
+							</Switch>
+						</>
+					}
+				</Switch>
+			</NotificationContext.Provider>
 		</WebSocketContext.Provider>
 	);
 };
 export default SelectModule;
 export const WebSocketContext = React.createContext();
+export const NotificationContext = React.createContext();

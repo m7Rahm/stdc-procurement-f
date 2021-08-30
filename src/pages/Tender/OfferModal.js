@@ -10,11 +10,13 @@ import InputSearchList from '../../components/Misc/InputSearchList'
 import { TokenContext } from '../../App'
 import { v4 } from "uuid"
 import DeleteDocButton from '../../components/Common/DeleteDocButton'
+import { NotificationContext } from '../SelectModule'
 
 
 function OfferModal(props) {
     const fetchGet = useFetch("GET")
     const [offerInfo, setOfferInfo] = useState({ id: "", name: "", voen: "" })
+    const createNewNotification = useContext(NotificationContext)
     const [files, setFiles] = useState([]);
     const vendorInputRef = useRef(null);
     const tokenContext = useContext(TokenContext);
@@ -43,11 +45,11 @@ function OfferModal(props) {
                         count: m.count,
                         note: m.note,
                         price: m.total / m.count,
+                        fetched: true,
                         total: m.total,
                         alternative: 0,
                         color: 0xd2e * (i + 1) / respJ.length
                     })))
-                    console.log(respJ)
                     setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen, id: respJ[0].vendor_id })
                     if (respJ[0].files !== "")
                         setFiles(respJ[0].files.split(',').map(f => ({
@@ -124,7 +126,7 @@ function OfferModal(props) {
                 else continueNext()
             } else continueNext()
         } else {
-            const data = choices.map((choice, index) => [choice.fetched ? choice.id : null, choice.name, choice.material_id, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
+            const data = choices.map(choice => [choice.fetched ? choice.id : null, choice.name, choice.material_id, choice.count, parseFloat(choice.total), choice.alternative, choice.note]);
             const vendorInfo = [[offerInfo.id, offerInfo.name, offerInfo.voen]]
             const formData = new FormData();
             formData.append("mats", JSON.stringify(data));
@@ -150,10 +152,13 @@ function OfferModal(props) {
             if (props.fetched)
                 fetch('http://172.16.3.64/api/update-price-offer', requestOptions)
                     .then(response => response.json())
+                    .then(_ => createNewNotification("Yadda saxlanıldı", ""))
+                    .catch(ex => console.log(ex))
             else
                 fetch('http://172.16.3.64/api/create-price-offer', requestOptions)
                     .then(response => response.json())
                     .then(data => {
+                        createNewNotification("Əlavə edildi", "")
                         props.setModalList(prev => prev.map(m =>
                             m.id === props.modalid ? {
                                 ...m,
@@ -164,8 +169,8 @@ function OfferModal(props) {
                             }
                                 : m
                         ))
-                    });
-
+                    })
+                    .catch(ex => console.log(ex))
         }
     };
 
@@ -212,9 +217,7 @@ function OfferModal(props) {
                                 initialMaterials={props.orderContent}
                                 setChoices={setChoices}
                             />
-
                             <>
-
                                 <MyDropzone
                                     files={files}
                                     setFiles={setFiles} />

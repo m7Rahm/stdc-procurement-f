@@ -1,76 +1,96 @@
-.notification_wrapper{
-    color:white;
-    overflow:hidden;
+.notification_wrapper {
+    color: white;
+    overflow: hidden;
     width: 360px;
     position: fixed;
     display: block;
-    z-index:3;
+    z-index: 3;
     top: 0;
-    transition: all 500ms;   
-   
+    transition: all 500ms;
 }
-.notification_bar{
-    margin-top:5px;
-    margin-left:3px;
+
+.notification_bar {
+    margin-top: 5px;
+    margin-left: 3px;
     width: 300px;
     border-radius: 15px;
     display: flex;
-    position:relative;
-    margin-bottom:10px;
-    background-image:linear-gradient(45deg, steelblue, skyblue);
-    box-shadow: 0px 0px 7px 4px rgba(0,0,0,0.19);   
+    position: relative;
+    margin-bottom: 10px;
+    background-image: linear-gradient(45deg, steelblue, skyblue);
+    box-shadow: 0px 0px 7px 4px rgba(0, 0, 0, 0.19);
 }
-.notification_bar>div:first-of-type{
+
+.notification_bar>div:first-of-type {
     flex: 1;
 }
-.text{
-    display:block;
-    color:white;
-    text-align:left;
+
+.text {
+    display: block;
+    color: white;
+    text-align: left;
     padding-left: 20px;
-    height:60px;
+    height: 60px;
+    cursor: pointer;
     line-height: 60px;
 }
 
-
-.exit_button{
+.exit_button {
     font-size: 18px;
-    position:absolute;
-    right:0;
+    position: absolute;
+    right: 0;
+    z-index: 2;
     padding: 0;
     border: none;
     border-top-right-radius: 14px;
     border-bottom-right-radius: 14px;
-    height:60px;
-    display:inline-block !important;
-    text-align:center;
-    cursor:pointer;
+    height: 60px;
+    display: inline-block !important;
+    text-align: center;
+    cursor: pointer;
     line-height: 60px;
-    width:40px;
+    width: 40px;
 }
 
-.display_hide{
-    display:none;
+.display_hide {
+    display: none;
 }
+
 @keyframes fadeout {
-    from{transform:translateX(0)}
-    to{transform:translateX(-300px)}
+    from {
+        transform: translateX(0)
+    }
+    to {
+        transform: translateX(-300px)
+    }
 }
+
 @keyframes fadein {
-    from{opacity:0;}
-    to{opacity:1}
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1
+    }
 }
-@keyframes initialanimation{
-    from{margin-top:50px}
-    to{margin-top:5px}
+
+@keyframes initialanimation {
+    from {
+        margin-top: 50px
+    }
+    to {
+        margin-top: 5px
+    }
 }
-.fadeoutanimation{
+
+.fadeoutanimation {
     animation: fadeout 300ms ease-in;
-  
 }
-.fadeinanimation{
+
+.fadeinanimation {
     animation: fadein 200ms;
 }
-.initialanimation{
+
+.initialanimation {
     animation: initialanimation 200ms;
 }

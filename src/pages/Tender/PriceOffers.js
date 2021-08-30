@@ -23,6 +23,7 @@ function PriceOffers(props) {
                 forwardType={1}
             />
             <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingTop: '30px' }}>
+
                 <div className="priceButtons">Yönəlt</div>
             </div>
         </div>

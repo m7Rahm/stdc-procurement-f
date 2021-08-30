@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { MdClose } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import classes from "./Notification.module.css";
 const Notifications = (props) => {
   const setNotifications = props.setNotifications;
@@ -10,7 +10,6 @@ const Notifications = (props) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-
     if (props.notifications.length >= 1) {
       timeoutRef.current = setTimeout(function () {
         const key = props.notifications[0].key;
@@ -59,7 +58,8 @@ const Notifications = (props) => {
           id={notification.key}
           notificationsRef={props.notificationsRef}
           refer={notification.ref}
-          buttonHandler={props.buttonHandler}
+          to={notification.link}
+          closeNotification={props.closeNotification}
           notification={notification}
         />
       ))}
@@ -67,19 +67,21 @@ const Notifications = (props) => {
   );
 };
 const Notification = (props) => {
+  const history = useHistory();
+  const navigateTo = () => {
+    history.push(props.to)
+  }
   return (
     <div
       ref={(elem) => (props.notificationsRef.current[props.id] = elem)}
       className={`${classes.notification_bar} ${classes.fadeinanimation} `}
     >
-      <div>
-        <Link to={"#"} className={classes.text}>
-          {props.notification.content}
-        </Link>
+      <div className={classes["text"]} onClick={navigateTo}>
+        {props.notification.content}
       </div>
       <div
         className={classes.exit_button}
-        onClick={props.buttonHandler}
+        onClickCapture={props.closeNotification}
         id={props.id}
       >
         <MdClose size="20" />
