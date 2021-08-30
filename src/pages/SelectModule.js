@@ -15,10 +15,12 @@ import Navigation from "../components/Common/Navigation";
 import Loading from "../components/Misc/Loading";
 import Notifications from "../components/Common/Notifications";
 import { v4 } from "uuid"
+import classes from "../components/Common/Notification.module.css";
 const Contracts = lazy(() => import("./Contracts"));
 const Orders = lazy(() => import("./Orders"));
 const Tender = lazy(() => import("./Tender"));
 const Admin = lazy(() => import("./AdminPage"));
+
 const availableModules = [
 	{
 		text: "Sifarişlər",
@@ -60,9 +62,26 @@ const SelectModule = () => {
 	const [notifications, setNotifications] = useState([]);
 	const notificationsRef = useRef({});
 	const closeNotification = (e) => {
+		
 		const target = e.currentTarget;
+		const key = target.id;
+        const elem = notificationsRef.current[key];
+		elem.classList.replace(
+            classes["fadeinanimation"],
+            classes["fadeoutanimation"]
+          );
+
+		console.log(elem);
+		elem.addEventListener(
+			"animationend",
+			()=>{
+
 		setNotifications((prev) => prev.filter((notification) => notification.key !== target.id)
-		);
+		)},false
+		)
+        // const elem = notificationsRef.current[key];
+        
+	
 	};
 	const createNewNotification = (content = '', link) => {
 		setNotifications((prev) => {
