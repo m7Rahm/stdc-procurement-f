@@ -14,33 +14,10 @@ const Notifications = (props) => {
       timeoutRef.current = setTimeout(function () {
         const key = props.notifications[0].key;
         const elem = props.notificationsRef.current[key];
-
-        if (elem.classList.contains(classes["fadeinanimation"])) {
-          elem.classList.replace(
-            classes["fadeinanimation"],
-            classes["fadeoutanimation"]
-          );
-        } else if (elem.classList.contains(classes["initialanimation"])) {
-          elem.classList.replace(
-            classes["initialanimation"],
-            classes["fadeoutanimation"]
-          );
-        }
-
+        elem.classList.add(classes["fadeoutanimation"]);
         elem.addEventListener(
           "animationend",
-          () => {
-            if (props.notifications.length > 1) {
-              const key2 = props.notifications[1].key;
-              const elem2 = props.notificationsRef.current[key2];
-
-              elem2.classList.replace(
-                classes["fadeinanimation"],
-                classes["initialanimation"]
-              );
-            }
-            setNotifications((prev) => prev.filter((_, index) => index !== 0));
-          },
+          () => { setNotifications((prev) => prev.filter((_, index) => index !== 0)); },
           false
         );
       }, 2000);
@@ -51,7 +28,7 @@ const Notifications = (props) => {
       ref={notificationWrapperRef}
       className={`${classes.notification_wrapper}`}
     >
-      {props.notifications.map((notification) => (
+      {props.notifications.map((notification, index) => (
         <Notification
           intervallyRemover={setInterval}
           key={notification.key}
@@ -59,6 +36,7 @@ const Notifications = (props) => {
           notificationsRef={props.notificationsRef}
           refer={notification.ref}
           to={notification.link}
+          index={index}
           closeNotification={props.closeNotification}
           notification={notification}
         />
@@ -74,7 +52,8 @@ const Notification = (props) => {
   return (
     <div
       ref={(elem) => (props.notificationsRef.current[props.id] = elem)}
-      className={`${classes.notification_bar} ${classes.fadeinanimation} `}
+      className={`${classes.notification_bar}`}
+      style={{ top: `${65 * props.index}px` }}
     >
       <div className={classes["text"]} onClick={navigateTo}>
         {props.notification.content}
