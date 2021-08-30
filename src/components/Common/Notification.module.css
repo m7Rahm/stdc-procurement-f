@@ -21,6 +21,7 @@
     width: 300px;
     border-radius: 15px;
     display: flex;
+    transition: all 256ms;
     position: absolute;
     margin-bottom: 10px;
     background-image: linear-gradient(45deg, steelblue, skyblue);

@@ -62,26 +62,14 @@ const SelectModule = () => {
 	const [notifications, setNotifications] = useState([]);
 	const notificationsRef = useRef({});
 	const closeNotification = (e) => {
-		
 		const target = e.currentTarget;
 		const key = target.id;
-        const elem = notificationsRef.current[key];
-		elem.classList.replace(
-            classes["fadeinanimation"],
-            classes["fadeoutanimation"]
-          );
-
-		console.log(elem);
+		const elem = notificationsRef.current[key];
+		elem.classList.add(classes["fadeoutanimation"]);
 		elem.addEventListener(
 			"animationend",
-			()=>{
-
-		setNotifications((prev) => prev.filter((notification) => notification.key !== target.id)
-		)},false
+			() => setNotifications((prev) => prev.filter((notification) => notification.key !== target.id)), false
 		)
-        // const elem = notificationsRef.current[key];
-        
-	
 	};
 	const createNewNotification = (content = '', link) => {
 		setNotifications((prev) => {
