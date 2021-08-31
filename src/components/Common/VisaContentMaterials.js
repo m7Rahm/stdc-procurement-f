@@ -23,10 +23,10 @@ const VisaContentMaterials = (props) => {
 						<td>#</td>
 						<td style={{ textAlign: 'left', maxWidth: "300px" }}>Məhsul</td>
 						<td style={{ maxWidth: '140px' }}>Kod</td>
+						<td style={{ maxWidth: '140px' }}>Təsviri</td>
 						<td style={{ maxWidth: '140px' }}>Say</td>
 						<td style={{ maxWidth: '140px' }}>İstifadə yeri</td>
 						<td>Əlavə məlumat</td>
-						<td style={{ maxWidth: '140px' }}>Təsviri</td>
 						{
 							forwardType >= 4 &&
 							<>
@@ -93,6 +93,11 @@ const TableRow = (props) => {
 			<td style={{ textAlign: 'left', maxWidth: "140px" }}>
 				{product_id}
 			</td>
+			<td>
+				<span style={{ width: '100%' }} >
+					{material_comment}
+				</span>
+			</td>
 			<td style={{ maxWidth: '140px' }}>
 				<div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
 					<div style={{ width: '40px', textAlign: 'center', padding: '0px 2px', margin: 'auto', flex: 1 }}>
@@ -102,11 +107,6 @@ const TableRow = (props) => {
 			</td>
 			<td style={{ maxWidth: "140px" }}>
 				{mat_ass}
-			</td>
-			<td>
-				<span style={{ width: '100%' }} >
-					{material_comment}
-				</span>
 			</td>
 			<td>
 				<span style={{ width: '100%' }} >
