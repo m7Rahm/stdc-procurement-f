@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
+import ForwardDocLayout from '../../components/STDC local/ForwardDocLayout/ForwardDocLayout';
 import useFetch from '../../hooks/useFetch'
 import Offers from './Offers'
 
@@ -22,14 +23,56 @@ function PriceOffers(props) {
                 orderContent={visa}
                 forwardType={1}
             />
-            <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingTop: '30px' }}>
-
+            <ForwardPriceOffer />
+            {/* <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingTop: '30px' }}>
                 <div className="priceButtons">Yönəlt</div>
-            </div>
+            </div> */}
         </div>
     )
 }
 
 export default PriceOffers
 
+const ForwardPriceOffer = () => {
+    const [receivers, setReceivers] = useState([])
 
+    const handleElementDrag = (draggedElement, index) => {
+        setReceivers(prev => {
+            const draggedIndex = prev.findIndex(card => card.id === draggedElement.id);
+            const elementsBeforeIndex = prev.slice(0, draggedIndex > index ? index : index + 1);
+            const before = elementsBeforeIndex.filter(card => card.id !== draggedElement.id)
+            const elementsAfterIndex = prev.slice(draggedIndex > index ? index : index + 1);
+            const after = elementsAfterIndex.filter(card => card.id !== draggedElement.id)
+            return [...before, draggedElement, ...after]
+        })
+    }
+    const handleDeselection = (employee) => {
+        setReceivers(prev => prev.filter(emp => emp.id !== employee.id))
+    }
+    const handleSelectChange = (employee) => {
+        setReceivers(prev => {
+            const receivers = [...prev]
+            const res = receivers.find(emp => emp.id === employee.id);
+            if (!res) {
+                let lastNonDpIndex = 1;
+                for (let i = receivers.length - 1; i >= 0; i--) {
+                    if (receivers[i].dp === undefined) {
+                        lastNonDpIndex = i + 1;
+                        break;
+                    }
+                }
+                receivers.splice(lastNonDpIndex, 0, employee)
+                return receivers
+            }
+            else return prev
+        })
+    }
+    return (
+        <ForwardDocLayout
+            receivers={receivers}
+            handleElementDrag={handleElementDrag}
+            handleSelectChange={handleSelectChange}
+            handleDeselection={handleDeselection}
+        />
+    )
+}

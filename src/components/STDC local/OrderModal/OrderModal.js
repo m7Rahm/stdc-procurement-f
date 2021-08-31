@@ -165,18 +165,81 @@ const OrderModal = (props) => {
             operationResult={operationResult}
             setOperationResult={setOperationResult}
           />
-        ) : whichPage.page === 3 ? (
-          <ForwardDocLayout
-            textareaVisible={false}
+        ) : whichPage.page === 3 ?
+          <ForwardOrder
             choices={props.choices}
             setChoices={props.setChoices}
           />
-        ) : (
-          <div></div>
-        )}
+          : (
+            <div></div>
+          )}
       </div>
     </>
   );
 };
 
 export default OrderModal;
+
+const ForwardOrder = (props) => {
+  const fetchGet = useFetch("GET");
+  const setChoices = props.setChoices;
+  useEffect(() => {
+    let mounted = true;
+    if (mounted)
+      fetchGet('/api/dependency-graph')
+        .then(respJ => {
+          if (mounted && respJ.length !== 0) {
+            setChoices(prev => {
+              if (prev.receivers.length === 0)
+                return { ...prev, receivers: respJ.map(rec => ({ ...rec, dp: true })) }
+              else return prev
+            })
+          }
+        })
+        .catch(err => console.log(err));
+    return () => mounted = false
+  }, [fetchGet, setChoices]);
+  const handleElementDrag = (draggedElement, index) => {
+    props.setChoices(prev => {
+      const draggedIndex = prev.receivers.findIndex(card => card.id === draggedElement.id);
+      const elementsBeforeIndex = prev.receivers.slice(0, draggedIndex > index ? index : index + 1);
+      const before = elementsBeforeIndex.filter(card => card.id !== draggedElement.id)
+      const elementsAfterIndex = prev.receivers.slice(draggedIndex > index ? index : index + 1);
+      const after = elementsAfterIndex.filter(card => card.id !== draggedElement.id)
+      return { ...prev, receivers: [...before, draggedElement, ...after] }
+    })
+  }
+  const handleDeselection = (employee) => {
+    props.setChoices(prevState => ({ ...prevState, receivers: prevState.receivers.filter(emp => emp.id !== employee.id) }))
+  }
+  const handleSelectChange = (employee) => {
+    props.setChoices(prevState => {
+      const receivers = [...prevState.receivers]
+      const res = receivers.find(emp => emp.id === employee.id);
+      if (!res) {
+        let lastNonDpIndex = 1;
+        for (let i = receivers.length - 1; i >= 0; i--) {
+          if (receivers[i].dp === undefined) {
+            lastNonDpIndex = i + 1;
+            break;
+          }
+        }
+        receivers.splice(lastNonDpIndex, 0, employee)
+        return {
+          ...prevState,
+          receivers: receivers
+        }
+      }
+      else return prevState
+    })
+  }
+  return (
+    <ForwardDocLayout
+      textareaVisible={false}
+      receivers={props.choices.receivers}
+      handleElementDrag={handleElementDrag}
+      handleSelectChange={handleSelectChange}
+      handleDeselection={handleDeselection}
+    />
+  )
+}

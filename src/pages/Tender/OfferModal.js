@@ -38,23 +38,25 @@ function OfferModal(props) {
         if (props.fetched)
             fetchGet(`/api/price-offers/${props.modalid}`)
                 .then(respJ => {
-                    setChoices(respJ.map((m, i) => ({
-                        id: m.id,
-                        material_id: m.material_id,
-                        name: m.title,
-                        count: m.count,
-                        note: m.note,
-                        price: m.total / m.count,
-                        fetched: true,
-                        total: m.total,
-                        alternative: 0,
-                        color: 0xd2e * (i + 1) / respJ.length
-                    })))
-                    setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen, id: respJ[0].vendor_id })
-                    if (respJ[0].files !== "")
-                        setFiles(respJ[0].files.split(',').map(f => ({
-                            name: f, fetched: true
+                    if (respJ.length !== 0) {
+                        setChoices(respJ.map((m, i) => ({
+                            id: m.id,
+                            material_id: m.material_id,
+                            name: m.title,
+                            count: m.count,
+                            note: m.note,
+                            price: m.total / m.count,
+                            fetched: true,
+                            total: m.total,
+                            alternative: 0,
+                            color: 0xd2e * (i + 1) / respJ.length
                         })))
+                        setOfferInfo({ name: respJ[0].vendor_name, voen: respJ[0].voen, id: respJ[0].vendor_id })
+                        if (respJ[0].files !== "")
+                            setFiles(respJ[0].files.split(',').map(f => ({
+                                name: f, fetched: true
+                            })))
+                    }
                 })
                 .catch(ex => console.log(ex))
     }, [fetchGet, props.modalid, props.fetched])

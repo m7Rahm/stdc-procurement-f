@@ -35,9 +35,6 @@ const VisaForwardPerson = (props) => {
             onDragEnter={onDragEnter}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
-            style={{
-                left: "0px"
-            }}
         >
             <div onClick={() => handleClick(props.emp)}>
                 <IoIosClose size="18" />

@@ -105,7 +105,7 @@ const NewOfferTableBody = (props) => {
             <ul className="priorities-list" style={{ top: "20px", zIndex: "3" }} ref={priorityRef}>
               {
                 props.initialMaterials.map((material, index) =>
-                  <li className="priority" key={material.id} id={material.id} style={{ padding: "13px 26px" }} onBlur={handleFocusLose} tabIndex={index} onClick={() => handleAddClick(material.material_id)} >{material.title}</li>
+                  <li className="priority" key={material.order_material_id} id={material.order_material_id} style={{ padding: "13px 26px" }} onBlur={handleFocusLose} tabIndex={index} onClick={() => handleAddClick(material.material_id)} >{material.title}</li>
                 )
               }
             </ul>

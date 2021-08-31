@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect } from 'react'
 import useFetch from '../../../hooks/useFetch';
 import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
@@ -27,31 +27,10 @@ const ForwardDocLayout = (props) => {
         let mounted = true;
         if (mounted)
             fetchGet('/api/departments')
-                .then(respJ => {
-                    if (mounted) { setDepartments(respJ) }
-                })
+                .then(respJ => { if (mounted) { setDepartments(respJ) } })
                 .catch(err => console.log(err));
         return () => mounted = false
     }, [fetchGet]);
-
-    const setChoices = props.setChoices;
-
-    useEffect(() => {
-        let mounted = true;
-        if (mounted)
-            fetchGet('/api/dependency-graph')
-                .then(respJ => {
-                    if (mounted && respJ.length !== 0) {
-                        setChoices(prev => {
-                            if (prev.receivers.length === 0)
-                                return { ...prev, receivers: respJ.map(rec => ({ ...rec, dp: true })) }
-                            else return prev
-                        })
-                    }
-                })
-                .catch(err => console.log(err));
-        return () => mounted = false
-    }, [fetchGet, setChoices]);
 
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
@@ -68,34 +47,9 @@ const ForwardDocLayout = (props) => {
         const value = Number(e.target.value);
         setEmpList(value !== -1 ? empListRef.current.filter(employee => employee.structure_dependency_id === value) : empListRef.current);
     }
-    const handleDeselection = (employee) => {
-        props.setChoices(prevState => ({ ...prevState, receivers: prevState.receivers.filter(emp => emp.id !== employee.id) }))
-    }
-    const handleSelectChange = (employee) => {
-        props.setChoices(prevState => {
-            const receivers = [...prevState.receivers]
-            const res = receivers.find(emp => emp.id === employee.id);
-            if (!res) {
-                let lastNonDpIndex = 1;
-                for (let i = receivers.length - 1; i >= 0; i--) {
-                    if (receivers[i].dp === undefined) {
-                        lastNonDpIndex = i + 1;
-                        break;
-                    }
-                }
-                receivers.splice(lastNonDpIndex, 0, employee)
-                searchQueryInput.current.value = ""
-                return {
-                    ...prevState,
-                    receivers: receivers
-                }
-            }
-            else return prevState
-        })
-    }
     return (
-        <div style={{ padding: '10px 20px', overflow: "hidden" }}>
-            <div style={{ marginTop: '20px' }} id="procurement-edit-section">
+        <div style={{ padding: '10px 20px', overflow: "hidden", display: "flex" }}>
+            <div style={{ marginTop: '20px', flex: 1 }} id="procurement-edit-section">
                 {
                     textareaVisible &&
                     <textarea ref={textareaRef} />
@@ -115,7 +69,10 @@ const ForwardDocLayout = (props) => {
                     <ul className="employees-list">
                         {
                             empList.map(employee =>
-                                <li key={employee.id} value={employee.id} onClick={() => handleSelectChange(employee)}>
+                                <li key={employee.id} value={employee.id} onClick={() => {
+                                    props.handleSelectChange(employee);
+                                    searchQueryInput.current.value = ""
+                                }}>
                                     {employee.full_name}
                                     <br />
                                     <span>{employee.vezife}</span>
@@ -126,10 +83,9 @@ const ForwardDocLayout = (props) => {
                 </div>
             </div>
             <ForwardedPeople
-                choices={props.choices}
-                setChoices={props.setChoices}
-                handleDeselection={handleDeselection}
-                handleSelectChange={handleSelectChange}
+                receivers={props.receivers}
+                handleElementDrag={props.handleElementDrag}
+                handleDeselection={props.handleDeselection}
             />
         </div>
     )

@@ -170,7 +170,7 @@ export const ForwardedPeople = (props) => {
     const draggedElement = useRef(null);
     return (
         <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
-            <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px' }}>
+            <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', borderRadius: '3px', boxShadow: "0px 0px 2px 3px rgba(0,0,0,0.2)" }}>
                 {
                     props.receivers.map((emp, index) =>
                         <VisaForwardPerson

@@ -7,7 +7,7 @@ const VisaForwardPerson = (props) => {
             props.handleDeselection(emp)
     }
     const onDragStart = props.draggable ? () => {
-        setTimeout(() => { elem.current.style.opacity = "0" }, 1)
+        setTimeout(() => { elem.current.style.opacity = "0.2" }, 0)
         props.draggedElement.current = { props: props, elem: elem }
     } : () => { }
     const onDragEnd = props.draggable ? (e) => {
@@ -17,25 +17,18 @@ const VisaForwardPerson = (props) => {
         const parent = e.target.parentElement;
         const draggedElement = props.draggedElement.current.props.emp;
         if ((e.target.classList.contains("forwarded-person-card") || parent.classList.contains("forwarded-person-card")) && props.id !== draggedElement.id)
-            props.setChoices(prev => {
-                const draggedIndex = prev.receivers.findIndex(card => card.id === draggedElement.id);
-                const elementsBeforeIndex = prev.receivers.slice(0, draggedIndex > props.index ? props.index : props.index + 1);
-                const before = elementsBeforeIndex.filter(card => card.id !== draggedElement.id)
-                const elementsAfterIndex = prev.receivers.slice(draggedIndex > props.index ? props.index : props.index + 1);
-                const after = elementsAfterIndex.filter(card => card.id !== draggedElement.id)
-                return { ...prev, receivers: [...before, draggedElement, ...after] }
-            })
+            props.handleElementDrag(draggedElement, props.index)
     } : () => { }
     return (
         <div
             ref={elem}
-            className={`forwarded-person-card ${!props.draggable && "dp"}`}
+            className={`forwarded-person-card ${!props.draggable ? "dp" : ""}`}
             draggable={props.draggable}
             onDragEnter={onDragEnter}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
             style={{
-                left: "0px",
+                top: `${2 + props.index * 30}px`,
                 backgroundColor: props.draggable ? "dodgerblue" : "rgb(253,200,86)"
             }}
         >
