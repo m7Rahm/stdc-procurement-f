@@ -14,7 +14,6 @@ function NewOfferTableRow(props) {
     const [expandDetails, setExpandDetails] = useState(false);
     // eslint-disable-next-line
     const [models, setModels] = useState([]);
-    const modelInputRef = useRef(null);
     const [total, setTotal] = useState(props.count * props.price);
     const priorityRef = useRef(null);
     const handleFocusLose = (e) => {
@@ -65,10 +64,10 @@ function NewOfferTableRow(props) {
         }
     }
 
-    const setModel = (_, model) => {
+    const setModel = (_, model, inputRef) => {
         props.handleModelSelection(model, rowid);
-        modelInputRef.current.value = model.title;
-        modelListRef.current.style.display = "none";
+        inputRef.current.value = model.title;
+        // modelListRef.current.style.display = "none";
     }
 
     const handleInputSearch = (e) => {
@@ -100,7 +99,6 @@ function NewOfferTableRow(props) {
                     // disabled={props.disabled}
                     defaultValue={props.offerName}
                     placeholder="Məhsul"
-                    inputRef={modelInputRef}
                     listRef={modelListRef}
                     name="model"
                     text="title"

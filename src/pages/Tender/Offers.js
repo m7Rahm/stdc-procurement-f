@@ -56,10 +56,10 @@ function Offers(props) {
     return (
         props.visa.length !== 0 &&
         <div>
-            <div style={{ display: "flex", alignItems: "flex-start",  flexFlow: "row wrap", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", flexFlow: "row wrap", justifyContent: "space-between" }}>
                 <div style={{ display: 'flex', flexDirection: 'column', float: 'left', paddingLeft: '20px', whiteSpace: "nowrap" }}>
                     <div style={{ fontWeight: 'bold', color: "#FFB830", fontSize: "2rem" }}>{props.visa[0].full_name}</div>
-                    <div title="deadline" style={{ fontSize: '20px', fontWeight: "600", color :"gray" }}>{props.visa[0].deadline}</div>
+                    <div title="deadline" style={{ fontSize: '20px', fontWeight: "700", color: "gray" }}>{props.visa[0].deadline}</div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', float: 'right', paddingBottom: '10px' }}>
                     {modalList.map((modal, index) => <div key={index} className="priceTags" onClick={() => handleOfferSelect(modal.id)} style={{ cursor: 'pointer' }}>{`${modal.vendor_name || ""} ${!modal.fetched ? "(Yeni)" : ""}`}</div>)}

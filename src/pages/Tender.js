@@ -5,15 +5,11 @@ import {
     useRouteMatch,
     Redirect
 } from "react-router-dom";
-import { MdLocalOffer } from "react-icons/md"
 import { FaCartArrowDown, FaTasks } from "react-icons/fa"
-import { IoIosDocument, IoIosBulb } from "react-icons/io"
-import ExpressVendors from "./Tender/ExpressVendors"
-import PotentialVendors from "./Tender/PotentialVendors"
 import Orders from "./Tender/Orders";
 import "../styles/Tender.css"
-import NewAgreement from "./Tender/NewAgreement";
 import Agreements from "./Orders/Agreements";
+import PriceResearch from "./Tender/PriceResearch";
 const routes = [
     {
         text: "Sifarişlər",
@@ -22,16 +18,10 @@ const routes = [
         component: Orders
     },
     {
-        text: "Express Vendorlar",
-        link: "/express-vendors",
-        icon: MdLocalOffer,
-        component: ExpressVendors
-    },
-    {
-        text: "Potensial Vendorlar",
-        link: "/potential-vendors",
-        icon: IoIosBulb,
-        component: PotentialVendors
+        text: "Yeni Razılaşma",
+        link: "/new-offer",
+        icon: FaCartArrowDown,
+        component: PriceResearch
     },
     {
         text: "Razılaşmalar",
@@ -47,12 +37,6 @@ const routes = [
             link: "/api/tender-docs?doctype=1&",
             referer: "procurement"
         }
-    },
-    {
-        text: "Yeni Razılaşma",
-        link: "/new-agreement",
-        icon: IoIosDocument,
-        component: NewAgreement
     }
 ]
 const Tender = (props) => {

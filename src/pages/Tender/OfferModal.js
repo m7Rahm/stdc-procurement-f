@@ -208,7 +208,6 @@ function OfferModal(props) {
                         offerInfo={offerInfo}
                         modalid={props.modalid}
                         setModalList={props.setModalList}
-                        vendorInputRef={vendorInputRef}
                     />
                     : whichPage.page === 2 ? (
                         <div style={{ marginTop: '40px' }}>
@@ -238,7 +237,6 @@ const VendorSelection = props => {
     const [vendorList, setVendorList] = useState([])
     const [vendors, setVendors] = useState([]);
     const { setOfferInfo, offerInfo, modalContentContainerRef, modalid } = props
-    const vendorInputRef = props.vendorInputRef
     const vendorListRef = useRef(null);
     const codeRef = useRef(null);
     const fetchGet = useFetch("GET");
@@ -266,23 +264,24 @@ const VendorSelection = props => {
         setVendors(searchResult);
     }
 
-    const setVendor = (_, vendor) => {
+    const setVendor = (_, vendor, inputRef) => {
         // activeModalRef.current.querySelector("#header-bar").innerHTML = vendor.name;
         props.setModalList(prev => prev.map(modal => modal.id === modalid ? ({ ...modal, vendor_name: vendor.name }) : modal))
         setOfferInfo(prev => ({ ...prev, name: vendor.name, voen: vendor.voen, id: vendor.id }))
-        vendorInputRef.current.value = vendor.name;
+        inputRef.current.value = vendor.name;
         codeRef.current.value = vendor.voen;
-        vendorListRef.current.style.display = "none";
+        // vendorListRef.current.style.display = "none";
     }
+    const materialRef = useRef(null);
     return (
         <div className="input-ribbon" style={{ display: 'flex', flexDirection: 'row', paddingBottom: '40px', justifyContent: "space-evenly", marginTop: '30px' }}>
-            <div style={{ position: 'relative' }}>
+            <div ref={materialRef} style={{ position: 'relative' }}>
                 <InputSearchList
                     placeholder="Vendor"
                     text="name"
                     name="vendor"
+                    parentRef={materialRef}
                     listid="vendorListRef"
-                    inputRef={vendorInputRef}
                     listRef={vendorListRef}
                     handleInputChange={handleVendorSearch}
                     defaultValue={offerInfo.name}
@@ -329,7 +328,7 @@ const MyDropzone = (props) => {
                 <div className={table["files-container"]}>
                     {props.files.map(file =>
                         <div className={"files"} key={file.name}>
-                            <DeleteDocButton  deleteDocHandler={deleteDocHandler} id={file.name} />
+                            <DeleteDocButton deleteDocHandler={deleteDocHandler} id={file.name} />
                             <a key={file.name} rel="noreferrer" target="_blank" href={"http://172.16.3.64/original/" + file.name}>
 
 

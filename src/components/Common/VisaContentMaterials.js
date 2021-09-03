@@ -17,7 +17,7 @@ const VisaContentMaterials = (props) => {
 					operationDesc={operationResult.desc}
 				/>
 			}
-			<table className="order-table-protex" style={{ minWidth: "100%" }} >
+			<table className="order-table-protex" style={{ width: "100%", maxWidth: "1256px", margin: "auto" }} >
 				<thead>
 					<tr>
 						<td>#</td>

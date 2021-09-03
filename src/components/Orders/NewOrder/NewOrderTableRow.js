@@ -7,11 +7,10 @@ import InputSearchList from '../../Misc/InputSearchList';
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
   const { orderType, materialid, className, additionalInfo, count, placeList, tesvir, handleRowDelete } = props;
-  const modelListRef = useRef(null);
   const placeListRef = useRef(null);
   const [models, setModels] = useState([]);
   const [places, setPlaces] = useState([]);
-  const modelInputRef = useRef(null);
+  const modelListRef = useRef(null);
   const placeInputRef = useRef(null);
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
@@ -41,17 +40,17 @@ const NewOrderTableRow = (props) => {
     props.handleChange(name, value, materialid)
   }
 
-  const setModel = (_, model) => {
+  const setModel = (_, model, inputRef) => {
     props.handleModelSelection(model, materialid)
     codeRef.current.value = model.product_id;
-    modelInputRef.current.value = model.title;
-    modelListRef.current.style.display = "none";
+    inputRef.current.value = model.title;
+    // modelListRef.current.style.display = "none";
   }
 
   const setPlace = (_, place) => {
     props.handlePlaceSelection(place, materialid)
     placeInputRef.current.value = place.name;
-    placeListRef.current.style.display = "none";
+    // placeListRef.current.style.display = "none";
   }
   const handleInputSearch = (e) => {
     const value = e.target.value;
@@ -89,15 +88,8 @@ const NewOrderTableRow = (props) => {
       fetchPost('/api/get-by-product-code', data)
         .then(respJ => {
           timeoutRef.current = null;
-          if (respJ.length === 1) {
-            const material = respJ.length !== 0 ? respJ[0] : {};
-            modelInputRef.current.value = material.title || "";
-            props.setCode(material, materialid);
-            modelListRef.current.style.display = "none";
-          } else {
-            modelListRef.current.style.display = "block";
-            setModels(respJ);
-          }
+          modelListRef.current.style.display = "block";
+          setModels(respJ);
         })
         .catch(ex => {
           console.log(ex);
@@ -115,7 +107,6 @@ const NewOrderTableRow = (props) => {
           disabled={props.disabled}
           defaultValue={props.materialName}
           placeholder="Məhsul"
-          inputRef={modelInputRef}
           listRef={modelListRef}
           name="model"
           text="title"
