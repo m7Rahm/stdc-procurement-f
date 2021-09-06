@@ -4,7 +4,7 @@ const InputSearchList = (props) => {
     const [listVisible, setListVisible] = useState(false);
     const inputRef = useRef(null);
     const handleFocus = (e) => {
-        if (props.parentRef.current) {
+        if (props.parentRef) {
             props.parentRef.current.style.zIndex = "22"
         }
         setListVisible(true)
@@ -14,7 +14,7 @@ const InputSearchList = (props) => {
 
         if (relatedTargetid === null || relatedTargetid !== props.listid) {
             setListVisible(false)
-            if (props.parentRef.current) {
+            if (props.parentRef) {
                 props.parentRef.current.style.zIndex = "1"
             }
         }
@@ -52,7 +52,7 @@ const InputSearchList = (props) => {
                             return <li key={item.id} dangerouslySetInnerHTML={{ __html: title }} onClick={(e) => {
                                 props.handleItemClick(e, item, inputRef);
                                 setListVisible(false);
-                                if (props.parentRef.current) {
+                                if (props.parentRef) {
                                     props.parentRef.current.style.zIndex = "1"
                                 }
                             }}></li>
