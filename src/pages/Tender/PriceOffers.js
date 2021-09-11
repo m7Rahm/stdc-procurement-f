@@ -12,16 +12,19 @@ function PriceOffers(props) {
     const [visa, setVisa] = useState([]);
     const fetchGet = useFetch("GET");
     const history = useHistory();
+    const [showModal, setShowModal] = useState(false);
     useEffect(() => {
+        setShowModal(false)
         fetchGet(`/api/order-req-data?numb=""&vers=${id}`)
             .then(respJ => {
                 setVisa(respJ.map(material => ({ ...material, order_material_id: material.id, mat_ass: material.assignment_name })))
             })
             .catch(ex => console.log(ex))
-    }, [id, fetchGet])
+    }, [id, fetchGet]);
+    const showModalHandler = () => setShowModal(true)
     return (
         visa.length !== 0 &&
-        <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1 }}>
+        <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1, maxWidth: "1256px" }}>
             <div style={{ display: "flex", alignItems: "flex-start", flexFlow: "row wrap", justifyContent: "space-between", marginBottom: "5px" }}>
                 <div style={{ display: 'flex', flexDirection: 'column', float: 'left', paddingLeft: '20px', whiteSpace: "nowrap" }}>
                     <div style={{ fontWeight: 'bold', color: "#FFB830", fontSize: "2rem" }}>{visa[0].full_name}</div>
@@ -32,7 +35,7 @@ function PriceOffers(props) {
                         Razılaşmalara bax
                         <BsArrowRight size="16px" />
                     </div>
-                    <div className={table["price-offer-action"]}>Yönəlt</div>
+                    <div className={table["price-offer-action"]} onClick={showModalHandler}>Yönəlt</div>
                 </div>
             </div>
 
@@ -41,7 +44,8 @@ function PriceOffers(props) {
                 orderContent={visa}
                 forwardType={1}
             />
-            {/* <ForwardPriceOffer /> */}
+            {showModal &&
+                <ForwardPriceOffer />}
         </div>
     )
 }

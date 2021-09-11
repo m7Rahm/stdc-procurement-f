@@ -5,39 +5,39 @@ import {
     useRouteMatch,
     Redirect
 } from "react-router-dom";
-import { FaCartArrowDown, FaTasks } from "react-icons/fa"
+import { FaCartArrowDown } from "react-icons/fa"
 import Orders from "./Tender/Orders";
 import "../styles/Tender.css"
-import Agreements from "./Orders/Agreements";
+// import Agreements from "./Orders/Agreements";
 import PriceResearch from "./Tender/PriceResearch";
 const routes = [
     {
-        text: "Sifarişlər",
+        text: "Gözləyən",
         link: "/orders",
         icon: FaCartArrowDown,
         component: Orders
     },
     {
-        text: "Yeni Razılaşma",
+        text: "Razılaşdırılmış",
         link: "/new-offer",
         icon: FaCartArrowDown,
         component: PriceResearch
     },
-    {
-        text: "Razılaşmalar",
-        link: "/agreements",
-        icon: FaTasks,
-        component: Agreements,
-        props: {
-            params: {
-                active: "id",
-                number: "number",
-            },
-            method: "GET",
-            link: "/api/tender-docs?doctype=1&",
-            referer: "procurement"
-        }
-    }
+    // {
+    //     text: "Razılaşmalar",
+    //     link: "/agreements",
+    //     icon: FaTasks,
+    //     component: Agreements,
+    //     props: {
+    //         params: {
+    //             active: "id",
+    //             number: "number",
+    //         },
+    //         method: "GET",
+    //         link: "/api/tender-docs?doctype=1&",
+    //         referer: "procurement"
+    //     }
+    // }
 ]
 const Tender = (props) => {
     const { setMenuData, loadingIndicatorRef } = props;

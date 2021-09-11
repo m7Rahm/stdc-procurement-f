@@ -99,7 +99,7 @@ const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(prop
                                 />
                             </div>
                             {
-                                options.length &&
+                                options.length !== 0 &&
                                 <select defaultValue="0" style={{ padding: '6px 0px', float: 'left' }} ref={selectRef}>
                                     {
                                         options.map(option =>

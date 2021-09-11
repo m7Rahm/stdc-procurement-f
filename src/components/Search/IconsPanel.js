@@ -62,11 +62,11 @@ const IconsPanel = (props) => {
                             onBlur={handleFocusLose}
                         >
                             Prioriteti dəyiş
-                            <ul className="priorities-list" ref={priorityRef}>
-                                <li className="priority" onBlur={handleFocusLose} tabIndex="1" onClick={(e) => setBulkPriority(e, 1)} >Yüksək</li>
-                                <li className="priority" onBlur={handleFocusLose} tabIndex="2" onClick={(e) => setBulkPriority(e, 2)} >Orta</li>
-                                <li className="priority" onBlur={handleFocusLose} tabIndex="3" onClick={(e) => setBulkPriority(e, 3)} >Aşağı</li>
-                                <li className="priority" onBlur={handleFocusLose} tabIndex="4" onClick={(e) => setBulkPriority(e, 0)}>Prioriteti sil</li>
+                            <ul className="priorities-list" onBlur={handleFocusLose} ref={priorityRef}>
+                                <li className="priority"  tabIndex="1" onClick={(e) => setBulkPriority(e, 1)} >Yüksək</li>
+                                <li className="priority" tabIndex="2" onClick={(e) => setBulkPriority(e, 2)} >Orta</li>
+                                <li className="priority" tabIndex="3" onClick={(e) => setBulkPriority(e, 3)} >Aşağı</li>
+                                <li className="priority" tabIndex="4" onClick={(e) => setBulkPriority(e, 0)}>Prioriteti sil</li>
                             </ul>
                         </div>
                     </>

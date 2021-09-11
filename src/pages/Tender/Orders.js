@@ -4,11 +4,11 @@ import CardsList from '../../components/HOC/CardsList'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
 import OrdersSearchHOC from '../../components/Search/OrdersSearchHOC'
 // import AgreementContent from '../../components/Tender/AgreementContent'
-import { optionsReadyOrders } from '../../data/data'
+// import { optionsReadyOrders } from '../../data/data'
 import useFetch from '../../hooks/useFetch'
 import PriceOffers from './PriceOffers'
 const SideBarContent = CardsList(ReadyOfferCard);
-const WithSearch = OrdersSearchHOC(optionsReadyOrders);
+const WithSearch = OrdersSearchHOC();
 const SideBar = React.memo(SideBarContainer(WithSearch, SideBarContent));
 
 const init = {

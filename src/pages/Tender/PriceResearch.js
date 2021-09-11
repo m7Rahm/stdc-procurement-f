@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { FaCheck, FaPlus, FaPlusCircle } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { TokenContext } from "../../App";
 import InputSearchList from "../../components/Misc/InputSearchList";
@@ -8,6 +8,9 @@ import useFetch from "../../hooks/useFetch";
 import table from "../../styles/Table.module.css"
 import PriceResearchMetarialsRow from "./PriceResearchMetarialsRow";
 import { RiDeleteBack2Fill } from "react-icons/ri"
+import { IoIosArrowBack } from "react-icons/io";
+import NewVendorModal from "./NewVendorModal";
+import { MdClose } from "react-icons/md";
 const PriceResearch = () => {
     const visa = useLocation().state?.visa;
     const id = useLocation().state?.id;
@@ -16,7 +19,10 @@ const PriceResearch = () => {
     const [uniquePriceOffers, setUniquePriceOffers] = useState([]);
     const [versions, setVersions] = useState([]);
     const tokenContext = useContext(TokenContext);
+    const user_id = tokenContext[0].userData.userInfo.id
     const fetchGet = useFetch("GET");
+    const history = useHistory();
+    const [showVendorModal, setShowVendorModal] = useState(false)
     const [vendorList, setVendorList] = useState([])
     useEffect(() => {
         fetchGet(`/api/vendors`)
@@ -31,7 +37,7 @@ const PriceResearch = () => {
                 resp.forEach(row => {
                     if (!vendors.find(vendor => vendor.user_id === row.user_id && vendor.vendor_id === row.vendor_id)) {
                         if (!versions[row.user_id]) {
-                            const color = (0xafdebc * row.user_id).toString(16)
+                            const color = (0x9abed1 * row.user_id).toString(16)
                             versions[row.user_id] = {
                                 id: row.user_id,
                                 count: 1,
@@ -40,7 +46,15 @@ const PriceResearch = () => {
                             }
                         }
                         else versions[row.user_id].count += 1
-                        vendors.push({ vendor_id: row.vendor_id, user_id: row.user_id, poid: row.po_id, vendorName: row.vendor_name });
+                        vendors.push({
+                            vendor_id: row.vendor_id,
+                            user_id: row.user_id,
+                            poid: row.po_id,
+                            vendorName: row.vendor_name,
+                            disabled: user_id !== row.user_id,
+                            tax_type: row.tax_type,
+                            residency: row.residency
+                        });
                     }
                 })
                 setPriceOffers(resp.map(row => ({ ...row, perwout: row.total / row.count })));
@@ -48,11 +62,11 @@ const PriceResearch = () => {
                 setVersions(Object.values(versions))
             })
             .catch(ex => console.log(ex))
-    }, [id, fetchGet]);
+    }, [id, fetchGet, user_id]);
     const handleChange = (e, id) => {
         const name = e.target.name;
         const value = e.target.value;
-        const allowed = /\d+(\.\d{0,2})?/.test(value);
+        const allowed = /^\d+(\.\d{0,2})?$/.test(value) || value === "";
         if (allowed)
             setPriceOffers(prev => prev.map(row => row.id === id ? ({ ...row, [name]: value, total: value * row.count }) : row))
     }
@@ -65,6 +79,10 @@ const PriceResearch = () => {
             title: "",
             material_id: ""
         }])
+    }
+    const removeAlternative = (po) => {
+        const id = po.id
+        setPriceOffers(prev => prev.filter(po => po.id !== id))
     }
     const removeVendor = (id, userid) => {
         setVersions(prev => {
@@ -86,6 +104,7 @@ const PriceResearch = () => {
             poid: v4(),
             perwout: 0,
             total: 0,
+            disabled: false,
             user_id: userid,
             title: "",
             material_id: ""
@@ -97,7 +116,7 @@ const PriceResearch = () => {
                 newState[index].count += 1
             }
             else {
-                const color = (0xafdebc * userid).toString(16)
+                const color = (0x9abed1 * userid).toString(16)
                 newState.push({
                     id: userid,
                     count: 1,
@@ -110,20 +129,36 @@ const PriceResearch = () => {
     }
     return (
         <div style={{ paddingTop: "70px", display: "flex" }}>
-            <div>
-                <div style={{ float: "left" }}>
+            {
+                showVendorModal &&
+                <div className={table["vendors-list-modal"]}>
+                    <div>
+                        <span>
+                            <MdClose size="1.5rem" onClick={() => setShowVendorModal(false)} />
+                        </span>
+                    </div>
+                    <NewVendorModal />
+                </div>
+            }
+            <div style={{ padding: "0px 20px" }}>
+                <div style={{ clear: "both" }}>
+                    <span style={{ cursor: "pointer" }}>
+                        <IoIosArrowBack onClick={() => history.goBack()} size="40" color="#606770" />
+                    </span>
+                </div>
+                <div style={{ float: "left", minHeight: "40px", marginBottom: "10px", position: "sticky", left: 0 }}>
                     {
                         versions.map(version =>
-                            <div style={{ position: "relative", margin: "1px", padding: "10px" }} key={version.id}>
+                            <div style={{ position: "relative", margin: "1px", padding: "10px", float: "left", cursor: "default" }} key={version.id}>
                                 {version.fullName}
                                 <span style={{ position: "absolute", right: "0", top: 0, bottom: 0, width: "5px", borderRadius: "1px 5px 5px 1px", backgroundColor: `#${version.color}` }}></span>
                             </div>
                         )
                     }
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", clear: "both", position: "relative" }}>
+                <div style={{ display: "flex", flexDirection: "column", clear: "both", position: "relative", zIndex: 0 }}>
                     <div className={table["price-research-header"]}>
-                        <div style={{ fontWeight: "600" }}>
+                        <div style={{ fontWeight: "600", position: "sticky", left: 0, zIndex: 23, backgroundColor: "white", boxShadow: "white 0px -6px 0px 0px" }}>
                             <div className={table["price-research-material-cell"]}>Şirkət adı</div>
                             <div className={table["price-research-material-cell"]}>Şirkətin növü (yerli/Xarici)</div>
                             <div className={table["price-research-material-cell"]}>Vergi ödəyici tipi(ƏDV/Sadələşdirilmiş)</div>
@@ -141,7 +176,12 @@ const PriceResearch = () => {
                                 <PriceOffer
                                     vendorName={po.vendorName}
                                     key={po.poid}
+                                    setUniquePriceOffers={setUniquePriceOffers}
                                     id={po.poid}
+                                    residency={po.residency}
+                                    tax_type={po.tax_type}
+                                    disabled={po.disabled}
+                                    setShowVendorModal={setShowVendorModal}
                                     userid={po.user_id}
                                     removeVendor={removeVendor}
                                     vendorList={vendorList}
@@ -152,33 +192,37 @@ const PriceResearch = () => {
                     </div>
                     {
                         visaMaterials.current.map(material =>
-                            <div key={material.order_material_id} className={table["price-research-material-row"]}>
-                                <div style={{ flex: "0 0 300px" }}>
+                            <div key={material.order_material_id} style={{ position: "relative" }} className={table["price-research-material-row"]}>
+                                <div style={{ flex: "0 0 300px", position: "sticky", top: 0, bottom: "0", left: 0, zIndex: 23 }}>
                                     <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 200px" }}>{material.title}</div>
                                     <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 50px" }}>{material.amount}</div>
                                     <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 50px" }}>{material.amount}</div>
                                 </div>
-                                {
-                                    uniquePriceOffers.map(po =>
-                                        <PriceOfferMaterials
-                                            key={po.poid}
-                                            priceOffers={priceOffers}
-                                            venid={po.vendor_id}
-                                            orderType={material.order_type}
-                                            handleChange={handleChange}
-                                            poid={po.poid}
-                                            count={material.amount}
-                                            vendorList={vendorList}
-                                            addAlternative={addAlternative}
-                                            parentMaterialid={material.order_material_id}
-                                        />
-                                    )
-                                }
+                                <div style={{ flex: 1 }}>
+                                    {
+                                        uniquePriceOffers.map(po =>
+                                            <PriceOfferMaterials
+                                                key={po.poid}
+                                                priceOffers={priceOffers}
+                                                venid={po.vendor_id}
+                                                disabled={po.disabled}
+                                                orderType={material.order_type}
+                                                handleChange={handleChange}
+                                                poid={po.poid}
+                                                removeAlternative={removeAlternative}
+                                                count={material.amount}
+                                                vendorList={vendorList}
+                                                addAlternative={addAlternative}
+                                                parentMaterialid={material.order_material_id}
+                                            />
+                                        )
+                                    }
+                                </div>
                             </div>
                         )
                     }
                     <div className={table["price-research-material-row"]}>
-                        <div className={table["price-research-material-footer"]} style={{ flex: "0 0 300px" }}>
+                        <div className={table["price-research-material-footer"]} style={{ flex: "0 0 300px", position: "sticky", left: 0, zIndex: 23, backgroundColor: "white" }}>
                             <div className={table["price-research-material-cell"]} >Cəm</div>
                             <div className={table["price-research-material-cell"]}>Təsdiq olunan təklif</div>
                             <div className={table["price-research-material-cell"]}>Texniki rəy</div>
@@ -217,49 +261,65 @@ const PriceOffer = (props) => {
     }
     const setVendor = (_, vendor, inputRef) => {
         inputRef.current.value = vendor.name;
+        console.log(vendor)
+        props.setUniquePriceOffers(prev =>
+            prev.map(upo =>
+                upo.poid === props.id
+                    ? ({
+                        ...upo,
+                        vendor_id: vendor.id,
+                        residency: vendor.residency,
+                        tax_type: vendor.tax_type
+                    })
+                    : upo
+            ))
         // vendorListRef.current.style.display = "none";
     }
+    const handleAddNewItemClick = (value) => {
+        props.setShowVendorModal(true)
+    }
     return (
-        <div className={table["price-research-header-container"]} style={{ boxShadow: `0px -4px 2px 0px #${props.version?.color}` }}>
-            <span className={table["remove-vendor"]} onClick={() => props.removeVendor(props.id, props.userid)} >
-                <RiDeleteBack2Fill size="18px" color="rgb(217, 52, 4)" />
-            </span>
-            <div className={table["price-research-material-cell"]} style={{ zIndex: "1" }}>
-                <InputSearchList
-                    placeholder="Vendor"
-                    text="name"
-                    name="vendor"
-                    listid={`vendorListRef${props.id}`}
-                    handleInputChange={handleVendorSearch}
-                    defaultValue={props.vendorName}
-                    items={vendors}
-                    style={{ top: "26px", width: "80%" }}
-                    inputStyle={{ border: "none" }}
-                    handleItemClick={setVendor}
-                />
+        <>
+            <div className={table["price-research-header-container"]} style={{ boxShadow: `0px -4px 2px 0px #${props.version?.color}` }}>{
+                !props.disabled &&
+                <span className={table["remove-vendor"]} onClick={() => props.removeVendor(props.id, props.userid)} >
+                    <RiDeleteBack2Fill size="18px" color="rgb(217, 52, 4)" />
+                </span>
+            }
+                <div className={table["price-research-material-cell"]} style={{ zIndex: "1" }}>
+                    <InputSearchList
+                        placeholder="Vendor"
+                        text="name"
+                        disabled={props.disabled}
+                        name="vendor"
+                        listid={`vendorListRef${props.id}`}
+                        handleInputChange={handleVendorSearch}
+                        defaultValue={props.vendorName}
+                        items={vendors}
+                        addNewItem={true}
+                        handleAddNewItemClick={handleAddNewItemClick}
+                        style={{ top: "26px", width: "80%" }}
+                        inputStyle={{ border: "none" }}
+                        handleItemClick={setVendor}
+                    />
+                </div>
+                <div className={table["price-research-material-cell"]}>
+                    {props.residency === 1 ? "Yerli" : "Xarici"}
+                </div>
+                <div className={table["price-research-material-cell"]}>
+                    {props.tax_type === 1 ? "ƏDV ödəyicisi" : "Sadələşdirilmiş" }
+                </div>
+                <div className={table["price-research-material-cell"]}><input /></div>
+                <div className={table["price-research-material-cell"]}><input /></div>
+                <div className={table["price-research-material-cell"]}><input /></div>
+                <div className={table["price-research-materials-header"]}>
+                    <div className={table["price-research-material-cell"]}>Təklif olunan</div>
+                    <div className={table["price-research-material-cell"]}>1 ədədin qiyməti</div>
+                    <div className={table["price-research-material-cell"]}>1 ədəd ƏDV daxil qiymət</div>
+                    <div style={{ fontSize: "12px"}} className={table["price-research-material-cell"]}>18% ƏDV daxil toplam qiyməti</div>
+                </div>
             </div>
-            <div className={table["price-research-material-cell"]}>
-                <select>
-                    <option>Yerli</option>
-                    <option>Xarici</option>
-                </select>
-            </div>
-            <div className={table["price-research-material-cell"]}>
-                <select>
-                    <option>ƏDV</option>
-                    <option>Sadələşdirilmiş</option>
-                </select>
-            </div>
-            <div className={table["price-research-material-cell"]}><input /></div>
-            <div className={table["price-research-material-cell"]}><input /></div>
-            <div className={table["price-research-material-cell"]}><input /></div>
-            <div className={table["price-research-materials-header"]}>
-                <div className={table["price-research-material-cell"]}>Təklif olunan</div>
-                <div className={table["price-research-material-cell"]}>1 ədədin qiyməti</div>
-                <div className={table["price-research-material-cell"]}>1 ədəd ƏDV daxil qiymət</div>
-                <div className={table["price-research-material-cell"]}>18% ƏDV daxil toplam qiyməti</div>
-            </div>
-        </div>
+        </>
     )
 }
 const PriceOfferMaterials = (props) => {
@@ -269,9 +329,12 @@ const PriceOfferMaterials = (props) => {
             offeredMaterials.length === 0 ?
                 <div>
                     <div className={table["price-research-material-cell"]}>
-                        <span style={{ right: "5px", cursor: "pointer" }}>
-                            <FaPlus onClick={() => props.addAlternative({ parent_offers_material_id: props.parentMaterialid, po_id: props.poid, count: props.count })} color="rgb(255, 174, 0)" />
-                        </span>
+                        {
+                            !props.disabled &&
+                            <span style={{ right: "5px", cursor: "pointer" }}>
+                                <FaPlus onClick={() => props.addAlternative({ parent_offers_material_id: props.parentMaterialid, po_id: props.poid, count: props.count })} color="rgb(255, 174, 0)" />
+                            </span>
+                        }
                     </div>
                     <div className={table["price-research-material-cell"]}></div>
                     <div className={table["price-research-material-cell"]}></div>
@@ -281,6 +344,8 @@ const PriceOfferMaterials = (props) => {
                     <PriceResearchMetarialsRow
                         key={po.id}
                         po={po}
+                        removeAlternative={props.removeAlternative}
+                        disabled={props.disabled}
                         orderType={props.orderType}
                         addAlternative={props.addAlternative}
                         handleChange={props.handleChange}

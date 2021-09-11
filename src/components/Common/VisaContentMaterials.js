@@ -95,7 +95,7 @@ const TableRow = (props) => {
 					{material_comment}
 				</span>
 			</td>
-			<td style={{ textAlign: 'left', maxWidth: "140px" }}>
+			<td style={{ maxWidth: "140px" }}>
 				{product_id}
 			</td>
 			<td style={{ maxWidth: '140px' }}>

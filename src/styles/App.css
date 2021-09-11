@@ -1975,7 +1975,9 @@ div.login input:focus, div.login input:active {
   box-shadow: 0px 0px 0px 1px #0a66c2;
 }
 
-div.login input:active+label, div.login input:not([value=""])+label, div.login input:focus+label {
+div.login input:active+label,
+div.login input:not([value=""])+label,
+div.login input:focus+label {
   top: -4px;
   font-size: 1.4rem;
   line-height: 1.5;
