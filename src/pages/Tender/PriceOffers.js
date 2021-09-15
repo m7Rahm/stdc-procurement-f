@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { useHistory } from 'react-router-dom';
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
 import ForwardDocLayout from '../../components/STDC local/ForwardDocLayout/ForwardDocLayout';
@@ -7,6 +7,7 @@ import useFetch from '../../hooks/useFetch'
 // import PriceResearch from './PriceResearch';
 import table from "../../styles/Table.module.css"
 import { BsArrowRight } from "react-icons/bs"
+import { NotificationContext, WebSocketContext } from '../SelectModule';
 function PriceOffers(props) {
     const { id } = props;
     const [visa, setVisa] = useState([]);
@@ -45,16 +46,19 @@ function PriceOffers(props) {
                 forwardType={1}
             />
             {showModal &&
-                <ForwardPriceOffer />}
+                <ForwardPriceOffer id={id} />}
         </div>
     )
 }
 
 export default PriceOffers
 //eslint-disable-next-line
-const ForwardPriceOffer = () => {
+const ForwardPriceOffer = (props) => {
     const [receivers, setReceivers] = useState([])
-
+    const fetchPut = useFetch("PUT");
+    const textareaRef = useRef(null);
+    const notifcationContext = useContext(NotificationContext);
+    const webSocket = useContext(WebSocketContext);
     const handleElementDrag = (draggedElement, index) => {
         setReceivers(prev => {
             const draggedIndex = prev.findIndex(card => card.id === draggedElement.id);
@@ -86,12 +90,33 @@ const ForwardPriceOffer = () => {
             else return prev
         })
     }
+    const forward_order = () => {
+        const data = {
+            receivers: receivers.join(","),
+            comment: textareaRef.current.value
+        }
+        fetchPut(`/api/fofpr/${props.id}`, data)
+            .then(resp => {
+                const message = {
+                    message: "notification",
+                    receivers: receivers.map(receiver => ({ id: receiver.id, notif: "tO" })),
+                    data: undefined
+                }
+                webSocket.send(JSON.stringify(message))
+                notifcationContext("Sifariş yönləndirildi", `/tender/orders?i=${props.id}`)
+            })
+            .catch(ex => console.log(ex))
+    }
     return (
-        <ForwardDocLayout
-            receivers={receivers}
-            handleElementDrag={handleElementDrag}
-            handleSelectChange={handleSelectChange}
-            handleDeselection={handleDeselection}
-        />
+        <>
+            <ForwardDocLayout
+                receivers={receivers}
+                handleElementDrag={handleElementDrag}
+                handleSelectChange={handleSelectChange}
+                handleDeselection={handleDeselection}
+                textareaRef={textareaRef}
+            />
+            <div onClick={forward_order} className="send-order">Göndər</div>
+        </>
     )
 }

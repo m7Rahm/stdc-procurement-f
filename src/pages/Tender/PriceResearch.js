@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { FaCheck, FaPlus, FaPlusCircle } from "react-icons/fa";
+import { FaCheck, FaPlus, FaPlusCircle, FaRegFileImage } from "react-icons/fa";
 import { useHistory, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { TokenContext } from "../../App";
@@ -53,7 +53,8 @@ const PriceResearch = () => {
                             vendorName: row.vendor_name,
                             disabled: user_id !== row.user_id,
                             tax_type: row.tax_type,
-                            residency: row.residency
+                            residency: row.residency,
+                            files: row.files ? row.files.split(",").map(file => ({ name: file, fetched: true })) : []
                         });
                     }
                 })
@@ -107,7 +108,8 @@ const PriceResearch = () => {
             disabled: false,
             user_id: userid,
             title: "",
-            material_id: ""
+            material_id: "",
+            files: []
         }])
         setVersions(prev => {
             const newState = [...prev];
@@ -137,7 +139,10 @@ const PriceResearch = () => {
                             <MdClose size="1.5rem" onClick={() => setShowVendorModal(false)} />
                         </span>
                     </div>
-                    <NewVendorModal />
+                    <NewVendorModal
+                        setVendorList={setVendorList}
+                        close_modal={() => setShowVendorModal(false)}
+                    />
                 </div>
             }
             <div style={{ padding: "0px 20px" }}>
@@ -180,6 +185,7 @@ const PriceResearch = () => {
                                     id={po.poid}
                                     residency={po.residency}
                                     tax_type={po.tax_type}
+                                    files={po.files}
                                     disabled={po.disabled}
                                     setShowVendorModal={setShowVendorModal}
                                     userid={po.user_id}
@@ -261,7 +267,6 @@ const PriceOffer = (props) => {
     }
     const setVendor = (_, vendor, inputRef) => {
         inputRef.current.value = vendor.name;
-        console.log(vendor)
         props.setUniquePriceOffers(prev =>
             prev.map(upo =>
                 upo.poid === props.id
@@ -278,48 +283,103 @@ const PriceOffer = (props) => {
     const handleAddNewItemClick = (value) => {
         props.setShowVendorModal(true)
     }
-    return (
-        <>
-            <div className={table["price-research-header-container"]} style={{ boxShadow: `0px -4px 2px 0px #${props.version?.color}` }}>{
-                !props.disabled &&
-                <span className={table["remove-vendor"]} onClick={() => props.removeVendor(props.id, props.userid)} >
-                    <RiDeleteBack2Fill size="18px" color="rgb(217, 52, 4)" />
-                </span>
+    const handleDragEnter = (e) => {
+        preventDefault(e)
+        e.currentTarget.style.border = "1px dotted red"
+    }
+    const handleDragLeave = (e) => {
+        preventDefault(e)
+        e.currentTarget.style.borderColor = "transparent"
+    }
+    const onDrop = (e) => {
+        preventDefault(e);
+        const added_files = Object.values(e.dataTransfer.files)
+        e.currentTarget.style.borderColor = "transparent"
+        props.setUniquePriceOffers(prev => prev.map(po => {
+            if (po.poid === props.id) {
+                const files = po.files;
+                const new_files = added_files.filter(file => !files.find(f => f.name === file.name)).map(file => ({ name: file.name, fetched: false }));
+                return ({ ...po, files: [...files, ...new_files] })
             }
-                <div className={table["price-research-material-cell"]} style={{ zIndex: "1" }}>
-                    <InputSearchList
-                        placeholder="Vendor"
-                        text="name"
-                        disabled={props.disabled}
-                        name="vendor"
-                        listid={`vendorListRef${props.id}`}
-                        handleInputChange={handleVendorSearch}
-                        defaultValue={props.vendorName}
-                        items={vendors}
-                        addNewItem={true}
-                        handleAddNewItemClick={handleAddNewItemClick}
-                        style={{ top: "26px", width: "80%" }}
-                        inputStyle={{ border: "none" }}
-                        handleItemClick={setVendor}
-                    />
+            else
+                return po
+        })
+        )
+    }
+    const preventDefault = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+    const addNewFile = (e) => {
+        const added_files = Object.values(e.target.files)
+        added_files.pop();
+        props.setUniquePriceOffers(prev => prev.map(po => {
+            if (po.poid === props.id) {
+                const files = po.files;
+                const new_files = added_files.filter(file => !files.find(f => f.name === file.name)).map(file => ({ name: file.name, fetched: false }));
+                return ({ ...po, files: [...files, ...new_files] })
+            }
+            else
+                return po
+        })
+        )
+    }
+    return (
+        <div className={table["price-research-header-container"]} style={{ boxShadow: `0px -4px 2px 0px #${props.version?.color}` }}>{
+            !props.disabled &&
+            <span className={table["remove-vendor"]} onClick={() => props.removeVendor(props.id, props.userid)} >
+                <RiDeleteBack2Fill size="18px" color="rgb(217, 52, 4)" />
+            </span>
+        }
+            <div className={table["price-research-material-cell"]} style={{ zIndex: "1" }}>
+                <div onDrop={onDrop} onDragOver={handleDragEnter} onDragLeave={handleDragLeave} onDragEnter={handleDragEnter} style={{ position: "absolute", left: 5, right: 0, bottom: "30px", borderRadius: "5px", borderWidth: "1px" }}>
+                    {props.files.map(file =>
+                        file.fetched
+                            ? <a href={`http://172.16.3.64/original/${file}`} target="_blank" rel="noreferrer" key={file.name} title={file.name} style={{ borderRadius: "5px", cursor: "pointer" }}>
+                                <FaRegFileImage size="24" color={`#${props.version?.color}`} />
+                            </a>
+                            :
+                            <span key={file.name} title={file.name}>
+                                <FaRegFileImage size="24" color={`#${props.version?.color}`} />
+                            </span>
+                    )}
+                    <label htmlFor={`files-${props.id}`} title="Fayl əlavə et" style={{ float: "right", cursor: "pointer" }}>
+                        <FaPlus size="20" />
+                    </label>
+                    <input onChange={addNewFile} multiple id={`files-${props.id}`} type="file" style={{ display: "none" }} />
                 </div>
-                <div className={table["price-research-material-cell"]}>
-                    {props.residency === 1 ? "Yerli" : "Xarici"}
-                </div>
-                <div className={table["price-research-material-cell"]}>
-                    {props.tax_type === 1 ? "ƏDV ödəyicisi" : "Sadələşdirilmiş" }
-                </div>
-                <div className={table["price-research-material-cell"]}><input /></div>
-                <div className={table["price-research-material-cell"]}><input /></div>
-                <div className={table["price-research-material-cell"]}><input /></div>
-                <div className={table["price-research-materials-header"]}>
-                    <div className={table["price-research-material-cell"]}>Təklif olunan</div>
-                    <div className={table["price-research-material-cell"]}>1 ədədin qiyməti</div>
-                    <div className={table["price-research-material-cell"]}>1 ədəd ƏDV daxil qiymət</div>
-                    <div style={{ fontSize: "12px"}} className={table["price-research-material-cell"]}>18% ƏDV daxil toplam qiyməti</div>
-                </div>
+                <InputSearchList
+                    placeholder="Vendor"
+                    text="name"
+                    disabled={props.disabled}
+                    name="vendor"
+                    listid={`vendorListRef${props.id}`}
+                    handleInputChange={handleVendorSearch}
+                    defaultValue={props.vendorName}
+                    items={vendors}
+                    addNewItem={true}
+                    handleAddNewItemClick={handleAddNewItemClick}
+                    style={{ top: "26px", width: "80%" }}
+                    inputStyle={{ border: "none" }}
+                    handleItemClick={setVendor}
+                />
             </div>
-        </>
+            <div className={table["price-research-material-cell"]}>
+                {props.residency === 1 ? "Yerli" : "Xarici"}
+            </div>
+            <div className={table["price-research-material-cell"]}>
+                {props.tax_type === 1 ? "ƏDV ödəyicisi" : "Sadələşdirilmiş"}
+            </div>
+            <div className={table["price-research-material-cell"]}><input /></div>
+            <div className={table["price-research-material-cell"]}><input /></div>
+            <div className={table["price-research-material-cell"]}><input /></div>
+            <div className={table["price-research-materials-header"]}>
+                <div className={table["price-research-material-cell"]}>Təklif olunan</div>
+                <div className={table["price-research-material-cell"]}>1 ədədin qiyməti</div>
+                <div className={table["price-research-material-cell"]}>1 ədəd ƏDV daxil qiymət</div>
+                <div style={{ fontSize: "12px" }} className={table["price-research-material-cell"]}>18% ƏDV daxil toplam qiyməti</div>
+            </div>
+        </div>
     )
 }
 const PriceOfferMaterials = (props) => {
@@ -331,7 +391,7 @@ const PriceOfferMaterials = (props) => {
                     <div className={table["price-research-material-cell"]}>
                         {
                             !props.disabled &&
-                            <span style={{ right: "5px", cursor: "pointer" }}>
+                            <span style={{ left: "3px", cursor: "pointer", position: 'absolute' }}>
                                 <FaPlus onClick={() => props.addAlternative({ parent_offers_material_id: props.parentMaterialid, po_id: props.poid, count: props.count })} color="rgb(255, 174, 0)" />
                             </span>
                         }

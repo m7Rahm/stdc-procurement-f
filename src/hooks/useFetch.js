@@ -23,7 +23,7 @@ const useFetch = (method) => {
             const apiData = JSON.stringify(data);
             const aController = abortController || new AbortController()
             const resp = await fetch(`${serverAddress}${serverPort}${url}`, {
-                method: "POST",
+                method: method,
                 signal: aController.signal,
                 headers: {
                     "Authorization": "Bearer " + token,

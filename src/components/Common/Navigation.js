@@ -1,10 +1,11 @@
-import React, { lazy, useEffect, useRef, useState } from 'react'
+import React, { lazy, useContext, useEffect, useRef, useState } from 'react'
 import { IoMdMenu } from 'react-icons/io';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { MdNotifications } from 'react-icons/md'
 import logo from '../../logo.svg';
 import { Suspense } from 'react';
 import useFetch from '../../hooks/useFetch';
+import { NotificationContext } from '../../pages/SelectModule';
 const ProfileInfo = lazy(() => import("./ProfileInfo"))
 const Navigation = (props, ref) => {
     const moduleNavigationRef = useRef(null);
@@ -12,6 +13,7 @@ const Navigation = (props, ref) => {
     const history = useHistory();
     const location = useLocation();
     const from = useRef(0);
+    const createNewNotification = useContext(NotificationContext);
     const [notifications, setNotifications] = useState({ all: [], visible: [], offsetStart: 0, offsetEnd: 0, count: '', height: 0 })
     const notificationsRef = useRef(null);
     const delimterRef = useRef(null);
@@ -43,17 +45,27 @@ const Navigation = (props, ref) => {
             if (webSockMessage.messageType !== "recognition") {
                 window.dispatchEvent(event);
                 let docType = "";
-                let categoryid = webSockMessage.messageType[0] === "o" ? 1 : webSockMessage.messageType[0] === "m" ? 10 : 0;
-                categoryid = webSockMessage.messageType === "oR" ? 2 : categoryid
-                if (webSockMessage.messageType[1] === "O" || webSockMessage.messageType === "oR")
+                const message_type = webSockMessage.messageType;
+                let categoryid = message_type[0] === "o" ? 1 : message_type[0] === "m" ? 10 : message_type[0] === "t" ? 3 : 0;
+                categoryid = message_type === "oR" ? 2 : categoryid;
+                let text = ""
+                if (message_type[1] === "O" || message_type === "oR") {
                     docType = "0";
-                else if (webSockMessage.messageType[1] === "A")
+                }
+                else if (message_type[1] === "A") {
                     docType = "1";
-                else if (webSockMessage.messageType[1] === "C")
+                }
+                else if (message_type[1] === "C") {
                     docType = "2";
-                else if (webSockMessage.messageType[1] === "P")
+                }
+                else if (message_type[1] === "P") {
                     docType = "3";
+                }
                 const key = `${categoryid}-${docType}`
+                const module = categoryid === 1 ? "/orders" : categoryid === 3 ? "/tender" : "/"
+                const subModule = docType === "0" ? "/orders" : ""
+                // const query = "?i="
+                createNewNotification(text, module + subModule)
                 if (props.menuNavRefs.current[key]) {
                     const prev = Number(props.menuNavRefs.current[key].innerHTML);
                     if (props.menuNavRefs.current[key].style.display === "none") {
@@ -89,7 +101,7 @@ const Navigation = (props, ref) => {
         return () => {
             window.removeEventListener("inAppEvent", handleInAppEvent, false)
         }
-    }, [props.webSocket, fetchNotifications, props.menuNavRefs]);
+    }, [props.webSocket, fetchNotifications, props.menuNavRefs, createNewNotification]);
     useEffect(() => {
         let mounted = true;
         fetchNotifications('/api/notifications?from=0')
@@ -163,7 +175,6 @@ const Navigation = (props, ref) => {
                             return { ...prev, all: all, height: height, visible: all.slice(prev.offsetStart, end), offsetEnd: end, count: respJ[0].total_count <= 0 ? "" : respJ[0].total_count }
                         })
                     }
-
                 })
                 .catch(ex => console.log(ex))
         }
@@ -171,22 +182,25 @@ const Navigation = (props, ref) => {
     }
     const pushHistory = (notification) => {
         let module = "/orders";
-        if (notification.category_id === 2 && notification.doc_type !== 0) {
-            module = notification.doc_type === 1
+        let subModule = "";
+        if (notification.category_id > 2) {
+            module = notification.category_id === 3
                 ? "/tender"
                 : "/contracts";
+            subModule = notification.doc_type === 0 ? "/orders" : ""
+        } else {
+            subModule = notification.doc_type === 0 && notification.category_id === 1
+                ? "/visas?"
+                : notification.doc_type === 0 && notification.category_id === 2 && notification.action !== 2
+                    ? "/my-orders?"
+                    : notification.doc_type === 0 && notification.category_id === 2 && notification.action === 2
+                        ? "/returned?"
+                        : notification.doc_type === 1
+                            ? "/agreements?"
+                            : notification.doc_type === 2
+                                ? "/contracts?"
+                                : "/payments?"
         }
-        const subModule = notification.doc_type === 0 && notification.category_id === 1
-            ? "/visas?"
-            : notification.doc_type === 0 && notification.category_id === 2 && notification.action !== 2
-                ? "/my-orders?"
-                : notification.doc_type === 0 && notification.category_id === 2 && notification.action === 2
-                    ? "/returned?"
-                    : notification.doc_type === 1
-                        ? "/agreements?"
-                        : notification.doc_type === 2
-                            ? "/contracts?"
-                            : "/payments?"
         const { tran_id: tranid, doc_number: docNumber } = notification;
 
         let link = module + subModule + `i=${tranid}&r=${notification.init_id}`

@@ -1,10 +1,35 @@
 import React, { useRef, useState } from "react"
+import useFetch from "../../hooks/useFetch"
 import table from "../../styles/Table.module.css"
 const NewVendorModal = (props) => {
     const [vendor_name, set_vendor_name] = useState("")
     const [voen, set_voen] = useState("")
     const companyTypeRef = useRef(null)
-    const taxtPayerTypeRef = useRef(null)
+    const taxtPayerTypeRef = useRef(null);
+    const fetchPut = useFetch("PUT")
+    const handle_add_click = () => {
+        const tax_type = taxtPayerTypeRef.current.value;
+        const residency = companyTypeRef.current.value
+        fetchPut("/api/new-vendor", {
+            name: vendor_name,
+            voen: voen,
+            tax_type: tax_type,
+            residency: residency
+        })
+            .then(respJ => {
+                props.close_modal()
+                props.setVendorList(prev =>
+                    [...prev, {
+                        name: vendor_name,
+                        voen,
+                        tax_type: tax_type,
+                        residency: residency,
+                        id: respJ[0].id
+                    }]
+                )
+            })
+            .catch(ex => console.log(ex))
+    }
     const handle_blur = (e) => {
         const target = e.target;
         if (target.value === "") {
@@ -44,20 +69,20 @@ const NewVendorModal = (props) => {
                         <label > Şirkət Növü</label>
                         <br />
                         <select ref={companyTypeRef}>
-                            <option>Yerli</option>
-                            <option>Xarici</option>
+                            <option value="1">Yerli</option>
+                            <option value="2">Xarici</option>
                         </select>
                     </div>
                     <div style={{ float: "right" }}>
                         <label >Vergi ödəyici tipi</label>
                         <br />
                         <select ref={taxtPayerTypeRef}>
-                            <option>ƏDV ödəyicisi</option>
-                            <option>Sadələşdirilmiş</option>
+                            <option value="1">ƏDV ödəyicisi</option>
+                            <option value="2">Sadələşdirilmiş</option>
                         </select>
                     </div>
                 </div>
-                <div>
+                <div onClick={handle_add_click}>
                     Əlavə et
                 </div>
             </div>

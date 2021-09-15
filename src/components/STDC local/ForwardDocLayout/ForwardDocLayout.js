@@ -52,7 +52,7 @@ const ForwardDocLayout = (props) => {
             <div style={{ marginTop: '20px', flex: 1 }} id="procurement-edit-section">
                 {
                     textareaVisible &&
-                    <textarea ref={textareaRef} />
+                    <textarea ref={props.textareaRef || textareaRef} />
                 }
                 <div style={{ minHeight: '231px', minWidth: '242.453px' }}>
                     <select ref={selectRef} style={{ height: '30px' }} onChange={handleStructureChange}>

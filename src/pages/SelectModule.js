@@ -5,6 +5,7 @@ import React, {
 	useRef,
 	lazy,
 	Suspense,
+	useCallback,
 } from "react";
 
 import { Link, Switch, Route, Redirect } from "react-router-dom";
@@ -68,7 +69,7 @@ const SelectModule = () => {
 		elem.classList.add(classes["fadeoutanimation"]);
 		elem.addEventListener("animationend", () => setNotifications((prev) => prev.filter((notification) => notification.key !== target.id)), false)
 	};
-	const createNewNotification = (content = '', link) => {
+	const createNewNotification = useCallback((content = '', link) => {
 		setNotifications((prev) => {
 			const newState = [
 				...prev,
@@ -80,7 +81,7 @@ const SelectModule = () => {
 			];
 			return newState;
 		});
-	}
+	}, [])
 	useEffect(() => {
 		let mounted = true;
 		if (token && navigator.onLine) {
