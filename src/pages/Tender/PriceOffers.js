@@ -3,8 +3,6 @@ import { useHistory } from 'react-router-dom';
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
 import ForwardDocLayout from '../../components/STDC local/ForwardDocLayout/ForwardDocLayout';
 import useFetch from '../../hooks/useFetch'
-// import Offers from './Offers'
-// import PriceResearch from './PriceResearch';
 import table from "../../styles/Table.module.css"
 import { BsArrowRight } from "react-icons/bs"
 import { NotificationContext, WebSocketContext } from '../SelectModule';
@@ -40,7 +38,6 @@ function PriceOffers(props) {
                 </div>
             </div>
 
-            {/* <Offers visa={visa} orderid={id} /> */}
             <VisaContentMaterials
                 orderContent={visa}
                 forwardType={1}
@@ -92,15 +89,17 @@ const ForwardPriceOffer = (props) => {
     }
     const forward_order = () => {
         const data = {
-            receivers: receivers.join(","),
+            receivers: receivers.map(receiver => receiver.id).join(","),
             comment: textareaRef.current.value
         }
         fetchPut(`/api/fofpr/${props.id}`, data)
-            .then(resp => {
+            .then(_ => {
                 const message = {
                     message: "notification",
                     receivers: receivers.map(receiver => ({ id: receiver.id, notif: "tO" })),
-                    data: undefined
+                    data: {
+                        order_id: props.id
+                    }
                 }
                 webSocket.send(JSON.stringify(message))
                 notifcationContext("Sifariş yönləndirildi", `/tender/orders?i=${props.id}`)

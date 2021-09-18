@@ -33,7 +33,14 @@ const PriceResearchMetarialsRow = (props) => {
     }
     const setMaterial = (_, vendor, inputRef) => {
         inputRef.current.value = vendor.title;
+        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, material_id: vendor.id, material_name: vendor.title }) : row))
         // vendorListRef.current.style.display = "none";
+    }
+    const handleBlur = (inputRef) => {
+        const value = inputRef.current.value;
+        fetchGet(`/api/material-by-title?exact=1&title=${encodeURIComponent(value)}&orderType=${props.orderType}`)
+            .then(respJ => props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, material_name: value, material_id: respJ[0]?.id }) : row)))
+            .catch(ex => console.log(ex))
     }
     return (
         <div>
@@ -54,6 +61,7 @@ const PriceResearchMetarialsRow = (props) => {
                         defaultValue={po.title}
                         parentRef={parentRef}
                         items={materials}
+                        onBlur={handleBlur}
                         style={{ top: "24px", width: "inherit" }}
                         disabled={props.disabled}
                         inputStyle={{ border: "none", width: "100%", paddingLeft: "12px" }}
@@ -68,13 +76,16 @@ const PriceResearchMetarialsRow = (props) => {
                 }
             </div>
             <div className={table["price-research-material-cell"]}>
-                <input name="perwout" onChange={e => props.handleChange(e, po.id)} value={po.perwout} />
+                <input disabled={props.disabled} name="price" onChange={e => {
+                    if (!props.disabled)
+                        props.handleChange(e, po.id)
+                }} value={po.price} />
             </div>
             <div className={table["price-research-material-cell"]}>
-                {((po.total / po.count) * 1.18).toFixed(2)}
+                {(po.price * 1.18).toFixed(2)}
             </div>
             <div className={table["price-research-material-cell"]}>
-                {(po.total * 1.18).toFixed(2)}
+                {po.total}
             </div>
         </div>
     )

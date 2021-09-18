@@ -218,6 +218,32 @@ div.vendors-list-modal>div:first-of-type>span {
     width: 100%;
     z-index: 2;
 }
+.alert-box{
+    position: fixed;
+    top: 30%;
+    text-align: center;
+    left: 50%;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: 550;
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2); 
+    background-color: whitesmoke;
+    z-index: 2;
+    padding: 6px;
+}
+.alert-box>div{
+    display: flex;
+    padding-top: 10px;
+    justify-content: space-evenly;
+}
+.alert-box>div>div{
+    flex: 0.2;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 6px 10px;
+    background-color: greenyellow;
+}
 .price-research-mat-container input:focus{
     outline: none;
 }

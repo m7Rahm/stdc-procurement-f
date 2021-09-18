@@ -48,7 +48,6 @@ const Navigation = (props, ref) => {
                 const message_type = webSockMessage.messageType;
                 let categoryid = message_type[0] === "o" ? 1 : message_type[0] === "m" ? 10 : message_type[0] === "t" ? 3 : 0;
                 categoryid = message_type === "oR" ? 2 : categoryid;
-                let text = ""
                 if (message_type[1] === "O" || message_type === "oR") {
                     docType = "0";
                 }
@@ -63,9 +62,14 @@ const Navigation = (props, ref) => {
                 }
                 const key = `${categoryid}-${docType}`
                 const module = categoryid === 1 ? "/orders" : categoryid === 3 ? "/tender" : "/"
+                let text = ""
+                let query = "?i="
+                if (categoryid === 3) {
+                    text = "Qiymət Araşdırması";
+                    query += webSockMessage.data.order_id
+                }
                 const subModule = docType === "0" ? "/orders" : ""
-                // const query = "?i="
-                createNewNotification(text, module + subModule)
+                createNewNotification(text, module + subModule + query)
                 if (props.menuNavRefs.current[key]) {
                     const prev = Number(props.menuNavRefs.current[key].innerHTML);
                     if (props.menuNavRefs.current[key].style.display === "none") {

@@ -7,7 +7,7 @@ import InputSearchList from "../../components/Misc/InputSearchList";
 import useFetch from "../../hooks/useFetch";
 import table from "../../styles/Table.module.css"
 import PriceResearchMetarialsRow from "./PriceResearchMetarialsRow";
-import { RiDeleteBack2Fill } from "react-icons/ri"
+import { RiDeleteBack2Fill, RiSave3Fill } from "react-icons/ri"
 import { IoIosArrowBack } from "react-icons/io";
 import NewVendorModal from "./NewVendorModal";
 import { MdClose } from "react-icons/md";
@@ -17,13 +17,14 @@ const PriceResearch = () => {
     const visaMaterials = useRef(visa ? visa : []);
     const [priceOffers, setPriceOffers] = useState([]);
     const [uniquePriceOffers, setUniquePriceOffers] = useState([]);
+    const [alertbox, set_alertbox] = useState(false);
     const [versions, setVersions] = useState([]);
     const tokenContext = useContext(TokenContext);
     const user_id = tokenContext[0].userData.userInfo.id
     const fetchGet = useFetch("GET");
     const history = useHistory();
     const [showVendorModal, setShowVendorModal] = useState(false)
-    const [vendorList, setVendorList] = useState([])
+    const [vendorList, setVendorList] = useState([]);
     useEffect(() => {
         fetchGet(`/api/vendors`)
             .then(respJ => setVendorList(respJ))
@@ -54,30 +55,35 @@ const PriceResearch = () => {
                             disabled: user_id !== row.user_id,
                             tax_type: row.tax_type,
                             residency: row.residency,
+                            delivery_terms: row.delivery_terms,
+                            delivery_duration: row.delivery_duration,
+                            log_expenses: row.log_expenses,
                             files: row.files ? row.files.split(",").map(file => ({ name: file, fetched: true })) : []
                         });
                     }
                 })
-                setPriceOffers(resp.map(row => ({ ...row, perwout: row.total / row.count })));
+                setPriceOffers(resp.map(row => ({ ...row, total: (row.price * row.amount * 1.18).toFixed(2) })));
                 setUniquePriceOffers(vendors)
                 setVersions(Object.values(versions))
             })
             .catch(ex => console.log(ex))
     }, [id, fetchGet, user_id]);
+
     const handleChange = (e, id) => {
         const name = e.target.name;
         const value = e.target.value;
         const allowed = /^\d+(\.\d{0,2})?$/.test(value) || value === "";
         if (allowed)
-            setPriceOffers(prev => prev.map(row => row.id === id ? ({ ...row, [name]: value, total: value * row.count }) : row))
+            setPriceOffers(prev => prev.map(row => row.id === id ? ({ ...row, [name]: value, total: (value * row.amount * 1.18).toFixed(2) }) : row))
     }
     const addAlternative = (po) => {
         setPriceOffers(prev => [...prev, {
             ...po,
             id: v4(),
-            perwout: 0,
+            price: 0,
             total: 0,
             title: "",
+            parentMaterialid: po.parent_offers_material_id,
             material_id: ""
         }])
     }
@@ -85,25 +91,33 @@ const PriceResearch = () => {
         const id = po.id
         setPriceOffers(prev => prev.filter(po => po.id !== id))
     }
+    const rm_price_offer = () => {
+        fetchGet(`/api/remove-price-offer/${alertbox.id}`)
+            .then(_ => {
+                setVersions(prev => {
+                    const index = prev.findIndex(version => version.id === alertbox.user_id);
+                    return prev[index].count === 1
+                        ? prev.filter(version => version.id !== alertbox.user_id)
+                        : prev.map(version => version.id === alertbox.user_id ? ({ ...version, count: version.count - 1 }) : version)
+                });
+                setUniquePriceOffers(prev => {
+                    return prev.filter(po => po.poid !== alertbox.id)
+                });
+                setPriceOffers(prev => {
+                    return prev.filter(po => po.po_id !== alertbox.id)
+                })
+                set_alertbox({ state: false, id: null, user_id: null })
+            })
+            .catch(ex => console.log(ex))
+    }
     const removeVendor = (id, userid) => {
-        setVersions(prev => {
-            const index = prev.findIndex(version => version.id === userid);
-            return prev[index].count === 1
-                ? prev.filter(version => version.id !== userid)
-                : prev.map(version => version.id === userid ? ({ ...version, count: version.count - 1 }) : version)
-        });
-        setUniquePriceOffers(prev => {
-            return prev.filter(po => po.poid !== id)
-        });
-        setPriceOffers(prev => {
-            return prev.filter(po => po.po_id !== id)
-        })
+        set_alertbox({ state: true, id, user_id: userid })
     }
     const addNewVendor = () => {
         const { id: userid, fullName } = tokenContext[0].userData.userInfo;
         setUniquePriceOffers(prev => [...prev, {
             poid: v4(),
-            perwout: 0,
+            price: 0,
             total: 0,
             disabled: false,
             user_id: userid,
@@ -182,13 +196,21 @@ const PriceResearch = () => {
                                     vendorName={po.vendorName}
                                     key={po.poid}
                                     setUniquePriceOffers={setUniquePriceOffers}
+                                    priceOffers={priceOffers}
                                     id={po.poid}
+                                    visaMaterials={visaMaterials}
+                                    order_id={id}
+                                    delivery_duration={po.delivery_duration}
+                                    delivery_terms={po.delivery_terms}
+                                    log_expenses={po.log_expenses}
+                                    vendor_id={po.vendor_id}
                                     residency={po.residency}
                                     tax_type={po.tax_type}
                                     files={po.files}
                                     disabled={po.disabled}
                                     setShowVendorModal={setShowVendorModal}
                                     userid={po.user_id}
+                                    setPriceOffers={setPriceOffers}
                                     removeVendor={removeVendor}
                                     vendorList={vendorList}
                                     version={versions.find(version => version.id === po.user_id)}
@@ -196,6 +218,16 @@ const PriceResearch = () => {
                             )
                         }
                     </div>
+                    {
+                        alertbox.state &&
+                        <div className={table["alert-box"]}>
+                            Qiymət təklifini silməyə əminsinizmi?
+                            <div>
+                                <div onClick={rm_price_offer}>Ok</div>
+                                <div>Imtina et</div>
+                            </div>
+                        </div>
+                    }
                     {
                         visaMaterials.current.map(material =>
                             <div key={material.order_material_id} style={{ position: "relative" }} className={table["price-research-material-row"]}>
@@ -209,6 +241,7 @@ const PriceResearch = () => {
                                         uniquePriceOffers.map(po =>
                                             <PriceOfferMaterials
                                                 key={po.poid}
+                                                setPriceOffers={setPriceOffers}
                                                 priceOffers={priceOffers}
                                                 venid={po.vendor_id}
                                                 disabled={po.disabled}
@@ -254,9 +287,13 @@ const PriceResearch = () => {
         </div>
     )
 }
-
 const PriceOffer = (props) => {
     const [vendors, setVendors] = useState(props.vendorList);
+    const delivery_terms_ref = useRef(null);
+    const delivery_duration_ref = useRef(null);
+    const token_context = useContext(TokenContext);
+    const log_expenses_ref = useRef(null);
+    const input_ref = useRef(props.vendorName);
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         const charArray = value.split("");
@@ -265,8 +302,59 @@ const PriceOffer = (props) => {
         const searchResult = props.vendorList.filter(vendor => regExp.test(vendor.name));
         setVendors(searchResult);
     }
+    const saveVendor = () => {
+        const formData = new FormData();
+        const op = !isNaN(Number(props.id)) ? 0 : 1;
+        formData.append("vendor_id", props.vendor_id);
+        formData.append("delivery_terms", delivery_terms_ref.current.value)
+        formData.append("delivery_duration", delivery_duration_ref.current.value)
+        formData.append("log_expenses", log_expenses_ref.current.value)
+        formData.append("materials", JSON.stringify(props.priceOffers.filter(po => po.po_id === props.id).map(po => [isNaN(po.id) ? null : po.id, po.material_id, po.material_name, po.price, po.parent_offers_material_id])))
+        const new_files = props.files.filter(file => file.fetched === false)
+        new_files.forEach(file => {
+            formData.append("files", file)
+        })
+        if (!isNaN(Number(props.id))) {
+            formData.append("offer_id", props.id)
+            formData.append("files_string", props.files.filter(file => file.fetched === true).map(file => file.name).join(","))
+        }
+        else {
+            formData.append("order_id", props.order_id)
+        }
+        fetch("http://172.16.3.64/api/save-pr", {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + token_context[0].token
+            },
+            body: formData
+        })
+            .then(resp => resp.json())
+            .then(respJ => {
+                if (op === 1) {
+                    props.setUniquePriceOffers(prev => prev.map(po => po.poid === props.id ? ({
+                        ...po,
+                        delivery_duration: delivery_duration_ref.current.value,
+                        delivery_terms: delivery_terms_ref.current.value,
+                        log_expenses: log_expenses_ref.current.value,
+                        vendorName: input_ref.current,
+                        poid: respJ[0].new_offer_id, files: po.files.map(file => ({ ...file, fetched: true }))
+                    }) : po))
+                    props.setPriceOffers(prev => {
+                        const filtered = prev.filter(po => po.po_id !== props.id)
+                        const updated_materials = respJ.slice(1).map(material => {
+                            const amount = props.visaMaterials.current.find(mat => mat.id === material.parent_offers_material_id).amount;
+                            return { ...material, po_id: respJ[0].new_offer_id, total: (material.price * amount * 1.18).toFixed(2), amount: amount }
+                        })
+                        const result = [...filtered, ...updated_materials]
+                        return result
+                    })
+                }
+            })
+            .catch(ex => console.log(ex))
+    }
     const setVendor = (_, vendor, inputRef) => {
         inputRef.current.value = vendor.name;
+        input_ref.current = vendor.name;
         props.setUniquePriceOffers(prev =>
             prev.map(upo =>
                 upo.poid === props.id
@@ -298,7 +386,8 @@ const PriceOffer = (props) => {
         props.setUniquePriceOffers(prev => prev.map(po => {
             if (po.poid === props.id) {
                 const files = po.files;
-                const new_files = added_files.filter(file => !files.find(f => f.name === file.name)).map(file => ({ name: file.name, fetched: false }));
+                const new_files = added_files.filter(file => !files.find(f => f.name === file.name))
+                new_files.forEach(file => file.fetched = false)
                 return ({ ...po, files: [...files, ...new_files] })
             }
             else
@@ -312,11 +401,11 @@ const PriceOffer = (props) => {
     }
     const addNewFile = (e) => {
         const added_files = Object.values(e.target.files)
-        added_files.pop();
         props.setUniquePriceOffers(prev => prev.map(po => {
             if (po.poid === props.id) {
                 const files = po.files;
-                const new_files = added_files.filter(file => !files.find(f => f.name === file.name)).map(file => ({ name: file.name, fetched: false }));
+                const new_files = added_files.filter(file => !files.find(f => f.name === file.name))
+                new_files.forEach(file => file.fetched = false)
                 return ({ ...po, files: [...files, ...new_files] })
             }
             else
@@ -327,8 +416,11 @@ const PriceOffer = (props) => {
     return (
         <div className={table["price-research-header-container"]} style={{ boxShadow: `0px -4px 2px 0px #${props.version?.color}` }}>{
             !props.disabled &&
-            <span className={table["remove-vendor"]} onClick={() => props.removeVendor(props.id, props.userid)} >
-                <RiDeleteBack2Fill size="18px" color="rgb(217, 52, 4)" />
+            <span className={table["remove-vendor"]} >
+                <RiDeleteBack2Fill onClick={() => {
+                    props.removeVendor(props.id, props.userid)
+                }} size="18px" color="rgb(217, 52, 4)" />
+                <RiSave3Fill onClick={saveVendor} size="18px" color="gray" />
             </span>
         }
             <div className={table["price-research-material-cell"]} style={{ zIndex: "1" }}>
@@ -343,10 +435,14 @@ const PriceOffer = (props) => {
                                 <FaRegFileImage size="24" color={`#${props.version?.color}`} />
                             </span>
                     )}
-                    <label htmlFor={`files-${props.id}`} title="Fayl əlavə et" style={{ float: "right", cursor: "pointer" }}>
-                        <FaPlus size="20" />
-                    </label>
-                    <input onChange={addNewFile} multiple id={`files-${props.id}`} type="file" style={{ display: "none" }} />
+                    {!props.disabled &&
+                        <>
+                            <label htmlFor={`files-${props.id}`} title="Fayl əlavə et" style={{ float: "right", cursor: "pointer" }}>
+                                <FaPlus size="20" />
+                            </label>
+                            <input onChange={addNewFile} multiple id={`files-${props.id}`} type="file" style={{ display: "none" }} />
+                        </>
+                    }
                 </div>
                 <InputSearchList
                     placeholder="Vendor"
@@ -365,14 +461,14 @@ const PriceOffer = (props) => {
                 />
             </div>
             <div className={table["price-research-material-cell"]}>
-                {props.residency === 1 ? "Yerli" : "Xarici"}
+                {props.residency === 1 ? "Yerli" : props.residency === 2 ? "Xarici" : ""}
             </div>
             <div className={table["price-research-material-cell"]}>
-                {props.tax_type === 1 ? "ƏDV ödəyicisi" : "Sadələşdirilmiş"}
+                {props.tax_type === 1 ? "ƏDV ödəyicisi" : props.tax_type === 2 ? "Sadələşdirilmiş" : ""}
             </div>
-            <div className={table["price-research-material-cell"]}><input /></div>
-            <div className={table["price-research-material-cell"]}><input /></div>
-            <div className={table["price-research-material-cell"]}><input /></div>
+            <div className={table["price-research-material-cell"]}><input disabled={props.disabled} defaultValue={props.delivery_terms} ref={delivery_terms_ref} /></div>
+            <div className={table["price-research-material-cell"]}><input disabled={props.disabled} defaultValue={props.delivery_duration} ref={delivery_duration_ref} /></div>
+            <div className={table["price-research-material-cell"]}><input disabled={props.disabled} defaultValue={props.log_expenses} ref={log_expenses_ref} /></div>
             <div className={table["price-research-materials-header"]}>
                 <div className={table["price-research-material-cell"]}>Təklif olunan</div>
                 <div className={table["price-research-material-cell"]}>1 ədədin qiyməti</div>
@@ -392,7 +488,7 @@ const PriceOfferMaterials = (props) => {
                         {
                             !props.disabled &&
                             <span style={{ left: "3px", cursor: "pointer", position: 'absolute' }}>
-                                <FaPlus onClick={() => props.addAlternative({ parent_offers_material_id: props.parentMaterialid, po_id: props.poid, count: props.count })} color="rgb(255, 174, 0)" />
+                                <FaPlus onClick={() => props.addAlternative({ parent_offers_material_id: props.parentMaterialid, po_id: props.poid, amount: props.count })} color="rgb(255, 174, 0)" />
                             </span>
                         }
                     </div>
@@ -406,6 +502,7 @@ const PriceOfferMaterials = (props) => {
                         po={po}
                         removeAlternative={props.removeAlternative}
                         disabled={props.disabled}
+                        setPriceOffers={props.setPriceOffers}
                         orderType={props.orderType}
                         addAlternative={props.addAlternative}
                         handleChange={props.handleChange}
@@ -420,7 +517,7 @@ const PriceOfferMaterialsFooter = (props) => {
         <div className={table["price-research-material-footer"]}>
             <div className={table["price-research-material-cell"]}>
                 <div style={{ flex: 1, textAlign: "right", fontWeight: "600" }}>
-                    {(props.priceOffers.filter(row => row.po_id === props.poid).reduce((sum, curr) => sum += curr.total, 0) * 1.18).toFixed(2)}
+                    {Number(props.priceOffers.filter(row => row.po_id === props.poid).reduce((sum, curr) => sum += Number(curr.total), 0)).toFixed(2)}
                 </div>
             </div>
             <div className={table["price-research-material-cell"]}>

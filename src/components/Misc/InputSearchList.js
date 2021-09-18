@@ -15,6 +15,8 @@ const InputSearchList = (props) => {
         const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null;
         const proceed = e.relatedTarget === newItemRef.current
         if ((relatedTargetid === null || relatedTargetid !== props.listid) && !proceed) {
+            if (props.onBlur)
+                props.onBlur(inputRef)
             setListVisible(false)
             if (props.parentRef) {
                 props.parentRef.current.style.zIndex = "1"

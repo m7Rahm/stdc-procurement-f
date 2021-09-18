@@ -28,19 +28,11 @@ const Orders = () => {
         activeInit.ordNumb = state.on;
         activeInit.departmentName = state.dn
     }
-    // useEffect(() => {
-    //     if (Number(id) && !window.history.state.bo) {
-    //         setActive(prev => ({ ...prev, id }))
-    //     }
-    // }, [id])
-    // eslint-disable-next-line
     const [active, setActive] = useState(activeInit);
     const searchStateRef = useRef({ result: 0 });
-    // eslint-disable-next-line
     const [initData, setInitData] = useState(init);
     const fetchPost = useFetch("POST");
     const updateListContent = useCallback((data) => fetchPost('/api/get-ready-orders', data), [fetchPost])
-
     return (
         <div className="agreements-container">
             <SideBar
