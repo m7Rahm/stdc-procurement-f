@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { IoMdMenu } from 'react-icons/io'
 const icon = (Icon, active) => ({ ...props }) =>
-    <Icon color={active ? "red" : '#808080'} {...props} />
+    <Icon color={active ? "red" : '#808080'} size={props.size} style={props.style} />
 
 const getStyle = (active) => {
     const style = active
@@ -48,26 +48,34 @@ const LeftSidePane = (props, ref) => {
                                         setActiveLink(index);
                                         handleNavClick();
                                     }}
-                                    style={{ cursor: "pointer", color: active ? '#222222' : '', fontWeight: active ? 600 : '', display: 'flex', width: '100%', alignItems: 'flex-end' }}
+                                    style={{
+                                        cursor: "pointer",
+                                        color: active ? '#222222' : '',
+                                        fontWeight: active ? 600 : '',
+                                        display: 'flex',
+                                        width: '100%',
+                                        alignItems: 'flex-end'
+                                    }}
                                     to={`${props.url}${link.link}`}>
                                     <Icon size="24" style={{ marginRight: '5px' }} />
                                     {link.text}
                                 </Link>
                                 {
                                     <span
-                                        ref={element => { if (link.categoryid) props.refs.current[`${link.categoryid}-${link.docType}`] = element }}
+                                        ref={element => { if (link.sub_module) props.refs.current[`${link.module}-${link.sub_module}`] = element }}
                                         style={{
                                             background: "#123456",
-                                            padding: "2px 0.5rem",
+                                            // padding: "4px",
                                             marginRight: "1rem",
                                             fontWeight: 600,
-                                            height: "19px",
+                                            padding: "2px 0.5rem",
                                             color: "white",
-                                            display: link.notifCount ? "inline" : "none",
-                                            borderRadius: "50%"
+                                            borderRadius: "10px",
+                                            textAlign: "center",
+                                            display: link.notif_count ? "inline" : "none",
                                         }}
                                     >
-                                        {link.notifCount}
+                                        {link.notif_count}
                                     </span>
                                 }
                             </div>

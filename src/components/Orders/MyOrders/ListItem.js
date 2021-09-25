@@ -120,14 +120,14 @@ const PreviousOrders = (props) => {
             gap: '12px',
             justifyContent: "space-evenly"
           }} >
-          {Object.keys(versions).map((orderid,index) =>
+          {Object.keys(versions).map((orderid, index) =>
             <ReturnedOrderCards
               key={orderid}
               orderid={orderid}
               handleCardClick={handleCardClick}
               order={versions[orderid]}
               full_name={versions[orderid][0].full_name}
-              isLast={index===(Object.keys(versions).length-1) ? true : false}              
+              isLast={index === (Object.keys(versions).length - 1) ? true : false}
             />
           )}
         </div>
@@ -172,7 +172,7 @@ const ListItem = (props) => {
           if (respJ[0].result === "success") {
             const message = {
               message: "notification",
-              receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
+              receivers: respJ.map(receiver => ({ id: receiver.receiver, module: 0, doc_type: 0, type: 0 })),
               data: undefined
             }
             webSocket.send(JSON.stringify(message))
@@ -218,7 +218,6 @@ const ListItem = (props) => {
               : status === 25 || status === 44
                 ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20" />
                 : ""
-
   const getColor = (deadline) => {
     if (Date.parse(deadline) < Date.parse(new Date()))
       return "red"
@@ -235,7 +234,7 @@ const ListItem = (props) => {
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
         <div style={{ width: "40%", textAlign: "left", position: "relative", paddingLeft: "30px" }}>
           <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ position: "absolute", left: "0px" }} color="gray" />
-          <input defaultValue={participants.slice(0, -2)} disabled={true} style={{ width: "100%", borderStyle: 'hidden', textAlign: 'justify' }} />
+          <input defaultValue={participants?.slice(0, -2)} disabled={true} style={{ width: "100%", borderStyle: 'hidden', textAlign: 'justify' }} />
           <div className="fadingText"></div>
         </div>
         <div style={{ width: "60px" }}>

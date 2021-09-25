@@ -11,7 +11,6 @@ const NewOrderTableRow = (props) => {
   const [models, setModels] = useState([]);
   const [places, setPlaces] = useState([]);
   const modelListRef = useRef(null);
-  const placeInputRef = useRef(null);
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
   const fetchGet = useFetch("GET");
@@ -47,10 +46,9 @@ const NewOrderTableRow = (props) => {
     // modelListRef.current.style.display = "none";
   }
 
-  const setPlace = (_, place) => {
+  const setPlace = (_, place, input_ref) => {
     props.handlePlaceSelection(place, materialid)
-    placeInputRef.current.value = place.name;
-    // placeListRef.current.style.display = "none";
+    input_ref.current.value = place.name;
   }
   const handleInputSearch = (e) => {
     const value = e.target.value;
@@ -110,6 +108,7 @@ const NewOrderTableRow = (props) => {
           listRef={modelListRef}
           name="model"
           text="title"
+          style={{ top: "46px", with: "100%" }}
           items={models}
           handleInputChange={handleInputSearch}
           handleItemClick={setModel}
@@ -169,12 +168,11 @@ const NewOrderTableRow = (props) => {
           disabled={props.disabled}
           name="place"
           listid="placeListRef"
-          inputRef={placeInputRef}
           listRef={placeListRef}
           handleInputChange={handlePlaceSearch}
           items={places}
           handleItemClick={setPlace}
-          style={{ width: '150px', maxWidth: ' 200px', outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+          style={{ width: '100%', top: "46px", outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
         />
       </div>
       {/* Əlavə məlumat */}

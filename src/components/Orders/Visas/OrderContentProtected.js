@@ -28,8 +28,8 @@ const OrderContentProtected = (props) => {
 	}
 	const updateContent = (updatedCtnt, receivers, originid) => {
 		const message = JSON.stringify({
-			message: "notification",
-			receivers: [...receivers.map(receiver => ({ id: receiver, notif: "oO" })), { id: originid, notif: "simpleNotification" }],
+			type: 0,
+			receivers: [...receivers.map(receiver => ({ id: receiver, module: 0, type: 0, doc_id: orderid, sub_module: 2, doc_type: 0 })), { id: originid, module: 0, type: 1, sub_module: 0, doc_type: 0 }],
 			data: undefined
 		})
 		webSocket.send(message)

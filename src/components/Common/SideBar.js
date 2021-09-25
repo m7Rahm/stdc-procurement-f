@@ -37,8 +37,8 @@ const SideBar = (props) => {
 		const showNotificationIcon = () => {
 			notifIcon.current.style.display = "block";
 		}
-		window.addEventListener("oO", showNotificationIcon, false)
-		return () => window.removeEventListener("oO", showNotificationIcon)
+		window.addEventListener("0-2", showNotificationIcon, false)
+		return () => window.removeEventListener("0-2", showNotificationIcon)
 	}, []);
 	useEffect(() => {
 		const data = initData;

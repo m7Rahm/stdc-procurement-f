@@ -74,7 +74,7 @@ const VisaContentFooter = (props) => {
             .catch(err => console.log(err))
     }
     const forwardtoProcurement = (receivers, comment) => {
-        
+
     }
     return (
         current.result === 0 && current.can_influence

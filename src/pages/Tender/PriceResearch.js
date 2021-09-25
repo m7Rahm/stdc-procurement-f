@@ -165,7 +165,7 @@ const PriceResearch = () => {
                         <IoIosArrowBack onClick={() => history.goBack()} size="40" color="#606770" />
                     </span>
                 </div>
-                <div style={{ float: "left", minHeight: "40px", marginBottom: "10px", position: "sticky", left: 0 }}>
+                <div style={{ float: "left", minHeight: "40px", paddingBottom: "10px", zIndex: "2", minWidth: "300px", backgroundColor: "white", position: "sticky", left: 0 }}>
                     {
                         versions.map(version =>
                             <div style={{ position: "relative", margin: "1px", padding: "10px", float: "left", cursor: "default" }} key={version.id}>
@@ -427,7 +427,7 @@ const PriceOffer = (props) => {
                 <div onDrop={onDrop} onDragOver={handleDragEnter} onDragLeave={handleDragLeave} onDragEnter={handleDragEnter} style={{ position: "absolute", left: 5, right: 0, bottom: "30px", borderRadius: "5px", borderWidth: "1px" }}>
                     {props.files.map(file =>
                         file.fetched
-                            ? <a href={`http://172.16.3.64/original/${file}`} target="_blank" rel="noreferrer" key={file.name} title={file.name} style={{ borderRadius: "5px", cursor: "pointer" }}>
+                            ? <a href={`http://172.16.3.64/original/${file.name}`} target="_blank" rel="noreferrer" key={file.name} title={file.name} style={{ borderRadius: "5px", cursor: "pointer" }}>
                                 <FaRegFileImage size="24" color={`#${props.version?.color}`} />
                             </a>
                             :

@@ -89,8 +89,8 @@ const SelectModule = () => {
 			webSocket.onopen = () => {
 				const id = userData.userInfo.id;
 				const data = {
-					message: "recognition",
-					userid: id // todo: get from session
+					type: -1,
+					user_id: id // todo: get from session
 				}
 				webSocket.send(JSON.stringify(data));
 				if (mounted)

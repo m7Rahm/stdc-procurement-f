@@ -39,7 +39,7 @@ const InputSearchList = (props) => {
                 onChange={props.handleInputChange}
             />
             {listVisible && props.items.length !== 0 &&
-                <div style={{ borderRadius: "5px", zIndex: 22, overflow: "hidden", boxShadow: "0px 1px 4px 3px rgba(0, 0, 0, 0.3)", position: "absolute", ...props.style }}>
+                <div style={{ borderRadius: "5px", backgroundColor: "white", zIndex: 22, overflow: "hidden", boxShadow: "0px 1px 4px 3px rgba(0, 0, 0, 0.3)", position: "absolute", ...props.style }}>
                     <ul id={props.listid} ref={props.listRef} tabIndex="2" className={table["material-model-list"]}>
                         {
                             props.items.map(item => {

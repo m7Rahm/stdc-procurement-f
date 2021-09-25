@@ -61,10 +61,10 @@ const Chat = (props) => {
                 })
         }
         const scrollContainer = scrollContainerRef.current
-        window.addEventListener("newMessage", addNewMessage, false);
+        window.addEventListener("m", addNewMessage, false);
         return () => {
             scrollContainer.scrollTop = 0;
-            window.removeEventListener("newMessage", addNewMessage)
+            window.removeEventListener("m", addNewMessage)
         }
     }, [props.documentType, props.documentid, userInfo.id])
     useEffect(() => {
@@ -146,7 +146,7 @@ const Chat = (props) => {
                         const { id, date_time: dateTime, participants } = respJ;
                         const text = messageBoxRef.current.value;
                         const message = {
-                            message: "newMessage",
+                            type: 2,
                             receivers: participants.map(participant => ({ id: participant })),
                             data: {
                                 id: id,

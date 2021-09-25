@@ -20,6 +20,9 @@ const routes = [
         link: "/my-orders",
         icon: IoMdCart,
         component: MyOrders,
+        notif_count: "",
+        module: 0,
+        sub_module: 0,
         props: {
             inParams: {
                 dateFrom: '',
@@ -37,8 +40,9 @@ const routes = [
     {
         text: "Redaktəyə qaytarılmış",
         link: "/returned",
-        docType: 0,
-        categoryid: 2,
+        notif_count: "",
+        module: 0,
+        sub_module: 1,
         icon: IoMdDocument,
         component: MyOrders,
         props: {
@@ -58,16 +62,20 @@ const routes = [
     {
         text: "Vizalar",
         link: "/visas",
+        notif_count: "",
         icon: IoMdCheckmarkCircleOutline,
         component: Visas,
-        docType: 0,
-        categoryid: 1
+        module: 0,
+        sub_module: 2,
     },
     {
         text: "Q/T razılaşmaları",
         link: "/agreements",
         icon: IoMdCart,
+        module: 0,
+        sub_module: 3,
         component: Agreements,
+        notif_count: "",
         props: {
             link: "/api/get-user-agreements",
             params: {
@@ -77,16 +85,15 @@ const routes = [
             method: "POST",
             newDocNotifName: "oA"
         },
-        docType: 1,
-        categoryid: 1
     },
     {
         text: "Müqavilə razılaşmaları",
         link: "/contracts",
         icon: FaHandshake,
         component: Contracts,
-        docType: 2,
-        categoryid: 1,
+        notif_count: "",
+        module: 0,
+        sub_module: 4,
         props: {
             link: "/api/get-user-contracts",
             method: "POST",
@@ -109,9 +116,10 @@ const routes = [
         text: "Ödəniş razılaşmaları",
         link: "/payments",
         icon: MdPayment,
+        notif_count: "",
         component: Payments,
-        docType: 3,
-        categoryid: 1,
+        module: 0,
+        sub_module: 5,
         props: {
             link: "/api/get-user-payments",
             method: "POST",
@@ -135,14 +143,18 @@ const Orders = (props) => {
     const { path, url } = useRouteMatch();
     const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetchGet("/api/notifications-by-categories")
+        fetchGet("/api/notifications-by-categories/0")
             .then(respJ => {
                 loadingIndicatorRef.current.style.transform = "translateX(0%)";
                 loadingIndicatorRef.current.style.opacity = "0";
                 loadingIndicatorRef.current.classList.add("load-to-start");
-                respJ.forEach(notif => {
-                    routes.find(route => route.docType === notif.doc_type && route.categoryid === notif.category_id).notifCount = notif.cnt;
-                });
+                respJ
+                    .forEach(notification => {
+                        const route = routes.find(route => route.sub_module === notification.sub_module);
+                        if (route) {
+                            route.notif_count = notification.cnt;
+                        }
+                    });
                 setMenuData({ url: url, routes: routes });
                 props.leftNavRef.current.style.display = "block";
             })

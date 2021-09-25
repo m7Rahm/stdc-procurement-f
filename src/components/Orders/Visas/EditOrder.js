@@ -70,7 +70,7 @@ const EditOrder = (props) => {
                 .then(_ => {
                     const message = {
                         message: "notification",
-                        receivers: [{ id: orderContent[0].sender_id, notif: "oR" }],
+                        receivers: [{ id: orderContent[0].sender_id, type: 1, doc_type: 0, sub_module: 1 }],
                         data: undefined
                     }
                     props.setVisa(prev => prev.map((row, index) => index === 0 ? ({ ...row, result: 2, act_date_time: "Indicə" }) : row))

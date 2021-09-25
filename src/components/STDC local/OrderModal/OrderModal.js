@@ -5,11 +5,13 @@ import FirstPage from "./FirstPage";
 import NewOrderContent from "../../modal content/NewOrder"
 import useFetch from "../../../hooks/useFetch"
 import { WebSocketContext } from '../../../pages/SelectModule'
+import { TokenContext } from "../../../App";
 
 const OrderModal = (props) => {
   const [whichPage, setWhichPage] = useState({ page: 1, animationName: "a" });
   const actPageRef = useRef(null);
   const fetchPost = useFetch("POST");
+  const tokenContext = useContext(TokenContext);
   const davamText = whichPage.page === 3 ? "Sifariş et" : "Davam";
   const [operationResult, setOperationResult] = useState({ visible: false, desc: 'Sifarişə məhsul əlavə edin' })
   const handleDateChange = (date) => {
@@ -97,9 +99,16 @@ const OrderModal = (props) => {
       fetchPost(`/api/new-order`, data)
         .then(respJ => {
           const message = {
-            message: "notification",
-            receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
-            data: undefined
+            type: 0,
+            receivers: respJ.map(receiver => ({
+              id: receiver.receiver,
+              type: 0,
+              module: 0,
+              doc_id: respJ[0].id,
+              sub_module: 2,
+              doc_type: 0,
+              sender_id: tokenContext[0].userData.userInfo.id
+            })),
           }
           props.setSending(false);
           webSocket.send(JSON.stringify(message))
@@ -120,7 +129,10 @@ const OrderModal = (props) => {
             })
             .catch(ex => console.log(ex))
         })
-        .catch(ex => console.log(ex))
+        .catch(ex => {
+          props.setSending(false);
+          console.log(ex)
+        })
       props.setIsModalVisible(0);
     }
   };

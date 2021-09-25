@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReadyOfferCard from '../../components/VisaCards/ReadyOfferCard'
 import CardsList from '../../components/HOC/CardsList'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
@@ -17,20 +17,32 @@ const init = {
     endDate: null,
     result: 0,
     from: 0,
+    doc_type: 0,
     until: 20
 }
-const Orders = () => {
-    const startIndex = window.location.search.indexOf("i=")
-    const id = startIndex !== -1 ? window.location.search.substring(startIndex + 2) : null
-    const state = window.history.state;
+const Orders = (props) => {
+    const matches = window.location.search.match(/i=(\d+)/);
+    const id = matches ? matches[1] : null;
     const activeInit = { id: Number(id), ordNumb: "", departmentName: "" }
-    if (state && state.on) {
-        activeInit.ordNumb = state.on;
-        activeInit.departmentName = state.dn
-    }
+
     const [active, setActive] = useState(activeInit);
     const searchStateRef = useRef({ result: 0 });
     const [initData, setInitData] = useState(init);
+    useEffect(() => {
+        setInitData({
+            userName: '',
+            startDate: null,
+            endDate: null,
+            result: props.result,
+            from: 0,
+            until: 20
+        })
+    }, [props.doc_type]);
+    useEffect(() => {
+        if (active.id !== Number(id)) {
+            setActive(prev => ({ ...prev, id }))
+        }
+    }, [active.id, id])
     const fetchPost = useFetch("POST");
     const updateListContent = useCallback((data) => fetchPost('/api/get-ready-orders', data), [fetchPost])
     return (
@@ -45,7 +57,6 @@ const Orders = () => {
                 id={active.id}
                 setInitData={setInitData}
             />
-
         </div>
     )
 }

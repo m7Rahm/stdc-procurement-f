@@ -30,26 +30,23 @@ function PriceOffers(props) {
                     <div title="deadline" style={{ fontSize: '20px', fontWeight: "700", color: "gray" }}>Deadline: {visa[0].deadline}</div>
                 </div>
                 <div>
-                    <div className={table["price-offer-action"]} onClick={() => history.push("/tender/new-offer", { visa, id })}>
+                    <div className={table["price-offer-action"]} onClick={() => history.push(`/tender/price-offers/${id}`, { visa, id })}>
                         Razılaşmalara bax
                         <BsArrowRight size="16px" />
                     </div>
                     <div className={table["price-offer-action"]} onClick={showModalHandler}>Yönəlt</div>
                 </div>
             </div>
-
             <VisaContentMaterials
                 orderContent={visa}
                 forwardType={1}
             />
-            {showModal &&
-                <ForwardPriceOffer id={id} />}
+            <Processors showModal={showModal} id={id} />
         </div>
     )
 }
 
 export default PriceOffers
-//eslint-disable-next-line
 const ForwardPriceOffer = (props) => {
     const [receivers, setReceivers] = useState([])
     const fetchPut = useFetch("PUT");
@@ -70,22 +67,23 @@ const ForwardPriceOffer = (props) => {
         setReceivers(prev => prev.filter(emp => emp.id !== employee.id))
     }
     const handleSelectChange = (employee) => {
-        setReceivers(prev => {
-            const receivers = [...prev]
-            const res = receivers.find(emp => emp.id === employee.id);
-            if (!res) {
-                let lastNonDpIndex = 1;
-                for (let i = receivers.length - 1; i >= 0; i--) {
-                    if (receivers[i].dp === undefined) {
-                        lastNonDpIndex = i + 1;
-                        break;
+        if (!props.processors.find(processor => processor.receiver_id === employee.id))
+            setReceivers(prev => {
+                const receivers = [...prev]
+                const res = receivers.find(emp => emp.id === employee.id);
+                if (!res) {
+                    let lastNonDpIndex = 1;
+                    for (let i = receivers.length - 1; i >= 0; i--) {
+                        if (receivers[i].dp === undefined) {
+                            lastNonDpIndex = i + 1;
+                            break;
+                        }
                     }
+                    receivers.splice(lastNonDpIndex, 0, employee)
+                    return receivers
                 }
-                receivers.splice(lastNonDpIndex, 0, employee)
-                return receivers
-            }
-            else return prev
-        })
+                else return prev
+            })
     }
     const forward_order = () => {
         const data = {
@@ -95,8 +93,8 @@ const ForwardPriceOffer = (props) => {
         fetchPut(`/api/fofpr/${props.id}`, data)
             .then(_ => {
                 const message = {
-                    message: "notification",
-                    receivers: receivers.map(receiver => ({ id: receiver.id, notif: "tO" })),
+                    type: 0,
+                    receivers: receivers.map(receiver => ({ id: receiver.id, module: 3, doc_id: props.id, sub_module: 0, type: 0, doc_type: 0 })),
                     data: {
                         order_id: props.id
                     }
@@ -116,6 +114,32 @@ const ForwardPriceOffer = (props) => {
                 textareaRef={textareaRef}
             />
             <div onClick={forward_order} className="send-order">Göndər</div>
+        </>
+    )
+}
+const Processors = (props) => {
+    const fetchGet = useFetch("GET");
+    const [processors, set_processors] = useState([])
+    useEffect(() => {
+        fetchGet(`/api/order-processors/${props.id}`)
+            .then(resp => set_processors(resp))
+            .catch(ex => console.log(ex))
+    }, [props.id, fetchGet])
+    return (
+        <>
+            <div style={{ marginTop: "20px" }}>
+                {
+                    processors.map(emp =>
+                        <div key={emp.receiver_id} style={{ float: "left", cursor: "default", borderRadius: "5px", padding: "0.5rem", color: "white", backgroundColor: "steelblue" }} key={emp.id}>
+                            {emp.full_name}
+                        </div>
+                    )
+                }
+            </div>
+            {
+                props.showModal &&
+                <ForwardPriceOffer processors={processors} id={props.id} />
+            }
         </>
     )
 }
