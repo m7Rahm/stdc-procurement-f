@@ -34,7 +34,10 @@ function PriceOffers(props) {
                         Razılaşmalara bax
                         <BsArrowRight size="16px" />
                     </div>
-                    <div className={table["price-offer-action"]} onClick={showModalHandler}>Yönəlt</div>
+                    {
+                        props.can_see_others &&
+                        <div className={table["price-offer-action"]} onClick={showModalHandler}>Yönəlt</div>
+                    }
                 </div>
             </div>
             <VisaContentMaterials
@@ -130,7 +133,7 @@ const Processors = (props) => {
             <div style={{ marginTop: "20px" }}>
                 {
                     processors.map(emp =>
-                        <div key={emp.receiver_id} style={{ float: "left", cursor: "default", borderRadius: "5px", padding: "0.5rem", color: "white", backgroundColor: "steelblue" }} key={emp.id}>
+                        <div key={emp.receiver_id} style={{ float: "left", cursor: "default", borderRadius: "5px", padding: "0.5rem", color: "white", backgroundColor: "steelblue" }}>
                             {emp.full_name}
                         </div>
                     )

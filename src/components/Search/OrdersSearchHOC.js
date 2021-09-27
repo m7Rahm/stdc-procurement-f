@@ -3,18 +3,26 @@ import Pagination from '../Misc/Pagination'
 import CalendarUniversal from '../Misc/CalendarUniversal'
 import { GoChevronDown } from 'react-icons/go'
 import { BsArrowUpShort } from 'react-icons/bs'
+import InputSearchList from '../Misc/InputSearchList'
+import useFetch from '../../hooks/useFetch'
 const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth();
-const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(props) {
+const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => function SearchBar(props) {
     const activePageRef = useRef(0);
     const advSearchRef = useRef(null);
     const iconRef = useRef(null);
+    const [items, set_items] = useState([]);
+    const departments = useRef([]);
     const notifIcon = useRef(null);
+    const fetchGet = useFetch("GET");
+    const modelListRef = useRef(null);
     const [searchBarState, setSearchBarState] = useState(false);
     const selectRef = useRef(null);
     const docTypesRef = useRef(null);
     const inputNumberRef = useRef(null);
+    const material_name_ref = useRef(null);
+    const department_ref = useRef(0);
     const searchStateRef = useRef({
         ...props.initData,
         startDate: '',
@@ -30,6 +38,23 @@ const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(prop
             return () => window.removeEventListener(props.newDocNotifName, showNotificationIcon)
         }
     }, [props.newDocNotifName]);
+    useEffect(() => {
+        let mounted = true;
+        const abortController = new AbortController()
+        if (with_departments)
+            fetchGet('/api/departments', abortController)
+                .then(respJ => {
+                    if (mounted) {
+                        set_items(respJ)
+                        departments.current = respJ;
+                    }
+                })
+                .catch(err => console.log(err));
+        return () => {
+            mounted = false;
+            abortController.abort();
+        }
+    }, [fetchGet])
     const handleInputChange = (name, value) => {
         searchStateRef.current[name] = value;
     }
@@ -46,16 +71,25 @@ const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(prop
             setSearchBarState(true);
         }
     }
-    const refreshList = (from) => {
+    const refreshList = (from, update_search_bar) => {
         const searchData = { ...searchStateRef.current, from, number: inputNumberRef.current.value };
+        if (material_name_ref.current.value) {
+            searchData.material_name = material_name_ref.current.value;
+        }
         if (selectRef.current)
             searchData.result = selectRef.current.value;
         if (docTypesRef.current)
             searchData.docType = docTypesRef.current.value;
+        if (with_departments)
+            searchData.department_id = department_ref.current
         props.updateList(searchData)
+        if (update_search_bar) {
+            props.setInitData(searchData)
+        }
     }
     const handleSearchClick = () => {
-        refreshList(0)
+        refreshList(0, true);
+        showSearchBar();
     }
     const resetState = () => {
     }
@@ -69,6 +103,15 @@ const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(prop
         notifIcon.current.addEventListener('animationend', onAnimationEnd, false);
         props.updateList(props.initData)
     }
+    const setItem = (e, item, inputRef) => {
+        inputRef.current.value = item.name;
+        department_ref.current = item.id;
+    }
+    const handleInputSearch = (e) => {
+        const value = e.target.value;
+        const reg_exp = new RegExp(value, "ig");
+        set_items(departments.current.filter(department => reg_exp.test(department.name)))
+    }
     return (
         <>
             <div>
@@ -79,8 +122,30 @@ const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(prop
                     {
                         searchBarState &&
                         <div ref={advSearchRef} className="adv-search-box" style={{ padding: '20px 10px' }}>
+                            {
+                                with_departments &&
+                                <div style={{ position: 'relative', marginBottom: "10px" }}>
+                                    <InputSearchList
+                                        listid="modelListRef"
+                                        disabled={props.disabled}
+                                        defaultValue={items.find(dep => dep.id === props.initData.department_id)?.name}
+                                        placeholder="Şöbələr üzrə axtarış"
+                                        listRef={modelListRef}
+                                        name="model"
+                                        text="name"
+                                        style={{ top: "46px", with: "100%" }}
+                                        items={items}
+                                        inputStyle={{ width: "100%", border: "none", padding: "6px" }}
+                                        handleInputChange={handleInputSearch}
+                                        handleItemClick={setItem}
+                                    />
+                                </div>
+                            }
                             <div style={{ marginBottom: '10px' }} className="doc-number-container">
-                                <input ref={inputNumberRef} placeholder="Sənədin nömrəsini daxil edin.." />
+                                <input defaultValue={props.initData.number} ref={inputNumberRef} placeholder="Sənəd nömrəsi üzrə axtarış" />
+                            </div>
+                            <div style={{ marginBottom: '10px' }} className="doc-number-container">
+                                <input defaultValue={props.initData.material_name} ref={material_name_ref} placeholder="Məhsul üzrə axtarış" />
                             </div>
                             <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between', position: 'relative' }}>
                                 <CalendarUniversal

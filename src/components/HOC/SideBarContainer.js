@@ -27,6 +27,7 @@ const SideBarContainer = (Search, CardsList) => function SideBar(props) {
                 newDocNotifName={newDocNotifName}
                 updateList={updateList}
                 params={props.params}
+                setInitData={props.setInitData}
             >
                 <CardsList
                     params={props.params}

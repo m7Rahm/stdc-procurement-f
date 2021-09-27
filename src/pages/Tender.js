@@ -84,7 +84,7 @@ const Tender = (props) => {
                 setMenuData({ url: url, routes: routes });
                 props.leftNavRef.current.style.display = "block";
             })
-    }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef])
+    }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef, fetchGet])
     return (
         <Switch>
             {
