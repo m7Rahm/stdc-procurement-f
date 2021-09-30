@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react"
-import { FaCheck, FaPlus, FaPlusCircle, FaRegFileImage } from "react-icons/fa";
+import React, { Suspense, useContext, useEffect, useRef, useState } from "react"
+import { FaCheck, FaPlus, FaPlusCircle, FaRegFileImage, FaTimes, FaUserEdit } from "react-icons/fa";
 import { useHistory, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { TokenContext } from "../../App";
@@ -8,9 +8,13 @@ import useFetch from "../../hooks/useFetch";
 import table from "../../styles/Table.module.css"
 import PriceResearchMetarialsRow from "./PriceResearchMetarialsRow";
 import { RiDeleteBack2Fill, RiSave3Fill } from "react-icons/ri"
-import { IoIosArrowBack } from "react-icons/io";
-import NewVendorModal from "./NewVendorModal";
+import { IoIosArrowBack, IoIosSend, IoIosBulb } from "react-icons/io";
 import { MdClose } from "react-icons/md";
+import { AiOutlineRight } from "react-icons/ai";
+import Modal from "../../components/Misc/Modal"
+const PriceOfferActions = React.lazy(() => import("../../components/Tender/PriceOfferActions"));
+const ForwardPriceOffer = React.lazy(() => import("../../components/Tender/ForwardPriceOffer"));
+const NewVendorModal = React.lazy(() => import("./NewVendorModal"));
 const PriceResearch = () => {
     const visa = useLocation().state?.visa;
     const id = useLocation().state?.id;
@@ -19,12 +23,15 @@ const PriceResearch = () => {
     const [uniquePriceOffers, setUniquePriceOffers] = useState([]);
     const [alertbox, set_alertbox] = useState(false);
     const [versions, setVersions] = useState([]);
-    const tokenContext = useContext(TokenContext);
-    const user_id = tokenContext[0].userData.userInfo.id
+    const tokenContext = useContext(TokenContext)[0];
+    const user_id = tokenContext.userData.userInfo.id
     const fetchGet = useFetch("GET");
+    const [best_prices, set_best_prices] = useState(visa || [])
     const history = useHistory();
+    const can_select = tokenContext.userData.previliges.includes("Qiymət təklifi seçmək");
     const [showVendorModal, setShowVendorModal] = useState(false)
     const [vendorList, setVendorList] = useState([]);
+    const [actions_modal, set_actions_modal] = useState({ state: false, component: null, props: null });
     useEffect(() => {
         fetchGet(`/api/vendors`)
             .then(respJ => setVendorList(respJ))
@@ -35,6 +42,16 @@ const PriceResearch = () => {
             .then(resp => {
                 const vendors = [];
                 const versions = {};
+                const parent_materials = visaMaterials.current.map(material => {
+                    const materials = resp.filter(po => po.parent_offers_material_id === material.id);
+                    let min = materials[0];
+                    for (let i = 0; i < materials.length; i++) {
+                        if (materials[i].price < min.price) {
+                            min = materials[i];
+                        }
+                    }
+                    return ({ material_id: material.id, title: min?.title, id: min?.id, price: min?.price, vendor_id: min?.vendor_id, vendor_name: min?.vendor_name })
+                })
                 resp.forEach(row => {
                     if (!vendors.find(vendor => vendor.user_id === row.user_id && vendor.vendor_id === row.vendor_id)) {
                         if (!versions[row.user_id]) {
@@ -62,19 +79,33 @@ const PriceResearch = () => {
                         });
                     }
                 })
+                set_best_prices(parent_materials)
                 setPriceOffers(resp.map(row => ({ ...row, total: (row.price * row.amount * 1.18).toFixed(2) })));
                 setUniquePriceOffers(vendors)
                 setVersions(Object.values(versions))
             })
             .catch(ex => console.log(ex))
-    }, [id, fetchGet, user_id]);
-
+    }, [id, fetchGet, user_id, visaMaterials]);
     const handleChange = (e, id) => {
         const name = e.target.name;
         const value = e.target.value;
         const allowed = /^\d+(\.\d{0,2})?$/.test(value) || value === "";
-        if (allowed)
-            setPriceOffers(prev => prev.map(row => row.id === id ? ({ ...row, [name]: value, total: (value * row.amount * 1.18).toFixed(2) }) : row))
+        if (allowed) {
+            setPriceOffers(prev => prev.map(row => row.id === id ? ({ ...row, [name]: value, total: (value * row.amount * 1.18).toFixed(2) }) : row));
+            const price_offer = priceOffers.find(po => po.id === id);
+            set_best_prices(prev => prev.map(material =>
+                material.material_id === price_offer.parent_offers_material_id && material.price > Number(value)
+                    ? ({
+                        ...material,
+                        price: value,
+                        total: (value * material.amount * 1.18).toFixed(2),
+                        id,
+                        vendor_id: price_offer.vendor_id,
+                        vendor_name: price_offer.vendor_name
+                    })
+                    : material
+            ))
+        }
     }
     const addAlternative = (po) => {
         setPriceOffers(prev => [...prev, {
@@ -90,6 +121,15 @@ const PriceResearch = () => {
     const removeAlternative = (po) => {
         const id = po.id
         setPriceOffers(prev => prev.filter(po => po.id !== id))
+    }
+    const handle_actions_click = (e) => {
+        const id = e.currentTarget.id;
+        const component = id === "3" ? ForwardPriceOffer : PriceOfferActions;
+        const props = { id }
+        if (id === "1") {
+            props.selected_materials = priceOffers.filter(po => po.result === 1)
+        }
+        set_actions_modal({ state: true, component: component, props: props });
     }
     const rm_price_offer = () => {
         fetchGet(`/api/remove-price-offer/${alertbox.id}`)
@@ -114,7 +154,7 @@ const PriceResearch = () => {
         set_alertbox({ state: true, id, user_id: userid })
     }
     const addNewVendor = () => {
-        const { id: userid, fullName } = tokenContext[0].userData.userInfo;
+        const { id: userid, fullName } = tokenContext.userData.userInfo;
         setUniquePriceOffers(prev => [...prev, {
             poid: v4(),
             price: 0,
@@ -144,28 +184,86 @@ const PriceResearch = () => {
         })
     }
     return (
-        <div style={{ paddingTop: "70px", display: "flex" }}>
+        <div style={{ height: "calc(100vh - 56px)", marginTop: "56px", display: "flex", overflow: "auto" }}>
             {
-                showVendorModal &&
-                <div className={table["vendors-list-modal"]}>
-                    <div>
-                        <span>
-                            <MdClose size="1.5rem" onClick={() => setShowVendorModal(false)} />
-                        </span>
+                !can_select &&
+                <div className={table["actions-ribbon"]}>
+                    <div className={table["actions-ribbon-container"]}>
+                        <div id="1" onClickCapture={handle_actions_click} title="Təzdiq et">
+                            <FaCheck color="rgb(15, 157, 88)" size="2rem" />
+                        </div>
+                        <div id="2" onClickCapture={handle_actions_click} title="Geri göndər (Düzəliş üçün)">
+                            <FaUserEdit color="rgb(244, 180, 0)" size="2rem" />
+                        </div>
+                        <div id="3" onClickCapture={handle_actions_click} title="Rəy üçün yönəlt">
+                            <IoIosSend color="rgb(64, 168, 196)" size="2rem" />
+                        </div>
+                        <div id="-1" onClickCapture={handle_actions_click} title="Etiraz et">
+                            <FaTimes color="rgb(217, 52, 4)" size="2rem" />
+                        </div>
                     </div>
-                    <NewVendorModal
-                        setVendorList={setVendorList}
-                        close_modal={() => setShowVendorModal(false)}
-                    />
+                    <div style={{ position: "relative", float: "right", height: "100%" }}>
+                        <div>
+                            <AiOutlineRight size="2rem" />
+                        </div>
+                    </div>
                 </div>
             }
+            {
+                showVendorModal &&
+                <Suspense fallback="">
+                    <div className={table["vendors-list-modal"]}>
+                        <div>
+                            <span>
+                                <MdClose size="1.5rem" onClick={() => setShowVendorModal(false)} />
+                            </span>
+                        </div>
+                        <NewVendorModal
+                            setVendorList={setVendorList}
+                            close_modal={() => setShowVendorModal(false)}
+                        />
+                    </div>
+                </Suspense>
+            }
+            {
+                actions_modal.state &&
+                <Suspense fallback="">
+                    <Modal
+                        style={{ minWidth: "10rem", width: "45rem", backgroundColor: "white" }}
+                        title={"untitled"}
+                        childProps={actions_modal.props}
+                        changeModalState={() => set_actions_modal({ state: false, component: null })}
+                    >
+                        {actions_modal.component}
+                    </Modal>
+                </Suspense>
+            }
+            <span className={table["hint"]}>
+                <div style={{ position: "relative" }}>
+                    <span style={{ position: "absolute", right: "0px" }}>
+                        <IoIosBulb color="gold" size="40" />
+                    </span>
+                </div>
+                <div style={{ marginTop: "50px" }}>
+                    {
+                        best_prices.map(material =>
+                            <div key={material.material_id}>
+                                {material.vendor_name}
+                                {material.title}
+                                {material.price}
+                                {material.total}
+                            </div>
+                        )
+                    }
+                </div>
+            </span>
             <div style={{ padding: "0px 20px" }}>
-                <div style={{ clear: "both" }}>
+                <div style={{ clear: "both", float: "left", backgroundColor: "rgb(255,255,255)", zIndex: "2", top: "58px", minWidth: "300px", }}>
                     <span style={{ cursor: "pointer" }}>
                         <IoIosArrowBack onClick={() => history.goBack()} size="40" color="#606770" />
                     </span>
                 </div>
-                <div style={{ float: "left", minHeight: "40px", paddingBottom: "10px", zIndex: "2", minWidth: "300px", backgroundColor: "white", position: "sticky", left: 0 }}>
+                <div style={{ clear: "both", float: "left", minHeight: "40px", top: "0px", paddingBottom: "10px", zIndex: "1", minWidth: "300px", backgroundColor: "white", position: "sticky", left: 0 }}>
                     {
                         versions.map(version =>
                             <div style={{ position: "relative", margin: "1px", padding: "10px", float: "left", cursor: "default" }} key={version.id}>
@@ -244,6 +342,7 @@ const PriceResearch = () => {
                                                 setPriceOffers={setPriceOffers}
                                                 priceOffers={priceOffers}
                                                 venid={po.vendor_id}
+                                                tokenContext={tokenContext}
                                                 disabled={po.disabled}
                                                 orderType={material.order_type}
                                                 handleChange={handleChange}
@@ -504,6 +603,7 @@ const PriceOfferMaterials = (props) => {
                         disabled={props.disabled}
                         setPriceOffers={props.setPriceOffers}
                         orderType={props.orderType}
+                        tokenContext={props.tokenContext}
                         addAlternative={props.addAlternative}
                         handleChange={props.handleChange}
                     />
@@ -512,12 +612,12 @@ const PriceOfferMaterials = (props) => {
         </div>
     )
 }
-const PriceOfferMaterialsFooter = (props) => {
+const PriceOfferMaterialsFooter = () => {
     return (
         <div className={table["price-research-material-footer"]}>
             <div className={table["price-research-material-cell"]}>
                 <div style={{ flex: 1, textAlign: "right", fontWeight: "600" }}>
-                    {Number(props.priceOffers.filter(row => row.po_id === props.poid).reduce((sum, curr) => sum += Number(curr.total), 0)).toFixed(2)}
+                    {/* {Number(props.priceOffers.filter(row => row.po_id === props.poid).reduce((sum, curr) => sum += Number(curr.total), 0)).toFixed(2)} */}
                 </div>
             </div>
             <div className={table["price-research-material-cell"]}>
