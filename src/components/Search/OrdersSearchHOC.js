@@ -20,7 +20,7 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
     const [searchBarState, setSearchBarState] = useState(false);
     const selectRef = useRef(null);
     const docTypesRef = useRef(null);
-    const inputNumberRef = useRef(null);
+    // const inputNumberRef = useRef(null);
     const material_name_ref = useRef(null);
     const department_ref = useRef(0);
     const searchStateRef = useRef({
@@ -76,7 +76,7 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
         }
     }
     const refreshList = (from, update_search_bar) => {
-        const searchData = { ...searchStateRef.current, from, number: inputNumberRef.current.value };
+        const searchData = { ...searchStateRef.current, from };
         if (material_name_ref.current.value) {
             searchData.material_name = material_name_ref.current.value;
         }
@@ -156,7 +156,7 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
                                 </div>
                             }
                             <div style={{ marginBottom: '10px' }} className="doc-number-container">
-                                <input name="number" defaultValue={props.initData.number} onChange={handle_input_change} ref={inputNumberRef} placeholder="Sənəd nömrəsi üzrə axtarış" />
+                                {/* <input name="number" defaultValue={props.initData.number} onChange={handle_input_change} ref={inputNumberRef} placeholder="Sənəd nömrəsi üzrə axtarış" /> */}
                             </div>
                             <div style={{ marginBottom: '10px' }} className="doc-number-container">
                                 <input name="material-name" defaultValue={props.initData.material_name} onChange={handle_input_change} ref={material_name_ref} placeholder="Məhsul üzrə axtarış" />
