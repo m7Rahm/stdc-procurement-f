@@ -50,7 +50,16 @@ const PriceResearch = () => {
                             min = materials[i];
                         }
                     }
-                    return ({ material_id: material.id, title: min?.title, id: min?.id, price: min?.price, vendor_id: min?.vendor_id, vendor_name: min?.vendor_name })
+                    return ({
+                        result: material.result,
+                        material_id: material.id,
+                        title: min?.title,
+                        id: min?.id,
+                        price: min?.price,
+                        vendor_id: min?.vendor_id,
+                        vendor_name: min?.vendor_name,
+                        total: (material.amount * min?.price * 1.18).toFixed(2)
+                    })
                 })
                 resp.forEach(row => {
                     if (!vendors.find(vendor => vendor.user_id === row.user_id && vendor.vendor_id === row.vendor_id)) {
@@ -98,7 +107,7 @@ const PriceResearch = () => {
                     ? ({
                         ...material,
                         price: value,
-                        total: (value * material.amount * 1.18).toFixed(2),
+                        total: (material.amount * Number(value) * 1.18).toFixed(2),
                         id,
                         vendor_id: price_offer.vendor_id,
                         vendor_name: price_offer.vendor_name
@@ -238,25 +247,7 @@ const PriceResearch = () => {
                     </Modal>
                 </Suspense>
             }
-            <span className={table["hint"]}>
-                <div style={{ position: "relative" }}>
-                    <span style={{ position: "absolute", right: "0px" }}>
-                        <IoIosBulb color="gold" size="40" />
-                    </span>
-                </div>
-                <div style={{ marginTop: "50px" }}>
-                    {
-                        best_prices.map(material =>
-                            <div key={material.material_id}>
-                                {material.vendor_name}
-                                {material.title}
-                                {material.price}
-                                {material.total}
-                            </div>
-                        )
-                    }
-                </div>
-            </span>
+            <BestPrices best_prices={best_prices} />
             <div style={{ padding: "0px 20px" }}>
                 <div style={{ clear: "both", float: "left", backgroundColor: "rgb(255,255,255)", zIndex: "2", top: "58px", minWidth: "300px", }}>
                     <span style={{ cursor: "pointer" }}>
@@ -344,6 +335,8 @@ const PriceResearch = () => {
                                                 venid={po.vendor_id}
                                                 tokenContext={tokenContext}
                                                 disabled={po.disabled}
+                                                best_prices={best_prices}
+                                                set_best_prices={set_best_prices}
                                                 orderType={material.order_type}
                                                 handleChange={handleChange}
                                                 poid={po.poid}
@@ -386,6 +379,49 @@ const PriceResearch = () => {
         </div>
     )
 }
+const BestPrices = React.memo(({ best_prices }) => {
+    const vendors = []
+    for (let i = 0; i < best_prices.length; i++) {
+        const index = vendors.findIndex(elem => elem.vendor_id === best_prices[i].vendor_id)
+        if (index === -1) {
+            vendors.push(best_prices[i])
+        }
+    }
+    return (
+        <span className={table["hint"]}>
+            <div style={{ position: "relative" }}>
+                <span style={{ position: "absolute", right: "0px" }}>
+                    <IoIosBulb color="gold" size="40" />
+                </span>
+            </div>
+            <div style={{ marginTop: "50px", borderRadius: "5px", overflow: "hidden" }}>
+                {
+                    vendors.map(vendor =>
+                        <div className={table["selected-materials-row"]} key={vendor.vendor_id + "a"}>
+                            <div style={{ position: "relative" }}>
+                                <span style={{ top: "50%", transform: "translateY(-50%)", position: "absolute", left: "10px" }}>
+                                    {vendor.vendor_name}
+                                </span>
+                            </div>
+                            <div>
+                                {
+                                    best_prices.filter(pom => pom.vendor_id === vendor.vendor_id).map(pom =>
+                                        <div key={pom.id}>
+                                            <div style={{ flex: 1 }}>{pom.title}</div>
+                                            <div>{pom.price}</div>
+                                            <div>{pom.total}</div>
+                                            <div style={{ textAlign: "center" }}>{pom.result === 1 ? <FaCheck color="green" /> : null}</div>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
+        </span>
+    )
+})
 const PriceOffer = (props) => {
     const [vendors, setVendors] = useState(props.vendorList);
     const delivery_terms_ref = useRef(null);
@@ -599,6 +635,8 @@ const PriceOfferMaterials = (props) => {
                     <PriceResearchMetarialsRow
                         key={po.id}
                         po={po}
+                        best_prices={props.best_prices}
+                        set_best_prices={props.set_best_prices}
                         removeAlternative={props.removeAlternative}
                         disabled={props.disabled}
                         setPriceOffers={props.setPriceOffers}

@@ -53,14 +53,20 @@ const PriceResearchMetarialsRow = (props) => {
     }
     const handle_check_click = () => {
         props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, result: 1 }) : row))
+        if (props.best_prices.find(material => material.id === po.id)) {
+            props.set_best_prices(prev => prev.map(mat => mat.id === po.id ? ({ ...mat, result: 1 }) : mat))
+        }
         row_ref.current.style.backgroundColor = "#80ED99";
     }
     const handle_cancel_click = () => {
-        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, result: 0 }) : row))
+        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, result: 0 }) : row));
+        if (props.best_prices.find(material => material.id === po.id)) {
+            props.set_best_prices(prev => prev.map(mat => mat.id === po.id ? ({ ...mat, result: 0 }) : mat))
+        }
         row_ref.current.style.backgroundColor = "transparent";
     }
     return (
-        <div ref={row_ref}>
+        <div style={{ backgroundColor: po.result === 1 ? "#80ED99": "transparent" }} ref={row_ref}>
             <div ref={parentRef} className={table["price-research-material-cell"]} style={{ zIndex: 1 }}>
                 {
                     !props.disabled &&
