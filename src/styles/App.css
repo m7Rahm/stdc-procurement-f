@@ -479,8 +479,7 @@ div.agreement-review-container>div:not(:first-of-type):nth-of-type(2n) {
 div.adv-search-box {
   position: relative;
   top: 50px;
-  background-color: rgba(231, 233, 233, 0.884);
-  backdrop-filter: blur(3px);
+  background-color: rgb(241, 241, 241);
   z-index: 0;
   border-radius: 3px;
   animation: show-up 0.5s both ease-in-out;
@@ -948,8 +947,7 @@ div.icons-panel-hide {
   margin-bottom: 10px;
 }
 
-.accept-decline>div:first-of-type>textarea,
-#procurement-edit-section>textarea {
+.accept-decline>div:first-of-type>textarea, #procurement-edit-section>textarea {
   width: 100%;
   min-height: 100px;
   display: block;
@@ -957,11 +955,13 @@ div.icons-panel-hide {
   flex: 1;
   margin-right: 20px;
 }
-#procurement-edit-section>textarea:focus{
+
+#procurement-edit-section>textarea:focus {
   box-shadow: 0px 0px 8px 2px steelblue;
   outline: none;
   border: none;
 }
+
 .contact-card {
   max-height: 20px;
   margin: 10px 0px;
@@ -1981,9 +1981,7 @@ div.login input:focus, div.login input:active {
   box-shadow: 0px 0px 0px 1px #0a66c2;
 }
 
-div.login input:active+label,
-div.login input:not([value=""])+label,
-div.login input:focus+label {
+div.login input:active+label, div.login input:not([value=""])+label, div.login input:focus+label {
   top: -4px;
   font-size: 1.4rem;
   line-height: 1.5;

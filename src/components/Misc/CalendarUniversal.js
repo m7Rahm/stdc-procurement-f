@@ -15,6 +15,10 @@ const CalendarUniversal = (props) => {
         setValue(value)
         props.handleInputChange(props.name, value)
     }
+    const set_value = (val) => {
+        setValue(val);
+        props.handleInputChange(props.name, value, true)
+    }
     return (
         <div className="calendar-container">
             <div className="calendar-head">
@@ -37,7 +41,7 @@ const CalendarUniversal = (props) => {
                 calendarRef={calendarRef}
                 name={props.name}
                 handleInputChange={props.handleInputChange}
-                setValue={setValue}
+                setValue={set_value}
                 year={props.year}
                 month={props.month}
             />

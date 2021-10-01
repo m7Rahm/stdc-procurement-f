@@ -29,6 +29,7 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
         endDate: '',
         number: ''
     });
+    const time_out_ref = useRef(null);
     useEffect(() => {
         if (props.newDocNotifName) {
             const showNotificationIcon = () => {
@@ -55,8 +56,11 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
             abortController.abort();
         }
     }, [fetchGet])
-    const handleInputChange = (name, value) => {
+    const handleInputChange = (name, value, immedaite = false) => {
         searchStateRef.current[name] = value;
+        if (immedaite) {
+            paginate(0, false, 0)
+        }
     }
     const showSearchBar = () => {
         if (advSearchRef.current) {
@@ -87,11 +91,13 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
             props.setInitData(searchData)
         }
     }
-    const handleSearchClick = () => {
-        refreshList(0, true);
-        showSearchBar();
-    }
-    const resetState = () => {
+    const paginate = (from, update_search_bar, timeout = 0) => {
+        if (time_out_ref.current) {
+            clearTimeout(time_out_ref.current)
+        }
+        time_out_ref.current = setTimeout(() => {
+            refreshList(from, update_search_bar)
+        }, timeout);
     }
     const onNotifIconClick = () => {
         notifIcon.current.style.animation = 'visibility-hide 0.2s ease-in both';
@@ -106,11 +112,19 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
     const setItem = (e, item, inputRef) => {
         inputRef.current.value = item.name;
         department_ref.current = item.id;
+        paginate(0, false, 0)
     }
     const handleInputSearch = (e) => {
         const value = e.target.value;
         const reg_exp = new RegExp(value, "ig");
+        if (value === "" && department_ref.current) {
+            department_ref.current = 0;
+            paginate(0, false, 0);
+        }
         set_items(departments.current.filter(department => reg_exp.test(department.name)))
+    }
+    const handle_input_change = () => {
+        paginate(0, false, 500);
     }
     return (
         <>
@@ -142,10 +156,10 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
                                 </div>
                             }
                             <div style={{ marginBottom: '10px' }} className="doc-number-container">
-                                <input defaultValue={props.initData.number} ref={inputNumberRef} placeholder="Sənəd nömrəsi üzrə axtarış" />
+                                <input name="number" defaultValue={props.initData.number} onChange={handle_input_change} ref={inputNumberRef} placeholder="Sənəd nömrəsi üzrə axtarış" />
                             </div>
                             <div style={{ marginBottom: '10px' }} className="doc-number-container">
-                                <input defaultValue={props.initData.material_name} ref={material_name_ref} placeholder="Məhsul üzrə axtarış" />
+                                <input name="material-name" defaultValue={props.initData.material_name} onChange={handle_input_change} ref={material_name_ref} placeholder="Məhsul üzrə axtarış" />
                             </div>
                             <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between', position: 'relative' }}>
                                 <CalendarUniversal
@@ -183,10 +197,10 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
                                     }
                                 </select>
                             }
-                            <div className="search-ribbon">
+                            {/* <div className="search-ribbon">
                                 <div onClick={handleSearchClick}>Axtar</div>
                                 <div onClick={resetState}>Filteri təmizlə</div>
-                            </div>
+                            </div> */}
                         </div>
                     }
                 </div>
@@ -203,7 +217,7 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
             <Pagination
                 count={props.count}
                 activePageRef={activePageRef}
-                updateList={refreshList}
+                updateList={paginate}
             />
         </>
     )
