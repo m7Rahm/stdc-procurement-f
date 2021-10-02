@@ -19,12 +19,12 @@ const ButtonHOC = (Component, compoProps, canProceed, handleEditClick) => () => 
 }
 
 const VisaContentFooter = (props) => {
-    const { handleEditClick, current, canProceed, updateContent, forwardDoc } = props;
+    const { handleEditClick, current, canProceed, updateContent } = props;
     const tokenContext = useContext(TokenContext);
     const userData = tokenContext[0].userData;
-    const canApprove = userData.previliges.find(prev => prev === 'Sifarişi təsdiq etmək');
-    const canDecline = userData.previliges.find(prev => prev === 'Sifarişə etiraz etmək');
-    const canReturn = userData.previliges.find(prev => prev === 'Sifarişi redaktəyə qaytarmaq');
+    const canApprove = userData.previliges.includes('Sifarişi təsdiq etmək');
+    const canDecline = userData.previliges.includes('Sifarişə etiraz etmək');
+    const canReturn = userData.previliges.includes('Sifarişi redaktəyə qaytarmaq');
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const fetchPost = useFetch("POST");
     const setIsModalOpen = (order, receivers, originid) => {
@@ -36,20 +36,6 @@ const VisaContentFooter = (props) => {
         }, receivers, originid)
     }
     // eslint-disable-next-line
-    const handleForwardOrder = (receivers, comment) => {
-        const data = {
-            receivers: receivers.map(receiver => [receiver.id]),
-            comment: comment
-        }
-        fetchPost(`/api/forward-order/${current.order_id}`, data)
-            .then(respJ => {
-                if (respJ.length === 0)
-                    forwardDoc(receivers)
-                else
-                    setOperationResult({ visible: true, desc: 'Xəta baş verdi' })
-            })
-            .catch(ex => console.log(ex))
-    }
     const handleDoneClick = () => {
         const data = {
             action: 1,

@@ -54,7 +54,7 @@ const SelectModule = () => {
 	const userData = tokenContext[0].userData;
 	const navigationRef = useRef(null);
 	const menuNavRefs = useRef({});
-	const [menuData, setMenuData] = useState({ url: "", routes: [] })
+	const [menuData, setMenuData] = useState({ url: "", routes: [] });
 	const [webSocket, setWebSocket] = useState(null);
 	const leftPaneRef = useRef(null);
 	const backgroundRef = useRef(null);

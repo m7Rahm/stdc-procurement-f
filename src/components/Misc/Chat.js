@@ -61,10 +61,10 @@ const Chat = (props) => {
                 })
         }
         const scrollContainer = scrollContainerRef.current
-        window.addEventListener("m", addNewMessage, false);
+        window.addEventListener("2", addNewMessage, false);
         return () => {
             scrollContainer.scrollTop = 0;
-            window.removeEventListener("m", addNewMessage)
+            window.removeEventListener("2", addNewMessage)
         }
     }, [props.documentType, props.documentid, userInfo.id])
     useEffect(() => {

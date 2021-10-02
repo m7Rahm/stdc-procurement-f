@@ -62,7 +62,7 @@ const LeftSidePane = (props, ref) => {
                                 </Link>
                                 {
                                     <span
-                                        ref={element => { if (link.sub_module) props.refs.current[`${link.module}-${link.sub_module}`] = element }}
+                                        ref={element => { if (link.sub_module !== undefined) props.refs.current[`${link.module}-${link.sub_module}`] = element }}
                                         style={{
                                             background: "#123456",
                                             // padding: "4px",

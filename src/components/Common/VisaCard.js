@@ -16,13 +16,11 @@ const VisaCard = (props) => {
 		isOpened,
 		from,
 		priority,
-		senderid,
 		date,
 		checkedAmount,
 		iconsPanelRef,
 		setIconsVisible,
 		setActive,
-		orderid,
 		ord_numb
 	} = props;
 	const stateRef = useRef(null);
@@ -52,14 +50,8 @@ const VisaCard = (props) => {
 		}
 	}
 	const handleClick = () => {
-		window.history.replaceState(null, "", window.location.pathname + "?i=" + orderid + "&r=" + senderid);
-		if (!isOpened) {
-			const event = new CustomEvent("inAppEvent", {
-				detail: { tranid: orderid, docType: 0, categoryid: 1 }
-			});
-			window.dispatchEvent(event)
-		}
-		setActive({ orderid: orderid, initid: senderid })
+		window.history.replaceState(null, "", window.location.origin + `/orders/visas/${id}`);
+		setActive(id)
 		activeRef.current.style.background = activeRef.current.prevBackColor;
 		stateRef.current.style.background = 'skyblue'
 		activeRef.current = stateRef.current;

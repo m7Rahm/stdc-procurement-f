@@ -3,8 +3,8 @@ import { FaCheck, FaTimes, FaPen, FaUserEdit } from 'react-icons/fa'
 import useFetch from '../../hooks/useFetch'
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
-const getResultText = (result, stat) => {
-    if (result === 0 && stat === true)
+const getResultText = (result) => {
+    if (result === 0)
         return <AiOutlineLoading3Quarters style={{ animation: "loading 1.5s ease-in-out infinite both" }} color="rgb(244, 180, 0)" title='Baxılır...' />
     else if (result === -1)
         return <FaTimes color="red" title="Etiraz Edildi" />
@@ -45,13 +45,13 @@ const ParticipantsR = (props) => {
                         <li key={index}>
                             <div>
                                 {participant.full_name}
-                                {getResultText(participant.result, participant.stat)}
+                                {getResultText(participant.result)}
                                 <div style={{ fontWeight: "650", fontSize: "0.8rem", color: '#1665d8' }}>{participant.vezife || ""}</div>
                             </div>
                             <div style={{ textAlign: "left", position: "relative" }}>
                                 {participant.comment}
                                 <span>
-                                    {participant.stat ? participant.act_date_time || participant.date_time : participant.act_date_time}
+                                    {participant.act_date_time || participant.date_time }
                                 </span>
                             </div>
                         </li>

@@ -91,9 +91,7 @@ const SideBar = (props) => {
 								setIconsVisible={setIconsVisible}
 								activeRef={activeRef}
 								id={visa.id}
-								senderid={visa.sender_id}
 								isOpened={visa.is_read}
-								orderid={visa.order_id}
 								from={visa.sender_full_name}
 								priority={visa.priority}
 								remark={visa.comment}

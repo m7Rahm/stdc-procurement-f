@@ -26,10 +26,12 @@ const OrderContentProtected = (props) => {
 	const handleEditClick = (content) => {
 		setModalContent({ visible: true, content, title: "Sifariş № ", number: current[0].ord_numb });
 	}
-	const updateContent = (updatedCtnt, receivers, originid) => {
+	const updateContent = (updatedCtnt, receivers, { originid, notify }) => {
+		const receivs = receivers.map(receiver => ({ id: receiver, module: 0, type: 0, doc_id: orderid, sub_module: 2, doc_type: 0 }));
+		receivs.push({ id: originid, module: 0, type: 1, sub_module: 0, doc_type: 0, notify })
 		const message = JSON.stringify({
 			type: 0,
-			receivers: [...receivers.map(receiver => ({ id: receiver, module: 0, type: 0, doc_id: orderid, sub_module: 2, doc_type: 0 })), { id: originid, module: 0, type: 1, sub_module: 0, doc_type: 0 }],
+			receivers: receivs,
 			data: undefined
 		})
 		webSocket.send(message)

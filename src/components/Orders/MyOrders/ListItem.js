@@ -224,7 +224,7 @@ const ListItem = (props) => {
   }
   return (
     <>
-      <li style={{ justifyContent: "space-between" }}>
+      <li style={{ justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ width: "30px", fontWeight: "520", color: "#505050", textAlign: "center" }}>{props.index + 1}</div>
         <div style={{ width: "80px", textAlign: "center" }}>
           {icon}

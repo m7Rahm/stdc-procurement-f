@@ -16,14 +16,14 @@ const AcceptDecline = (props) => {
             fetchPost(`/api/accept-decline/${tranid}`, data)
                 .then(respJ => {
                     if (respJ.length !== 0 && respJ[0].operation_result === 'success') {
-                        const [{ origin_emp_id: originid }, ...rest] = respJ
-                        const receivers = rest.map(receiver => receiver.id)
+                        const [{ origin_emp_id: originid, notify }, ...rest] = respJ
+                        const receivers = rest.map(receiver => receiver.receiver_id)
                         props.handleModalClose({
                             id: tranid,
                             act_date_time: "Biraz öncə",
                             result: action,
                             comment: commentRef.current.value
-                        }, receivers, originid);
+                        }, receivers, { originid, notify });
                     }
                     else if (respJ[0].error)
                         setOperationResult({ visible: true, desc: respJ[0].error })

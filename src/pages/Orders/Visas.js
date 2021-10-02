@@ -13,11 +13,8 @@ const initData = {
 }
 const documentType = 10
 const Visas = (props) => {
-  const oIndex = window.location.search.match(/i=(\d+)&?/)
-  const orderid = oIndex ? oIndex[1] : undefined
-  const rIndex = window.location.search.match(/r=(\d+)&?/)
-  const initid = rIndex ? rIndex[1] : undefined
-  const [active, setActive] = useState({ orderid: orderid, initid: initid });
+  const tran_id = /\d+/.exec(window.location.pathname);
+  const [active, setActive] = useState(tran_id);
   const fetchPost = useFetch("POST");
   const updateList = useCallback((data) => fetchPost('/api/visas', data), [fetchPost]);
   return (
@@ -28,9 +25,8 @@ const Visas = (props) => {
         initData={initData}
       />
       <VisaContent
-        tranid={active.orderid}
+        tranid={active}
         setActive={setActive}
-        initid={active.initid}
         navigationRef={props.navigationRef}
         documentType={documentType}
       />

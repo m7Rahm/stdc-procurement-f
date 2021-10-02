@@ -79,7 +79,7 @@ const EditOrder = (props) => {
                 })
                 .catch(ex => {
                     console.log(ex);
-                    props.setOperationStateText({ text: "Xəta baş verdi", orderid: orderContent[0].order_id, initid: orderContent[0].sender_id })
+                    props.setOperationStateText({ text: "Xəta baş verdi", id: props.tranid })
                 })
         }
     }

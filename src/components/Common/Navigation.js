@@ -28,8 +28,8 @@ const Navigation = (props, ref) => {
     const fetchNotifications = useFetch("GET");
     useEffect(() => {
         const handleInAppEvent = event => {
-            const { docType, tranid, categoryid } = event.detail;
-            const key = `${categoryid}-${docType}`;
+            const { tran_id, module_id, sub_module_id, doc_type } = event.detail;
+            const key = `${module_id}-${sub_module_id}`;
             if (props.menuNavRefs.current[key]) {
                 const prev = Number(props.menuNavRefs.current[key].innerHTML);
                 if (prev - 1 > 0)
@@ -37,25 +37,30 @@ const Navigation = (props, ref) => {
                 else
                     props.menuNavRefs.current[key].style.display = "none"
             }
-            setNotifications(prev => {
-                const all = prev.all.map(notif => notif.tran_id === tranid && notif.doc_type === docType && notif.category_id === categoryid ? { ...notif, is_read: 1 } : notif);
-                const visible = prev.all.slice(prev.offsetStart, prev.offsetEnd)
+            setMessages(prev => {
+                const message = prev.all.find(message => message.tran_id === tran_id && message.doc_type === doc_type && message.category_id === module_id)
+                let all = prev.all;
+                let visible = prev.visible;
+                if (message) {
+                    all = prev.all.map(mess => mess.id === message.id ? { ...mess, is_read: 1 } : mess);
+                    visible = prev.all.slice(prev.offsetStart, prev.offsetEnd)
+                }
                 return { ...prev, all, visible, count: prev.count - 1 <= 0 ? "" : prev.count - 1 }
             })
         }
         window.addEventListener("inAppEvent", handleInAppEvent, false);
         props.webSocket.onmessage = (data) => {
             const webSockMessage = JSON.parse(data.data);
-            const event_name = webSockMessage.type !== "m" && webSockMessage.type !== -1 ? `${webSockMessage.module}-${webSockMessage.sub_module}` : webSockMessage.type;
+            const event_name = webSockMessage.type !== 2 && webSockMessage.type !== -1 ? `${webSockMessage.module}-${webSockMessage.sub_module}` : webSockMessage.type;
             if (webSockMessage.type !== -1) {
                 const event = new CustomEvent(event_name, {
                     detail: { data: webSockMessage.data }
                 });
                 window.dispatchEvent(event);
-                const { module, sub_module, type, doc_type } = webSockMessage
+                const { module, sub_module, type, doc_type, tran_id, notify } = webSockMessage
                 const key = `${module}-${sub_module}`
                 if (type === 0) {
-                    const route = get_notif_link(module, sub_module, webSockMessage.doc_id)
+                    const route = get_notif_link(module, sub_module, tran_id)
                     const text = get_notif_text({ doc_type, type, action: webSockMessage.action, doc_number: webSockMessage.doc_number })
                     createNewNotification(text, route.module + route.sub_module + route.query)
                 }
@@ -70,27 +75,35 @@ const Navigation = (props, ref) => {
                 if (notificationsRef.current.style.display !== "block") {
                     if (type === 1) {
                         update_notifications.current = true;
-                        setNotifications(prev => ({ ...prev, count: Number(prev.count + 1) }))
+                        if (notify !== false)
+                            setNotifications(prev => ({ ...prev, count: Number(prev.count + 1) }))
                     } else if (type === 0) {
                         update_messages.current = true;
-                        setMessages(prev => ({ ...prev, count: Number(prev.count + 1) }))
+                        if (notify !== false)
+                            setMessages(prev => ({ ...prev, count: Number(prev.count + 1) }))
                     }
                 } else {
                     fetchNotifications(`/api/notifications?from=0&active=1&type=${type}`)
                         .then(respJ => {
                             const update_func = prev => {
-                                const newNotifications = prev.all.filter(notification => !respJ.find(newNotifications => newNotifications.id === notification.id));
-                                const all = [...newNotifications, ...respJ]
+                                const updated = prev.all.map(notif => {
+                                    const updated_notif = respJ.find(incoming_notif => incoming_notif.id === notif.id)
+                                    return updated_notif ? updated_notif : notif
+                                })
+                                const newNotifications = respJ.filter(new_notification => !updated.find(prev_notif => prev_notif.id === new_notification.id));
+                                const all = [...newNotifications, ...updated]
                                     .sort((a, b) => a.id < b.id)
                                     .map((notification, index) => ({ ...notification, offset: index * 62 }));
                                 const height = all.length * 62;
-                                return { ...prev, all: all, visible: all.slice(prev.offsetStart, prev.offsetEnd), height: height, count: newNotifications[0].total_count }
+                                const count = newNotifications[0]?.total_count;
+                                const end = prev.visible.length === prev.all.length ? all.length : prev.offsetEnd
+                                return { ...prev, all: all, visible: all.slice(prev.offsetStart, end), height: height, count: count || prev.count }
                             }
                             if (respJ.length !== 0) {
                                 if (type === 0)
-                                    setNotifications(update_func)
-                                else if (type === 1)
                                     setMessages(update_func)
+                                else if (type === 1)
+                                    setNotifications(update_func)
                             }
                         })
                         .catch(ex => console.log(ex))
@@ -207,7 +220,7 @@ const Navigation = (props, ref) => {
                                 .sort((a, b) => a.id < b.id)
                                 .map((notification, index) => ({ ...notification, offset: index * 62 }));
                             const height = all.length * 62;
-                            const end = prev.offsetEnd === 0 ? all.length - 1 : prev.offsetEnd;
+                            const end = prev.offsetEnd === 0 ? all.length : prev.offsetEnd;
                             const visible = all.slice(prev.offsetStart, end);
                             return {
                                 ...prev,
@@ -232,9 +245,9 @@ const Navigation = (props, ref) => {
         }
     }
     const pushHistory = (notification) => {
-        const { tran_id: tranid, doc_number: docNumber } = notification;
-        const route = get_notif_link(notification.category_id, notification.sub_category_id, tranid)
-        history.push(route.module + route.sub_module + route.query + `&r=${notification.init_id}`, { tranid, initid: notification.init_id, docNumber: docNumber });
+        const { tran_id, doc_number } = notification;
+        const route = get_notif_link(notification.category_id, notification.sub_category_id, tran_id)
+        history.push(route.module + route.sub_module + route.query, { tran_id, doc_number });
     }
     const handleScroll = (e) => {
         const scrollTop = e.target.scrollTop;
@@ -285,14 +298,14 @@ const Navigation = (props, ref) => {
                         if (notif.type === 1) {
                             setNotifications(prev => {
                                 const all = prev.all.map(notification => notification.id === notif.id ? ({ ...notification, is_read: true }) : notification);
-                                const visible = all.slice(prev.offsetStart, prev.offsetEnd)
-                                return { ...prev, all, visible, count: prev.count !== 0 && prev.count !== "" ? prev.count - 1 : "" }
+                                const visible = all.slice(prev.offsetStart, prev.offsetEnd);
+                                return { ...prev, all, visible, count: prev.count !== 1 ? prev.count - 1 : "" }
                             })
                         } else {
                             setMessages(prev => {
                                 const all = prev.all.map(notification => notification.id === notif.id ? ({ ...notification, is_read: true }) : notification);
                                 const visible = all.slice(prev.offsetStart, prev.offsetEnd)
-                                return { ...prev, all, visible, count: prev.count !== 0 && prev.count !== "" ? prev.count - 1 : "" }
+                                return { ...prev, all, visible, count: prev.count !== 1 ? prev.count - 1 : "" }
                             })
                         }
                     }
@@ -312,7 +325,7 @@ const Navigation = (props, ref) => {
                                 .sort((a, b) => a.id < b.id)
                                 .map((notification, index) => ({ ...notification, offset: index * 62 }));
                             const height = all.length * 62;
-                            const end = prev.offsetEnd === 0 ? all.length - 1 : prev.offsetEnd;
+                            const end = prev.offsetEnd === 0 ? all.length : prev.offsetEnd;
                             const visible = all.slice(prev.offsetStart, end);
                             return {
                                 ...prev,
