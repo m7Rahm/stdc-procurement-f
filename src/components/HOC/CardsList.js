@@ -10,6 +10,7 @@ const CardsList = (Card) => function SideBarContent(props) {
                     <Card
                         params={props.params}
                         key={card.id}
+                        path_name={props.path_name}
                         card={card}
                         setActive={setActive}
                         activeRef={activeRef}

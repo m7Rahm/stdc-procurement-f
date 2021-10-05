@@ -78,7 +78,7 @@ const SideBarWithSearch = (Content) => function SearchBar(props) {
             <div onClick={() => { }} ref={notifIcon} className="new-visa-notification">
                 <span >
                     Yeni bildiriş
-                        <BsArrowUpShort size="20" style={{ verticalAlign: 'middle', float: 'right', marginRight: '8px' }} />
+                    <BsArrowUpShort size="20" style={{ verticalAlign: 'middle', float: 'right', marginRight: '8px' }} />
                 </span>
             </div>
             <Content

@@ -24,7 +24,7 @@ const routes = [
         sub_module: 0,
         notif_count: "",
         props: {
-            result: 0
+            result: -3
         }
     },
     {
@@ -36,7 +36,7 @@ const routes = [
         sub_module: 1,
         component: Orders,
         props: {
-            result: 0
+            result: 1
         }
     },
     {
@@ -60,7 +60,7 @@ const routes = [
         module: 0,
         sub_module: 3,
         props: {
-            result: 32
+            result: 32,
         }
     },
 ]
@@ -90,7 +90,7 @@ const Tender = (props) => {
             {
                 routes.map(route =>
                     <Route key={route.link} path={`${path}${route.link}/:docid?`}>
-                        <route.component {...route.props} />
+                        <route.component path_name={`${path}${route.link}`} {...route.props} />
                     </Route>
                 )
             }

@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { TokenContext } from '../../../App'
 import useFetch from '../../../hooks/useFetch';
-import ForwardDocLayout from '../../Misc/ForwardDocLayout';
 import OperationResult from '../../Misc/OperationResult'
 
 const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline'))
@@ -58,9 +57,6 @@ const VisaContentFooter = (props) => {
                     setOperationResult({ visible: true, desc: respJ[0].error })
             })
             .catch(err => console.log(err))
-    }
-    const forwardtoProcurement = (receivers, comment) => {
-
     }
     return (
         current.result === 0 && current.can_influence
@@ -152,10 +148,15 @@ const VisaContentFooter = (props) => {
                         canApprove && current.forward_type === 5 &&
                         <div
                             onClick={
-                                ButtonHOC(ForwardDocLayout,
+                                ButtonHOC(AcceptDecline,
                                     {
-                                        handleSendClick: forwardtoProcurement,
-                                        filterDepartments: [userData.userInfo.structureid]
+                                        handleModalClose: setIsModalOpen,
+                                        tranid: current.id,
+                                        action: 1,
+                                        setSending: props.setSending,
+                                        setOperationStateText: props.setOperationStateText,
+                                        setOperationResult: setOperationResult,
+                                        backgroundColor: '#F4B400'
                                     }, canProceed, handleEditClick
                                 )
                             }

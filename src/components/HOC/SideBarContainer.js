@@ -33,6 +33,7 @@ const SideBarContainer = (Search, CardsList) => function SideBar(props) {
                     params={props.params}
                     cards={cards.content}
                     setActive={setActive}
+                    path_name={props.path_name}
                 />
             </Search>
         </div>

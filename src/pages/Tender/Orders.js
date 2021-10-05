@@ -23,8 +23,8 @@ const init = {
     until: 20
 }
 const Orders = (props) => {
-    const matches = window.location.search.match(/i=(\d+)/);
-    const id = matches ? matches[1] : null;
+    const matches = window.location.pathname.match(/\d+/);
+    const id = matches ? matches[0] : null;
     const activeInit = { id: Number(id), ordNumb: "", departmentName: "" }
     const [active, setActive] = useState(activeInit);
     const searchStateRef = useRef({ result: 0 });
@@ -56,6 +56,7 @@ const Orders = (props) => {
             <SideBar
                 initData={initData}
                 setActive={setActive}
+                path_name={props.path_name}
                 setInitData={setInitData}
                 updateListContent={updateListContent}
                 searchStateRef={searchStateRef}
