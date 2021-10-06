@@ -20,10 +20,13 @@ const ReadyOfferCard = (props) => {
                             {props.card.full_name}
                         </span>
                         <span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline' }}>
-                            {props.card.create_date_time}
+                            {props.card.date_time}
                         </span>
                     </div>
                     <div style={{ height: '15px', position: 'relative' }}>
+                        <span style={{ fontSize: '12px', fontWeight: "bold", color: 'steelblue', float: 'left', position: 'relative', zIndex: 0, background: 'whitesmoke', padding: '0px 5px 0px 0px' }}>
+                            {props.card.department_name}
+                        </span>
                     </div>
                     <div style={{ height: '23px', paddingTop: '8px' }}>
                         <span style={{ fontSize: '12px', color: 'gray', float: 'left', position: 'relative', zIndex: 0, background: 'whitesmoke', padding: '0px 5px 0px 0px' }}>

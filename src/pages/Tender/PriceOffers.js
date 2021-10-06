@@ -23,28 +23,30 @@ function PriceOffers(props) {
     const showModalHandler = () => setShowModal(true)
     return (
         visa.length !== 0 &&
-        <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1, maxWidth: "1256px" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", flexFlow: "row wrap", justifyContent: "space-between", marginBottom: "5px" }}>
-                <div style={{ display: 'flex', flexDirection: 'column', float: 'left', paddingLeft: '20px', whiteSpace: "nowrap" }}>
-                    <div style={{ fontWeight: 'bold', color: "#FFB830", fontSize: "2rem" }}>{visa[0].full_name}</div>
-                    <div title="deadline" style={{ fontSize: '20px', fontWeight: "700", color: "gray" }}>Deadline: {visa[0].deadline}</div>
-                </div>
-                <div>
-                    <div className={table["price-offer-action"]} onClick={() => history.push(`/tender/price-offers/${id}`, { visa, id })}>
-                        Razılaşmalara bax
-                        <BsArrowRight size="16px" />
+        <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1 }}>
+            <div style={{ maxWidth: "1256px", margin: "auto" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", flexFlow: "row wrap", justifyContent: "space-between", marginBottom: "5px" }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', float: 'left', paddingLeft: '20px', whiteSpace: "nowrap" }}>
+                        <div style={{ fontWeight: 'bold', color: "#FFB830", fontSize: "2rem" }}>{visa[0].full_name}</div>
+                        <div title="deadline" style={{ fontSize: '20px', fontWeight: "700", color: "gray" }}>Deadline: {visa[0].deadline}</div>
                     </div>
-                    {
-                        props.can_see_others &&
-                        <div className={table["price-offer-action"]} onClick={showModalHandler}>Yönəlt</div>
-                    }
+                    <div>
+                        <div className={table["price-offer-action"]} onClick={() => history.push(`/tender/price-offers/${id}`, { visa, id })}>
+                            Razılaşmalara bax
+                            <BsArrowRight size="16px" />
+                        </div>
+                        {
+                            props.can_see_others &&
+                            <div className={table["price-offer-action"]} onClick={showModalHandler}>Yönəlt</div>
+                        }
+                    </div>
                 </div>
+                <VisaContentMaterials
+                    orderContent={visa}
+                    forwardType={1}
+                />
+                <Processors showModal={showModal} id={id} />
             </div>
-            <VisaContentMaterials
-                orderContent={visa}
-                forwardType={1}
-            />
-            <Processors showModal={showModal} id={id} />
         </div>
     )
 }
@@ -133,7 +135,7 @@ const Processors = (props) => {
             <div style={{ marginTop: "20px" }}>
                 {
                     processors.map(emp =>
-                        <div key={emp.receiver_id} style={{ float: "left", cursor: "default", borderRadius: "5px", padding: "0.5rem", color: "white", backgroundColor: "steelblue" }}>
+                        <div key={emp.receiver_id} style={{ float: "left", cursor: "default", borderRadius: "5px", padding: "0.5rem", color: "white", backgroundColor: "rgb(255, 184, 48)", marginRight: "10px" }}>
                             {emp.full_name}
                         </div>
                     )

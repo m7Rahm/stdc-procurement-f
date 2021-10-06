@@ -27,28 +27,15 @@ const Orders = (props) => {
     const id = matches ? matches[0] : null;
     const activeInit = { id: Number(id), ordNumb: "", departmentName: "" }
     const [active, setActive] = useState(activeInit);
-    const searchStateRef = useRef({ result: 0 });
+    const searchStateRef = useRef({ result: props.result });
     const tokenContext = useContext(TokenContext)[0]
     const can_see_others = tokenContext.userData.previliges.includes("Sifarişləri yönləndirmək")
-    const [initData, setInitData] = useState({ ...init, can_see_others });
+    const [initData, setInitData] = useState({ ...init, result: props.result });
     useEffect(() => {
         if (active.id !== Number(id)) {
             setActive(prev => ({ ...prev, id }))
         }
     }, [active.id, id])
-    useEffect(() => {
-        setInitData({
-            userName: '',
-            material_name: "",
-            startDate: null,
-            endDate: null,
-            result: props.result,
-            from: 0,
-            until: 20,
-            department_id: 0,
-            can_see_others
-        })
-    }, [props.doc_type, props.result, can_see_others]);
     const fetchPost = useFetch("POST");
     const updateListContent = useCallback((data) => fetchPost('/api/get-ready-orders', data), [fetchPost])
     return (
