@@ -1,0 +1,11 @@
+span.department-name {
+    font-size: 12px;
+    font-weight: bold;
+    color: steelblue;
+    float: left;
+    position: relative;
+    z-index: 0;
+    background: whitesmoke;
+    padding: 2px 5px 2px 2px;
+    border-radius: 3px;
+}

@@ -77,13 +77,12 @@ const routes = [
         component: Agreements,
         notif_count: "",
         props: {
-            link: "/api/get-user-agreements",
+            link: "/api/price-offers-for-me",
             params: {
                 active: "message_id",
                 number: "number",
             },
-            method: "POST",
-            newDocNotifName: "oA"
+            method: "GET",
         },
     },
     {
@@ -109,7 +108,6 @@ const routes = [
                 number: "number"
             },
             docType: 2,
-            newDocNotifName: "oC"
         }
     },
     {
@@ -133,7 +131,6 @@ const routes = [
                 active: "message_id"
             },
             docType: 3,
-            newDocNotifName: "oP"
         }
     }
 ];

@@ -15,9 +15,9 @@ import Modal from "../../components/Misc/Modal"
 const PriceOfferActions = React.lazy(() => import("../../components/Tender/PriceOfferActions"));
 const ForwardPriceOffer = React.lazy(() => import("../../components/Tender/ForwardPriceOffer"));
 const NewVendorModal = React.lazy(() => import("./NewVendorModal"));
-const PriceResearch = () => {
-    const visa = useLocation().state?.visa;
-    const id = useLocation().state?.id;
+const PriceResearch = (props) => {
+    const visa = useLocation().state?.visa || props.visa;
+    const id = useLocation().state?.id || props.id;
     const visaMaterials = useRef(visa ? visa : []);
     const [priceOffers, setPriceOffers] = useState([]);
     const [uniquePriceOffers, setUniquePriceOffers] = useState([]);
@@ -28,7 +28,13 @@ const PriceResearch = () => {
     const fetchGet = useFetch("GET");
     const [best_prices, set_best_prices] = useState(visa || [])
     const history = useHistory();
-    const can_select = tokenContext.userData.previliges.includes("Qiymət təklifi seçmək");
+    const previliges_ref = useRef(
+        {
+            can_select: tokenContext.userData.previliges.includes("Qiymət təklifi seçmək"),
+            can_forward: tokenContext.userData.previliges.includes("Qiymət təklifi yönəltmək"),
+            can_return: tokenContext.userData.previliges.includes("Qiymət təklifi düzəliş")
+        }
+    )
     const [showVendorModal, setShowVendorModal] = useState(false)
     const [vendorList, setVendorList] = useState([]);
     const [actions_modal, set_actions_modal] = useState({ state: false, component: null, props: null });
@@ -132,32 +138,49 @@ const PriceResearch = () => {
         setPriceOffers(prev => prev.filter(po => po.id !== id))
     }
     const handle_actions_click = (e) => {
-        const id = e.currentTarget.id;
-        const component = id === "3" ? ForwardPriceOffer : PriceOfferActions;
-        const props = { id }
-        if (id === "1") {
+        const doc_id = id;
+        const action_id = e.currentTarget.id;
+        const component = action_id === "3" ? ForwardPriceOffer : PriceOfferActions;
+        const props = { id: action_id, doc_id, handle_done: () => set_actions_modal({ state: false }) }
+        if (action_id === "1") {
             props.selected_materials = priceOffers.filter(po => po.result === 1)
         }
         set_actions_modal({ state: true, component: component, props: props });
     }
     const rm_price_offer = () => {
-        fetchGet(`/api/remove-price-offer/${alertbox.id}`)
-            .then(_ => {
-                setVersions(prev => {
-                    const index = prev.findIndex(version => version.id === alertbox.user_id);
-                    return prev[index].count === 1
-                        ? prev.filter(version => version.id !== alertbox.user_id)
-                        : prev.map(version => version.id === alertbox.user_id ? ({ ...version, count: version.count - 1 }) : version)
-                });
-                setUniquePriceOffers(prev => {
-                    return prev.filter(po => po.poid !== alertbox.id)
-                });
-                setPriceOffers(prev => {
-                    return prev.filter(po => po.po_id !== alertbox.id)
+        if (Number(alertbox.id)) {
+            fetchGet(`/api/remove-price-offer/${alertbox.id}`)
+                .then(_ => {
+                    setVersions(prev => {
+                        const index = prev.findIndex(version => version.id === alertbox.user_id);
+                        return prev[index].count === 1
+                            ? prev.filter(version => version.id !== alertbox.user_id)
+                            : prev.map(version => version.id === alertbox.user_id ? ({ ...version, count: version.count - 1 }) : version)
+                    });
+                    setUniquePriceOffers(prev => {
+                        return prev.filter(po => po.poid !== alertbox.id)
+                    });
+                    setPriceOffers(prev => {
+                        return prev.filter(po => po.po_id !== alertbox.id)
+                    })
+                    set_alertbox({ state: false, id: null, user_id: null })
                 })
-                set_alertbox({ state: false, id: null, user_id: null })
+                .catch(ex => console.log(ex))
+        } else {
+            setVersions(prev => {
+                const index = prev.findIndex(version => version.id === alertbox.user_id);
+                return prev[index].count === 1
+                    ? prev.filter(version => version.id !== alertbox.user_id)
+                    : prev.map(version => version.id === alertbox.user_id ? ({ ...version, count: version.count - 1 }) : version)
+            });
+            setUniquePriceOffers(prev => {
+                return prev.filter(po => po.poid !== alertbox.id)
+            });
+            setPriceOffers(prev => {
+                return prev.filter(po => po.po_id !== alertbox.id)
             })
-            .catch(ex => console.log(ex))
+            set_alertbox({ state: false, id: null, user_id: null })
+        }
     }
     const removeVendor = (id, userid) => {
         set_alertbox({ state: true, id, user_id: userid })
@@ -195,23 +218,34 @@ const PriceResearch = () => {
     return (
         <div style={{ height: "calc(100vh - 56px)", marginTop: "56px", display: "flex", overflow: "auto" }}>
             {
-                !can_select &&
                 <div className={table["actions-ribbon"]}>
                     <div className={table["actions-ribbon-container"]}>
-                        <div id="1" onClickCapture={handle_actions_click} title="Təzdiq et">
-                            <FaCheck color="rgb(15, 157, 88)" size="2rem" />
-                        </div>
-                        <div id="2" onClickCapture={handle_actions_click} title="Geri göndər (Düzəliş üçün)">
-                            <FaUserEdit color="rgb(244, 180, 0)" size="2rem" />
-                        </div>
-                        <div id="3" onClickCapture={handle_actions_click} title="Rəy üçün yönəlt">
-                            <IoIosSend color="rgb(64, 168, 196)" size="2rem" />
-                        </div>
-                        <div id="-1" onClickCapture={handle_actions_click} title="Etiraz et">
-                            <FaTimes color="rgb(217, 52, 4)" size="2rem" />
-                        </div>
+                        {
+                            !previliges_ref.current.can_select &&
+                            <div id="1" onClickCapture={handle_actions_click} title="Təzdiq et">
+                                <FaCheck color="rgb(15, 157, 88)" size="2rem" />
+                            </div>
+                        }
+                        {
+                            !previliges_ref.current.can_return &&
+                            <div id="2" onClickCapture={handle_actions_click} title="Geri göndər (Düzəliş üçün)">
+                                <FaUserEdit color="rgb(244, 180, 0)" size="2rem" />
+                            </div>
+                        }
+                        {
+                            !previliges_ref.current.can_forward &&
+                            <div id="3" onClickCapture={handle_actions_click} title="Rəy üçün yönəlt">
+                                <IoIosSend color="rgb(64, 168, 196)" size="2rem" />
+                            </div>
+                        }
+                        {
+                            !previliges_ref.current.can_select &&
+                            <div id="-1" onClickCapture={handle_actions_click} title="Etiraz et">
+                                <FaTimes color="rgb(217, 52, 4)" size="2rem" />
+                            </div>
+                        }
                     </div>
-                    <div style={{ position: "relative", float: "right", height: "100%" }}>
+                    <div style={{ position: "absolute", top: "50%", right: "0", transform: "translateY(50%)" }}>
                         <div>
                             <AiOutlineRight size="2rem" />
                         </div>
@@ -247,7 +281,7 @@ const PriceResearch = () => {
                     </Modal>
                 </Suspense>
             }
-            <BestPrices best_prices={best_prices} />
+            <BestPrices best_prices={best_prices.filter(p => p.vendor_id)} />
             <div style={{ padding: "0px 20px" }}>
                 <div style={{ clear: "both", float: "left", backgroundColor: "rgb(255,255,255)", zIndex: "2", top: "58px", minWidth: "300px", }}>
                     <span style={{ cursor: "pointer" }}>
@@ -590,7 +624,7 @@ const PriceOffer = (props) => {
                     items={vendors}
                     addNewItem={true}
                     handleAddNewItemClick={handleAddNewItemClick}
-                    style={{ top: "26px", width: "80%" }}
+                    style={{ top: "26px", width: "90%" }}
                     inputStyle={{ border: "none" }}
                     handleItemClick={setVendor}
                 />
@@ -606,8 +640,8 @@ const PriceOffer = (props) => {
             <div className={table["price-research-material-cell"]}><input disabled={props.disabled} defaultValue={props.log_expenses} ref={log_expenses_ref} /></div>
             <div className={table["price-research-materials-header"]}>
                 <div className={table["price-research-material-cell"]}>Təklif olunan</div>
-                <div className={table["price-research-material-cell"]}>1 ədədin qiyməti</div>
-                <div className={table["price-research-material-cell"]}>1 ədəd ƏDV daxil qiymət</div>
+                <div style={{ fontSize: "12px" }} className={table["price-research-material-cell"]}>1 ədədin qiyməti</div>
+                <div style={{ fontSize: "12px" }} className={table["price-research-material-cell"]}>1 ədəd ƏDV daxil qiymət</div>
                 <div style={{ fontSize: "12px" }} className={table["price-research-material-cell"]}>18% ƏDV daxil toplam qiyməti</div>
             </div>
         </div>

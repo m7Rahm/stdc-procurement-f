@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-
+import styles from "../../styles/App.module.css"
 const ReadyOfferCard = (props) => {
     const stateRef = useRef(null);
     const handleClick = () => {
@@ -24,7 +24,7 @@ const ReadyOfferCard = (props) => {
                         </span>
                     </div>
                     <div style={{ height: '15px', position: 'relative' }}>
-                        <span style={{ fontSize: '12px', fontWeight: "bold", color: 'steelblue', float: 'left', position: 'relative', zIndex: 0, background: 'whitesmoke', padding: '0px 5px 0px 0px' }}>
+                        <span className={styles["department-name"]}>
                             {props.card.department_name}
                         </span>
                     </div>

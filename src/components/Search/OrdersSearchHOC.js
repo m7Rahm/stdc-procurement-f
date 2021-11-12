@@ -177,6 +177,7 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
                                     handleInputChange={handleInputChange}
                                 />
                             </div>
+                            <div style={{ overflow: "hidden", marginTop: "10px" }}>
                             {
                                 options.length !== 0 &&
                                 <select defaultValue="0" style={{ padding: '6px 0px', float: 'left' }} ref={selectRef}>
@@ -187,20 +188,21 @@ const OrdersSearchHOC = (options = [], docTypes = [], with_departments) => funct
                                     }
                                 </select>
                             }
-                            {
-                                docTypes.length !== 0 &&
-                                <select defaultValue="0" style={{ padding: '6px 0px', float: 'right', margin: "0px 5px" }} ref={docTypesRef}>
-                                    {
-                                        docTypes.map(option =>
-                                            <option key={option.val} value={option.val}>{option.text}</option>
-                                        )
-                                    }
-                                </select>
-                            }
-                            {/* <div className="search-ribbon">
+                                {
+                                    docTypes.length !== 0 &&
+                                    <select defaultValue="0" style={{ padding: '6px 0px', float: 'right', margin: "0px 5px" }} ref={docTypesRef}>
+                                        {
+                                            docTypes.map(option =>
+                                                <option key={option.val} value={option.val}>{option.text}</option>
+                                            )
+                                        }
+                                    </select>
+                                }
+                                {/* <div className="search-ribbon">
                                 <div onClick={handleSearchClick}>Axtar</div>
                                 <div onClick={resetState}>Filteri təmizlə</div>
                             </div> */}
+                            </div>
                         </div>
                     }
                 </div>

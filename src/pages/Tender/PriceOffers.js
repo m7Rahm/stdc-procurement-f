@@ -110,7 +110,7 @@ const ForwardPriceOffer = (props) => {
             .catch(ex => console.log(ex))
     }
     return (
-        <>
+        <div style={{ clear: "both" }}>
             <ForwardDocLayout
                 receivers={receivers}
                 handleElementDrag={handleElementDrag}
@@ -119,7 +119,7 @@ const ForwardPriceOffer = (props) => {
                 textareaRef={textareaRef}
             />
             <div onClick={forward_order} className="send-order">Göndər</div>
-        </>
+        </div>
     )
 }
 const Processors = (props) => {
@@ -143,7 +143,10 @@ const Processors = (props) => {
             </div>
             {
                 props.showModal &&
-                <ForwardPriceOffer processors={processors} id={props.id} />
+                <ForwardPriceOffer
+                    processors={processors}
+                    id={props.id}
+                />
             }
         </>
     )

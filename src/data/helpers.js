@@ -30,6 +30,6 @@ export const get_notif_link = (module, sub_module, tran_id) => {
     const route = routes.find(route => route.id === module);
     const module_route = route?.link || "/";
     let query = `/${tran_id}`
-    const sub_module_route = route?.sub_modules.find(route => route.id === sub_module)?.link || ""
+    const sub_module_route = route?.sub_modules.find(route => route.id === sub_module)?.link || "";
     return { module: module_route, sub_module: sub_module_route, query }
 }

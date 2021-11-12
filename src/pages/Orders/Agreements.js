@@ -4,10 +4,10 @@ import SideBarContainer from "../../components/HOC/SideBarContainer"
 import OrdersSearchHOC from "../../components/Search/OrdersSearchHOC"
 import CardsList from "../../components/HOC/CardsList"
 import AgreementContent from "../../components/Orders/Agreements/AgreementContent"
-import { optionsAgreements } from "../../data/data"
+// import { optionsAgreements } from "../../data/data"
 import useFetch from "../../hooks/useFetch"
 const SideBarContent = CardsList(AgreementCard);
-const Search = React.memo(OrdersSearchHOC(optionsAgreements));
+const Search = React.memo(OrdersSearchHOC([]));
 const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
 const Agreements = (props) => {
     const { link, method } = props;
@@ -25,9 +25,7 @@ const Agreements = (props) => {
             })
     }, [orderid])
     const [initData, setInitData] = useState({
-        result: 0,
-        from: 0,
-        next: 20
+        offset: 0
     });
     const fetchGet = useFetch("GET")
     const fetchPost = useFetch("POST")
@@ -35,8 +33,7 @@ const Agreements = (props) => {
         if (method === "POST")
             return fetchPost(link, data)
         else if (method === "GET") {
-            let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
-            query = query.substring(0, query.length - 1);
+            const query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "?").slice(0, -1);
             return fetchGet(link + query)
         }
     }, [link, method, fetchGet, fetchPost])

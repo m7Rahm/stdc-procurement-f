@@ -42,18 +42,22 @@ const ForwardPriceOffer = (props) => {
     const forward_order = () => {
         const data = {
             receivers: receivers.map(receiver => receiver.id).join(","),
+            type: 1
         }
-        fetchPut(`/api/fofpr/${props.id}`, data)
+        fetchPut(`/api/fofpr/${props.doc_id}`, data)
             .then(_ => {
                 const message = {
                     type: 0,
-                    receivers: receivers.map(receiver => ({ id: receiver.id, module: 3, doc_id: props.id, sub_module: 0, type: 0, doc_type: 0 })),
+                    receivers: receivers.map(receiver => ({ id: receiver.id, module: 0, doc_id: props.doc_id, sub_module: 3, type: 0, doc_type: 1 })),
                     data: {
-                        order_id: props.id
+                        order_id: props.doc_id
                     }
                 }
                 webSocket.send(JSON.stringify(message))
-                notifcationContext("Sifariş yönləndirildi", `/tender/orders?i=${props.id}`)
+                notifcationContext("Sifariş yönləndirildi", `/tender/orders?i=${props.doc_id}`)
+                if(props.handle_done){
+                    props.handle_done()
+                }
             })
             .catch(ex => console.log(ex))
     }

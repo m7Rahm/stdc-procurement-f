@@ -52,7 +52,7 @@ div.actions-ribbon {
     width: 60px;
     top: 40%;
     z-index: 2;
-    height: 208px;
+    /* height: 208px; */
     box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
     position: fixed;
     background-color: white;
@@ -66,7 +66,6 @@ div.actions-ribbon:hover {
 }
 
 div.actions-ribbon-container {
-    overflow: hidden;
     border-radius: 0px 8px 8px 0px;
     position: relative;
 }
