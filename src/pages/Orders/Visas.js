@@ -14,7 +14,7 @@ const initData = {
 const documentType = 10
 const Visas = (props) => {
   const tran_id = /\d+/.exec(window.location.pathname);
-  const [active, setActive] = useState(tran_id);
+  const [active, setActive] = useState(tran_id ? tran_id[0] : undefined);
   const fetchPost = useFetch("POST");
   const updateList = useCallback((data) => fetchPost('/api/visas', data), [fetchPost]);
   return (
@@ -26,6 +26,7 @@ const Visas = (props) => {
       />
       <VisaContent
         tranid={active}
+        docid={tran_id ? tran_id[0] : undefined}
         setActive={setActive}
         navigationRef={props.navigationRef}
         documentType={documentType}

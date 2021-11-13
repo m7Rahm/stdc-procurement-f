@@ -984,11 +984,20 @@ div.icons-panel-hide {
   border: 1px solid #3f3f3f;
   float: right;
 }
-
+span.full-name{
+  color: rgb(84, 84, 84);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+span.date-time,
+span.deadline{
+  color: rgb(84, 84, 84);
+  font-family: monospace
+}
 .side-bar>ul:first-of-type {
   margin: 70px 0px 0px 0px;
   list-style: none;
   overflow: auto;
+  width: inherit;
   flex: 1;
   padding: 0px;
 }

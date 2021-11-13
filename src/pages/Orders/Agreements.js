@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useState, useCallback } from "react"
 import AgreementCard from "../../components/VisaCards/AgreementCard"
 import SideBarContainer from "../../components/HOC/SideBarContainer"
 import OrdersSearchHOC from "../../components/Search/OrdersSearchHOC"
@@ -10,34 +10,17 @@ const SideBarContent = CardsList(AgreementCard);
 const Search = React.memo(OrdersSearchHOC([]));
 const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
 const Agreements = (props) => {
-    const { link, method } = props;
-    const index = window.location.search.indexOf("i=")
-    const orderid = index !== -1 ? window.location.search.substring(index + 2) : undefined
-    const [active, setActive] = useState({
-        active: Number(orderid),
-        number: ""
-    });
-    useEffect(() => {
-        if (Number(orderid) && window.history.state)
-            setActive({
-                active: orderid,
-                number: ""
-            })
-    }, [orderid])
+    const { link } = props;
+    const doc_id = /\d+/.exec(window.location.pathname);
+    const [active, setActive] = useState(doc_id ? doc_id[0] : undefined);
     const [initData, setInitData] = useState({
         offset: 0
     });
     const fetchGet = useFetch("GET")
-    const fetchPost = useFetch("POST")
     const updateListContent = useCallback((data) => {
-        if (method === "POST")
-            return fetchPost(link, data)
-        else if (method === "GET") {
-            const query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "?").slice(0, -1);
-            return fetchGet(link + query)
-        }
-    }, [link, method, fetchGet, fetchPost])
-
+        const query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "?").slice(0, -1);
+        return fetchGet(link + query)
+    }, [link, fetchGet])
     return (
         <div className="agreements-container">
             <SideBar
@@ -45,12 +28,13 @@ const Agreements = (props) => {
                 setActive={setActive}
                 updateListContent={updateListContent}
                 newDocNotifName={props.newDocNotifName}
+                path_name={props.path}
                 params={props.params}
             />
             <AgreementContent
-                docid={active.active}
+                docid={active}
+                another={doc_id ? doc_id[0] : undefined}
                 setActive={setActive}
-                number={active.number}
                 setInitData={setInitData}
                 referer={props.referer}
             />

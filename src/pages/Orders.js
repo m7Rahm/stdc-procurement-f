@@ -162,7 +162,7 @@ const Orders = (props) => {
                 {
                     routes.map(route =>
                         <Route key={route.link} path={`${path}${route.link}`}>
-                            <route.component navigationRef={props.navigationRef} {...route.props} />
+                            <route.component navigationRef={props.navigationRef} path={`${path}${route.link}`} {...route.props} />
                         </Route>
                     )
                 }

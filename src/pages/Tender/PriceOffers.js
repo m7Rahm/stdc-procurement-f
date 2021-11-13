@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useHistory } from 'react-router-dom';
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
-import ForwardDocLayout from '../../components/STDC local/ForwardDocLayout/ForwardDocLayout';
 import useFetch from '../../hooks/useFetch'
 import table from "../../styles/Table.module.css"
 import { BsArrowRight } from "react-icons/bs"
-import { NotificationContext, WebSocketContext } from '../SelectModule';
+
 function PriceOffers(props) {
     const { id } = props;
     const [visa, setVisa] = useState([]);
@@ -25,7 +24,7 @@ function PriceOffers(props) {
         visa.length !== 0 &&
         <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1 }}>
             <div style={{ maxWidth: "1256px", margin: "auto" }}>
-                <div style={{ display: "flex", alignItems: "flex-start", flexFlow: "row wrap", justifyContent: "space-between", marginBottom: "5px" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", flexFlow: "row wrap", justifyContent: "space-between", marginBottom: "15px" }}>
                     <div style={{ display: 'flex', flexDirection: 'column', float: 'left', paddingLeft: '20px', whiteSpace: "nowrap" }}>
                         <div style={{ fontWeight: 'bold', color: "#FFB830", fontSize: "2rem" }}>{visa[0].full_name}</div>
                         <div title="deadline" style={{ fontSize: '20px', fontWeight: "700", color: "gray" }}>Deadline: {visa[0].deadline}</div>
@@ -52,82 +51,22 @@ function PriceOffers(props) {
 }
 
 export default PriceOffers
-const ForwardPriceOffer = (props) => {
-    const [receivers, setReceivers] = useState([])
-    const fetchPut = useFetch("PUT");
-    const textareaRef = useRef(null);
-    const notifcationContext = useContext(NotificationContext);
-    const webSocket = useContext(WebSocketContext);
-    const handleElementDrag = (draggedElement, index) => {
-        setReceivers(prev => {
-            const draggedIndex = prev.findIndex(card => card.id === draggedElement.id);
-            const elementsBeforeIndex = prev.slice(0, draggedIndex > index ? index : index + 1);
-            const before = elementsBeforeIndex.filter(card => card.id !== draggedElement.id)
-            const elementsAfterIndex = prev.slice(draggedIndex > index ? index : index + 1);
-            const after = elementsAfterIndex.filter(card => card.id !== draggedElement.id)
-            return [...before, draggedElement, ...after]
-        })
-    }
-    const handleDeselection = (employee) => {
-        setReceivers(prev => prev.filter(emp => emp.id !== employee.id))
-    }
-    const handleSelectChange = (employee) => {
-        if (!props.processors.find(processor => processor.receiver_id === employee.id))
-            setReceivers(prev => {
-                const receivers = [...prev]
-                const res = receivers.find(emp => emp.id === employee.id);
-                if (!res) {
-                    let lastNonDpIndex = 1;
-                    for (let i = receivers.length - 1; i >= 0; i--) {
-                        if (receivers[i].dp === undefined) {
-                            lastNonDpIndex = i + 1;
-                            break;
-                        }
-                    }
-                    receivers.splice(lastNonDpIndex, 0, employee)
-                    return receivers
-                }
-                else return prev
-            })
-    }
-    const forward_order = () => {
-        const data = {
-            receivers: receivers.map(receiver => receiver.id).join(","),
-            comment: textareaRef.current.value
-        }
-        fetchPut(`/api/fofpr/${props.id}`, data)
-            .then(_ => {
-                const message = {
-                    type: 0,
-                    receivers: receivers.map(receiver => ({ id: receiver.id, module: 3, doc_id: props.id, sub_module: 0, type: 0, doc_type: 0 })),
-                    data: {
-                        order_id: props.id
-                    }
-                }
-                webSocket.send(JSON.stringify(message))
-                notifcationContext("Sifariş yönləndirildi", `/tender/orders?i=${props.id}`)
-            })
-            .catch(ex => console.log(ex))
-    }
-    return (
-        <div style={{ clear: "both" }}>
-            <ForwardDocLayout
-                receivers={receivers}
-                handleElementDrag={handleElementDrag}
-                handleSelectChange={handleSelectChange}
-                handleDeselection={handleDeselection}
-                textareaRef={textareaRef}
-            />
-            <div onClick={forward_order} className="send-order">Göndər</div>
-        </div>
-    )
-}
+
+const ForwardPriceOffer = React.lazy(() => import("../../components/Tender/ForwPOFResarch"))
 const Processors = (props) => {
     const fetchGet = useFetch("GET");
     const [processors, set_processors] = useState([])
     useEffect(() => {
         fetchGet(`/api/order-processors/${props.id}`)
-            .then(resp => set_processors(resp))
+            .then(resp => {
+                const processors = [];
+                for (let i = 0; i < resp.length; i++) {
+                    if (!processors.find(processor => processor.receiver_id === resp[i].receiver_id)) {
+                        processors.push(resp[i])
+                    }
+                }
+                set_processors(processors)
+            })
             .catch(ex => console.log(ex))
     }, [props.id, fetchGet])
     return (
@@ -143,10 +82,12 @@ const Processors = (props) => {
             </div>
             {
                 props.showModal &&
-                <ForwardPriceOffer
-                    processors={processors}
-                    id={props.id}
-                />
+                <Suspense fallback="">
+                    <ForwardPriceOffer
+                        processors={processors}
+                        id={props.id}
+                    />
+                </Suspense>
             }
         </>
     )
