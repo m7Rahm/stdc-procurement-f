@@ -12,16 +12,21 @@ import { IoIosArrowBack, IoIosSend, IoIosBulb } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { AiOutlineRight } from "react-icons/ai";
 import Modal from "../../components/Misc/Modal"
+import PriceOfferReviewers from "./PriceOfferReviewers";
+
 const PriceOfferActions = React.lazy(() => import("../../components/Tender/PriceOfferActions"));
 const ForwardPriceOffer = React.lazy(() => import("../../components/Tender/ForwardPriceOffer"));
 const NewVendorModal = React.lazy(() => import("./NewVendorModal"));
+
 const PriceResearch = (props) => {
-    const visa = useLocation().state?.visa || props.visa;
-    const id = useLocation().state?.id || props.id;
+    const location = useLocation()
+    const visa = location.state?.visa || props.visa;
+    const id = location.state?.id || props.id;
+    const referer = location.state?.id;
     const visaMaterials = useRef(visa ? visa : []);
     const [priceOffers, setPriceOffers] = useState([]);
     const [uniquePriceOffers, setUniquePriceOffers] = useState([]);
-    const [alertbox, set_alertbox] = useState(false);
+    const [alertbox, set_alertbox] = useState({ state: false, user_id: undefined, id: undefined });
     const [versions, setVersions] = useState([]);
     const tokenContext = useContext(TokenContext)[0];
     const user_id = tokenContext.userData.userInfo.id
@@ -37,69 +42,70 @@ const PriceResearch = (props) => {
     )
     const [showVendorModal, setShowVendorModal] = useState(false)
     const [vendorList, setVendorList] = useState([]);
-    const [actions_modal, set_actions_modal] = useState({ state: false, component: null, props: null });
     useEffect(() => {
         fetchGet(`/api/vendors`)
             .then(respJ => setVendorList(respJ))
             .catch(ex => console.log(ex))
     }, [fetchGet])
     useEffect(() => {
-        fetchGet(`/api/price-offers?orderid=${id}&all=1`)
-            .then(resp => {
-                const vendors = [];
-                const versions = {};
-                const parent_materials = visaMaterials.current.map(material => {
-                    const materials = resp.filter(po => po.parent_offers_material_id === material.id);
-                    let min = materials[0];
-                    for (let i = 0; i < materials.length; i++) {
-                        if (materials[i].price < min.price) {
-                            min = materials[i];
-                        }
-                    }
-                    return ({
-                        result: material.result,
-                        material_id: material.id,
-                        title: min?.title,
-                        id: min?.id,
-                        price: min?.price,
-                        vendor_id: min?.vendor_id,
-                        vendor_name: min?.vendor_name,
-                        total: (material.amount * min?.price * 1.18).toFixed(2)
-                    })
-                })
-                resp.forEach(row => {
-                    if (!vendors.find(vendor => vendor.user_id === row.user_id && vendor.vendor_id === row.vendor_id)) {
-                        if (!versions[row.user_id]) {
-                            const color = (0x9abed1 * row.user_id).toString(16)
-                            versions[row.user_id] = {
-                                id: row.user_id,
-                                count: 1,
-                                color: color.length > 6 ? color.substring(0, 6) : color,
-                                fullName: row.full_name
+        if (id) {
+            fetchGet(`/api/price-offers?orderid=${id}&all=1`)
+                .then(resp => {
+                    const vendors = [];
+                    const versions = {};
+                    const parent_materials = visaMaterials.current.map(material => {
+                        const materials = resp.filter(po => po.parent_offers_material_id === material.id);
+                        let min = materials[0];
+                        for (let i = 0; i < materials.length; i++) {
+                            if (materials[i].price < min.price) {
+                                min = materials[i];
                             }
                         }
-                        else versions[row.user_id].count += 1
-                        vendors.push({
-                            vendor_id: row.vendor_id,
-                            user_id: row.user_id,
-                            poid: row.po_id,
-                            vendorName: row.vendor_name,
-                            disabled: user_id !== row.user_id,
-                            tax_type: row.tax_type,
-                            residency: row.residency,
-                            delivery_terms: row.delivery_terms,
-                            delivery_duration: row.delivery_duration,
-                            log_expenses: row.log_expenses,
-                            files: row.files ? row.files.split(",").map(file => ({ name: file, fetched: true })) : []
-                        });
-                    }
+                        return ({
+                            result: material.result,
+                            material_id: material.id,
+                            title: min?.title,
+                            id: min?.id,
+                            price: min?.price,
+                            vendor_id: min?.vendor_id,
+                            vendor_name: min?.vendor_name,
+                            total: (material.amount * min?.price * 1.18).toFixed(2)
+                        })
+                    })
+                    resp.forEach(row => {
+                        if (!vendors.find(vendor => vendor.user_id === row.user_id && vendor.vendor_id === row.vendor_id)) {
+                            if (!versions[row.user_id]) {
+                                const color = (0x9abed1 * row.user_id).toString(16)
+                                versions[row.user_id] = {
+                                    id: row.user_id,
+                                    count: 1,
+                                    color: color.length > 6 ? color.substring(0, 6) : color,
+                                    fullName: row.full_name
+                                }
+                            }
+                            else versions[row.user_id].count += 1
+                            vendors.push({
+                                vendor_id: row.vendor_id,
+                                user_id: row.user_id,
+                                poid: row.po_id,
+                                vendorName: row.vendor_name,
+                                disabled: user_id !== row.user_id,
+                                tax_type: row.tax_type,
+                                residency: row.residency,
+                                delivery_terms: row.delivery_terms,
+                                delivery_duration: row.delivery_duration,
+                                log_expenses: row.log_expenses,
+                                files: row.files ? row.files.split(",").map(file => ({ name: file, fetched: true })) : []
+                            });
+                        }
+                    })
+                    set_best_prices(parent_materials)
+                    setPriceOffers(resp.map(row => ({ ...row, total: (row.price * row.amount * 1.18).toFixed(2) })));
+                    setUniquePriceOffers(vendors)
+                    setVersions(Object.values(versions))
                 })
-                set_best_prices(parent_materials)
-                setPriceOffers(resp.map(row => ({ ...row, total: (row.price * row.amount * 1.18).toFixed(2) })));
-                setUniquePriceOffers(vendors)
-                setVersions(Object.values(versions))
-            })
-            .catch(ex => console.log(ex))
+                .catch(ex => console.log(ex))
+        }
     }, [id, fetchGet, user_id, visaMaterials]);
     const handleChange = (e, id) => {
         const name = e.target.name;
@@ -137,15 +143,11 @@ const PriceResearch = (props) => {
         const id = po.id
         setPriceOffers(prev => prev.filter(po => po.id !== id))
     }
-    const handle_actions_click = (e) => {
-        const doc_id = id;
-        const action_id = e.currentTarget.id;
-        const component = action_id === "3" ? ForwardPriceOffer : PriceOfferActions;
-        const props = { id: action_id, doc_id, handle_done: () => set_actions_modal({ state: false }) }
+    const get_modal_props = (action_id, modal_props) => {
+        modal_props.doc_id = id
         if (action_id === "1") {
-            props.selected_materials = priceOffers.filter(po => po.result === 1)
+            modal_props.selected_materials = priceOffers.filter(po => po.result === 1)
         }
-        set_actions_modal({ state: true, component: component, props: props });
     }
     const rm_price_offer = () => {
         if (Number(alertbox.id)) {
@@ -163,7 +165,7 @@ const PriceResearch = (props) => {
                     setPriceOffers(prev => {
                         return prev.filter(po => po.po_id !== alertbox.id)
                     })
-                    set_alertbox({ state: false, id: null, user_id: null })
+                    set_alertbox({ state: false, id: undefined, user_id: undefined })
                 })
                 .catch(ex => console.log(ex))
         } else {
@@ -216,203 +218,175 @@ const PriceResearch = (props) => {
         })
     }
     return (
-        <div style={{ height: "calc(100vh - 56px)", marginTop: "56px", display: "flex", overflow: "auto" }}>
-            {
-                <div className={table["actions-ribbon"]}>
-                    <div className={table["actions-ribbon-container"]}>
-                        {
-                            !previliges_ref.current.can_select &&
-                            <div id="1" onClickCapture={handle_actions_click} title="Təzdiq et">
-                                <FaCheck color="rgb(15, 157, 88)" size="2rem" />
+        id ?
+            <div style={{ height: "calc(100vh - 56px)", marginTop: "56px" }}>
+                <div style={{ display: "flex", overflow: "auto" }}>
+                    <ActionsPanel previliges_ref={previliges_ref} get_modal_props={get_modal_props} />
+                    {
+                        showVendorModal &&
+                        <Suspense fallback="">
+                            <div className={table["vendors-list-modal"]}>
+                                <div>
+                                    <span>
+                                        <MdClose size="1.5rem" onClick={() => setShowVendorModal(false)} />
+                                    </span>
+                                </div>
+                                <NewVendorModal
+                                    setVendorList={setVendorList}
+                                    close_modal={() => setShowVendorModal(false)}
+                                />
                             </div>
-                        }
-                        {
-                            !previliges_ref.current.can_return &&
-                            <div id="2" onClickCapture={handle_actions_click} title="Geri göndər (Düzəliş üçün)">
-                                <FaUserEdit color="rgb(244, 180, 0)" size="2rem" />
-                            </div>
-                        }
-                        {
-                            !previliges_ref.current.can_forward &&
-                            <div id="3" onClickCapture={handle_actions_click} title="Rəy üçün yönəlt">
-                                <IoIosSend color="rgb(64, 168, 196)" size="2rem" />
-                            </div>
-                        }
-                        {
-                            !previliges_ref.current.can_select &&
-                            <div id="-1" onClickCapture={handle_actions_click} title="Etiraz et">
-                                <FaTimes color="rgb(217, 52, 4)" size="2rem" />
-                            </div>
-                        }
-                    </div>
-                    <div style={{ position: "absolute", top: "50%", right: "0", transform: "translateY(50%)" }}>
-                        <div>
-                            <AiOutlineRight size="2rem" />
-                        </div>
-                    </div>
-                </div>
-            }
-            {
-                showVendorModal &&
-                <Suspense fallback="">
-                    <div className={table["vendors-list-modal"]}>
-                        <div>
-                            <span>
-                                <MdClose size="1.5rem" onClick={() => setShowVendorModal(false)} />
+                        </Suspense>
+                    }
+                    <BestPrices best_prices={best_prices.filter(p => p.vendor_id)} />
+                    <div style={{ padding: "20px" }}>
+                        <div style={{ clear: "both", float: "left", backgroundColor: "rgb(255,255,255)", zIndex: "2", top: "58px", minWidth: "300px", }}>
+                            <span style={{ cursor: "pointer" }}>
+                                <IoIosArrowBack onClick={() => history.goBack()} size="40" color="#606770" />
                             </span>
                         </div>
-                        <NewVendorModal
-                            setVendorList={setVendorList}
-                            close_modal={() => setShowVendorModal(false)}
-                        />
-                    </div>
-                </Suspense>
-            }
-            {
-                actions_modal.state &&
-                <Suspense fallback="">
-                    <Modal
-                        style={{ minWidth: "10rem", width: "45rem", backgroundColor: "white" }}
-                        title={"untitled"}
-                        childProps={actions_modal.props}
-                        changeModalState={() => set_actions_modal({ state: false, component: null })}
-                    >
-                        {actions_modal.component}
-                    </Modal>
-                </Suspense>
-            }
-            <BestPrices best_prices={best_prices.filter(p => p.vendor_id)} />
-            <div style={{ padding: "0px 20px" }}>
-                <div style={{ clear: "both", float: "left", backgroundColor: "rgb(255,255,255)", zIndex: "2", top: "58px", minWidth: "300px", }}>
-                    <span style={{ cursor: "pointer" }}>
-                        <IoIosArrowBack onClick={() => history.goBack()} size="40" color="#606770" />
-                    </span>
-                </div>
-                <div style={{ clear: "both", float: "left", minHeight: "40px", top: "0px", paddingBottom: "10px", zIndex: "1", minWidth: "300px", backgroundColor: "white", position: "sticky", left: 0 }}>
-                    {
-                        versions.map(version =>
-                            <div style={{ position: "relative", margin: "1px", padding: "10px", float: "left", cursor: "default" }} key={version.id}>
-                                {version.fullName}
-                                <span style={{ position: "absolute", right: "0", top: 0, bottom: 0, width: "5px", borderRadius: "1px 5px 5px 1px", backgroundColor: `#${version.color}` }}></span>
-                            </div>
-                        )
-                    }
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", clear: "both", position: "relative", zIndex: 0 }}>
-                    <div className={table["price-research-header"]}>
-                        <div style={{ fontWeight: "600", position: "sticky", left: 0, zIndex: 23, backgroundColor: "white", boxShadow: "white 0px -6px 0px 0px" }}>
-                            <div className={table["price-research-material-cell"]}>Şirkət adı</div>
-                            <div className={table["price-research-material-cell"]}>Şirkətin növü (yerli/Xarici)</div>
-                            <div className={table["price-research-material-cell"]}>Vergi ödəyici tipi(ƏDV/Sadələşdirilmiş)</div>
-                            <div className={table["price-research-material-cell"]}>Çatdırılma şərtləri</div>
-                            <div className={table["price-research-material-cell"]}>Çatdırılma müddəti</div>
-                            <div className={table["price-research-material-cell"]}>Gözlənilən Daşınma və Gömrük Xərcləri</div>
-                            <div style={{ height: "80px", fontWeight: "600" }}>
-                                <div className={table["price-research-material-cell"]} style={{ width: "200px", float: "left", padding: "0.5rem", height: "100%" }}>Malın adı</div>
-                                <div className={table["price-research-material-cell"]} style={{ width: "50px", height: "100%", float: "left", padding: "0.5rem 0px", justifyContent: "center" }}>Miqdar</div>
-                                <div className={table["price-research-material-cell"]} style={{ width: "50px", height: "100%", float: "left", padding: "0.5rem 0px", justifyContent: "center" }}>Say</div>
-                            </div>
+                        <div style={{ clear: "both", float: "left", minHeight: "40px", top: "0px", paddingBottom: "10px", zIndex: "1", minWidth: "300px", backgroundColor: "white", position: "sticky", left: 0 }}>
+                            {
+                                versions.map(version =>
+                                    <div style={{ position: "relative", margin: "1px", padding: "10px", float: "left", cursor: "default" }} key={version.id}>
+                                        {version.fullName}
+                                        <span style={{ position: "absolute", right: "0", top: 0, bottom: 0, width: "5px", borderRadius: "1px 5px 5px 1px", backgroundColor: `#${version.color}` }}></span>
+                                    </div>
+                                )
+                            }
                         </div>
-                        {
-                            uniquePriceOffers.map(po =>
-                                <PriceOffer
-                                    vendorName={po.vendorName}
-                                    key={po.poid}
-                                    setUniquePriceOffers={setUniquePriceOffers}
-                                    priceOffers={priceOffers}
-                                    id={po.poid}
-                                    visaMaterials={visaMaterials}
-                                    order_id={id}
-                                    delivery_duration={po.delivery_duration}
-                                    delivery_terms={po.delivery_terms}
-                                    log_expenses={po.log_expenses}
-                                    vendor_id={po.vendor_id}
-                                    residency={po.residency}
-                                    tax_type={po.tax_type}
-                                    files={po.files}
-                                    disabled={po.disabled}
-                                    setShowVendorModal={setShowVendorModal}
-                                    userid={po.user_id}
-                                    setPriceOffers={setPriceOffers}
-                                    removeVendor={removeVendor}
-                                    vendorList={vendorList}
-                                    version={versions.find(version => version.id === po.user_id)}
-                                />
-                            )
-                        }
-                    </div>
-                    {
-                        alertbox.state &&
-                        <div className={table["alert-box"]}>
-                            Qiymət təklifini silməyə əminsinizmi?
-                            <div>
-                                <div onClick={rm_price_offer}>Ok</div>
-                                <div>Imtina et</div>
-                            </div>
-                        </div>
-                    }
-                    {
-                        visaMaterials.current.map(material =>
-                            <div key={material.order_material_id} style={{ position: "relative" }} className={table["price-research-material-row"]}>
-                                <div style={{ flex: "0 0 300px", position: "sticky", top: 0, bottom: "0", left: 0, zIndex: 23 }}>
-                                    <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 200px" }}>{material.title}</div>
-                                    <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 50px" }}>{material.amount}</div>
-                                    <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 50px" }}>{material.amount}</div>
+                        <div style={{ display: "flex", flexDirection: "column", clear: "both", position: "relative", zIndex: 0 }}>
+                            <div className={table["price-research-header"]}>
+                                <div style={{ fontWeight: "600", position: "sticky", left: 0, zIndex: 23, backgroundColor: "white", boxShadow: "white 0px -6px 0px 0px" }}>
+                                    <div className={table["price-research-material-cell"]}>Şirkət adı</div>
+                                    <div className={table["price-research-material-cell"]}>Şirkətin növü (yerli/Xarici)</div>
+                                    <div className={table["price-research-material-cell"]}>Vergi ödəyici tipi(ƏDV/Sadələşdirilmiş)</div>
+                                    <div className={table["price-research-material-cell"]}>Çatdırılma şərtləri</div>
+                                    <div className={table["price-research-material-cell"]}>Çatdırılma müddəti</div>
+                                    <div className={table["price-research-material-cell"]}>Gözlənilən Daşınma və Gömrük Xərcləri</div>
+                                    <div style={{ height: "80px", fontWeight: "600" }}>
+                                        <div className={table["price-research-material-cell"]} style={{ width: "200px", float: "left", padding: "0.5rem", height: "100%" }}>Malın adı</div>
+                                        <div className={table["price-research-material-cell"]} style={{ width: "50px", height: "100%", float: "left", padding: "0.5rem 0px", justifyContent: "center" }}>Miqdar</div>
+                                        <div className={table["price-research-material-cell"]} style={{ width: "50px", height: "100%", float: "left", padding: "0.5rem 0px", justifyContent: "center" }}>Say</div>
+                                    </div>
                                 </div>
-                                <div style={{ flex: 1 }}>
+                                {
+                                    uniquePriceOffers.map(po =>
+                                        <PriceOffer
+                                            vendorName={po.vendorName}
+                                            key={po.poid}
+                                            setUniquePriceOffers={setUniquePriceOffers}
+                                            priceOffers={priceOffers}
+                                            id={po.poid}
+                                            visaMaterials={visaMaterials}
+                                            order_id={id}
+                                            delivery_duration={po.delivery_duration}
+                                            delivery_terms={po.delivery_terms}
+                                            log_expenses={po.log_expenses}
+                                            vendor_id={po.vendor_id}
+                                            residency={po.residency}
+                                            tax_type={po.tax_type}
+                                            files={po.files}
+                                            disabled={po.disabled}
+                                            setShowVendorModal={setShowVendorModal}
+                                            userid={po.user_id}
+                                            setPriceOffers={setPriceOffers}
+                                            removeVendor={removeVendor}
+                                            vendorList={vendorList}
+                                            version={versions.find(version => version.id === po.user_id)}
+                                        />
+                                    )
+                                }
+                            </div>
+                            {
+                                alertbox.state &&
+                                <div className={table["alert-box"]}>
                                     {
-                                        uniquePriceOffers.map(po =>
-                                            <PriceOfferMaterials
-                                                key={po.poid}
-                                                setPriceOffers={setPriceOffers}
-                                                priceOffers={priceOffers}
-                                                venid={po.vendor_id}
-                                                tokenContext={tokenContext}
-                                                disabled={po.disabled}
-                                                best_prices={best_prices}
-                                                set_best_prices={set_best_prices}
-                                                orderType={material.order_type}
-                                                handleChange={handleChange}
-                                                poid={po.poid}
-                                                removeAlternative={removeAlternative}
-                                                count={material.amount}
-                                                vendorList={vendorList}
-                                                addAlternative={addAlternative}
-                                                parentMaterialid={material.order_material_id}
-                                            />
-                                        )
+                                        alertbox.type !== 0 ?
+                                            <>
+                                                Qiymət təklifini silməyə əminsinizmi?
+                                                <div>
+                                                    <div onClick={rm_price_offer}>Ok</div>
+                                                    <div>Imtina et</div>
+                                                </div>
+                                            </>
+                                            : <NotSelected set_alertbox={set_alertbox} />
                                     }
                                 </div>
+                            }
+                            {
+                                visaMaterials.current.map(material =>
+                                    <div key={material.order_material_id} style={{ position: "relative" }} className={table["price-research-material-row"]}>
+                                        <div style={{ flex: "0 0 300px", position: "sticky", top: 0, bottom: "0", left: 0, zIndex: 23 }}>
+                                            <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 200px" }}>{material.title}</div>
+                                            <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 50px" }}>{material.amount}</div>
+                                            <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 50px" }}>{material.amount}</div>
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            {
+                                                uniquePriceOffers.map(po =>
+                                                    <PriceOfferMaterials
+                                                        key={po.poid}
+                                                        setPriceOffers={setPriceOffers}
+                                                        priceOffers={priceOffers}
+                                                        venid={po.vendor_id}
+                                                        tokenContext={tokenContext}
+                                                        disabled={po.disabled}
+                                                        best_prices={best_prices}
+                                                        set_best_prices={set_best_prices}
+                                                        orderType={material.order_type}
+                                                        handleChange={handleChange}
+                                                        poid={po.poid}
+                                                        removeAlternative={removeAlternative}
+                                                        count={material.amount}
+                                                        vendorList={vendorList}
+                                                        addAlternative={addAlternative}
+                                                        parentMaterialid={material.order_material_id}
+                                                    />
+                                                )
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            }
+                            <div className={table["price-research-material-row"]}>
+                                <div className={table["price-research-material-footer"]} style={{ flex: "0 0 300px", position: "sticky", left: 0, zIndex: 23, backgroundColor: "white" }}>
+                                    <div className={table["price-research-material-cell"]} >Cəm</div>
+                                    <div className={table["price-research-material-cell"]}>Təsdiq olunan təklif</div>
+                                    <div className={table["price-research-material-cell"]}>Texniki rəy</div>
+                                    <div style={{ height: "30px" }} className={table["price-research-material-cell"]}>Şöbə, vəzifə, Ad və soyad, imza</div>
+                                </div>
+                                {
+                                    uniquePriceOffers.map(po =>
+                                        <PriceOfferMaterialsFooter
+                                            key={po.poid}
+                                            priceOffers={priceOffers}
+                                            venid={po.vendor_id}
+                                            footer={true}
+                                            poid={po.poid}
+                                        />
+                                    )
+                                }
                             </div>
-                        )
-                    }
-                    <div className={table["price-research-material-row"]}>
-                        <div className={table["price-research-material-footer"]} style={{ flex: "0 0 300px", position: "sticky", left: 0, zIndex: 23, backgroundColor: "white" }}>
-                            <div className={table["price-research-material-cell"]} >Cəm</div>
-                            <div className={table["price-research-material-cell"]}>Təsdiq olunan təklif</div>
-                            <div className={table["price-research-material-cell"]}>Texniki rəy</div>
-                            <div style={{ height: "30px" }} className={table["price-research-material-cell"]}>Şöbə, vəzifə, Ad və soyad, imza</div>
+                            {referer === 3 &&
+                                < span onClick={addNewVendor} style={{ position: "absolute", top: "50%", right: "-3rem", cursor: "pointer" }}>
+                                    <FaPlusCircle size="30" color="green" />
+                                </span>
+                            }
                         </div>
-                        {
-                            uniquePriceOffers.map(po =>
-                                <PriceOfferMaterialsFooter
-                                    key={po.poid}
-                                    priceOffers={priceOffers}
-                                    venid={po.vendor_id}
-                                    footer={true}
-                                    poid={po.poid}
-                                />
-                            )
-                        }
                     </div>
-                    <span onClick={addNewVendor} style={{ position: "absolute", top: "50%", right: "-3rem", cursor: "pointer" }}>
-                        <FaPlusCircle size="30" color="green" />
-                    </span>
                 </div>
-            </div>
-        </div>
+                <div style={{ borderTop: "1px rgb(64, 168, 196) solid" }}>
+                    <PriceOfferReviewers order_id={id} />
+                </div>
+            </div >
+
+            : <>
+            </>
     )
 }
+export default PriceResearch
+
 const BestPrices = React.memo(({ best_prices }) => {
     const vendors = []
     for (let i = 0; i < best_prices.length; i++) {
@@ -456,6 +430,7 @@ const BestPrices = React.memo(({ best_prices }) => {
         </span>
     )
 })
+
 const PriceOffer = (props) => {
     const [vendors, setVendors] = useState(props.vendorList);
     const delivery_terms_ref = useRef(null);
@@ -693,10 +668,97 @@ const PriceOfferMaterialsFooter = () => {
                 </div>
             </div>
             <div className={table["price-research-material-cell"]}>
-                <FaCheck color="var(--primary-color-accept)" />
+                {/* <FaCheck color="var(--primary-color-accept)" /> */}
             </div>
-            <div className={table["price-research-material-cell"]}></div>
+            <div className={table["price-research-material-cell"]}>
+            </div>
         </div>
     )
 }
-export default PriceResearch
+const NotSelected = (props) => {
+    const set_alertbox = props.set_alertbox;
+    const ref = useRef(null)
+    useEffect(() => {
+        setTimeout(() => {
+            ref.current.addEventListener("animationend", () => { set_alertbox({ state: false, message: "" }) }, false)
+            ref.current.classList.toggle(table["close"])
+        }, 2000);
+    }, [set_alertbox])
+    return (
+        <div ref={ref} className={table["warning"]}>
+            {props.message}
+        </div>
+    )
+}
+const ActionsPanel = ({ previliges_ref, get_modal_props }) => {
+    const [alertbox, set_alertbox] = useState({ state: false, message: "" });
+    const [actions_modal, set_actions_modal] = useState({ state: false, component: null, props: null });
+    const handle_actions_click = (e) => {
+        const action_id = e.currentTarget.id;
+        const component = action_id === "3" ? ForwardPriceOffer : PriceOfferActions;
+        const props = { id: action_id, handle_done: () => set_actions_modal({ state: false }), selected_materials: [] }
+        get_modal_props(action_id, props)
+        if (!(action_id === "1" && props.selected_materials.length === 0))
+            set_actions_modal({ state: true, component: component, props: props });
+        else {
+            set_alertbox({ state: true, message: "Seçim etməmisiniz" })
+        }
+    }
+    return (
+        <>
+            {
+                actions_modal.state &&
+                <Suspense fallback="">
+                    <Modal
+                        style={{ minWidth: "10rem", width: "45rem", backgroundColor: "white" }}
+                        title={"untitled"}
+                        childProps={actions_modal.props}
+                        changeModalState={() => set_actions_modal({ state: false, component: null })}
+                    >
+                        {actions_modal.component}
+                    </Modal>
+                </Suspense>
+            }
+            {
+                alertbox.state &&
+                <NotSelected
+                    set_alertbox={set_alertbox}
+                    message={alertbox.message}
+                />
+            }
+            <div className={table["actions-ribbon"]}>
+                <div className={table["actions-ribbon-container"]}>
+                    {
+                        !previliges_ref.current.can_select &&
+                        <div id="1" onClickCapture={handle_actions_click} title="Təzdiq et">
+                            <FaCheck color="rgb(15, 157, 88)" size="2rem" />
+                        </div>
+                    }
+                    {
+                        !previliges_ref.current.can_return &&
+                        <div id="2" onClickCapture={handle_actions_click} title="Geri göndər (Düzəliş üçün)">
+                            <FaUserEdit color="rgb(244, 180, 0)" size="2rem" />
+                        </div>
+                    }
+                    {
+                        !previliges_ref.current.can_forward &&
+                        <div id="3" onClickCapture={handle_actions_click} title="Rəy üçün yönəlt">
+                            <IoIosSend color="rgb(64, 168, 196)" size="2rem" />
+                        </div>
+                    }
+                    {
+                        !previliges_ref.current.can_select &&
+                        <div id="-1" onClickCapture={handle_actions_click} title="Etiraz et">
+                            <FaTimes color="rgb(217, 52, 4)" size="2rem" />
+                        </div>
+                    }
+                </div>
+                <div style={{ position: "absolute", top: "50%", right: "0", transform: "translateY(50%)" }}>
+                    <div>
+                        <AiOutlineRight size="2rem" />
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}

@@ -50,6 +50,7 @@ const Orders = (props) => {
             />
             <PriceOffers
                 id={active.id}
+                referer={3}
                 can_see_others={can_see_others}
                 setInitData={setInitData}
             />

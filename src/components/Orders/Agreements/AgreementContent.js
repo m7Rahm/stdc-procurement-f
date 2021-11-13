@@ -34,10 +34,19 @@ const AgreementContent = (props) => {
             {
                 order !== undefined && order !== -1 ?
                     <>
-                        <PriceOffers id={order} />
+                        <PriceOffers
+                            id={order}
+                            referer={0}
+                        />
                         {
                             selections.map(pro =>
-                                <div key={pro.id}>dasds</div>
+                                <div key={pro.id}>
+                                    <span>{pro.vendor_name}</span>
+                                    <span>{pro.material_name}</span>
+                                    <span>{pro.parent_material_name}</span>
+                                    <span>{pro.price}</span>
+                                    <span>{pro.comment}</span>
+                                </div>
                             )
                         }
                     </>

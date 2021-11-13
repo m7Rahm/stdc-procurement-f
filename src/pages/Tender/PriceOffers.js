@@ -6,7 +6,7 @@ import table from "../../styles/Table.module.css"
 import { BsArrowRight } from "react-icons/bs"
 
 function PriceOffers(props) {
-    const { id } = props;
+    const { id, referer } = props;
     const [visa, setVisa] = useState([]);
     const fetchGet = useFetch("GET");
     const history = useHistory();
@@ -30,7 +30,7 @@ function PriceOffers(props) {
                         <div title="deadline" style={{ fontSize: '20px', fontWeight: "700", color: "gray" }}>Deadline: {visa[0].deadline}</div>
                     </div>
                     <div>
-                        <div className={table["price-offer-action"]} onClick={() => history.push(`/tender/price-offers/${id}`, { visa, id })}>
+                        <div className={table["price-offer-action"]} onClick={() => history.push(`/tender/price-offers/${id}`, { visa, id, referer })}>
                             Razılaşmalara bax
                             <BsArrowRight size="16px" />
                         </div>
@@ -44,7 +44,10 @@ function PriceOffers(props) {
                     orderContent={visa}
                     forwardType={1}
                 />
-                <Processors showModal={showModal} id={id} />
+                {
+                    referer === 3 &&
+                    <Processors showModal={showModal} id={id} />
+                }
             </div>
         </div>
     )
