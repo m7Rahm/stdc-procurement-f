@@ -322,7 +322,7 @@ const PriceResearch = (props) => {
                                             <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 50px" }}>{material.amount}</div>
                                             <div className={table["price-research-material-cell"]} style={{ backgroundColor: "gainsboro", flex: "0 0 50px" }}>{material.amount}</div>
                                         </div>
-                                        <div style={{ flex: 1 }}>
+                                        <div>
                                             {
                                                 uniquePriceOffers.map(po =>
                                                     <PriceOfferMaterials

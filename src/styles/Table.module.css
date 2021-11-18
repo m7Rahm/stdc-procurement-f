@@ -26,7 +26,50 @@ div.selected-materials-row {
     border-collapse: collapse;
     align-items: stretch;
 }
-
+div.selected-materials-row input:focus{
+    outline: none;
+}
+div.user-selected-materials{
+    display: flex;
+    flex-direction: column;
+    max-width: 1024px;
+    margin: 1rem;
+    clear: both;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 
+    1px 0 0 0 gainsboro, 
+    0 1px 0 0 gainsboro, 
+    1px 1px 0 0 gainsboro,   /* Just to fix the corner */
+    1px 0 0 0 gainsboro inset, 
+    0 1px 0 0 gainsboro inset;
+}
+div.user-selected-materials>div>div:first-of-type{
+    padding: 1rem;
+}
+div.confirmed-materials-row{
+    flex: 1;
+    display: inherit;
+}
+div.confirmed-materials-row>div:nth-of-type(-n+2)
+{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+}
+div.confirmed-materials-row>div:nth-of-type(n+3){
+    display: flex;
+    flex: 0 0 50px;
+    justify-content: center;
+}
+div.confirmed-materials-row>div>div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+div.confirmed-materials-row>div:not(:last-of-type){
+    border-right: 1px solid gainsboro;
+}
 div.selected-materials-row>div:first-of-type {
     /* padding: 10px; */
     border-right: 1px solid gainsboro;
@@ -436,13 +479,13 @@ span.add-icon {
     width: 300px;
 }
 
-.price-research-header>div {
+/* .price-research-header>div {
     flex: 1;
-}
+} */
 
 .price-research-materials>div>div:not(:first-of-type) {
-    flex: 0 0 70px;
-    /* width: 70px; */
+    /* flex: 0 0 70px; */
+    width: 70px;
     overflow: hidden;
 }
 

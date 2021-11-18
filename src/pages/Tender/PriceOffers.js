@@ -31,7 +31,7 @@ function PriceOffers(props) {
                     </div>
                     <div>
                         <div className={table["price-offer-action"]} onClick={() => history.push(`/tender/price-offers/${id}`, { visa, id, referer })}>
-                            Razılaşmalara bax
+                            Araşdırmalara bax
                             <BsArrowRight size="16px" />
                         </div>
                         {
@@ -44,10 +44,11 @@ function PriceOffers(props) {
                     orderContent={visa}
                     forwardType={1}
                 />
-                {
-                    referer === 3 &&
-                    <Processors showModal={showModal} id={id} />
-                }
+                <Processors
+                    showModal={showModal}
+                    id={id}
+                    referer={referer}
+                />
             </div>
         </div>
     )
@@ -58,23 +59,25 @@ export default PriceOffers
 const ForwardPriceOffer = React.lazy(() => import("../../components/Tender/ForwPOFResarch"))
 const Processors = (props) => {
     const fetchGet = useFetch("GET");
-    const [processors, set_processors] = useState([])
+    const [processors, set_processors] = useState([]);
+    const referer = props.referer;
     useEffect(() => {
         fetchGet(`/api/order-processors/${props.id}`)
             .then(resp => {
                 const processors = [];
-                for (let i = 0; i < resp.length; i++) {
-                    if (!processors.find(processor => processor.receiver_id === resp[i].receiver_id)) {
-                        processors.push(resp[i])
+                const response = referer === 0 ? resp.filter(rec => rec.forward_type !== 0) : resp
+                for (let i = 0; i < response.length; i++) {
+                    if (!processors.find(processor => processor.receiver_id === response[i].receiver_id)) {
+                        processors.push(response[i])
                     }
                 }
                 set_processors(processors)
             })
             .catch(ex => console.log(ex))
-    }, [props.id, fetchGet])
+    }, [props.id, fetchGet, referer])
     return (
         <>
-            <div style={{ marginTop: "20px" }}>
+            <div style={{ marginTop: "20px", overflow: "hidden" }}>
                 {
                     processors.map(emp =>
                         <div key={emp.receiver_id} style={{ float: "left", cursor: "default", borderRadius: "5px", padding: "0.5rem", color: "white", backgroundColor: "rgb(255, 184, 48)", marginRight: "10px" }}>
