@@ -52,21 +52,21 @@ const PriceResearchMetarialsRow = (props) => {
         span_ref.current.style.right = "-15px"
     }
     const handle_check_click = () => {
-        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, result: 1 }) : row))
+        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, select_type: 0 }) : row))
         if (props.best_prices.find(material => material.id === po.id)) {
-            props.set_best_prices(prev => prev.map(mat => mat.id === po.id ? ({ ...mat, result: 1 }) : mat))
+            props.set_best_prices(prev => prev.map(mat => mat.id === po.id ? ({ ...mat, select_type: 0 }) : mat))
         }
-        row_ref.current.style.backgroundColor = "#80ED99";
+        row_ref.current.style.backgroundColor = "lightblue";
     }
     const handle_cancel_click = () => {
-        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, result: 0 }) : row));
+        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, select_type: null }) : row));
         if (props.best_prices.find(material => material.id === po.id)) {
-            props.set_best_prices(prev => prev.map(mat => mat.id === po.id ? ({ ...mat, result: 0 }) : mat))
+            props.set_best_prices(prev => prev.map(mat => mat.id === po.id ? ({ ...mat, select_type: null }) : mat))
         }
         row_ref.current.style.backgroundColor = "transparent";
     }
     return (
-        <div style={{ backgroundColor: po.result === 1 ? "#80ED99": "transparent" }} ref={row_ref}>
+        <div style={{ backgroundColor: po.select_type !== null ? "lightblue" : "transparent" }} ref={row_ref}>
             <div ref={parentRef} className={table["price-research-material-cell"]} style={{ zIndex: 1 }}>
                 {
                     !props.disabled &&
@@ -113,9 +113,11 @@ const PriceResearchMetarialsRow = (props) => {
                     !can_select &&
                     <span ref={span_ref} style={{ transition: "all 200ms", cursor: "pointer", position: "absolute", zIndex: 1, right: "-15px" }}>
                         {
-                            po.result === 0 ?
+                            po.select_type === null ?
                                 <FaCheck onClick={handle_check_click} title="seç" color="green" />
-                                : <FaTimes onClick={handle_cancel_click} title="imtina et" color="red" />
+                                : po.select_type < 1 ?
+                                    <FaTimes onClick={handle_cancel_click} title="imtina et" color="red" />
+                                    : null
                         }
                     </span>
                 }

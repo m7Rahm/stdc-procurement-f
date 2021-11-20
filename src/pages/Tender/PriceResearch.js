@@ -1,5 +1,5 @@
 import React, { Suspense, useContext, useEffect, useRef, useState } from "react"
-import { FaCheck, FaPlus, FaPlusCircle, FaRegFileImage, FaTimes, FaUserEdit } from "react-icons/fa";
+import { FaCheck, FaPlus, FaPlusCircle, FaRegFileImage, FaTimes, FaUserEdit, FaSave } from "react-icons/fa";
 import { useHistory, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { TokenContext } from "../../App";
@@ -62,7 +62,7 @@ const PriceResearch = (props) => {
                             }
                         }
                         return ({
-                            result: material.result,
+                            select_type: min?.select_type,
                             material_id: material.id,
                             title: min?.title,
                             id: min?.id,
@@ -146,7 +146,7 @@ const PriceResearch = (props) => {
     const get_modal_props = (action_id, modal_props) => {
         modal_props.doc_id = id
         if (action_id === "1") {
-            modal_props.selected_materials = priceOffers.filter(po => po.result === 1)
+            modal_props.selected_materials = priceOffers.filter(po => po.select_type !== null)
         }
     }
     const rm_price_offer = () => {
@@ -221,7 +221,7 @@ const PriceResearch = (props) => {
         id ?
             <div style={{ height: "calc(100vh - 56px)", marginTop: "56px" }}>
                 <div style={{ display: "flex", overflow: "auto" }}>
-                    <ActionsPanel previliges_ref={previliges_ref} get_modal_props={get_modal_props} />
+                    <ActionsPanel previliges_ref={previliges_ref} get_modal_props={get_modal_props} referer={referer} />
                     {
                         showVendorModal &&
                         <Suspense fallback="">
@@ -418,7 +418,7 @@ const BestPrices = React.memo(({ best_prices }) => {
                                             <div style={{ flex: 1 }}>{pom.title}</div>
                                             <div>{pom.price}</div>
                                             <div>{pom.total}</div>
-                                            <div style={{ textAlign: "center" }}>{pom.result === 1 ? <FaCheck color="green" /> : null}</div>
+                                            <div style={{ textAlign: "center" }}>{pom.select_type !== null ? <FaCheck color="green" /> : null}</div>
                                         </div>
                                     )
                                 }
@@ -685,13 +685,14 @@ const NotSelected = (props) => {
         }, 2000);
     }, [set_alertbox])
     return (
-        <div ref={ref} className={table["warning"]}>
+        <div ref={ref} style={props.style} className={table["warning"]}>
             {props.message}
         </div>
     )
 }
-const ActionsPanel = ({ previliges_ref, get_modal_props }) => {
+const ActionsPanel = ({ previliges_ref, get_modal_props, referer }) => {
     const [alertbox, set_alertbox] = useState({ state: false, message: "" });
+    const fetchPost = useFetch("POST")
     const [actions_modal, set_actions_modal] = useState({ state: false, component: null, props: null });
     const handle_actions_click = (e) => {
         const action_id = e.currentTarget.id;
@@ -702,6 +703,29 @@ const ActionsPanel = ({ previliges_ref, get_modal_props }) => {
             set_actions_modal({ state: true, component: component, props: props });
         else {
             set_alertbox({ state: true, message: "Seçim etməmisiniz" })
+        }
+    }
+    const save_selections = () => {
+        const props = { selected_materials: [] }
+        get_modal_props("1", props);
+        if (props.selected_materials.length === 0) {
+            set_alertbox({ state: true, message: "Seçim etməmisiniz" })
+        } else {
+            const selected_materials = props.selected_materials
+                .filter(material => material.select_type === 0)
+                .map(material => [material.id, ""]);
+            const data = {
+                order_id: props.doc_id,
+                selections: selected_materials,
+                select_type: 0
+            }
+            fetchPost("/api/confirm-selections", data)
+                .then(_ => {
+                    set_alertbox({ state: true, message: "Seçimləriniz yadda saxlanıldı", style: { backgroundColor: "green" } })
+                })
+                .catch(_ => {
+                    set_alertbox({ state: true, message: "Xəta baş verdi", style: { backgroundColor: "red" } })
+                })
         }
     }
     return (
@@ -722,12 +746,24 @@ const ActionsPanel = ({ previliges_ref, get_modal_props }) => {
             {
                 alertbox.state &&
                 <NotSelected
+                    style={alertbox.style}
                     set_alertbox={set_alertbox}
                     message={alertbox.message}
                 />
             }
             <div className={table["actions-ribbon"]}>
                 <div className={table["actions-ribbon-container"]}>
+                    {
+                        referer === 1 &&
+                        <div
+                            id="0"
+                            onClickCapture={save_selections}
+                            title="Seçimlərimi yadda saxla"
+                            style={{ borderTopRightRadius: "5px", color: "#123456" }}
+                        >
+                            <FaSave color="inherit" size="2rem" />
+                        </div>
+                    }
                     {
                         !previliges_ref.current.can_select &&
                         <div id="1" onClickCapture={handle_actions_click} title="Təzdiq et">
@@ -748,7 +784,7 @@ const ActionsPanel = ({ previliges_ref, get_modal_props }) => {
                     }
                     {
                         !previliges_ref.current.can_select &&
-                        <div id="-1" onClickCapture={handle_actions_click} title="Etiraz et">
+                        <div id="-1" onClickCapture={handle_actions_click} title="Etiraz et" style={{ borderBottomRightRadius: "5px" }}>
                             <FaTimes color="rgb(217, 52, 4)" size="2rem" />
                         </div>
                     }

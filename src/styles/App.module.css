@@ -13,13 +13,14 @@ span.department-name {
 div.reviewers-container {
     padding: 1rem
 }
-
 div.reviewers-container>div {
     float: left;
     margin-right: 1rem;
+    position: relative;
     color: white;
     background-color: lightblue;
     padding: 8px 1rem;
     border-radius: 5px;
+    overflow: visible;
     cursor: pointer;
 }

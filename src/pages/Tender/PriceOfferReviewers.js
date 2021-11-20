@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState, memo } from "react"
+import { useEffect, useRef, useState, memo, Suspense } from "react"
+import Loading from "../../components/Misc/Loading";
+import MySelections from "../../components/Orders/Agreements/MySelections";
 import useFetch from "../../hooks/useFetch";
 import table from "../../styles/App.module.css"
 const PriceOfferReviewers = (props) => {
@@ -6,21 +8,20 @@ const PriceOfferReviewers = (props) => {
     const [reviewers, set_reviewers] = useState([]);
     const selections_ref = useRef([])
     const fetchGet = useFetch("GET");
-    const selected = useRef({ style: { backgroundColor: "" } })
-    const handle_click = (e, user_id) => {
-        selected.current.style.backgroundColor = "lightblue";
-        e.target.style.backgroundColor = "red";
-        selected.current = e.target;
-        const user_selections = selections_ref.current.filter(selection => selection.reviewer_id === user_id)
-        console.log(user_selections)
+    const [expand, set_expand] = useState(false);
+    const [selections, set_selections] = useState([]);
 
+    // const selected = useRef({ style: { backgroundColor: "" } })
+    const show_selections = (user_id) => {
+        const user_selections = selections_ref.current.filter(selection => selection.reviewer_id === user_id);
+        set_expand(user_id);
+        set_selections(user_selections);
     }
     useEffect(() => {
         let mounted = true;
         if (mounted)
             fetchGet(`/api/price-offer-selections?oid=${order_id}&o=0`)
                 .then(resp => {
-                    console.log(resp)
                     if (mounted && resp.lenth !== 0) {
                         selections_ref.current = resp;
                         const reviewers = [];
@@ -41,9 +42,18 @@ const PriceOfferReviewers = (props) => {
                 reviewers.map(reviwer =>
                     <div
                         key={reviwer.reviewer_id}
-                        onClick={(e) => handle_click(e, reviwer.reviewer_id)}
+                        onMouseEnter={() => show_selections(reviwer.reviewer_id)}
+                        onMouseLeave={() => set_expand(false)}
                     >
                         {reviwer.full_name}
+                        {
+                            reviwer.reviewer_id === expand &&
+                            <Suspense fallback={<Loading />}>
+                                <div style={{ position: "absolute", zIndex: 1 }}>
+                                    <MySelections download={false} order_id={order_id} user_id={reviwer.reviewer_id} user_selections={selections} />
+                                </div>
+                            </Suspense>
+                        }
                     </div>
                 )
             }

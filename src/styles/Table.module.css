@@ -44,12 +44,19 @@ div.user-selected-materials{
     1px 0 0 0 gainsboro inset, 
     0 1px 0 0 gainsboro inset;
 }
-div.user-selected-materials>div>div:first-of-type{
+/* div.user-selected-materials>div>div:first-of-type{
     padding: 1rem;
+} */
+div.user-selected-materials>div:not(:last-of-type){
+    border-bottom: 1px solid gainsboro;
 }
 div.confirmed-materials-row{
-    flex: 1;
+    /* flex: 1; */
+    /* height: 100%; */
     display: inherit;
+}
+div.confirmed-materials-row:not(:last-of-type){
+    border-bottom: 1px gainsboro solid;
 }
 div.confirmed-materials-row>div:nth-of-type(-n+2)
 {
@@ -64,6 +71,7 @@ div.confirmed-materials-row>div:nth-of-type(n+3){
 }
 div.confirmed-materials-row>div>div{
     display: flex;
+    padding: 8px;
     justify-content: center;
     align-items: center;
 }

@@ -21,10 +21,11 @@ const PriceOfferActions = (props) => {
     }, [selected_materials])
 
     const save_selections = () => {
-        const selected_materials = selections.flatMap(vendor => vendor.materials.map(material => [material.id, material.note]));
+        const selected_materials = selections.flatMap(vendor => vendor.materials.filter(material => material.select_type === 0).map(material => [material.id, material.note]));
         const data = {
             order_id: props.doc_id,
-            selections: selected_materials
+            selections: selected_materials,
+            select_type: 1
         }
         fetchPost("/api/confirm-selections", data)
             .then(_ => {
@@ -36,7 +37,7 @@ const PriceOfferActions = (props) => {
         set_selections(prev => {
             const new_state = [...prev];
             const vendor = new_state[vendor_index]
-            vendor.materials[material_index].note = val;
+            vendor.materials[material_index].review = val;
             return new_state
         })
     }
@@ -60,7 +61,15 @@ const PriceOfferActions = (props) => {
                                                     <div style={{ flex: 1 }}>{pom.title}</div>
                                                     <div>{pom.price}</div>
                                                     <div>{pom.total}</div>
-                                                    <div style={{ flex: 0.4 }}><input value={pom.note || ""} placeholder="Qeyd.." onChange={({ target }) => handle_change(material_index, index, target.value)} style={{ width: "100%", border: "none", display: "block", height: "100%", fontSize: "1rem" }} /></div>
+                                                    <div style={{ flex: 0.4 }}>
+                                                        <input
+                                                            disabled={pom.select_type === 1}
+                                                            value={pom.review || ""}
+                                                            placeholder="Qeyd.."
+                                                            onChange={({ target }) => handle_change(material_index, index, target.value)}
+                                                            style={{ width: "100%", border: "none", display: "block", height: "100%", fontSize: "1rem", backgroundColor: "transparent" }}
+                                                        />
+                                                    </div>
                                                 </div>
                                             )
                                         }
