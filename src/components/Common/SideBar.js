@@ -37,8 +37,8 @@ const SideBar = (props) => {
 		const showNotificationIcon = () => {
 			notifIcon.current.style.display = "block";
 		}
-		window.addEventListener("0-2", showNotificationIcon, false)
-		return () => window.removeEventListener("0-2", showNotificationIcon)
+		window.addEventListener("oO", showNotificationIcon, false)
+		return () => window.removeEventListener("oO", showNotificationIcon)
 	}, []);
 	useEffect(() => {
 		const data = initData;
@@ -91,7 +91,9 @@ const SideBar = (props) => {
 								setIconsVisible={setIconsVisible}
 								activeRef={activeRef}
 								id={visa.id}
+								senderid={visa.sender_id}
 								isOpened={visa.is_read}
+								orderid={visa.order_id}
 								from={visa.sender_full_name}
 								priority={visa.priority}
 								remark={visa.comment}

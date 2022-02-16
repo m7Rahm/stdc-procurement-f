@@ -9,6 +9,7 @@ export const newOrderInitial = {
             department: '',
             approx_price: 0,
             additionalInfo: '',
+            place: "",
             class: '',
             subGlCategory: '',
             count: 1
@@ -33,53 +34,6 @@ export const newOfferInitial = [{
 
 export const serverAddress = "http://172.16.3.64"
 export const serverPort = ""
-export const routes = [
-    {
-        id: 0,
-        link: "/orders",
-        sub_modules: [
-            { id: 0, link: "/my-orders" },
-            { id: 1, link: "/returned" },
-            { id: 2, link: "/visas" },
-            { id: 3, link: "/agreements" },
-            { id: 4, link: "/contracts" },
-            { id: 5, link: "/payments" },
-        ]
-    },
-    {
-        id: 1,
-        link: "/admin",
-        sub_modules: [
-            { id: 0, link: "/roles" },
-            { id: 1, link: "/returned" },
-            { id: 2, link: "/users" },
-            { id: 3, link: "/structure" },
-            { id: 4, link: "/materials" },
-        ]
-    },
-    {
-        id: 2,
-        link: "/contracts",
-        sub_modules: [
-            { id: 0, link: "/my-orders" },
-            { id: 1, link: "/returned" },
-            { id: 2, link: "/visas" },
-            { id: 3, link: "/agreements" },
-            { id: 4, link: "/contracts" },
-            { id: 5, link: "/payments" },
-        ]
-    },
-    {
-        id: 3,
-        link: "/tender",
-        sub_modules: [
-            { id: 0, link: "/orders" },
-            { id: 1, link: "/queue" },
-            { id: 2, link: "/done" },
-            { id: 3, link: "/confirmed" },
-        ]
-    }
-]
 export const months = [
     {
         name: 'Yanvar',

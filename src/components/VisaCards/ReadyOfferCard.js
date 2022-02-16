@@ -1,9 +1,9 @@
 import React, { useRef } from 'react'
-import styles from "../../styles/App.module.css"
+
 const ReadyOfferCard = (props) => {
     const stateRef = useRef(null);
     const handleClick = () => {
-        window.history.replaceState({ on: props.card.ord_numb, dn: props.card.department_name }, "", `${window.location.origin}${props.path_name}/${props.card.id}`)
+        window.history.replaceState({ on: props.card.ord_numb, dn: props.card.department_name }, "", window.location.pathname + "?i=" + props.card.id)
         props.setActive({
             id: props.card.id,
             ordNumb: props.card.ord_numb,
@@ -20,13 +20,10 @@ const ReadyOfferCard = (props) => {
                             {props.card.full_name}
                         </span>
                         <span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline' }}>
-                            {props.card.date_time}
+                            {props.card.create_date_time}
                         </span>
                     </div>
                     <div style={{ height: '15px', position: 'relative' }}>
-                        <span className={styles["department-name"]}>
-                            {props.card.department_name}
-                        </span>
                     </div>
                     <div style={{ height: '23px', paddingTop: '8px' }}>
                         <span style={{ fontSize: '12px', color: 'gray', float: 'left', position: 'relative', zIndex: 0, background: 'whitesmoke', padding: '0px 5px 0px 0px' }}>

@@ -117,7 +117,7 @@ const TableRow = (props) => {
 				forwardType >= 4 &&
 				<>
 					<td style={{ maxWidth: "100px" }}>
-						<input style={{ border: "none", width: "100%", textAlign: "center" }} disabled={!canInfluence || forwardType !== 4} value={inWarehouseAmount} onChange={inputChangeHandler} />
+						<input style={{ border: "none", width: "100%" }} disabled={!canInfluence || forwardType !== 4} value={inWarehouseAmount} onChange={inputChangeHandler} />
 					</td>
 					<td>{inWarehouseAmount > amount ? 0 : amount - inWarehouseAmount}</td>
 				</>

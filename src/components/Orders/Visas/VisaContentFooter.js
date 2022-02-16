@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { TokenContext } from '../../../App'
 import useFetch from '../../../hooks/useFetch';
+import ForwardDocLayout from '../../Misc/ForwardDocLayout';
 import OperationResult from '../../Misc/OperationResult'
 
 const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline'))
@@ -18,23 +19,37 @@ const ButtonHOC = (Component, compoProps, canProceed, handleEditClick) => () => 
 }
 
 const VisaContentFooter = (props) => {
-    const { handleEditClick, current, canProceed, updateContent } = props;
+    const { handleEditClick, current, canProceed, updateContent, forwardDoc } = props;
     const tokenContext = useContext(TokenContext);
     const userData = tokenContext[0].userData;
-    const canApprove = userData.previliges.includes('Sifarişi təsdiq etmək');
-    const canDecline = userData.previliges.includes('Sifarişə etiraz etmək');
-    const canReturn = userData.previliges.includes('Sifarişi redaktəyə qaytarmaq');
+    const canApprove = userData.previliges.find(prev => prev === 'Sifarişi təsdiq etmək');
+    const canDecline = userData.previliges.find(prev => prev === 'Sifarişə etiraz etmək');
+    const canReturn = userData.previliges.find(prev => prev === 'Sifarişi redaktəyə qaytarmaq');
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const fetchPost = useFetch("POST");
-    const setIsModalOpen = (order, receivers, originid) => {
+    const setIsModalOpen = (order, receivers) => {
         updateContent({
             id: order.id,
             act_date_time: order.act_date_time,
             result: order.result,
             comment: order.comment
-        }, receivers, originid)
+        }, receivers)
     }
     // eslint-disable-next-line
+    const handleForwardOrder = (receivers, comment) => {
+        const data = {
+            receivers: receivers.map(receiver => [receiver.id]),
+            comment: comment
+        }
+        fetchPost(`/api/forward-order/${current.order_id}`, data)
+            .then(respJ => {
+                if (respJ.length === 0)
+                    forwardDoc(receivers)
+                else
+                    setOperationResult({ visible: true, desc: 'Xəta baş verdi' })
+            })
+            .catch(ex => console.log(ex))
+    }
     const handleDoneClick = () => {
         const data = {
             action: 1,
@@ -57,6 +72,9 @@ const VisaContentFooter = (props) => {
                     setOperationResult({ visible: true, desc: respJ[0].error })
             })
             .catch(err => console.log(err))
+    }
+    const forwardtoProcurement = (receivers, comment) => {
+        
     }
     return (
         current.result === 0 && current.can_influence
@@ -148,15 +166,10 @@ const VisaContentFooter = (props) => {
                         canApprove && current.forward_type === 5 &&
                         <div
                             onClick={
-                                ButtonHOC(AcceptDecline,
+                                ButtonHOC(ForwardDocLayout,
                                     {
-                                        handleModalClose: setIsModalOpen,
-                                        tranid: current.id,
-                                        action: 1,
-                                        setSending: props.setSending,
-                                        setOperationStateText: props.setOperationStateText,
-                                        setOperationResult: setOperationResult,
-                                        backgroundColor: '#F4B400'
+                                        handleSendClick: forwardtoProcurement,
+                                        filterDepartments: [userData.userInfo.structureid]
                                     }, canProceed, handleEditClick
                                 )
                             }

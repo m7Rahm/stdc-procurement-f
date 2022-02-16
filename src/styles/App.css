@@ -479,7 +479,8 @@ div.agreement-review-container>div:not(:first-of-type):nth-of-type(2n) {
 div.adv-search-box {
   position: relative;
   top: 50px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(231, 233, 233, 0.884);
+  backdrop-filter: blur(3px);
   z-index: 0;
   border-radius: 3px;
   animation: show-up 0.5s both ease-in-out;
@@ -951,15 +952,8 @@ div.icons-panel-hide {
   width: 100%;
   min-height: 100px;
   display: block;
-  transition: all 200ms;
   flex: 1;
   margin-right: 20px;
-}
-
-#procurement-edit-section>textarea:focus {
-  box-shadow: 0px 0px 8px 2px steelblue;
-  outline: none;
-  border: none;
 }
 
 .contact-card {
@@ -984,20 +978,11 @@ div.icons-panel-hide {
   border: 1px solid #3f3f3f;
   float: right;
 }
-span.full-name{
-  color: rgb(84, 84, 84);
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-span.date-time,
-span.deadline{
-  color: rgb(84, 84, 84);
-  font-family: monospace
-}
+
 .side-bar>ul:first-of-type {
   margin: 70px 0px 0px 0px;
   list-style: none;
   overflow: auto;
-  width: inherit;
   flex: 1;
   padding: 0px;
 }
@@ -1334,6 +1319,9 @@ div.forwarded-person-card {
   left: 1px;
   width: auto;
   background-color: dodgerblue;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
   border-radius: 2px;
   color: white;
   position: absolute;
@@ -1432,7 +1420,9 @@ div.forwarded-person-card:not(.dp)>div:first-of-type:hover {
 
 div.forwarded-person-card>div:last-of-type {
   border-left: 1px white solid;
+  max-width: 180px;
   padding-right: 10px;
+  text-overflow: ellipsis;
   height: 100%;
 }
 
@@ -1443,7 +1433,7 @@ div.new-order-footer-wrapper {
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
   height: 12px;
 }
 
@@ -1990,7 +1980,9 @@ div.login input:focus, div.login input:active {
   box-shadow: 0px 0px 0px 1px #0a66c2;
 }
 
-div.login input:active+label, div.login input:not([value=""])+label, div.login input:focus+label {
+div.login input:active+label,
+div.login input:not([value=""])+label,
+div.login input:focus+label {
   top: -4px;
   font-size: 1.4rem;
   line-height: 1.5;
@@ -2195,7 +2187,9 @@ span.reviewers-header {
     background-color: rgba(15, 157, 88, 0.3)
   }
 }
-
+.search-container>div>input{
+  border-radius: 3px;
+}
 .search-container .next-row {
   margin-top: 10px;
   width: 100%;

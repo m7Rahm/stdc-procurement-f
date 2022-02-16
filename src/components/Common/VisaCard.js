@@ -16,11 +16,13 @@ const VisaCard = (props) => {
 		isOpened,
 		from,
 		priority,
+		senderid,
 		date,
 		checkedAmount,
 		iconsPanelRef,
 		setIconsVisible,
 		setActive,
+		// orderid,
 		ord_numb
 	} = props;
 	const stateRef = useRef(null);
@@ -50,41 +52,46 @@ const VisaCard = (props) => {
 		}
 	}
 	const handleClick = () => {
-		window.history.replaceState(null, "", window.location.origin + `/orders/visas/${id}`);
-		setActive(id)
+		window.history.replaceState(null, "", window.location.pathname + "?i=" + id);
+		if (!isOpened) {
+			const event = new CustomEvent("inAppEvent", {
+				detail: { tranid: id, docType: 0, categoryid: 1 }
+			});
+			window.dispatchEvent(event)
+		}
+		setActive({ orderid: id, initid: senderid })
 		activeRef.current.style.background = activeRef.current.prevBackColor;
 		stateRef.current.style.background = 'skyblue'
 		activeRef.current = stateRef.current;
-		activeRef.current.prevBackColor = "";
-		if(!priority)
-			isReadDivRef.current.style.display = 'none';
+		activeRef.current.prevBackColor = backgroundColor;
+		isReadDivRef.current.style.display = 'none';
 	}
 	return (
-		<li onClick={handleClick} ref={stateRef}>
+		<li onClick={handleClick} ref={stateRef} style={{ backgroundColor: backgroundColor }}>
 			<div style={{ height: 'inherit' }}>
-				<div ref={isReadDivRef} style={{ width: '3px', float: 'right', height: '100%', background: backgroundColor, display: (!isOpened || priority) ? 'block' : 'none' }}></div>
+				<div ref={isReadDivRef} style={{ width: '3px', float: 'right', height: '100%', background: 'steelblue', display: !isOpened ? 'block' : 'none' }}></div>
 				<div style={{ padding: '5px', height: '100%' }}>
 					<div style={{ height: '100%', float: 'left', padding: '15px 15px 0px 10px' }}>
 						<input ref={checkBoxRef} type="checkbox" onChange={handleCheck} style={{ padding: '3px' }} ></input>
 					</div>
 					<div style={{ height: '29px', paddingTop: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-						<span style={{ fontSize: '17px', fontWeight: 200, color: '#545454' }}>
+						<span style={{ fontSize: '17px', fontWeight: 200, color: backgroundColor !== '' ? 'white' : '#545454' }}>
 							{from}
 						</span>
-						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: 'gray' }}>
+						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !== '' ? 'white' : 'gray' }}>
 							{date}
 						</span>
 					</div>
 					<div>
-						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: 'gray' }}>
+						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !== '' ? 'white' : 'gray' }}>
 							{"Deadline: " + props.deadline}
 						</span>
-						<span style={{ fontSize: '17px', fontWeight: 500, verticalAlign: 'baseline', float: 'right', color: 'rgb(217, 52, 4)' }}>
+						<span style={{ fontSize: '17px', fontWeight: 500, verticalAlign: 'baseline', float: 'right', color: backgroundColor !== '' ? 'white' : 'rgb(217, 52, 4)' }}>
 							{ord_numb}
 						</span>
 					</div>
 					<div>
-						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: 'gray' }}>
+						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !== '' ? 'white' : 'gray' }}>
 							{props.order_type === 0 ? "mal-material" : "xidmət"}
 						</span>
 					</div>

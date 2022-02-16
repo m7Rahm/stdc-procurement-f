@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react"
 import table from "../../styles/Table.module.css"
-import { FaCheck, FaMinus, FaPlus, FaTimes } from "react-icons/fa";
+import { FaMinus, FaPlus } from "react-icons/fa";
 import InputSearchList from "../../components/Misc/InputSearchList";
 import useFetch from "../../hooks/useFetch";
 
@@ -10,9 +10,6 @@ const PriceResearchMetarialsRow = (props) => {
     const fetchGet = useFetch("GET");
     const parentRef = useRef(null);
     const timeoutRef = useRef(null);
-    const span_ref = useRef(null);
-    const row_ref = useRef(null);
-    const can_select = props.tokenContext.userData.previliges.includes("Qiymət təklifi seçmək")
     const handleVendorSearch = (e) => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current)
@@ -45,28 +42,8 @@ const PriceResearchMetarialsRow = (props) => {
             .then(respJ => props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, material_name: value, material_id: respJ[0]?.id }) : row)))
             .catch(ex => console.log(ex))
     }
-    const handle_hover = () => {
-        span_ref.current.style.right = "5px"
-    }
-    const handle_mouse_leave = () => {
-        span_ref.current.style.right = "-15px"
-    }
-    const handle_check_click = () => {
-        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, select_type: 0 }) : row))
-        if (props.best_prices.find(material => material.id === po.id)) {
-            props.set_best_prices(prev => prev.map(mat => mat.id === po.id ? ({ ...mat, select_type: 0 }) : mat))
-        }
-        row_ref.current.style.backgroundColor = "lightblue";
-    }
-    const handle_cancel_click = () => {
-        props.setPriceOffers(prev => prev.map(row => row.id === po.id ? ({ ...po, select_type: null }) : row));
-        if (props.best_prices.find(material => material.id === po.id)) {
-            props.set_best_prices(prev => prev.map(mat => mat.id === po.id ? ({ ...mat, select_type: null }) : mat))
-        }
-        row_ref.current.style.backgroundColor = "transparent";
-    }
     return (
-        <div style={{ backgroundColor: po.select_type !== null ? "lightblue" : "transparent" }} ref={row_ref}>
+        <div>
             <div ref={parentRef} className={table["price-research-material-cell"]} style={{ zIndex: 1 }}>
                 {
                     !props.disabled &&
@@ -107,20 +84,8 @@ const PriceResearchMetarialsRow = (props) => {
             <div className={table["price-research-material-cell"]}>
                 {(po.price * 1.18).toFixed(2)}
             </div>
-            <div onMouseLeave={!can_select ? handle_mouse_leave : null} onMouseEnter={!can_select ? handle_hover : null} className={table["price-research-material-cell"]}>
+            <div className={table["price-research-material-cell"]}>
                 {po.total}
-                {
-                    !can_select &&
-                    <span ref={span_ref} style={{ transition: "all 200ms", cursor: "pointer", position: "absolute", zIndex: 1, right: "-15px" }}>
-                        {
-                            po.select_type === null ?
-                                <FaCheck onClick={handle_check_click} title="seç" color="green" />
-                                : po.select_type < 1 ?
-                                    <FaTimes onClick={handle_cancel_click} title="imtina et" color="red" />
-                                    : null
-                        }
-                    </span>
-                }
             </div>
         </div>
     )

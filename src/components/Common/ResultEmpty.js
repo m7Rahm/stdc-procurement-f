@@ -6,7 +6,7 @@ const ResultEmpty = () => {
             <img
                 src='/NoDocuments.svg'
                 alt="blah"
-                height="350"
+                height="400"
                 style={{ margin: "auto", display: "block" }} />
             <h1>Sənəd tapılmadı</h1>
         </div>

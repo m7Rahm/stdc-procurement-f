@@ -54,7 +54,7 @@ const SelectModule = () => {
 	const userData = tokenContext[0].userData;
 	const navigationRef = useRef(null);
 	const menuNavRefs = useRef({});
-	const [menuData, setMenuData] = useState({ url: "", routes: [] });
+	const [menuData, setMenuData] = useState({ url: "", routes: [] })
 	const [webSocket, setWebSocket] = useState(null);
 	const leftPaneRef = useRef(null);
 	const backgroundRef = useRef(null);
@@ -85,12 +85,12 @@ const SelectModule = () => {
 	useEffect(() => {
 		let mounted = true;
 		if (token && navigator.onLine) {
-			const webSocket = new WebSocket("ws://172.16.3.64:12345");
+			const webSocket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL.substr(7)}:${process.env.REACT_APP_WSS_PORT}`);
 			webSocket.onopen = () => {
 				const id = userData.userInfo.id;
 				const data = {
-					type: -1,
-					user_id: id // todo: get from session
+					message: "recognition",
+					userid: id // todo: get from session
 				}
 				webSocket.send(JSON.stringify(data));
 				if (mounted)

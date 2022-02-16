@@ -5,7 +5,7 @@ import useFetch from '../../hooks/useFetch';
 import NewOrderTableRow from '../Orders/NewOrder/NewOrderTableRow';
 
 const EditOrderRequest = (props) => {
-    const { version, onSendClick, view } = props;
+    const { version, onSendClick, view, id } = props;
     const ordNumb = props.current || props.ordNumb;
     const textareaRef = useRef(null);
     const [orderState, setOrderState] = useState([]);
@@ -14,8 +14,9 @@ const EditOrderRequest = (props) => {
     const fetchGet = useFetch("GET");
     const orderType = useRef(undefined);
     useEffect(() => {
-        fetchGet(`/api/order-req-data?numb=${ordNumb}&vers=${version}`)
+        fetchGet(`/api/order-req-data?order_id=${id}&vers=${version}`)
             .then(respJ => {
+                console.log(respJ)
                 const orderRows = respJ.map(row => ({
                     ...row,
                     models: [],
@@ -29,7 +30,7 @@ const EditOrderRequest = (props) => {
                 setOrderState(orderRows);
             })
             .catch(ex => console.log(ex))
-    }, [ordNumb, version, fetchGet, orderType]);
+    }, [id, version, fetchGet, orderType]);
     useEffect(() => {
         fetchGet(`/api/assignments`)
             .then(respJ => setPlaceList(respJ))
@@ -155,11 +156,11 @@ const EditOrderRequest = (props) => {
                             <div>#</div>
                             <div>Məhsul</div>
                             <div style={{ width: '170px', maxWidth: '235px' }}>Kod</div>
-                            <div style={{ maxWidth: '120px' }}>Say</div>
-                            <div style={{ width: '170px', maxWidth: '150px' }}>Ölçü vahidi</div>
+                            <div style={{ maxWidth: '140px', justifyContent: "center" }}>Say</div>
+                            <div style={{ width: '140px', maxWidth: '140px', justifyContent: "center" }}>Ölçü vahidi</div>
                             <div>İstifadə yeri</div>
                             <div>Əlavə məlumat</div>
-                            <div>Təsvir</div>
+                            {/* <div>Təsvir</div> */}
                             <div> {view === 'returned' && <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} />}</div>
                         </li>
                         {

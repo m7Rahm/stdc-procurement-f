@@ -319,7 +319,7 @@ div.my-orders-footer svg {
 }
 
 .order-card-info {
-    color: black;
+    color: #373737;
     padding: 3px;
     margin-top: 2px;
     font-weight: 400;
@@ -341,7 +341,8 @@ div.my-orders-footer svg {
     /* height: 30px; */
     background-color: #f0eaea;
     margin-top: 3px;
-    font-size: 13px;
+    border-radius: 3px;
+    font-size: 12px;
     box-shadow: 0px 0px 12px 1px rgba(0, 0, 0, 0.08);
 }
 

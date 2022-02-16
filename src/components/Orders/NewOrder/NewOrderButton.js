@@ -18,7 +18,6 @@ const NewOrder = (props) => {
       id: Date.now(),
       materialName: '',
       materialId: null,
-      code: '',
       additionalInfo: '',
       class: '',
       count: 1,

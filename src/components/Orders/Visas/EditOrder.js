@@ -70,7 +70,7 @@ const EditOrder = (props) => {
                 .then(_ => {
                     const message = {
                         message: "notification",
-                        receivers: [{ id: orderContent[0].sender_id, type: 1, doc_type: 0, sub_module: 1 }],
+                        receivers: [{ id: orderContent[0].sender_id, notif: "oR" }],
                         data: undefined
                     }
                     props.setVisa(prev => prev.map((row, index) => index === 0 ? ({ ...row, result: 2, act_date_time: "Indicə" }) : row))
@@ -79,7 +79,7 @@ const EditOrder = (props) => {
                 })
                 .catch(ex => {
                     console.log(ex);
-                    props.setOperationStateText({ text: "Xəta baş verdi", id: props.tranid })
+                    props.setOperationStateText({ text: "Xəta baş verdi", orderid: orderContent[0].order_id, initid: orderContent[0].sender_id })
                 })
         }
     }

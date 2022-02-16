@@ -69,7 +69,7 @@ const MessageItem = (props) => {
                 <FaAngleDown />
                 {
                     !props.same && !props.self &&
-                    <h1 style={{ textAlign: props.self ? 'right' : 'left', margin: '10px 5px' }}>{props.message.full_name}</h1>
+                    <h1 style={{ textAlign: props.self ? 'right' : 'left', margin: '10px' }}>{props.message.full_name}</h1>
                 }
                 <div>
                     <div style={{ textAlign: 'left', padding: '5px', minWidth: '120px' }}>{props.message.review}</div>

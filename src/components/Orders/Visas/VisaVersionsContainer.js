@@ -64,9 +64,8 @@ const VisaVersion = (props) => {
         }
         fetchPost(`/api/accept-decline/${tranid}`, data)
             .then(respJ => {
-                if (respJ[0].operation_result === 'success') {
-                    const { origin_emp_id, notify } = respJ[0]
-                    closeModal({ act_date_time: respJ[0].act_date_time }, [], { origin_emp_id, notify })
+                if (!respJ[0].error) {
+                    closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)
                 }
             })
             .catch(err => console.log(err))
@@ -122,7 +121,7 @@ const VisaVersion = (props) => {
                                 !override &&
                                 <div style={{ backgroundColor: 'rgb(217, 52, 4)' }} onClick={() => handleClick(-1)}>
                                     Etiraz et
-                                </div>
+                            </div>
                             }
                             <div style={{ backgroundColor: 'rgb(15, 157, 88)' }} onClick={override ? acceptEditedVersion : () => handleClick(1)}>
                                 Təsdiq et
@@ -131,13 +130,13 @@ const VisaVersion = (props) => {
                                 !override &&
                                 <div style={{ backgroundColor: 'rgb(244, 180, 0)' }} onClick={() => handleClick(2)}>
                                     Redaktəyə qaytar
-                                </div>
+                            </div>
                             }
                         </div>
                     }
                     <div className="toggle-participants" onClick={handleParticipantsTransition}>
                         Tarixçəni göstər
-                        <FaAngleDown size="36" color="royalblue" />
+                            <FaAngleDown size="36" color="royalblue" />
                     </div>
                     {
                         participantsVisiblity &&

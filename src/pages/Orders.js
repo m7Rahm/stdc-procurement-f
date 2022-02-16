@@ -20,9 +20,6 @@ const routes = [
         link: "/my-orders",
         icon: IoMdCart,
         component: MyOrders,
-        notif_count: "",
-        module: 0,
-        sub_module: 0,
         props: {
             inParams: {
                 dateFrom: '',
@@ -40,9 +37,8 @@ const routes = [
     {
         text: "Redaktəyə qaytarılmış",
         link: "/returned",
-        notif_count: "",
-        module: 0,
-        sub_module: 1,
+        docType: 0,
+        categoryid: 2,
         icon: IoMdDocument,
         component: MyOrders,
         props: {
@@ -62,37 +58,35 @@ const routes = [
     {
         text: "Vizalar",
         link: "/visas",
-        notif_count: "",
         icon: IoMdCheckmarkCircleOutline,
         component: Visas,
-        module: 0,
-        sub_module: 2,
+        docType: 0,
+        categoryid: 1
     },
     {
         text: "Q/T razılaşmaları",
         link: "/agreements",
         icon: IoMdCart,
-        module: 0,
-        sub_module: 3,
         component: Agreements,
-        notif_count: "",
         props: {
-            link: "/api/price-offers-for-me",
+            link: "/api/get-user-agreements",
             params: {
                 active: "message_id",
                 number: "number",
             },
-            method: "GET",
+            method: "POST",
+            newDocNotifName: "oA"
         },
+        docType: 1,
+        categoryid: 1
     },
     {
         text: "Müqavilə razılaşmaları",
         link: "/contracts",
         icon: FaHandshake,
         component: Contracts,
-        notif_count: "",
-        module: 0,
-        sub_module: 4,
+        docType: 2,
+        categoryid: 1,
         props: {
             link: "/api/get-user-contracts",
             method: "POST",
@@ -108,16 +102,16 @@ const routes = [
                 number: "number"
             },
             docType: 2,
+            newDocNotifName: "oC"
         }
     },
     {
         text: "Ödəniş razılaşmaları",
         link: "/payments",
         icon: MdPayment,
-        notif_count: "",
         component: Payments,
-        module: 0,
-        sub_module: 5,
+        docType: 3,
+        categoryid: 1,
         props: {
             link: "/api/get-user-payments",
             method: "POST",
@@ -131,6 +125,7 @@ const routes = [
                 active: "message_id"
             },
             docType: 3,
+            newDocNotifName: "oP"
         }
     }
 ];
@@ -140,18 +135,14 @@ const Orders = (props) => {
     const { path, url } = useRouteMatch();
     const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetchGet("/api/notifications-by-categories/0")
+        fetchGet("/api/notifications-by-categories")
             .then(respJ => {
                 loadingIndicatorRef.current.style.transform = "translateX(0%)";
                 loadingIndicatorRef.current.style.opacity = "0";
                 loadingIndicatorRef.current.classList.add("load-to-start");
-                respJ
-                    .forEach(notification => {
-                        const route = routes.find(route => route.sub_module === notification.sub_module);
-                        if (route) {
-                            route.notif_count = notification.cnt;
-                        }
-                    });
+                respJ.forEach(notif => {
+                    routes.find(route => route.docType === notif.doc_type && route.categoryid === notif.category_id).notifCount = notif.cnt;
+                });
                 setMenuData({ url: url, routes: routes });
                 props.leftNavRef.current.style.display = "block";
             })
@@ -162,7 +153,7 @@ const Orders = (props) => {
                 {
                     routes.map(route =>
                         <Route key={route.link} path={`${path}${route.link}`}>
-                            <route.component navigationRef={props.navigationRef} path={`${path}${route.link}`} {...route.props} />
+                            <route.component navigationRef={props.navigationRef} {...route.props} />
                         </Route>
                     )
                 }

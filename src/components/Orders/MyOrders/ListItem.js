@@ -53,9 +53,9 @@ const PreviousOrders = (props) => {
   const actPageRef = useRef(null);
   const fetchGet = useFetch("GET");
   const [versions, setVersions] = useState({});
-  const [version, setVersion] = useState({ id: undefined, animationName: "" })
+  const [version, setVersion] = useState({ id: undefined, animationName: "", version: "" })
   useEffect(() => {
-    fetchGet(`/api/order-versions/${props.ordNumb}`)
+    fetchGet(`/api/order-versions/${props.id}`)
       .then(respJ => {
         const versions = {};
         for (let i = 0; i < respJ.length; i++) {
@@ -63,13 +63,14 @@ const PreviousOrders = (props) => {
             versions[respJ[i].order_id] = respJ.filter(mat => mat.order_id === respJ[i].order_id)
           }
         }
+        console.log(versions)
         if (Object.keys(versions).length > 1)
           setVersions(versions)
         else
-          setVersion({ id: respJ[0].order_id })
+          setVersion({ id: respJ[0].order_id, version: respJ[0].emp_id })
       })
       .catch(ex => console.log(ex))
-  }, [props.ordNumb, fetchGet]);
+  }, [props.id, fetchGet]);
   const handleCardClick = (e) => {
     const id = e.currentTarget.id;
     actPageRef.current.style.animationName = "slide_davam_current";
@@ -120,20 +121,20 @@ const PreviousOrders = (props) => {
             gap: '12px',
             justifyContent: "space-evenly"
           }} >
-          {Object.keys(versions).map((orderid, index) =>
+          {Object.keys(versions).map((orderid,index) =>
             <ReturnedOrderCards
               key={orderid}
               orderid={orderid}
               handleCardClick={handleCardClick}
               order={versions[orderid]}
               full_name={versions[orderid][0].full_name}
-              isLast={index === (Object.keys(versions).length - 1) ? true : false}
+              isLast={index===(Object.keys(versions).length-1) ? true : false}              
             />
           )}
         </div>
         : <OrderContentWithChat
           {...props}
-          version={version.id}
+          version={version.version}
           navBack={version.navBack}
           handleBackClick={handleBackClick}
         />
@@ -172,7 +173,7 @@ const ListItem = (props) => {
           if (respJ[0].result === "success") {
             const message = {
               message: "notification",
-              receivers: respJ.map(receiver => ({ id: receiver.receiver, module: 0, doc_type: 0, type: 0 })),
+              receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
               data: undefined
             }
             webSocket.send(JSON.stringify(message))
@@ -218,13 +219,14 @@ const ListItem = (props) => {
               : status === 25 || status === 44
                 ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20" />
                 : ""
+
   const getColor = (deadline) => {
     if (Date.parse(deadline) < Date.parse(new Date()))
       return "red"
   }
   return (
     <>
-      <li style={{ justifyContent: "space-between", alignItems: "center" }}>
+      <li style={{ justifyContent: "space-between" }}>
         <div style={{ width: "30px", fontWeight: "520", color: "#505050", textAlign: "center" }}>{props.index + 1}</div>
         <div style={{ width: "80px", textAlign: "center" }}>
           {icon}
@@ -234,7 +236,7 @@ const ListItem = (props) => {
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
         <div style={{ width: "40%", textAlign: "left", position: "relative", paddingLeft: "30px" }}>
           <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ position: "absolute", left: "0px" }} color="gray" />
-          <input defaultValue={participants?.slice(0, -2)} disabled={true} style={{ width: "100%", borderStyle: 'hidden', textAlign: 'justify' }} />
+          <input defaultValue={participants.slice(0, -2)} disabled={true} style={{ width: "100%", borderStyle: 'hidden', textAlign: 'justify' }} />
           <div className="fadingText"></div>
         </div>
         <div style={{ width: "60px" }}>

@@ -1,12 +1,13 @@
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { useHistory } from 'react-router-dom';
 import VisaContentMaterials from '../../components/Common/VisaContentMaterials'
+import ForwardDocLayout from '../../components/STDC local/ForwardDocLayout/ForwardDocLayout';
 import useFetch from '../../hooks/useFetch'
 import table from "../../styles/Table.module.css"
 import { BsArrowRight } from "react-icons/bs"
-
+import { NotificationContext, WebSocketContext } from '../SelectModule';
 function PriceOffers(props) {
-    const { id, referer } = props;
+    const { id } = props;
     const [visa, setVisa] = useState([]);
     const fetchGet = useFetch("GET");
     const history = useHistory();
@@ -22,79 +23,99 @@ function PriceOffers(props) {
     const showModalHandler = () => setShowModal(true)
     return (
         visa.length !== 0 &&
-        <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1 }}>
-            <div style={{ maxWidth: "1256px", margin: "auto" }}>
-                <div style={{ display: "flex", alignItems: "flex-start", flexFlow: "row wrap", justifyContent: "space-between", marginBottom: "15px" }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', float: 'left', paddingLeft: '20px', whiteSpace: "nowrap" }}>
-                        <div style={{ fontWeight: 'bold', color: "#FFB830", fontSize: "2rem" }}>{visa[0].full_name}</div>
-                        <div title="deadline" style={{ fontSize: '20px', fontWeight: "700", color: "gray" }}>Deadline: {visa[0].deadline}</div>
-                    </div>
-                    <div>
-                        <div className={table["price-offer-action"]} onClick={() => history.push(`/tender/price-offers/${id}`, { visa, id, referer })}>
-                            Araşdırmalara bax
-                            <BsArrowRight size="16px" />
-                        </div>
-                        {
-                            props.can_see_others &&
-                            <div className={table["price-offer-action"]} onClick={showModalHandler}>Yönəlt</div>
-                        }
-                    </div>
+        <div style={{ padding: "6rem 1rem 0rem 1rem", flex: 1, maxWidth: "1256px" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", flexFlow: "row wrap", justifyContent: "space-between", marginBottom: "5px" }}>
+                <div style={{ display: 'flex', flexDirection: 'column', float: 'left', paddingLeft: '20px', whiteSpace: "nowrap" }}>
+                    <div style={{ fontWeight: 'bold', color: "#FFB830", fontSize: "2rem" }}>{visa[0].full_name}</div>
+                    <div title="deadline" style={{ fontSize: '20px', fontWeight: "700", color: "gray" }}>Deadline: {visa[0].deadline}</div>
                 </div>
-                <VisaContentMaterials
-                    orderContent={visa}
-                    forwardType={1}
-                />
-                <Processors
-                    showModal={showModal}
-                    id={id}
-                    referer={referer}
-                />
+                <div>
+                    <div className={table["price-offer-action"]} onClick={() => history.push("/tender/new-offer", { visa, id })}>
+                        Razılaşmalara bax
+                        <BsArrowRight size="16px" />
+                    </div>
+                    <div className={table["price-offer-action"]} onClick={showModalHandler}>Yönəlt</div>
+                </div>
             </div>
+
+            <VisaContentMaterials
+                orderContent={visa}
+                forwardType={1}
+            />
+            {showModal &&
+                <ForwardPriceOffer id={id} />}
         </div>
     )
 }
 
 export default PriceOffers
-
-const ForwardPriceOffer = React.lazy(() => import("../../components/Tender/ForwPOFResarch"))
-const Processors = (props) => {
-    const fetchGet = useFetch("GET");
-    const [processors, set_processors] = useState([]);
-    const referer = props.referer;
-    useEffect(() => {
-        fetchGet(`/api/order-processors/${props.id}`)
-            .then(resp => {
-                const processors = [];
-                const response = referer === 0 ? resp.filter(rec => rec.forward_type !== 0) : resp
-                for (let i = 0; i < response.length; i++) {
-                    if (!processors.find(processor => processor.receiver_id === response[i].receiver_id)) {
-                        processors.push(response[i])
+//eslint-disable-next-line
+const ForwardPriceOffer = (props) => {
+    const [receivers, setReceivers] = useState([])
+    const fetchPut = useFetch("PUT");
+    const textareaRef = useRef(null);
+    const notifcationContext = useContext(NotificationContext);
+    const webSocket = useContext(WebSocketContext);
+    const handleElementDrag = (draggedElement, index) => {
+        setReceivers(prev => {
+            const draggedIndex = prev.findIndex(card => card.id === draggedElement.id);
+            const elementsBeforeIndex = prev.slice(0, draggedIndex > index ? index : index + 1);
+            const before = elementsBeforeIndex.filter(card => card.id !== draggedElement.id)
+            const elementsAfterIndex = prev.slice(draggedIndex > index ? index : index + 1);
+            const after = elementsAfterIndex.filter(card => card.id !== draggedElement.id)
+            return [...before, draggedElement, ...after]
+        })
+    }
+    const handleDeselection = (employee) => {
+        setReceivers(prev => prev.filter(emp => emp.id !== employee.id))
+    }
+    const handleSelectChange = (employee) => {
+        setReceivers(prev => {
+            const receivers = [...prev]
+            const res = receivers.find(emp => emp.id === employee.id);
+            if (!res) {
+                let lastNonDpIndex = 1;
+                for (let i = receivers.length - 1; i >= 0; i--) {
+                    if (receivers[i].dp === undefined) {
+                        lastNonDpIndex = i + 1;
+                        break;
                     }
                 }
-                set_processors(processors)
+                receivers.splice(lastNonDpIndex, 0, employee)
+                return receivers
+            }
+            else return prev
+        })
+    }
+    const forward_order = () => {
+        const data = {
+            receivers: receivers.map(receiver => receiver.id).join(","),
+            comment: textareaRef.current.value
+        }
+        fetchPut(`/api/fofpr/${props.id}`, data)
+            .then(_ => {
+                const message = {
+                    message: "notification",
+                    receivers: receivers.map(receiver => ({ id: receiver.id, notif: "tO" })),
+                    data: {
+                        order_id: props.id
+                    }
+                }
+                webSocket.send(JSON.stringify(message))
+                notifcationContext("Sifariş yönləndirildi", `/tender/orders?i=${props.id}`)
             })
             .catch(ex => console.log(ex))
-    }, [props.id, fetchGet, referer])
+    }
     return (
         <>
-            <div style={{ marginTop: "20px", overflow: "hidden" }}>
-                {
-                    processors.map(emp =>
-                        <div key={emp.receiver_id} style={{ float: "left", cursor: "default", borderRadius: "5px", padding: "0.5rem", color: "white", backgroundColor: "rgb(255, 184, 48)", marginRight: "10px" }}>
-                            {emp.full_name}
-                        </div>
-                    )
-                }
-            </div>
-            {
-                props.showModal &&
-                <Suspense fallback="">
-                    <ForwardPriceOffer
-                        processors={processors}
-                        id={props.id}
-                    />
-                </Suspense>
-            }
+            <ForwardDocLayout
+                receivers={receivers}
+                handleElementDrag={handleElementDrag}
+                handleSelectChange={handleSelectChange}
+                handleDeselection={handleDeselection}
+                textareaRef={textareaRef}
+            />
+            <div onClick={forward_order} className="send-order">Göndər</div>
         </>
     )
 }
