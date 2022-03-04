@@ -27,24 +27,28 @@ const availableModules = [
 		text: "Sifarişlər",
 		label: "Orders",
 		link: "/orders",
+		module_id: 0,
 		component: Orders,
 	},
 	{
 		text: "Admin",
 		label: "Admin",
 		link: "/admin",
+		module_id: 1,
 		component: Admin,
 	},
 	{
 		text: "Müqavilələr",
 		label: "Contracts",
 		link: "/contracts",
+		module_id: 2,
 		component: Contracts,
 	},
 	{
 		text: "Tender",
 		label: "Tender",
 		link: "/tender",
+		module_id: 3,
 		component: Tender,
 	},
 ];
@@ -69,12 +73,13 @@ const SelectModule = () => {
 		elem.classList.add(classes["fadeoutanimation"]);
 		elem.addEventListener("animationend", () => setNotifications((prev) => prev.filter((notification) => notification.key !== target.id)), false)
 	};
-	const createNewNotification = useCallback((content = '', link) => {
+	const createNewNotification = useCallback((header = "", content = '', link) => {
 		setNotifications((prev) => {
 			const newState = [
 				...prev,
 				{
 					content: content,
+					header: header,
 					link: link,
 					key: v4(),
 				},
@@ -85,11 +90,12 @@ const SelectModule = () => {
 	useEffect(() => {
 		let mounted = true;
 		if (token && navigator.onLine) {
-			const webSocket = new WebSocket("ws://172.16.3.64:12345");
+			const webSocket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL.substr(7)}:${process.env.REACT_APP_WSS_PORT}`);
 			webSocket.onopen = () => {
 				const id = userData.userInfo.id;
 				const data = {
 					message: "recognition",
+					full_name: userData.userInfo.fullName,
 					userid: id // todo: get from session
 				}
 				webSocket.send(JSON.stringify(data));
@@ -194,6 +200,7 @@ const SelectModule = () => {
 													handleNavClick={handleNavClick}
 													menuData={menuData}
 													navigationRef={navigationRef}
+													module_id={route.module_id}
 													loadingIndicatorRef={loadingIndicatorRef}
 													leftNavRef={leftNavIconRef}
 													setMenuData={setMenuData}

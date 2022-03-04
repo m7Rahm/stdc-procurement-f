@@ -16,11 +16,6 @@ function Taskbar(props) {
     }
     return (
         <div className="sidebar-button-wrap" ref={sidebarRef}>
-            <div>
-                <div className="sidebar-button">
-                    <FaChevronLeft className="greater-than-icon" />
-                </div>
-            </div>
             <div className="sidebar2">
                 <div>
                     <div>

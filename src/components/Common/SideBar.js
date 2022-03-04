@@ -11,6 +11,7 @@ const SideBar = (props) => {
 	const activePageRef = useRef(0);
 	const activeRef = useRef({ style: { background: '' } });
 	const checkedAmountRef = useRef([]);
+	const event_name = props.event_name;
 	const iconsPanelRef = useRef(null);
 	const [visas, setVisas] = useState({ count: 0, visas: [] });
 	const [iconsVisible, setIconsVisible] = useState(false);
@@ -37,9 +38,9 @@ const SideBar = (props) => {
 		const showNotificationIcon = () => {
 			notifIcon.current.style.display = "block";
 		}
-		window.addEventListener("oO", showNotificationIcon, false)
-		return () => window.removeEventListener("oO", showNotificationIcon)
-	}, []);
+		window.addEventListener(event_name, showNotificationIcon, false)
+		return () => window.removeEventListener(event_name, showNotificationIcon)
+	}, [event_name]);
 	useEffect(() => {
 		const data = initData;
 		updateList(data)

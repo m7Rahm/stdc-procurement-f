@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SideBar from '../../components/Common/SideBar'
 import VisaContent from '../../components/Orders/Visas/VisaContent'
 import useFetch from '../../hooks/useFetch'
@@ -11,13 +11,18 @@ const initData = {
   from: 0,
   until: 20
 }
+
 const documentType = 10
 const Visas = (props) => {
-  const oIndex = window.location.search.match(/i=(\d+)&?/)
-  const orderid = oIndex ? oIndex[1] : undefined
-  const rIndex = window.location.search.match(/r=(\d+)&?/)
-  const initid = rIndex ? rIndex[1] : undefined
-  const [active, setActive] = useState({ orderid: orderid, initid: initid });
+  const o_index = window.location.pathname.match(/(\d+)$/);
+  const event_name = useRef(`${props.module_id}-${props.sub_module_id}`);
+  const orderid = o_index ? Number(o_index[1]) : undefined;
+  useEffect(() => {
+    setActive((prev) => {
+      return prev !== orderid ? orderid : prev;
+    });
+  }, [orderid])
+  const [active, setActive] = useState(orderid);
   const fetchPost = useFetch("POST");
   const updateList = useCallback((data) => fetchPost('/api/visas', data), [fetchPost]);
   return (
@@ -25,12 +30,12 @@ const Visas = (props) => {
       <SideBar
         updateList={updateList}
         setActive={setActive}
+        event_name={event_name.current}
         initData={initData}
       />
       <VisaContent
-        tranid={active.orderid}
+        tranid={active}
         setActive={setActive}
-        initid={active.initid}
         navigationRef={props.navigationRef}
         documentType={documentType}
       />

@@ -1,0 +1,26 @@
+span.department-name {
+    font-size: 12px;
+    font-weight: bold;
+    color: steelblue;
+    float: left;
+    position: relative;
+    z-index: 0;
+    background: whitesmoke;
+    padding: 2px 5px 2px 2px;
+    border-radius: 3px;
+}
+
+div.reviewers-container {
+    padding: 1rem
+}
+div.reviewers-container>div {
+    float: left;
+    margin-right: 1rem;
+    position: relative;
+    color: white;
+    background-color: lightblue;
+    padding: 8px 1rem;
+    border-radius: 5px;
+    overflow: visible;
+    cursor: pointer;
+}

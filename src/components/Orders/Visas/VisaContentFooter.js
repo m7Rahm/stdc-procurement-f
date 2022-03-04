@@ -27,13 +27,13 @@ const VisaContentFooter = (props) => {
     const canReturn = userData.previliges.find(prev => prev === 'Sifarişi redaktəyə qaytarmaq');
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const fetchPost = useFetch("POST");
-    const setIsModalOpen = (order, receivers, originid) => {
+    const setIsModalOpen = (order, receivers) => {
         updateContent({
             id: order.id,
             act_date_time: order.act_date_time,
             result: order.result,
             comment: order.comment
-        }, receivers, originid)
+        }, receivers)
     }
     // eslint-disable-next-line
     const handleForwardOrder = (receivers, comment) => {
@@ -60,7 +60,7 @@ const VisaContentFooter = (props) => {
             .then(respJ => {
                 if (respJ.length !== 0 && respJ[0].operation_result === 'success') {
                     const [{ origin_emp_id: originid }, ...rest] = respJ
-                    const receivers = rest.map(receiver => receiver.id)
+                    const receivers = rest.map(receiver => receiver.id);
                     setIsModalOpen({
                         id: current.id,
                         act_date_time: "Biraz öncə",
@@ -74,7 +74,7 @@ const VisaContentFooter = (props) => {
             .catch(err => console.log(err))
     }
     const forwardtoProcurement = (receivers, comment) => {
-        
+
     }
     return (
         current.result === 0 && current.can_influence

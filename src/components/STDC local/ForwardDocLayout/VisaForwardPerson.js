@@ -38,7 +38,7 @@ const VisaForwardPerson = (props) => {
                     <IoIosClose size="18" />
                 </div>
             }
-            <div style={{ cursor: "pointer" }}>
+            <div title={props.emp.full_name} style={{ cursor: "pointer" }}>
                 {props.emp.full_name}
             </div>
         </div >

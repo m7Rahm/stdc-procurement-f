@@ -56,13 +56,10 @@ const EditOrder = (props) => {
         else {
             const data = {
                 mats: choices.map(material =>
-                    [material.materialId, material.materialName, material.count, material.placeid, material.place, material.additionalInfo, material.tesvir]
+                    [material.materialId, material.materialName, material.count, material.additionalInfo,  material.place]
                 ),
                 edit: 1,
-                ordNumb: orderContent[0].ord_numb,
-                orderType: orderContent[0].order_type,
-                orderid: orderContent[0].related_order_id || orderContent[0].order_id,
-                currentOrderid: orderContent[0].order_id
+                orderid: orderContent[0].order_id
             };
             props.setSending(true);
             props.setModalContent(prev => ({ ...prev, visible: false }));
@@ -156,11 +153,11 @@ const EditOrder = (props) => {
                     <div>#</div>
                     <div>Məhsul</div>
                     <div style={{ width: '170px', maxWidth: '235px' }}>Kod</div>
-                    <div style={{ maxWidth: '120px' }}>Say</div>
-                    <div style={{ width: '170px', maxWidth: '150px' }}>Ölçü vahidi</div>
+                    <div style={{ maxWidth: '120px', justifyContent: "center" }}>Say</div>
+                    <div style={{ width: '170px', maxWidth: '150px', justifyContent: "center" }}>Ölçü vahidi</div>
                     <div>İstifadə yeri</div>
                     <div>Əlavə məlumat</div>
-                    <div>Təsvir</div>
+                    {/* <div>Təsvir</div> */}
                     <div> <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} /></div>
                 </li>
                 {

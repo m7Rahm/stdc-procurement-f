@@ -91,14 +91,30 @@ const OrderModal = (props) => {
       } else continueNext()
     } else {
       const rec = props.choices.receivers.reverse().map((receiver, i) => [receiver.id, i, receiver.dp ? 1 : 2, i === 0 ? 1 : 0]);
-      const mat = props.choices.materials.map(material => [material.materialId, material.materialName, material.count, material.placeid, material.place, material.additionalInfo, material.tesvir])
-      const data = { deadline: props.choices.lastDate.toISOString().split('T')[0], mats: mat, inventoryNums: [], basedon: "", ordNumb: "", isWarehouseOrder: 0, orderType: props.choices.serviceType, receivers: rec }
+      const mat = props.choices.materials.map(material => [material.materialId, material.materialName, material.count, material.additionalInfo,  material.place])
+      const data = {
+        deadline: props.choices.lastDate.toISOString().split('T')[0],
+        mats: mat,
+        // inventoryNums: [],
+        // basedon: "",
+        // ordNumb: "",
+        // isWarehouseOrder: 0,
+        orderType: props.choices.serviceType,
+        receivers: rec
+      }
       props.setSending(true);
       fetchPost(`/api/new-order`, data)
         .then(respJ => {
           const message = {
             message: "notification",
-            receivers: respJ.map(receiver => ({ id: receiver.receiver, notif: "oO" })),
+            receivers: respJ.map(receiver => ({
+              id: receiver.emp_id,
+              doc_type: 0,
+              module_id: 0,
+              sub_module_id: 2,
+              notif_type: 0,
+              data: { tran_id: receiver.tran_id }
+            })),
             data: undefined
           }
           props.setSending(false);
@@ -217,8 +233,8 @@ const ForwardOrder = (props) => {
       const receivers = [...prevState.receivers]
       const res = receivers.find(emp => emp.id === employee.id);
       if (!res) {
-        let lastNonDpIndex = 1;
-        for (let i = receivers.length - 1; i >= 0; i--) {
+        let lastNonDpIndex = receivers.length;
+        for (let i = receivers.length - 1; i > 0; i--) {
           if (receivers[i].dp === undefined) {
             lastNonDpIndex = i + 1;
             break;

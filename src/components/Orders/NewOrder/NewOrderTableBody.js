@@ -24,8 +24,9 @@ const NewOrderTableBody = (props) => {
   }, [fetchGet])
   const handleRowDelete = (rowRef) => {
     rowRef.current.classList.add("delete-row");
+    const id = rowRef.current.id
     // eslint-disable-next-line
-    rowRef.current.addEventListener('animationend', () => setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.id != rowRef.current.id) })))
+    rowRef.current.addEventListener('animationend', () => setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.id != id) })))
   }
   const searchByMaterialName = useCallback((value, materialid) => {
     setChoices(prev => ({
@@ -82,20 +83,6 @@ const NewOrderTableBody = (props) => {
       )
     }));
   }, [setChoices]);
-  const setCode = useCallback((material, materialid) => {
-    setChoices(prev => ({
-      ...prev, materials: prev.materials.map(prevMaterial => prevMaterial.id === materialid
-        ? {
-          ...prevMaterial,
-          code: material.product_id,
-          approx_price: material.approx_price,
-          department: material.department_name,
-          materialId: material.id
-        }
-        : prevMaterial
-      )
-    }));
-  }, [setChoices])
   return (
     <>
       <ul className="new-order-table">
@@ -103,11 +90,11 @@ const NewOrderTableBody = (props) => {
           <div>#</div>
           <div><p>Məhsul</p></div>
           <div style={{ width: '170px', maxWidth: '235px' }}><p>Kod</p></div>
-          <div style={{ maxWidth: '120px' }}><p>Say</p></div>
+          <div style={{ maxWidth: '140px' }}><p>Say</p></div>
           <div style={{ width: '170px', maxWidth: '150px' }}><p>Ölçü vahidi</p></div>
           <div><p>İstifadə yeri</p></div>
           <div><p>Əlavə məlumat</p></div>
-          <div><p>Təsvir</p></div>
+          {/* <div><p>Təsvir</p></div> */}
           <div> <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} /></div>
         </li>
         {
@@ -127,10 +114,8 @@ const NewOrderTableBody = (props) => {
                 count={material.count}
                 additionalInfo={material.additionalInfo}
                 department={material.department}
-                tesvir={material.tesvir}
                 setPlaceList={props.setPlaceList}
                 placeList={placeList}
-                setCode={setCode}
                 handlePlaceSelection={handlePlaceSelection}
                 handleChange={handleChange}
                 handleModelSelection={handleModelSelection}

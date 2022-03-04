@@ -53,10 +53,13 @@ const Notification = (props) => {
     <div
       ref={(elem) => (props.notificationsRef.current[props.id] = elem)}
       className={`${classes.notification_bar}`}
-      style={{ top: `${65 * props.index}px` }}
+      style={{ top: `${5 + 85 * props.index}px` }}
     >
       <div className={classes["text"]} onClick={navigateTo}>
-        {props.notification.content}
+        <div className={classes["header"]}>{props.notification.header}</div>
+        <div>
+          {props.notification.content}
+        </div>
       </div>
       <div
         className={classes.exit_button}

@@ -18,7 +18,6 @@ const NewOrder = (props) => {
       id: Date.now(),
       materialName: '',
       materialId: null,
-      code: '',
       additionalInfo: '',
       class: '',
       count: 1,
@@ -104,9 +103,6 @@ const NewOrder = (props) => {
   }
   return (
     <>
-      <div title="yeni sifariş" className="new-order-button" onClick={handleClick}>
-        <MdAdd color="white" size="30" />
-      </div>
       <Taskbar
         modalList={modalList}
         setModalList={setModalList}
@@ -114,6 +110,9 @@ const NewOrder = (props) => {
         handleOrderSelect={handleOrderSelect}
         setIsModalVisible={setIsModalVisible}
       />
+      <div title="yeni sifariş" className="new-order-button" onClick={handleClick}>
+        <MdAdd color="white" size="30" />
+      </div>
       {sending !== undefined && <OperationStateLite state={sending} setState={setSending} text="Sifariş göndərilir.." />}
       {
         isModalVisible !== 0 &&

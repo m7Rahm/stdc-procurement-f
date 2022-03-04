@@ -79,6 +79,13 @@ const MyOrders = (props) => {
               : <ResultEmpty />
         }
       </div>
+      <div className="my-orders-footer">
+        <Pagination
+          count={orders.count}
+          activePageRef={activePageRef}
+          updateList={updateList}
+        />
+      </div>
       {
         canCreateNewOrder && referer === "protected" &&
         <NewOrderButton
@@ -87,13 +94,6 @@ const MyOrders = (props) => {
           canSeeOtherOrders={canSeeOtherOrders}
         />
       }
-      <div className="my-orders-footer">
-        <Pagination
-          count={orders.count}
-          activePageRef={activePageRef}
-          updateList={updateList}
-        />
-      </div>
     </div>
   )
 }

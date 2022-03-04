@@ -53,9 +53,9 @@ const PreviousOrders = (props) => {
   const actPageRef = useRef(null);
   const fetchGet = useFetch("GET");
   const [versions, setVersions] = useState({});
-  const [version, setVersion] = useState({ id: undefined, animationName: "" })
+  const [version, setVersion] = useState({ id: undefined, animationName: "", version: "" })
   useEffect(() => {
-    fetchGet(`/api/order-versions/${props.ordNumb}`)
+    fetchGet(`/api/order-versions/${props.id}`)
       .then(respJ => {
         const versions = {};
         for (let i = 0; i < respJ.length; i++) {
@@ -63,13 +63,14 @@ const PreviousOrders = (props) => {
             versions[respJ[i].order_id] = respJ.filter(mat => mat.order_id === respJ[i].order_id)
           }
         }
+        console.log(versions)
         if (Object.keys(versions).length > 1)
           setVersions(versions)
         else
-          setVersion({ id: respJ[0].order_id })
+          setVersion({ id: respJ[0].order_id, version: respJ[0].emp_id })
       })
       .catch(ex => console.log(ex))
-  }, [props.ordNumb, fetchGet]);
+  }, [props.id, fetchGet]);
   const handleCardClick = (e) => {
     const id = e.currentTarget.id;
     actPageRef.current.style.animationName = "slide_davam_current";
@@ -133,7 +134,7 @@ const PreviousOrders = (props) => {
         </div>
         : <OrderContentWithChat
           {...props}
-          version={version.id}
+          version={version.version}
           navBack={version.navBack}
           handleBackClick={handleBackClick}
         />

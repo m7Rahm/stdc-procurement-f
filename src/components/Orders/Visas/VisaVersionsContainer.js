@@ -64,7 +64,7 @@ const VisaVersion = (props) => {
         }
         fetchPost(`/api/accept-decline/${tranid}`, data)
             .then(respJ => {
-                if (respJ[0].operation_result === 'success') {
+                if (!respJ[0].error) {
                     closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)
                 }
             })

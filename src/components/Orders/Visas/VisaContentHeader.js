@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import { createPortal } from "react-dom"
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { IoIosWarning } from 'react-icons/io'
-import ParticipantsR from '../../modal content/ParticipantsR'
-
 import VisaVersionsContainer from './VisaVersionsContainer'
-
+import ParticipantsR from "../../modal content/ParticipantsR"
+const participants_root = document.getElementById('portal');
+// const ParticipantsR = lazy(() => import())
 const VisaContentHeader = (props) => {
 	const { version, current, orderNumb, handleEditClick, updateContent } = props;
 	const visaGenInfo = current[0];
@@ -24,18 +25,14 @@ const VisaContentHeader = (props) => {
 		)
 	}
 	const handleParticipantsTransition = () => {
-		setParticipantsVisiblity(prev => {
-			if (prev === false) {
-				props.visaContentRef.current.style.right = "25rem";
-				props.navigationRef.current.style.right = "25rem";
-				return true
-			}
-			else {
-				props.visaContentRef.current.style.right = "0";
-				props.navigationRef.current.style.right = "0";
-				return false
-			}
-		})
+		if (!participantsVisiblity) {
+			props.visaContentRef.current.style.right = "25rem";
+			props.navigationRef.current.style.right = "25rem";
+		} else {
+			props.visaContentRef.current.style.right = "0";
+			props.navigationRef.current.style.right = "0";
+		}
+		setParticipantsVisiblity(prev => !prev)
 	}
 	const closeParticipantsBar = () => {
 		props.visaContentRef.current.style.right = "0px";
@@ -71,11 +68,14 @@ const VisaContentHeader = (props) => {
 			</div>
 			{
 				participantsVisiblity &&
-				<ParticipantsR
-					navigationRef={props.navigationRef}
-					id={visaGenInfo.order_id}
-					closeParticipantsBar={closeParticipantsBar}
-				/>
+				createPortal(
+					<ParticipantsR
+						navigationRef={props.navigationRef}
+						id={visaGenInfo.order_id}
+						closeParticipantsBar={closeParticipantsBar}
+					/>,
+					participants_root
+				)
 			}
 		</>
 	)

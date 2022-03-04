@@ -1,17 +1,13 @@
 import React, { useRef, useState } from 'react'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import useFetch from '../../../hooks/useFetch';
-import { productUnit } from '../../../data/data'
 import InputSearchList from '../../Misc/InputSearchList';
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, materialid, className, additionalInfo, count, placeList, tesvir, handleRowDelete } = props;
-  const placeListRef = useRef(null);
+  const { orderType, materialid, className, additionalInfo, count, place, handleRowDelete } = props;
   const [models, setModels] = useState([]);
-  const [places, setPlaces] = useState([]);
   const modelListRef = useRef(null);
-  const placeInputRef = useRef(null);
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
   const fetchGet = useFetch("GET");
@@ -46,12 +42,6 @@ const NewOrderTableRow = (props) => {
     inputRef.current.value = model.title;
     // modelListRef.current.style.display = "none";
   }
-
-  const setPlace = (_, place) => {
-    props.handlePlaceSelection(place, materialid)
-    placeInputRef.current.value = place.name;
-    // placeListRef.current.style.display = "none";
-  }
   const handleInputSearch = (e) => {
     const value = e.target.value;
     let valueWithoutE = value.replace(/e/gi, '[eə]')
@@ -69,15 +59,6 @@ const NewOrderTableRow = (props) => {
       .catch(ex => console.log(ex))
   }
 
-  const handlePlaceSearch = (e) => {
-    const value = e.target.value;
-    const charArray = value.split("");
-    const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
-    const regExp = new RegExp(`${reg}`, "gi");
-    const searchResult = placeList.filter(place => regExp.test(place.name));
-    setPlaces(searchResult);
-    props.handlePlaceSearch(value, materialid)
-  }
   const searchByCode = (e) => {
     const data = { product_id: e.target.value, orderType: orderType };
     if (timeoutRef.current) {
@@ -110,6 +91,7 @@ const NewOrderTableRow = (props) => {
           listRef={modelListRef}
           name="model"
           text="title"
+          style={{ backgroundColor: "white", minWidth: "200px" }}
           items={models}
           handleInputChange={handleInputSearch}
           handleItemClick={setModel}
@@ -129,7 +111,7 @@ const NewOrderTableRow = (props) => {
         />
       </div>
       {/* Say */}
-      <div style={{ maxWidth: '140px' }}>
+      <div style={{ maxWidth: '140px', justifyContent: "center" }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
           {!props.disabled && <FaMinus cursor="pointer" onClick={() => { if (count > 1) handleAmountChangeButtons('dec') }} color="#ffae00" style={{ margin: '0px 3px' }} />}
           <input
@@ -145,8 +127,9 @@ const NewOrderTableRow = (props) => {
         </div>
       </div>
       {/* Ölçü vahidi */}
-      <div style={{ maxWidth: '140px' }}>
-        <select
+      <div style={{ maxWidth: '140px', justifyContent: "center" }}>
+        Ədəd
+        {/* <select
           name="unit"
           disabled={props.disabled}
           value={props.unit}
@@ -157,24 +140,19 @@ const NewOrderTableRow = (props) => {
               <option value={unit.val} key={unit.val}>{unit.text}</option>
             )
           }
-        </select>
+        </select> */}
       </div>
 
       {/* Istifade yeri */}
-      <div style={{ position: 'relative' }}>
-        <InputSearchList
-          defaultValue={props.place}
-          placeholder="Istifadə yeri"
-          text="name"
-          disabled={props.disabled}
+      <div>
+        <input
+          style={{ width: '100%' }}
+          placeholder="Link və ya əlavə məlumat"
           name="place"
-          listid="placeListRef"
-          inputRef={placeInputRef}
-          listRef={placeListRef}
-          handleInputChange={handlePlaceSearch}
-          items={places}
-          handleItemClick={setPlace}
-          style={{ width: '150px', maxWidth: ' 200px', outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }}
+          disabled={props.disabled}
+          value={place || ""}
+          type="text"
+          onChange={handleChange}
         />
       </div>
       {/* Əlavə məlumat */}
@@ -185,18 +163,6 @@ const NewOrderTableRow = (props) => {
           name="additionalInfo"
           disabled={props.disabled}
           value={additionalInfo}
-          type="text"
-          onChange={handleChange}
-        />
-      </div>
-      {/* Tesvir */}
-      <div>
-        <input
-          style={{ width: '100%' }}
-          placeholder="Təsvir"
-          name="tesvir"
-          value={tesvir || ""}
-          disabled={props.disabled}
           type="text"
           onChange={handleChange}
         />

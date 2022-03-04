@@ -1,4 +1,9 @@
-
+export const app_routes = [
+    { link: "/orders", subs: ["/my-orders", "/returned", "/visas", "/agreements", "/contracts", "/payments"] },
+    { link: "/admin", subs: ["/roles", "/users", "/structure", "/materials"] },
+    { link: "/contracts", subs: ["/contracts", "/express-contracts", "/payments"] },
+    { link: "/tender", subs: ["/orders", "/new-offer"] },
+];
 export const newOrderInitial = {
     materials: [
         {
@@ -9,6 +14,7 @@ export const newOrderInitial = {
             department: '',
             approx_price: 0,
             additionalInfo: '',
+            place: "",
             class: '',
             subGlCategory: '',
             count: 1

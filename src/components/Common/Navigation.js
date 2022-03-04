@@ -6,6 +6,8 @@ import logo from '../../logo.svg';
 import { Suspense } from 'react';
 import useFetch from '../../hooks/useFetch';
 import { NotificationContext } from '../../pages/SelectModule';
+import { app_routes } from '../../data/data';
+import { constr_notif_text } from '../../data/helpers';
 const ProfileInfo = lazy(() => import("./ProfileInfo"))
 const Navigation = (props, ref) => {
     const moduleNavigationRef = useRef(null);
@@ -39,37 +41,20 @@ const Navigation = (props, ref) => {
         window.addEventListener("inAppEvent", handleInAppEvent, false);
         props.webSocket.onmessage = (data) => {
             const webSockMessage = JSON.parse(data.data);
-            const event = new CustomEvent(webSockMessage.messageType, {
-                detail: { data: webSockMessage.data }
-            });
-            if (webSockMessage.messageType !== "recognition") {
+            const { mt: message_type, nt: notif_type, m: module_id, s: sub_module_id, d: doc_type, data: message_data, snn: sender_full_name } = webSockMessage;
+            const key = `${module_id}-${sub_module_id}`
+            const event_name = message_type === "notification" ? key : message_type;
+            if (event_name !== "recognition") {
+                const event = new CustomEvent(event_name, {
+                    detail: { data: message_data }
+                });
                 window.dispatchEvent(event);
-                let docType = "";
-                const message_type = webSockMessage.messageType;
-                let categoryid = message_type[0] === "o" ? 1 : message_type[0] === "m" ? 10 : message_type[0] === "t" ? 3 : 0;
-                categoryid = message_type === "oR" ? 2 : categoryid;
-                if (message_type[1] === "O" || message_type === "oR") {
-                    docType = "0";
-                }
-                else if (message_type[1] === "A") {
-                    docType = "1";
-                }
-                else if (message_type[1] === "C") {
-                    docType = "2";
-                }
-                else if (message_type[1] === "P") {
-                    docType = "3";
-                }
-                const key = `${categoryid}-${docType}`
-                const module = categoryid === 1 ? "/orders" : categoryid === 3 ? "/tender" : "/"
-                let text = ""
-                let query = "?i="
-                if (categoryid === 3) {
-                    text = "Qiymət Araşdırması";
-                    query += webSockMessage.data.order_id
-                }
-                const subModule = docType === "0" ? "/orders" : ""
-                createNewNotification(text, module + subModule + query)
+            }
+            if (message_type === "notification") {
+                const text = constr_notif_text(doc_type, notif_type, message_data.action, message_data.doc_number);
+                const module = app_routes[module_id].link;
+                const sub_module = app_routes[module_id].subs[sub_module_id];
+                createNewNotification(sender_full_name, text, module + sub_module + "/" + message_data.tran_id)
                 if (props.menuNavRefs.current[key]) {
                     const prev = Number(props.menuNavRefs.current[key].innerHTML);
                     if (props.menuNavRefs.current[key].style.display === "none") {

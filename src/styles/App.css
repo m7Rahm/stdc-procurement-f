@@ -1319,6 +1319,9 @@ div.forwarded-person-card {
   left: 1px;
   width: auto;
   background-color: dodgerblue;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
   border-radius: 2px;
   color: white;
   position: absolute;
@@ -1417,7 +1420,9 @@ div.forwarded-person-card:not(.dp)>div:first-of-type:hover {
 
 div.forwarded-person-card>div:last-of-type {
   border-left: 1px white solid;
+  max-width: 180px;
   padding-right: 10px;
+  text-overflow: ellipsis;
   height: 100%;
 }
 
@@ -2182,7 +2187,9 @@ span.reviewers-header {
     background-color: rgba(15, 157, 88, 0.3)
   }
 }
-
+.search-container>div>input{
+  border-radius: 3px;
+}
 .search-container .next-row {
   margin-top: 10px;
   width: 100%;
@@ -2731,6 +2738,7 @@ div.chat-footer {
 
 div.chat-footer textarea {
   padding: 0.5rem;
+  padding-top: 0.75rem;
   background-color: white;
   transition: all 400ms;
   border: none;
