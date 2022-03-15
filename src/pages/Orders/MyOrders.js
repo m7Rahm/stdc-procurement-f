@@ -70,21 +70,23 @@ const MyOrders = (props) => {
           loading ?
             <ContentLoading />
             : orders.orders.length !== 0
-              ? <Table
-                wrapperRef={wrapperRef}
-                orders={orders}
-                referer={referer}
-                setOrders={setOrders}
-              />
+              ?
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Table
+                  wrapperRef={wrapperRef}
+                  orders={orders}
+                  referer={referer}
+                  setOrders={setOrders}
+                />
+                <Table
+                  wrapperRef={wrapperRef}
+                  orders={orders}
+                  referer={referer}
+                  setOrders={setOrders}
+                />
+              </div>
               : <ResultEmpty />
         }
-      </div>
-      <div className="my-orders-footer">
-        <Pagination
-          count={orders.count}
-          activePageRef={activePageRef}
-          updateList={updateList}
-        />
       </div>
       {
         canCreateNewOrder && referer === "protected" &&
@@ -94,6 +96,13 @@ const MyOrders = (props) => {
           canSeeOtherOrders={canSeeOtherOrders}
         />
       }
+      <div className="my-orders-footer">
+        <Pagination
+          count={orders.count}
+          activePageRef={activePageRef}
+          updateList={updateList}
+        />
+      </div>
     </div>
   )
 }

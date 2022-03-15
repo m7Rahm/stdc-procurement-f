@@ -1,27 +1,29 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect,
+  // useState,
+  useCallback } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
-import useFetch from '../../../hooks/useFetch';
+// import useFetch from '../../../hooks/useFetch';
 import { IoIosAdd } from 'react-icons/io'
 import { newOrderInitial } from '../../../data/data'
 
 const NewOrderTableBody = (props) => {
-  const fetchGet = useFetch("GET");
+  // const fetchGet = useFetch("GET");
   const handleAddClick = () => {
     props.setChoices(prev => ({ ...prev, materials: [...prev.materials, { ...newOrderInitial.materials[0], id: Date.now(), class: 'new-row' }] }))
   }
   const { orderType, structure } = props.orderInfo;
 
-  const [placeList, setPlaceList] = useState([])
+  // const [placeList, setPlaceList] = useState([])
   const setChoices = props.setChoices;
   useEffect(() => {
     setChoices(prev => ({ ...prev, materials: prev.materials.filter(material => material.isService === orderType) }))
   }, [orderType, setChoices])
 
-  useEffect(() => {
-    fetchGet(`/api/assignments`)
-      .then(respJ => setPlaceList(respJ))
-      .catch(ex => console.log(ex))
-  }, [fetchGet])
+  // useEffect(() => {
+  //   fetchGet(`/api/assignments`)
+  //     .then(respJ => setPlaceList(respJ))
+  //     .catch(ex => console.log(ex))
+  // }, [fetchGet])
   const handleRowDelete = (rowRef) => {
     rowRef.current.classList.add("delete-row");
     const id = rowRef.current.id
@@ -94,7 +96,7 @@ const NewOrderTableBody = (props) => {
           <div style={{ width: '170px', maxWidth: '150px' }}><p>Ölçü vahidi</p></div>
           <div><p>İstifadə yeri</p></div>
           <div><p>Əlavə məlumat</p></div>
-          {/* <div><p>Təsvir</p></div> */}
+          <div><p>Təsvir</p></div>
           <div> <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} /></div>
         </li>
         {
@@ -114,8 +116,9 @@ const NewOrderTableBody = (props) => {
                 count={material.count}
                 additionalInfo={material.additionalInfo}
                 department={material.department}
+                description={material.description}
                 setPlaceList={props.setPlaceList}
-                placeList={placeList}
+                // placeList={placeList}
                 handlePlaceSelection={handlePlaceSelection}
                 handleChange={handleChange}
                 handleModelSelection={handleModelSelection}

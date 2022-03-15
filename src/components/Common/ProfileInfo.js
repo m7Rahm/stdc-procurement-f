@@ -96,6 +96,9 @@ const Profile = (props) => {
             abortController.abort()
         }
     }
+    const handleLogOut = () => {
+        logout()
+    }
     return (
         <div className="profile-info-container">
             {
@@ -122,7 +125,10 @@ const Profile = (props) => {
                         <input ref={passRef} required type="password" name="pass" placeholder="Yeni şifrə" />
                     }
                     <input type="submit" onClick={handleSend} value="Yadda saxla" />
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <div onClick={handePasswordChangeClick}>{!changePassword ? "Şifrəni dəyiş" : "Gizlət"}</div>
+                        <div onClick={handleLogOut}>Çıxış</div>
+                    </div>
                 </div>
             </div>
         </div>

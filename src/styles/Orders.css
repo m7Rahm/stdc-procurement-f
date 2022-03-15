@@ -39,16 +39,17 @@
     right: 0;
     left: 0;
     /* top: 0px; */
-    bottom: 0px;
+    bottom: 60px;
     /* width: 200px; */
     height: 4rem;
-    transform: translateY(60px);
+    /* transform: translateY(60px); */
     transition: all 1000ms;
     backdrop-filter: blur(6px);
     background: transparent;
     z-index: 0;
     background-color: rgba(248, 244, 244, 50%);
     backdrop-filter: blur(6px);
+    box-shadow: 0px 0px 5px 3px rgb(32 32 32 / 10%);
 }
 .sidebar2 {
     /* top: 0; */
@@ -218,7 +219,7 @@
 .sidebar-button-wrap:hover{
     /* z-index: 2; */
     box-shadow: 0px 0px 5px 3px rgb(32 32 32 / 20%);
-    transform: translateY(-60px);
+    /* transform: translateY(-60px); */
 }
 .sidebar-button {
     background-color: rgb(58, 53, 42);
@@ -328,10 +329,10 @@ div.my-orders-footer {
     background-color: rgb(64, 168, 196);
     height: 60px;
 }
-div.my-orders-footer:hover+div.sidebar-button-wrap {
+/* div.my-orders-footer:hover+div.sidebar-button-wrap {
     transform: translateY(-60px);
     box-shadow: 0px 0px 5px 3px rgb(32 32 32 / 10%);
-}
+} */
 
 div.my-orders-footer svg {
     color: white;

@@ -16,7 +16,10 @@ const OrderModal = (props) => {
     props.setChoices({ ...props.choices, lastDate: date });
   };
   const webSocket = useContext(WebSocketContext)
-
+  const id = props.modalList.current ? props.modalList.current.id : undefined
+  useEffect(() => {
+    setWhichPage({ page: 1 })
+  }, [id])
   const backClickHandler = (e) => {
     actPageRef.current.style.animationName = "slide_geri_current";
     props.modalWrapperRef.current.style.overflow = "hidden";
@@ -40,10 +43,6 @@ const OrderModal = (props) => {
       false
     );
   };
-  const id = props.modalList.current ? props.modalList.current.id : undefined
-  useEffect(() => {
-    setWhichPage({ page: 1 })
-  }, [id])
 
   const forwardClickHandler = () => {
     if (davamText === "Davam") {
@@ -58,9 +57,10 @@ const OrderModal = (props) => {
               animationendEventListener,
               false
             );
-          }
+          };
+          const animation_name = actPageRef.current.style.animationName === "slide_davam_current";
           setWhichPage(prevState => {
-            if (actPageRef.current.style.animationName === "slide_davam_current" && prevState.page < 3) {
+            if (animation_name && prevState.page < 3) {
               actPageRef.current.style.animationName = "slide_davam_next"
               props.modalWrapperRef.current.style.width = prevState.page === 1 ? "90%" : "40rem";
               return {
@@ -107,14 +107,7 @@ const OrderModal = (props) => {
         .then(respJ => {
           const message = {
             message: "notification",
-            receivers: respJ.map(receiver => ({
-              id: receiver.emp_id,
-              doc_type: 0,
-              module_id: 0,
-              sub_module_id: 2,
-              notif_type: 0,
-              data: { tran_id: receiver.tran_id }
-            })),
+            receivers: respJ.map(receiver => ({ id: receiver.receiver, doc_type: 1, module_id: 0, sub_module_id: 1 })),
             data: undefined
           }
           props.setSending(false);
@@ -233,8 +226,8 @@ const ForwardOrder = (props) => {
       const receivers = [...prevState.receivers]
       const res = receivers.find(emp => emp.id === employee.id);
       if (!res) {
-        let lastNonDpIndex = receivers.length;
-        for (let i = receivers.length - 1; i > 0; i--) {
+        let lastNonDpIndex = 1;
+        for (let i = receivers.length - 1; i >= 0; i--) {
           if (receivers[i].dp === undefined) {
             lastNonDpIndex = i + 1;
             break;

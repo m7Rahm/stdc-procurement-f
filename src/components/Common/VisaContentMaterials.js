@@ -6,7 +6,6 @@ const VisaContentMaterials = (props) => {
 	const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
 	const { emp_version_id } = props.orderContent[0];
 	let orders = orderContent;
-	// console.log(orders)
 	return (
 		orders.length !== 0 &&
 		<>

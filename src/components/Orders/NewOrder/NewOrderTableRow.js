@@ -5,7 +5,7 @@ import InputSearchList from '../../Misc/InputSearchList';
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, materialid, className, additionalInfo, count, place, handleRowDelete } = props;
+  const { orderType, materialid, className, additionalInfo, count, place, handleRowDelete, description } = props;
   const [models, setModels] = useState([]);
   const modelListRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -147,7 +147,7 @@ const NewOrderTableRow = (props) => {
       <div>
         <input
           style={{ width: '100%' }}
-          placeholder="Link və ya əlavə məlumat"
+          placeholder="Istifadə yeri"
           name="place"
           disabled={props.disabled}
           value={place || ""}
@@ -163,6 +163,17 @@ const NewOrderTableRow = (props) => {
           name="additionalInfo"
           disabled={props.disabled}
           value={additionalInfo}
+          type="text"
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <input
+          style={{ width: '100%' }}
+          placeholder="Təsvir"
+          name="description"
+          disabled={props.disabled}
+          value={description}
           type="text"
           onChange={handleChange}
         />

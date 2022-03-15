@@ -38,7 +38,7 @@ const App = () => {
   const logout = () => {
     setToken({ token: '', userData: {} })
     localStorage.removeItem('token');
-    window.location.replace(`${serverAddress}${serverPort}/?from=procurement&action=logout`)
+    // window.location.replace(`${serverAddress}${serverPort}/?from=procurement&action=logout`)
   }
   // localStorage.removeItem("token")
   useEffect(() => {

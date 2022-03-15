@@ -63,7 +63,6 @@ const PreviousOrders = (props) => {
             versions[respJ[i].order_id] = respJ.filter(mat => mat.order_id === respJ[i].order_id)
           }
         }
-        console.log(versions)
         if (Object.keys(versions).length > 1)
           setVersions(versions)
         else
@@ -231,12 +230,12 @@ const ListItem = (props) => {
         <div style={{ width: "80px", textAlign: "center" }}>
           {icon}
         </div>
-        <div style={{ minWidth: "80px", width: "15%", textAlign: "left" }}>{date}</div>
-        <div style={{ minWidth: "80px", width: "15%", textAlign: "left", color: getColor(deadline, date) }}>{deadline}</div>
+        <div style={{ minWidth: "80px", width: "40%", textAlign: "left" }}>{date}</div>
+        <div style={{ minWidth: "80px", width: "30%", textAlign: "left", color: getColor(deadline, date) }}>{deadline}</div>
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
-        <div style={{ width: "40%", textAlign: "left", position: "relative", paddingLeft: "30px" }}>
+        <div style={{ width: "20%", textAlign: "left", position: "relative", paddingLeft: "30px" }}>
           <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ position: "absolute", left: "0px" }} color="gray" />
-          <input defaultValue={participants.slice(0, -2)} disabled={true} style={{ width: "100%", borderStyle: 'hidden', textAlign: 'justify' }} />
+          {/* <input defaultValue={participants.slice(0, -2)} disabled={true} style={{ width: "100%", borderStyle: 'hidden', textAlign: 'justify' }} /> */}
           <div className="fadingText"></div>
         </div>
         <div style={{ width: "60px" }}>

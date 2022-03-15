@@ -143,9 +143,6 @@ const Navigation = (props, ref) => {
             mounted = false
         }
     }, [fetchNotifications]);
-    const handleLogOut = () => {
-        props.tokenContext[2]()
-    }
     const handleIconClick = () => {
         moduleNavigationRef.current.style.display = moduleNavigationRef.current.style.display === 'block' ? 'none' : 'block'
     }
@@ -312,9 +309,6 @@ const Navigation = (props, ref) => {
                                         </li>
                                     )
                                 }
-                                <li onClick={handleLogOut}>
-                                    <div style={{ minWidth: '60px' }}>Çıxış</div>
-                                </li>
                             </ul>
                         </div>
                     </div>

@@ -16,7 +16,6 @@ const EditOrderRequest = (props) => {
     useEffect(() => {
         fetchGet(`/api/order-req-data?order_id=${id}&vers=${version}`)
             .then(respJ => {
-                console.log(respJ)
                 const orderRows = respJ.map(row => ({
                     ...row,
                     models: [],
@@ -160,7 +159,7 @@ const EditOrderRequest = (props) => {
                             <div style={{ width: '140px', maxWidth: '140px', justifyContent: "center" }}>Ölçü vahidi</div>
                             <div>İstifadə yeri</div>
                             <div>Əlavə məlumat</div>
-                            {/* <div>Təsvir</div> */}
+                            <div>Təsvir</div>
                             <div> {view === 'returned' && <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleAddClick} size="20" style={{ margin: 'auto' }} />}</div>
                         </li>
                         {

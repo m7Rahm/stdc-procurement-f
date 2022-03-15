@@ -78,7 +78,7 @@ const Table = (props) => {
           <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Tarix {createDateFilterIcon}</div>
           <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Deadline {createDateFilterIcon}</div>
           <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə {numberIcon}</div>
-          <div style={{ width: '40%', textAlign: 'left' }}> İştirakçılar</div>
+          <div style={{ width: '20%', textAlign: 'left' }}> İştirakçılar</div>
           <div style={{ minWidth: '5%', width: "60px" }}> Qeyd</div>
           {/* <div style={{ minWidth: '40px', overflow: 'visible', display: 'inline-block', width: 'auto' }}> </div> */}
           <div style={{ width: "20px" }}></div>
