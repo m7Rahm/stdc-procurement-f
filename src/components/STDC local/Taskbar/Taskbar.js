@@ -1,9 +1,12 @@
-import React, { useRef } from 'react'
+import React, { useContext, useRef } from 'react'
 import UnfinishedModal from "./UnfinishedModal.js"
 import { FaChevronLeft } from "react-icons/fa"
+import { colors } from '../../../data/data.js';
+import { ThemeContext } from '../../../App.js';
 
 function Taskbar(props) {
     const sidebarRef = useRef(null);
+    const theme = useContext(ThemeContext)[0]
     const handleSelectChange = (employee) => {
         props.setModalList(prevState => {
             const res = prevState.all.find(emp => emp.id === employee.id);
@@ -16,12 +19,7 @@ function Taskbar(props) {
     }
     return (
         <div className="sidebar-button-wrap" ref={sidebarRef}>
-            <div>
-                <div className="sidebar-button">
-                    <FaChevronLeft className="greater-than-icon" />
-                </div>
-            </div>
-            <div className="sidebar2">
+            <div className="sidebar2" style={{ background: colors[theme].navbar }}>
                 <div>
                     <div>
                         {

@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import { Suspense } from 'react'
 import { MdAdd } from 'react-icons/md'
 import Modal from '../../Misc/Modal'
 import "../../../styles/styles.scss"
 import Taskbar from '../../STDC local/Taskbar/Taskbar'
 import OperationStateLite from '../../Misc/OperationStateLite'
+import { colors } from '../../../data/data'
+import { ThemeContext } from '../../../App'
 
 const OrderModal = React.lazy(() => import('../../STDC local/OrderModal/OrderModal'))
 const NewOrder = (props) => {
@@ -12,6 +14,7 @@ const NewOrder = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(0);
   const [modalList, setModalList] = useState(null);
   const [sending, setSending] = useState(undefined);
+  const theme = useContext(ThemeContext)[0]
   const [choices, setChoices] = useState({
     serviceType: 0, lastDate: new Date(),
     materials: [{
@@ -74,7 +77,7 @@ const NewOrder = (props) => {
   }
 
   const handleOrderSelect = (orderId) => {
-    const properties = modalList.all.find(emp => emp.id === orderId)
+    const properties = modalList.all.find(order => order.id === orderId)
     setIsModalVisible(1);
     setModalList(prevState => ({ ...prevState, current: properties }))
     setChoices({ serviceType: properties.value[0], lastDate: properties.value[1], materials: properties.value[2], receivers: properties.value[3], id: properties.id })
@@ -103,9 +106,6 @@ const NewOrder = (props) => {
   }
   return (
     <>
-      <div title="yeni sifariş" className="new-order-button" onClick={handleClick}>
-        <MdAdd color="white" size="30" />
-      </div>
       <Taskbar
         modalList={modalList}
         setModalList={setModalList}
@@ -113,10 +113,13 @@ const NewOrder = (props) => {
         handleOrderSelect={handleOrderSelect}
         setIsModalVisible={setIsModalVisible}
       />
+      <div title="yeni sifariş" style={{ background: colors[theme].secondary }} className="new-order-button" onClick={handleClick}>
+        <MdAdd color="white" size="30" />
+      </div>
       {sending !== undefined && <OperationStateLite state={sending} setState={setSending} text="Sifariş göndərilir.." />}
       {
         isModalVisible !== 0 &&
-        <div style={{ visibility: isModalVisible === 0.5 ? "hidden" : "" }}>
+        <div style={{ display: isModalVisible === 0.5 ? "none" : "" }}>
           <Suspense fallback="">
             <Modal
               minimizable={true} style={{ width: "45rem", minHeight: "30rem", minWidth: "2rem", backgroundColor: "white" }}

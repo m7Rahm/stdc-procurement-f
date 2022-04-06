@@ -1,4 +1,31 @@
-
+export const app_routes = [
+    { link: "/orders", subs: ["/my-orders", "/returned", "/visas", "/agreements", "/contracts", "/payments"] },
+    { link: "/admin", subs: ["/roles", "/users", "/structure", "/materials"] },
+    { link: "/contracts", subs: ["/contracts", "/express-contracts", "/payments"] },
+    { link: "/tender", subs: ["/orders", "/new-offer"] },
+];
+export const colors = {
+    dark: {
+        primary: "#17223B",
+        secondary: "#F05454",
+        navbar: "#17223B",
+        text_primary: "white",
+        accent: "#5584AC",
+        ribbon: "#17223B",
+        even_row: "#e1e1e1",
+        odd_row: "#EEF2FF"
+    },
+    light: {
+        primary: "#22577E",
+        secondary: "rgb(255, 170, 0)",
+        navbar: "linear-gradient(to bottom, white, #ecf1f8)",
+        text_primary: "#373737",
+        accent: "#5584AC",
+        ribbon: "#22577E",
+        even_row: "#e1e1e1",
+        odd_row: "white"
+    }
+}
 export const newOrderInitial = {
     materials: [
         {

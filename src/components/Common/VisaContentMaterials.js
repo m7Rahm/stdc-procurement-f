@@ -22,7 +22,7 @@ const VisaContentMaterials = (props) => {
 					<tr>
 						<td>#</td>
 						<td style={{ textAlign: 'left', maxWidth: "300px" }}>Məhsul</td>
-						<td style={{ maxWidth: '140px' }}>Təsviri</td>
+						{/* <td style={{ maxWidth: '140px' }}>Təsviri</td> */}
 						<td style={{ maxWidth: '140px' }}>Kod</td>
 						<td style={{ maxWidth: '140px' }}>Say</td>
 						<td style={{ maxWidth: '140px' }}>İstifadə yeri</td>
@@ -69,7 +69,6 @@ const TableRow = (props) => {
 		product_id,
 		mat_ass,
 		in_warehouse_amount: inWarehouseAmount,
-		description,
 		order_material_id: id,
 		can_influence: canInfluence
 	} = props.material;
@@ -90,11 +89,6 @@ const TableRow = (props) => {
 			<td style={{ textAlign: 'left' }}>
 				{material_name || title}
 			</td>
-			<td>
-				<span style={{ width: '100%' }} >
-					{material_comment}
-				</span>
-			</td>
 			<td style={{ maxWidth: "140px" }}>
 				{product_id}
 			</td>
@@ -110,7 +104,7 @@ const TableRow = (props) => {
 			</td>
 			<td>
 				<span style={{ width: '100%' }} >
-					{description}
+					{material_comment}
 				</span>
 			</td>
 			{

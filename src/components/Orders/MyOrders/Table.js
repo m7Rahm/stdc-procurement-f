@@ -1,8 +1,10 @@
-import React, { useEffect, useState, Suspense, lazy } from 'react'
+import React, { useEffect, useState, Suspense, lazy, useContext } from 'react'
 import {
   FaSortDown,
   FaSortUp
 } from 'react-icons/fa'
+import { ThemeContext } from '../../../App'
+import { colors } from '../../../data/data'
 import OperationStateLite from '../../Misc/OperationStateLite'
 import ListItem from './ListItem'
 const Modal = lazy(() => import("../../Misc/Modal"))
@@ -13,6 +15,7 @@ const Table = (props) => {
   const [operationStateText, setOperationStateText] = useState({ text: "Sifariş göndərilir..." })
   const [sortNumberUp, setSortNumberUp] = useState(undefined);
   const [sortStatusUp, setSortStatusUp] = useState(undefined);
+  const theme = useContext(ThemeContext)[0];
   useEffect(() => {
     if (sortDateUp !== undefined) {
       const asc = (a, b) => a.id > b.id ? 1 : -1
@@ -72,8 +75,8 @@ const Table = (props) => {
       </Suspense>
       {sending !== undefined && <OperationStateLite state={sending} setState={setSending} text={operationStateText.text} />}
       <ul className='table'>
-        <li style={{ justifyContent: "space-between" }}>
-          <div style={{ width: '30px', textAlign: "center" }}> #</div>
+        <li style={{ background: colors[theme].primary , justifyContent: "space-between" }}>
+          <div style={{ width: '30px', marginLeft: "10px" }}> #</div>
           <div style={{ minWidth: '80px', textAlign: "center" }}> Status {sortIcon}</div>
           <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Tarix {createDateFilterIcon}</div>
           <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Deadline {createDateFilterIcon}</div>
@@ -96,6 +99,7 @@ const Table = (props) => {
               date={order.create_date_time}
               deadline={order.deadline}
               id={order.id}
+              theme={theme}
               setModalState={setModalState}
               setSending={setSending}
               setOperationStateText={setOperationStateText}

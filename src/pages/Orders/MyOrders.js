@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, useContext, useCallback } from 'rea
 import Table from '../../components/Orders/MyOrders/Table'
 import Search from '../../components/Search/Search'
 import NewOrderButton from '../../components/Orders/NewOrder/NewOrderButton';
-import Pagination from '../../components/Misc/Pagination';
+// import Pagination from '../../components/Misc/Pagination';
 import { TokenContext } from '../../App'
 import useFetch from '../../hooks/useFetch';
 import ResultEmpty from '../../components/Common/ResultEmpty';
@@ -55,44 +55,39 @@ const MyOrders = (props) => {
       .catch(err => console.log(err))
   }, [fetchFunc, link, method, initLink, canSeeOtherOrders, orderid])
   return (
-    <div style={{ paddingBottom: '66px', paddingTop: "56px" }}>
-      {
-        referer === "protected" &&
-        <Search
-          canSeeOtherOrders={canSeeOtherOrders}
-          searchRefData={searchRefData}
-          updateList={updateList}
-          setLoading={setLoading}
-        />
-      }
-      <div className="wrapper" ref={wrapperRef}>
+    <div style={{ marginTop: "56px", height: "calc(100vh - 112px)", overflow: "auto" }}>
+      <div >
         {
-          loading ?
-            <ContentLoading />
-            : orders.orders.length !== 0
-              ? <Table
-                wrapperRef={wrapperRef}
-                orders={orders}
-                referer={referer}
-                setOrders={setOrders}
-              />
-              : <ResultEmpty />
+          referer === "protected" &&
+          <Search
+            canSeeOtherOrders={canSeeOtherOrders}
+            searchRefData={searchRefData}
+            updateList={updateList}
+            setLoading={setLoading}
+          />
         }
-      </div>
-      {
-        canCreateNewOrder && referer === "protected" &&
-        <NewOrderButton
-          setOrders={setOrders}
-          wrapperRef={wrapperRef}
-          canSeeOtherOrders={canSeeOtherOrders}
-        />
-      }
-      <div className="my-orders-footer">
-        <Pagination
-          count={orders.count}
-          activePageRef={activePageRef}
-          updateList={updateList}
-        />
+        <div className="wrapper" ref={wrapperRef}>
+          {
+            loading ?
+              <ContentLoading />
+              : orders.orders.length !== 0
+                ? <Table
+                  wrapperRef={wrapperRef}
+                  orders={orders}
+                  referer={referer}
+                  setOrders={setOrders}
+                />
+                : <ResultEmpty />
+          }
+        </div>
+        {
+          canCreateNewOrder && referer === "protected" &&
+          <NewOrderButton
+            setOrders={setOrders}
+            wrapperRef={wrapperRef}
+            canSeeOtherOrders={canSeeOtherOrders}
+          />
+        }
       </div>
     </div>
   )

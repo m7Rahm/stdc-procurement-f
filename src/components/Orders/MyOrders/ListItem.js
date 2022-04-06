@@ -15,6 +15,7 @@ import { WebSocketContext } from "../../../pages/SelectModule"
 import useFetch from "../../../hooks/useFetch"
 import Chat from "../../Misc/Chat"
 import ReturnedOrderCards from "./ReturnedOrderCards"
+import { colors } from "../../../data/data"
 const FinishOrder = lazy(() => import("../../modal content/FinishOrder"))
 const ParticipantsModal = lazy(() => import("../../modal content/Participants"))
 const StatusModal = lazy(() => import("../../modal content/Status"))
@@ -63,7 +64,6 @@ const PreviousOrders = (props) => {
             versions[respJ[i].order_id] = respJ.filter(mat => mat.order_id === respJ[i].order_id)
           }
         }
-        console.log(versions)
         if (Object.keys(versions).length > 1)
           setVersions(versions)
         else
@@ -147,6 +147,7 @@ const ListItem = (props) => {
   const tokenContext = useContext(TokenContext);
   const webSocket = useContext(WebSocketContext);
   const token = tokenContext[0].token;
+  const theme = props.theme;
   const { referer, setOrders, status, participants, date, deadline, id, number, empid, setModalState } = props;
 
   const onParticipantsClick = () => {
@@ -224,10 +225,11 @@ const ListItem = (props) => {
     if (Date.parse(deadline) < Date.parse(new Date()))
       return "red"
   }
+  const row_color = props.index % 2 === 0 ? colors[theme].even_row : colors[theme].odd_row;
   return (
     <>
-      <li style={{ justifyContent: "space-between" }}>
-        <div style={{ width: "30px", fontWeight: "520", color: "#505050", textAlign: "center" }}>{props.index + 1}</div>
+      <li style={{ justifyContent: "space-between" }} style={{ background: row_color }}>
+        <div style={{ width: "30px", fontWeight: "520", color: "#505050", marginLeft: "10px" }}>{props.index + 1}</div>
         <div style={{ width: "80px", textAlign: "center" }}>
           {icon}
         </div>
@@ -235,12 +237,12 @@ const ListItem = (props) => {
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left", color: getColor(deadline, date) }}>{deadline}</div>
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
         <div style={{ width: "40%", textAlign: "left", position: "relative", paddingLeft: "30px" }}>
-          <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ position: "absolute", left: "0px" }} color="gray" />
+          <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ position: "absolute", left: "0px" }} color={colors[theme].accent} />
           <input defaultValue={participants.slice(0, -2)} disabled={true} style={{ width: "100%", borderStyle: 'hidden', textAlign: 'justify' }} />
-          <div className="fadingText"></div>
+          <div className="fadingText" style={{ background: `linear-gradient(to right, transparent, ${row_color}` }}></div>
         </div>
         <div style={{ width: "60px" }}>
-          <IoMdChatbubbles size="20" color="#4285F4" cursor="pointer" onClick={onInfoClick} />
+          <IoMdChatbubbles size="20" color={colors[props.theme].accent} cursor="pointer" onClick={onInfoClick} />
         </div>
         <div style={{ width: "20px" }}>{referer === "protected" && (status === 20 || status === 99 || status === 44) && <IoMdMore pointer="cursor" onClick={handleFinishClick} />}</div>
       </li>

@@ -185,26 +185,25 @@ div.operation-state-lite {
 }
 
 .profile-icon {
-  position: absolute;
   margin: 0px;
+  flex: 1;
   right: 0px;
-  display: none;
-  padding: 0px;
+  display: block;
+  height: 40px;
+  padding: 4px 16px;
   list-style-type: none;
-  top: 50px;
-  border-radius: 5px;
-  overflow: hidden;
 }
 
 .profile-icon>li {
   background-color: #F4B400;
   color: white;
+  border-radius: 5px;
   cursor: pointer;
+  padding: 4px 0px;
+  text-align: center;
+  margin-right: 4px;
   max-width: 120px;
-}
-
-.profile-icon>li:last-of-type {
-  padding: 6px 30px;
+  display: inline-block;
 }
 
 .profile-icon>li>a {
@@ -249,7 +248,9 @@ div.load-to-start {
   transform: translateX(-100%);
   opacity: 1;
 }
-
+.transition-color {
+  transition: all 250ms;
+}
 nav>ul {
   list-style-type: none;
   background-image: linear-gradient(to bottom, white, #ecf1f8);
@@ -1390,8 +1391,9 @@ div.profile-info-container>div input:last-of-type[type="submit"] {
   float: left;
   margin: 0px;
   cursor: pointer;
-  background-color: gainsboro;
+  background-color: rgb(97, 218, 251);
   border-radius: 6px;
+  color: white;
   padding: 6px 10px
 }
 
@@ -2738,6 +2740,7 @@ div.chat-footer {
 
 div.chat-footer textarea {
   padding: 0.5rem;
+  padding-top: 0.75rem;
   background-color: white;
   transition: all 400ms;
   border: none;

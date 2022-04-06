@@ -15,10 +15,19 @@ const AcceptDecline = (props) => {
             }
             fetchPost(`/api/accept-decline/${tranid}`, data)
                 .then(respJ => {
-                    console.log(respJ)
                     if (respJ.length !== 0 && !respJ[0].error) {
                         // const [{ origin_emp_id: originid }, ...rest] = respJ
-                        const receivers = respJ.map(receiver => ({ id: receiver.emp_id, ...receiver }))
+                        const receivers = respJ.map(receiver => {
+                            const { id, notif_type, module_id, sub_module_id, doc_type, ...rest } = receiver;
+                            return {
+                                id,
+                                notif_type,
+                                module_id,
+                                sub_module_id,
+                                doc_type,
+                                data: { ...rest, doc_number: "undefined" }
+                            }
+                        })
                         props.handleModalClose({
                             id: tranid,
                             act_date_time: "Biraz öncə",

@@ -1,4 +1,4 @@
-import React, { lazy, useState } from 'react'
+import React, { useState } from 'react'
 import { createPortal } from "react-dom"
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { IoIosWarning } from 'react-icons/io'

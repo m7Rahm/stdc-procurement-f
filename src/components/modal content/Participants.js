@@ -25,7 +25,7 @@ const Participants = (props) => {
     setChecked(prev => !prev);
   }
   useEffect(() => {
-    fetchGet(`/api/participants/${id}?type=1`)
+    fetchGet(`/api/participants/${id}?type=0`)
       .then(respJ => setParticipants(respJ)
       )
       .catch(err => console.log(err))
@@ -73,7 +73,7 @@ const Participants = (props) => {
 const Reviewers = ({ id, fetchGet }) => {
   const [reviewers, setReviewers] = useState(null);
   useEffect(() => {
-    fetchGet(`/api/participants/${id}?type=4`)
+    fetchGet(`/api/participants/${id}?type=2`)
       .then(respJ => setReviewers(respJ)
       )
       .catch(err => console.log(err))

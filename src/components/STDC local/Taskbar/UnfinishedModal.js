@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import '../../../styles/Orders.css'
 import { IoIosClose } from 'react-icons/io'
+import { colors } from '../../../data/data'
+import { ThemeContext } from '../../../App'
 const UnfinishedModal = (props) => {
     const handleClick = (emp) => {
         props.handleSelectChange(emp);
@@ -8,15 +10,7 @@ const UnfinishedModal = (props) => {
     const handleOrderClick = (orderId) => {
         props.handleOrderSelect(orderId);
     }
-    // eslint-disable-next-line
-    function findWithAttr(array, attr, value) {
-        for (var i = 0; i < array.length; i += 1) {
-            if (array[i][attr] === value) {
-                return i;
-            }
-        }
-        return -1;
-    }
+    const theme = useContext(ThemeContext)[0]
     return (
         <div className="order-card-wrapper">
             <div onClick={() => handleClick(props.emp)} className="order-card-close-button">
@@ -30,10 +24,10 @@ const UnfinishedModal = (props) => {
                 <div className="order-card-info-wrapper"
                     style={{ display: 'flex', flexDirection: 'column' }}
                 >
-                    <div className="order-card-info-number-wrap">
+                    <div className="order-card-info-number-wrap" style={{ background: colors[theme].secondary }} >
                         <div className="order-card-info order-card-info-number">Sifariş № {(props.emp.name + 1)}</div>
                     </div>
-                    <div className="order-card-info-additional">
+                    {/* <div className="order-card-info-additional">
                         <div className="order-card-info ">Növü: {props.emp.value[0] === 0 ? "Mal-material" : "Xidmət"}</div>
                     </div>
                     <div className="order-card-info-additional">
@@ -41,7 +35,7 @@ const UnfinishedModal = (props) => {
                     </div>
                     <div className="order-card-info-additional">
                         <div className="order-card-info ">Məhsul sayı: {props.emp.value[2].length}</div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

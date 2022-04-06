@@ -5,6 +5,8 @@ import VisaContentHeader from './VisaContentHeader'
 import { WebSocketContext } from '../../../pages/SelectModule'
 import Chat from '../../Misc/Chat';
 import useFetch from '../../../hooks/useFetch';
+import ReactDOM from 'react-dom';
+const portal_root = document.getElementById('portal');
 const OrderContentProtected = (props) => {
 	const { current, canProceed, setVisa, footerComponent: Component } = props;
 	const forwardType = current[0].forward_type;
@@ -27,7 +29,7 @@ const OrderContentProtected = (props) => {
 		setModalContent({ visible: true, content, title: "Sifariş № ", number: current[0].ord_numb });
 	}
 	const updateContent = (updatedCtnt, receivers) => {
-		console.log(receivers)
+		// console.log(receivers)
 		const message = JSON.stringify({
 			message: "notification",
 			receivers,
@@ -46,9 +48,12 @@ const OrderContentProtected = (props) => {
 			<>
 				{
 					modalContent.visible &&
-					<Modal canBeClosed={true} style={{ overflow: "visible" }} title="Sifariş № " number={current[0].ord_numb} changeModalState={handleModalClose}>
-						{modalContent.content}
-					</Modal>
+					ReactDOM.createPortal(
+						<Modal canBeClosed={true} style={{ overflow: "visible" }} title="Sifariş № " number={current[0].ord_numb} changeModalState={handleModalClose}>
+							{modalContent.content}
+						</Modal>,
+						portal_root
+					)
 				}
 				<VisaContentHeader
 					updateContent={updateContent}

@@ -60,7 +60,7 @@ const VisaContentFooter = (props) => {
             .then(respJ => {
                 if (respJ.length !== 0 && respJ[0].operation_result === 'success') {
                     const [{ origin_emp_id: originid }, ...rest] = respJ
-                    const receivers = rest.map(receiver => receiver.id)
+                    const receivers = rest.map(receiver => receiver.id);
                     setIsModalOpen({
                         id: current.id,
                         act_date_time: "Biraz öncə",
@@ -74,7 +74,7 @@ const VisaContentFooter = (props) => {
             .catch(err => console.log(err))
     }
     const forwardtoProcurement = (receivers, comment) => {
-        
+
     }
     return (
         current.result === 0 && current.can_influence

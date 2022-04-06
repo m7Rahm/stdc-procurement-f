@@ -31,14 +31,26 @@ const getUserData = () => {
   else
     return {}
 }
+const get_theme = () => {
+  const theme = localStorage.getItem("theme") || "light";
+  return theme
+}
 const App = () => {
   const location = useLocation();
   const history = useHistory();
   const [token, setToken] = useState({ token: localStorage.getItem('token'), userData: getUserData() });
+  const [theme, set_theme] = useState(get_theme());
+  const update_thme = () => {
+    set_theme(prev => {
+      const theme = prev === "light" ? "dark" : "light"
+      localStorage.setItem('theme', theme);
+      return theme
+    });
+  }
   const logout = () => {
     setToken({ token: '', userData: {} })
     localStorage.removeItem('token');
-    window.location.replace(`${serverAddress}${serverPort}/?from=procurement&action=logout`)
+    // window.location.replace(`${serverAddress}${serverPort}/?from=procurement&action=logout`)
   }
   // localStorage.removeItem("token")
   useEffect(() => {
@@ -59,19 +71,22 @@ const App = () => {
 
   return (
     <TokenContext.Provider value={[token, setToken, logout]}>
-      <Switch>
-        <Route path="/login" render={() => !token.token ?
-          <Suspense fallback={<Loading />}>
-            <Login setToken={setToken} />
-          </Suspense>
-          : <Redirect to="/" />}>
-        </Route>
-        <PrivateRoute token={token.token} path="/">
-          <SelectModule />
-        </PrivateRoute>
-      </Switch>
+      <ThemeContext.Provider value={[theme, update_thme]}>
+        <Switch>
+          <Route path="/login" render={() => !token.token ?
+            <Suspense fallback={<Loading />}>
+              <Login setToken={setToken} />
+            </Suspense>
+            : <Redirect to="/" />}>
+          </Route>
+          <PrivateRoute token={token.token} path="/">
+            <SelectModule />
+          </PrivateRoute>
+        </Switch>
+      </ThemeContext.Provider>
     </TokenContext.Provider>
   );
 }
 export default App
 export const TokenContext = React.createContext();
+export const ThemeContext = React.createContext();

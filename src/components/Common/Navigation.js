@@ -6,13 +6,17 @@ import logo from '../../logo.svg';
 import { Suspense } from 'react';
 import useFetch from '../../hooks/useFetch';
 import { NotificationContext } from '../../pages/SelectModule';
+import { app_routes, colors } from '../../data/data';
+import { constr_notif_text, getNotifText } from '../../data/helpers';
+import { ThemeContext } from '../../App';
+import { AiFillSetting } from "react-icons/ai"
 const ProfileInfo = lazy(() => import("./ProfileInfo"))
 const Navigation = (props, ref) => {
-    const moduleNavigationRef = useRef(null);
     const update = useRef(true);
     const history = useHistory();
     const location = useLocation();
     const from = useRef(0);
+    const [theme, set_theme] = useContext(ThemeContext)
     const createNewNotification = useContext(NotificationContext);
     const [notifications, setNotifications] = useState({ all: [], visible: [], offsetStart: 0, offsetEnd: 0, count: '', height: 0 })
     const notificationsRef = useRef(null);
@@ -39,37 +43,20 @@ const Navigation = (props, ref) => {
         window.addEventListener("inAppEvent", handleInAppEvent, false);
         props.webSocket.onmessage = (data) => {
             const webSockMessage = JSON.parse(data.data);
-            const event = new CustomEvent(webSockMessage.messageType, {
-                detail: { data: webSockMessage.data }
-            });
-            if (webSockMessage.messageType !== "recognition") {
+            const { mt: message_type, nt: notif_type, m: module_id, s: sub_module_id, d: doc_type, data: message_data, snn: sender_full_name } = webSockMessage;
+            const key = `${module_id}-${sub_module_id}`
+            const event_name = message_type === "notification" ? key : message_type;
+            if (event_name !== "recognition") {
+                const event = new CustomEvent(event_name, {
+                    detail: { data: message_data }
+                });
                 window.dispatchEvent(event);
-                let docType = "";
-                const message_type = webSockMessage.messageType;
-                let categoryid = message_type[0] === "o" ? 1 : message_type[0] === "m" ? 10 : message_type[0] === "t" ? 3 : 0;
-                categoryid = message_type === "oR" ? 2 : categoryid;
-                if (message_type[1] === "O" || message_type === "oR") {
-                    docType = "0";
-                }
-                else if (message_type[1] === "A") {
-                    docType = "1";
-                }
-                else if (message_type[1] === "C") {
-                    docType = "2";
-                }
-                else if (message_type[1] === "P") {
-                    docType = "3";
-                }
-                const key = `${categoryid}-${docType}`
-                const module = categoryid === 1 ? "/orders" : categoryid === 3 ? "/tender" : "/"
-                let text = ""
-                let query = "?i="
-                if (categoryid === 3) {
-                    text = "Qiymət Araşdırması";
-                    query += webSockMessage.data.order_id
-                }
-                const subModule = docType === "0" ? "/orders" : ""
-                createNewNotification(text, module + subModule + query)
+            }
+            if (message_type === "notification") {
+                const text = constr_notif_text(doc_type, notif_type, message_data.action, message_data.doc_number);
+                const module = app_routes[module_id].link;
+                const sub_module = app_routes[module_id].subs[sub_module_id];
+                createNewNotification(sender_full_name, text, module + sub_module + "/" + message_data.tran_id)
                 if (props.menuNavRefs.current[key]) {
                     const prev = Number(props.menuNavRefs.current[key].innerHTML);
                     if (props.menuNavRefs.current[key].style.display === "none") {
@@ -158,11 +145,8 @@ const Navigation = (props, ref) => {
             mounted = false
         }
     }, [fetchNotifications]);
-    const handleLogOut = () => {
-        props.tokenContext[2]()
-    }
     const handleIconClick = () => {
-        moduleNavigationRef.current.style.display = moduleNavigationRef.current.style.display === 'block' ? 'none' : 'block'
+        set_theme();
     }
     const handleNotificationsClick = () => {
         if (update.current) {
@@ -225,7 +209,6 @@ const Navigation = (props, ref) => {
         })
     }
     const handleModuleClick = (path) => {
-        moduleNavigationRef.current.style.display = "none"
         ref.current.style.opacity = "1"
         if (path !== location.pathname.substring(0, path.length)) {
             ref.current.style.transform = "translateX(-50%)"
@@ -260,7 +243,7 @@ const Navigation = (props, ref) => {
     return (
         <nav ref={props.navigationRef}>
             <div className="loading-indicator">
-                <div ref={ref} className="loaded"></div>
+                <div ref={ref} style={{ background: colors[theme].secondary }} className="loaded"></div>
             </div>
             {
                 profileData.visible &&
@@ -272,15 +255,32 @@ const Navigation = (props, ref) => {
                     />
                 </Suspense>
             }
-            <ul>
+            <ul style={{ background: colors[theme].navbar, color: colors[theme].text_primary }} className="transition-color">
                 <li>
-                    <div>
+                    <div style={{ display: "flex", alignItems: "center" }}>
                         <div className="left-side-toggle" ref={props.leftNavRef}>
-                            <IoMdMenu size="24" cursor="pointer" color="#606060" onClick={props.handleNavClick} />
+                            <IoMdMenu size="24" cursor="pointer" color={colors[theme].text_primary} onClick={props.handleNavClick} />
+                        </div>
+                        <ul className="profile-icon">
+                            {
+                                props.routes.map(module =>
+                                    <li style={{ background: colors[theme].accent}} onClick={() => handleModuleClick(module.link)} key={module.link}>
+                                        <Link to={module.link}>
+                                            <div>
+                                                {module.text}
+                                            </div>
+                                        </Link>
+                                    </li>
+                                )
+                            }
+                        </ul>
+                        <div style={{ position: 'relative' }}>
+                            <p className="profile" style={{ background: colors[theme].accent }} onClick={onProfileClick}>{props.userData.userInfo.fullName}</p>
+                            <AiFillSetting color={colors[theme].accent} style={{ height: '2rem', cursor: 'pointer', width: '45px' }} onClick={handleIconClick} src={logo} alt='user pic' />
                         </div>
                         <div style={{ position: 'relative' }}>
                             <span style={{ fontSize: '0.8rem', cursor: 'pointer' }} onClick={handleNotificationsClick}>
-                                <MdNotifications color="#61DAFB" size="32" />
+                                <MdNotifications color={colors[theme].accent} size="32" />
                                 {notifications.count}
                             </span>
                             <div style={{ position: "absolute", right: "10px" }}>
@@ -312,26 +312,6 @@ const Navigation = (props, ref) => {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ position: 'relative' }}>
-                            <p className="profile" onClick={onProfileClick}>{props.userData.userInfo.fullName}</p>
-                            <img style={{ height: '32px', cursor: 'pointer', width: '45px' }} onClick={handleIconClick} src={logo} alt='user pic' />
-                            <ul ref={moduleNavigationRef} className="profile-icon">
-                                {
-                                    props.routes.map(module =>
-                                        <li onClick={() => handleModuleClick(module.link)} key={module.link}>
-                                            <Link to={module.link}>
-                                                <div>
-                                                    {module.text}
-                                                </div>
-                                            </Link>
-                                        </li>
-                                    )
-                                }
-                                <li onClick={handleLogOut}>
-                                    <div style={{ minWidth: '60px' }}>Çıxış</div>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </li>
             </ul>
@@ -340,38 +320,3 @@ const Navigation = (props, ref) => {
 }
 
 export default React.forwardRef(Navigation)
-
-const getNotifText = (notif) => {
-    let text = notif.doc_type === 2
-        ? "Müqavilə Razılaşması"
-        : notif.doc_type === 1
-            ? "Qiymət Təklifi Araşdırması"
-            : notif.doc_type === 3
-                ? "Ödəniş Razılaşması"
-                : "Sifariş"
-    if (notif.category_id === 10) {
-        text = notif.doc_type === 1
-            ? "Büdcə Artırılması Razılaşması"
-            : notif.doc_type === 2
-                ? "Silinmə Sənədi"
-                : ""
-    }
-    if (notif.category_id === 1 || notif.category_id === 10)
-        return <> Yeni {text}</>
-    else if (notif.category_id === 2)
-        return (
-            <>
-                № <span style={{ color: 'tomato' }}>{notif.doc_number}</span> sənəd {
-                    notif.action === 1
-                        ? 'təsdiq edildi'
-                        : notif.action === 2
-                            ? "redaktəyə qaytarıldı"
-                            : notif.action === 3
-                                ? "redaktə edildi"
-                                : notif.action === -1
-                                    ? "etiraz edildi"
-                                    : "ləğv edildi"
-                }
-            </>
-        )
-}

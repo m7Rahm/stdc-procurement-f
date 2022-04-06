@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useContext } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import useFetch from '../../../hooks/useFetch';
 import { IoIosAdd } from 'react-icons/io'
-import { newOrderInitial } from '../../../data/data'
+import { colors, newOrderInitial } from '../../../data/data'
+import { ThemeContext } from '../../../App';
 
 const NewOrderTableBody = (props) => {
   const fetchGet = useFetch("GET");
+  const theme = useContext(ThemeContext)[0]
   const handleAddClick = () => {
     props.setChoices(prev => ({ ...prev, materials: [...prev.materials, { ...newOrderInitial.materials[0], id: Date.now(), class: 'new-row' }] }))
   }
@@ -86,7 +88,7 @@ const NewOrderTableBody = (props) => {
   return (
     <>
       <ul className="new-order-table">
-        <li>
+        <li style={{ background: colors[theme].primary }}>
           <div>#</div>
           <div><p>Məhsul</p></div>
           <div style={{ width: '170px', maxWidth: '235px' }}><p>Kod</p></div>

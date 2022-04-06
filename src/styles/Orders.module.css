@@ -1,0 +1,195 @@
+.pagination {
+    padding: 1rem 0px;
+    display: flex;
+    height: 4rem;
+    align-items: center;
+}
+.btn {
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    padding: 5px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    font-weight: 500;
+    transition: all 250ms;
+}
+.btn:hover {
+    color: rgb(249, 193, 10);
+    border-color: rgb(249, 193, 10);
+}
+.big-scr-table-wrapper {
+    flex: 0.48;
+    padding-top: 38px
+}
+.small-scr-table-wrapper{
+    flex: 1;
+}
+
+.categories-ribbon{
+    padding: 0.5rem 0px;
+    display: flex;
+}
+.caterogy-button{
+    background-color: white;
+    padding: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 10px;
+    position: relative;
+    font-size: 16px;
+    font-weight: 600;
+    overflow: hidden;
+    transition: all 250ms;
+    color: rgb(24, 139, 192);;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    /* padding: 1.5rem; */
+}
+.caterogy-button:hover{
+    box-shadow: 0px 0px 10px 3px rgba(55, 55, 55, 0.1);
+    color: rgb(249, 193, 10);
+    border-color: rgb(249, 193, 10);
+}
+.caterogy-button:hover>div{
+    transform: translateX(0px);
+    opacity: 1;
+}
+.caterogy-button>div{
+    position: absolute;
+    bottom: 0px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: all 250ms ease-out;
+    transform: translateX(-10px);
+    left: 10px;
+    height: 2px;
+    background-color: rgb(249, 193, 10);
+    right: 10px;
+}
+.table {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.2);
+}
+
+.list-row {
+    display: flex;
+}
+
+.list-row:nth-of-type(2n) {
+    background-image: linear-gradient(to bottom, #f1f1f1, #e1e1e1);
+}
+
+.fading-text {
+    position: absolute;
+    right: 0rem;
+    width: 60px;
+    height: 100%;
+    mask-image: linear-gradient(to right, transparent 1%, white 99%);
+    top: 0;
+}
+.list-row{
+    justify-content: space-between;
+}
+.list-row>div.index{
+    width: 30px;
+    font-weight: 520;
+    color: inherit;
+    text-align: center
+}
+.list-row:nth-of-type(2n) .fading-text {
+    background-image: linear-gradient(to bottom, #f1f1f1, #e1e1e1);    
+}
+.list-row input:disabled{
+    pointer-events: none;
+    background-color: transparent;
+}
+.list-row:nth-of-type(2n+1) .fading-text {
+    background-color: white;
+    /* background-image: linear-gradient(to right, rgb(255, 255, 255, 0.7) 10%, white 90%); */
+}
+div.date {
+    min-width: 80px;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: clip;
+}
+.big-scr-table-wrapper div.date {
+    width: 30%;
+}
+.small-scr-table-wrapper div.date {
+    width: 15%;
+}
+.status {
+    width: 80px;
+    text-align: center
+}
+.list-row:not(:first-child)>div:last-of-type {
+    padding: 2px 0px;
+    height: 24px;
+    position: relative;
+}
+
+.list-row:not(:first-of-type)>div:nth-of-type(8):hover div {
+    display: block;
+}
+.big-scr-table-wrapper .status {
+    display: flex;
+    justify-content: center;
+}
+.list-row:first-child {
+    font-weight: 600;
+    padding: 15px 0px;
+    height: auto;
+    background-color: rgb(24, 139, 192);
+    color: #faf0f0;
+}
+.number {
+    min-width: 60px;
+    text-align: left
+}
+.comment {
+    min-width: 5%;
+    width: 60px
+}
+.deadline {
+    min-width: 80px;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: clip;
+}
+.big-scr-table-wrapper .deadline{
+    width: 30%;
+}
+.small-scr-table-wrapper .deadline {
+    width: 15%;
+}
+.participants {
+    position: relative;
+    text-align: left
+}
+.big-scr-table-wrapper .participants{
+    width: 30%;
+}
+.small-scr-table-wrapper .participants {
+    width: 15%;
+}
+.list-row:not(:first-of-type) .participants{
+    cursor: pointer;
+}
+.big-scr-table-wrapper .participants>input {
+    display: none;
+}
+.small-scr-table-wrapper .participants>svg {
+    display: none;
+}
+.deadline {
+    min-width: 80px;
+    width: 30%;
+    text-align: left
+}
+.list-row:not(:first-child) {
+    font-weight: 450;
+    padding: 2px 0px;
+    color: #505050;
+}

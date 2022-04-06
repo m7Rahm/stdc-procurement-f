@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { IoIosAdd, IoIosArrowBack } from 'react-icons/io';
 import OperationResult from '../Misc/OperationResult';
 import useFetch from '../../hooks/useFetch';
 import NewOrderTableRow from '../Orders/NewOrder/NewOrderTableRow';
+import { colors } from '../../data/data';
+import { ThemeContext } from '../../App';
 
 const EditOrderRequest = (props) => {
     const { version, onSendClick, view, id } = props;
@@ -11,12 +13,12 @@ const EditOrderRequest = (props) => {
     const [orderState, setOrderState] = useState([]);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const [placeList, setPlaceList] = useState([]);
+    const theme = useContext(ThemeContext)[0]
     const fetchGet = useFetch("GET");
     const orderType = useRef(undefined);
     useEffect(() => {
         fetchGet(`/api/order-req-data?order_id=${id}&vers=${version}`)
             .then(respJ => {
-                console.log(respJ)
                 const orderRows = respJ.map(row => ({
                     ...row,
                     models: [],
@@ -152,7 +154,7 @@ const EditOrderRequest = (props) => {
                         />
                     }
                     <ul className="new-order-table">
-                        <li>
+                        <li style={{ background: colors[theme].primary }}>
                             <div>#</div>
                             <div>Məhsul</div>
                             <div style={{ width: '170px', maxWidth: '235px' }}>Kod</div>

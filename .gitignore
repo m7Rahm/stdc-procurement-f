@@ -7,7 +7,7 @@
 
 # testing
 /coverage
-
+.nohup.out
 # production
 /build
 /.vscode

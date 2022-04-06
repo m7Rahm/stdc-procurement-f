@@ -19,6 +19,7 @@ const routes = [
         text: "Sifarişlərim",
         link: "/my-orders",
         icon: IoMdCart,
+        sub_module_id: 0,
         component: MyOrders,
         props: {
             inParams: {
@@ -39,6 +40,7 @@ const routes = [
         link: "/returned",
         docType: 0,
         categoryid: 2,
+        sub_module_id: 1,
         icon: IoMdDocument,
         component: MyOrders,
         props: {
@@ -60,6 +62,7 @@ const routes = [
         link: "/visas",
         icon: IoMdCheckmarkCircleOutline,
         component: Visas,
+        sub_module_id: 2,
         docType: 0,
         categoryid: 1
     },
@@ -67,6 +70,7 @@ const routes = [
         text: "Q/T razılaşmaları",
         link: "/agreements",
         icon: IoMdCart,
+        sub_module_id: 3,
         component: Agreements,
         props: {
             link: "/api/get-user-agreements",
@@ -84,6 +88,7 @@ const routes = [
         text: "Müqavilə razılaşmaları",
         link: "/contracts",
         icon: FaHandshake,
+        sub_module_id: 4,
         component: Contracts,
         docType: 2,
         categoryid: 1,
@@ -108,6 +113,7 @@ const routes = [
     {
         text: "Ödəniş razılaşmaları",
         link: "/payments",
+        sub_module_id: 5,
         icon: MdPayment,
         component: Payments,
         docType: 3,
@@ -138,7 +144,7 @@ const Orders = (props) => {
         fetchGet("/api/notifications-by-categories")
             .then(respJ => {
                 loadingIndicatorRef.current.style.transform = "translateX(0%)";
-                loadingIndicatorRef.current.style.opacity = "0";
+                loadingIndicatorRef.current.style.opacity = "1";
                 loadingIndicatorRef.current.classList.add("load-to-start");
                 respJ.forEach(notif => {
                     routes.find(route => route.docType === notif.doc_type && route.categoryid === notif.category_id).notifCount = notif.cnt;
@@ -153,7 +159,12 @@ const Orders = (props) => {
                 {
                     routes.map(route =>
                         <Route key={route.link} path={`${path}${route.link}`}>
-                            <route.component navigationRef={props.navigationRef} {...route.props} />
+                            <route.component
+                                navigationRef={props.navigationRef}
+                                sub_module_id={route.sub_module_id}
+                                module_id={props.module_id}
+                                {...route.props}
+                            />
                         </Route>
                     )
                 }

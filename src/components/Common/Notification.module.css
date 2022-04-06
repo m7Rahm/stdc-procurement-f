@@ -13,6 +13,7 @@
     width: 300px;
     border-radius: 15px;
     display: flex;
+    left: 10px;
     transition: all 256ms;
     position: absolute;
     animation: fadein 256ms ease-out both;
@@ -29,11 +30,15 @@
     color: white;
     text-align: left;
     padding-left: 20px;
-    height: 60px;
+    height: 80px;
     cursor: pointer;
-    line-height: 60px;
 }
-
+.text>div.header{
+    text-align: left;
+    padding-left: 0px;
+    cursor: pointer;
+    line-height: 40px;
+}
 .exit_button {
     font-size: 18px;
     position: absolute;

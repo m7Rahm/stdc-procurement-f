@@ -114,7 +114,7 @@ const Login = (props) => {
                         <IoIosCloseCircle size="88" />
                     </div>
                     Daxil etdiyiniz şifrə yanlışdır
-			    </div>
+                </div>
             }
         </div>
     )

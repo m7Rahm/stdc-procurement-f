@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { FaTimes } from "react-icons/fa";
+import { colors } from "../../data/data";
 import useFetch from "../../hooks/useFetch";
+import { ThemeContext } from "../../App";
 const Search = (props) => {
-	const { updateList, searchRefData } = props
+	const { updateList, searchRefData } = props;
+	const theme = useContext(ThemeContext)[0];
 	const [departments, setDepartments] = useState([])
 	const departmentRef = useRef([])
 	const structuresInputRef = useRef(null);
@@ -60,7 +63,7 @@ const Search = (props) => {
 	}, [fetchGet])
 	return (
 		<>
-			<div style={{ backgroundColor: "#40a8c4" }}>
+			<div className="transition-color" style={{ background: colors[theme].ribbon }}>
 				<div className="wrapper">
 					<div className="search-container">
 						<div>
@@ -147,6 +150,7 @@ const Search = (props) => {
 						</div>
 						<div
 							onClick={handleSearch}
+							className="transition-color"
 							style={{
 								height: "35px",
 								cursor: "pointer",
@@ -160,7 +164,7 @@ const Search = (props) => {
 								textAlign: "center",
 								minWidth: "180px",
 								fontFamily: "sans-serif",
-								backgroundColor: "#ffae00"
+								background: colors[theme].secondary
 							}}>
 							AXTAR
 						</div>
