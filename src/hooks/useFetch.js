@@ -12,7 +12,7 @@ const useFetch = (method) => {
     const func = useMemo(() => method === "GET"
         ? async (url, abortController) => {
             const aController = abortController || new AbortController()
-            const resp = await fetch(`${serverAddress}:${serverPort}${url}`, {
+            const resp = await fetch(`${serverAddress}${serverPort}${url}`, {
                 signal: aController.signal,
                 headers: {
                     "Authorization": "Bearer " + token
@@ -26,7 +26,7 @@ const useFetch = (method) => {
         : async (url, data, abortController) => {
             const apiData = JSON.stringify(data);
             const aController = abortController || new AbortController()
-            const resp = await fetch(`${serverAddress}:${serverPort}${url}`, {
+            const resp = await fetch(`${serverAddress}${serverPort}${url}`, {
                 method: method,
                 signal: aController.signal,
                 headers: {

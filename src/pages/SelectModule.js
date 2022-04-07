@@ -90,7 +90,7 @@ const SelectModule = () => {
 	useEffect(() => {
 		let mounted = true;
 		if (token && navigator.onLine) {
-			const webSocket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL.substr(7)}:${process.env.REACT_APP_WSS_PORT}`);
+			const webSocket = new WebSocket(`ws://${process.env.REACT_APP_BASE_URL.substr(7)}${process.env.REACT_APP_WSS_PORT}`);
 			webSocket.onopen = () => {
 				const id = userData.userInfo.id;
 				const data = {

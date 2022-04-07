@@ -3,4 +3,5 @@ WORKDIR /front
 COPY . .
 RUN npm install
 RUN npm run build
-CMD ["npm", "start"]
+RUN npm install -g serve
+CMD ["serve", "-s", "build", "-l", "4000"]

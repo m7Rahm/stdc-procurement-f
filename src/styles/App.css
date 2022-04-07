@@ -2253,6 +2253,7 @@ ul.structures-list {
   position: absolute;
   margin: 0px;
   display: none;
+  z-index: 1;
   padding: 0px;
   list-style-type: none;
   top: 58px;
@@ -2268,6 +2269,7 @@ ul.structures-list>li {
   max-height: 60px;
   overflow: hidden;
   font-size: 12px;
+  cursor: pointer;
   padding: 10px;
 }
 
